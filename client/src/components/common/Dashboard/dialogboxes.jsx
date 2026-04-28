@@ -30,14 +30,14 @@ import { RichTextEditor } from "./RichTextEditor.jsx"
 // ── Shared input style helper ──────────────────────────────────────────────
 const inputCls = `w-full rounded-xl px-3 py-2 text-sm outline-none transition-all duration-200
     bg-gray-50 border border-gray-200 text-gray-900
-    focus:border-indigo-400 focus:bg-white focus:ring-2 focus:ring-indigo-100
+    focus:border-blue-400 focus:bg-white focus:ring-2 focus:ring-blue-100
     dark:bg-[rgba(255,255,255,0.04)] dark:border-[rgba(255,255,255,0.08)] dark:text-white
-    dark:focus:border-[rgba(99,102,241,0.5)] dark:focus:bg-[rgba(99,102,241,0.06)] dark:focus:ring-0`
+    dark:focus:border-[rgba(0,61,165,0.5)] dark:focus:bg-[rgba(0,61,165,0.06)] dark:focus:ring-0`
 
 const labelCls = `text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-[rgba(255,255,255,0.4)]`
 
 const SectionLabel = ({ children }) => (
-    <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-indigo-500 dark:text-indigo-400 mb-3">
+    <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-blue-500 dark:text-blue-400 mb-3">
         {children}
     </p>
 )
@@ -81,15 +81,15 @@ export const AddEmployeesDialogBox = () => {
     return (
         <Dialog>
             <DialogTrigger className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold text-white transition-all duration-200
-                bg-indigo-600 hover:bg-indigo-700 shadow-lg shadow-indigo-200
-                dark:bg-[rgba(99,102,241,0.8)] dark:hover:bg-[rgba(99,102,241,1)] dark:shadow-[0_4px_16px_rgba(99,102,241,0.25)]">
+                bg-blue-600 hover:bg-blue-700 shadow-lg shadow-blue-200
+                dark:bg-[rgba(0,61,165,0.8)] dark:hover:bg-[rgba(0,61,165,1)] dark:shadow-[0_4px_16px_rgba(0,61,165,0.25)]">
                 <UserPlus className="w-4 h-4" />
                 Agregar Empleado
             </DialogTrigger>
 
             <DialogContent className="max-w-[340px] sm:max-w-[560px]
                 bg-white border border-gray-100 shadow-2xl rounded-2xl
-                dark:bg-[#13131f] dark:border-[rgba(99,102,241,0.15)]">
+                dark:bg-[#13131f] dark:border-[rgba(0,61,165,0.15)]">
                 <div className="flex flex-col gap-5 p-1">
                     <div>
                         <SectionLabel>Nuevo Empleado</SectionLabel>
@@ -170,7 +170,7 @@ export const AddEmployeesDialogBox = () => {
                         <Button
                             type="button"
                             onClick={handleSubmit}
-                            className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-lg px-4 py-2"
+                            className="bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-lg px-4 py-2"
                         >
                             {sendInvitation ? "Enviar invitación" : "Agregar empleado"}
                         </Button>
@@ -209,21 +209,21 @@ export const EmployeeDetailsDialogBox = ({ EmployeeID }) => {
     return (
         <Dialog>
             <DialogTrigger className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-semibold transition-all duration-200
-                text-indigo-600 bg-indigo-50 border border-indigo-100 hover:bg-indigo-100
-                dark:text-indigo-300 dark:bg-[rgba(99,102,241,0.1)] dark:border-[rgba(99,102,241,0.2)] dark:hover:bg-[rgba(99,102,241,0.18)]">
+                text-blue-600 bg-blue-50 border border-blue-100 hover:bg-blue-100
+                dark:text-blue-300 dark:bg-[rgba(0,61,165,0.1)] dark:border-[rgba(0,61,165,0.2)] dark:hover:bg-[rgba(0,61,165,0.18)]">
                 <Eye className="w-3.5 h-3.5" />
                 Ver
             </DialogTrigger>
 
             <DialogContent className="max-w-[340px] lg:max-w-[580px]
                 bg-white border border-gray-100 shadow-2xl rounded-2xl
-                dark:bg-[#13131f] dark:border-[rgba(99,102,241,0.15)]">
+                dark:bg-[#13131f] dark:border-[rgba(0,61,165,0.15)]">">
                 <div className="flex flex-col gap-5 p-1">
                     {/* Profile header */}
-                    <div className="flex items-center gap-4 pb-4 border-b border-gray-100 dark:border-[rgba(99,102,241,0.1)]">
+                    <div className="flex items-center gap-4 pb-4 border-b border-gray-100 dark:border-[rgba(0,61,165,0.1)]">
                         <div className="w-14 h-14 rounded-2xl flex items-center justify-center text-lg font-bold flex-shrink-0
-                            bg-indigo-100 text-indigo-600
-                            dark:bg-[rgba(99,102,241,0.15)] dark:text-indigo-300">
+                            bg-blue-100 text-blue-600
+                            dark:bg-[rgba(0,61,165,0.15)] dark:text-blue-300">
                             {initials}
                         </div>
                         <div>
@@ -284,7 +284,7 @@ export const DeleteEmployeeDialogBox = ({ EmployeeID }) => {
 
             <DialogContent className="max-w-[340px]
                 bg-white border border-gray-100 shadow-2xl rounded-2xl
-                dark:bg-[#13131f] dark:border-[rgba(99,102,241,0.15)]">
+                dark:bg-[#13131f] dark:border-[rgba(0,61,165,0.15)]">">
                 <div className="flex flex-col items-center gap-5 p-1 text-center">
                     <div className="w-14 h-14 rounded-2xl flex items-center justify-center
                         bg-red-50 dark:bg-[rgba(239,68,68,0.1)]">
@@ -349,7 +349,7 @@ export const CreateDepartmentDialogBox = () => {
     return (
         <Dialog>
             <DialogTrigger className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold text-white transition-all duration-200
-                bg-indigo-600 hover:bg-indigo-700 shadow-lg shadow-indigo-200
+                bg-blue-600 hover:bg-blue-700 shadow-lg shadow-blue-200
                 dark:bg-[rgba(99,102,241,0.8)] dark:hover:bg-[rgba(99,102,241,1)] dark:shadow-[0_4px_16px_rgba(99,102,241,0.25)]">
                 <Building2 className="w-4 h-4" />
                 Crear Departamento
@@ -357,7 +357,7 @@ export const CreateDepartmentDialogBox = () => {
 
             <DialogContent className="max-w-[340px] lg:max-w-[620px]
                 bg-white border border-gray-100 shadow-2xl rounded-2xl
-                dark:bg-[#13131f] dark:border-[rgba(99,102,241,0.15)]">
+                dark:bg-[#13131f] dark:border-[rgba(0,61,165,0.15)]">">
                 <div className="flex flex-col gap-5 p-1">
                     <div>
                         <SectionLabel>Nuevo Departamento</SectionLabel>
@@ -387,7 +387,7 @@ export const CreateDepartmentDialogBox = () => {
                         {(formdata.name.trim().length === 0 || formdata.description.trim().length === 0 || formdata.description === "<p></p>") ? (
                             <Button onClick={ShowToast}
                                 className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold text-white
-                                    bg-indigo-600 hover:bg-indigo-700 border-0">
+                                    bg-blue-600 hover:bg-blue-700 border-0">
                                 <Check className="w-4 h-4" />
                                 Crear
                             </Button>
@@ -395,7 +395,7 @@ export const CreateDepartmentDialogBox = () => {
                             <DialogClose asChild>
                                 <Button onClick={CreateDepartment}
                                     className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold text-white
-                                        bg-indigo-600 hover:bg-indigo-700 border-0">
+                                        bg-blue-600 hover:bg-blue-700 border-0">
                                     <Check className="w-4 h-4" />
                                     Crear
                                 </Button>
@@ -449,15 +449,15 @@ export const EmployeesIDSDialogBox = ({ DepartmentID }) => {
             <DialogTrigger
                 onClick={() => dispatch(fetchEmployeesIDs({ apiroute: "GETALL" }))}
                 className="flex items-center gap-2 px-3 py-2 rounded-xl text-sm font-semibold transition-all duration-200
-                    text-indigo-600 bg-indigo-50 border border-indigo-100 hover:bg-indigo-100
-                    dark:text-indigo-300 dark:bg-[rgba(99,102,241,0.1)] dark:border-[rgba(99,102,241,0.2)] dark:hover:bg-[rgba(99,102,241,0.18)]">
+                    text-blue-600 bg-blue-50 border border-blue-100 hover:bg-blue-100
+                    dark:text-blue-300 dark:bg-[rgba(99,102,241,0.1)] dark:border-[rgba(99,102,241,0.2)] dark:hover:bg-[rgba(99,102,241,0.18)]">
                 <Users className="w-4 h-4" />
                 Agregar Empleados
             </DialogTrigger>
 
             <DialogContent className="max-w-[340px] lg:max-w-[420px]
                 bg-white border border-gray-100 shadow-2xl rounded-2xl
-                dark:bg-[#13131f] dark:border-[rgba(99,102,241,0.15)]">
+                dark:bg-[#13131f] dark:border-[rgba(0,61,165,0.15)]">">
                 {EmployeesIDState.isLoading ? <Loading height={"h-auto"} /> : (
                     <div className="flex flex-col gap-5 p-1">
                         <div>
@@ -478,7 +478,7 @@ export const EmployeesIDSDialogBox = ({ DepartmentID }) => {
                                                 <input
                                                     type="checkbox"
                                                     id={`EmployeeID-${index + 1}`}
-                                                    className="w-4 h-4 accent-indigo-600"
+                                                    className="w-4 h-4 accent-blue-600"
                                                     onClick={() => SelectEmployees(item._id)}
                                                     checked={SelectedEmployeesData.employeeIDArray.includes(item._id)}
                                                     disabled={!!item.department}
@@ -504,7 +504,7 @@ export const EmployeesIDSDialogBox = ({ DepartmentID }) => {
                             <DialogClose asChild>
                                 <Button onClick={SetEmployees}
                                     className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl text-sm font-semibold text-white
-                                        bg-indigo-600 hover:bg-indigo-700 border-0">
+                                        bg-blue-600 hover:bg-blue-700 border-0">
                                     <Check className="w-4 h-4" />
                                     Agregar
                                 </Button>
@@ -545,7 +545,7 @@ export const RemoveEmployeeFromDepartmentDialogBox = ({ DepartmentName, Departme
 
             <DialogContent className="max-w-[340px]
                 bg-white border border-gray-100 shadow-2xl rounded-2xl
-                dark:bg-[#13131f] dark:border-[rgba(99,102,241,0.15)]">
+                dark:bg-[#13131f] dark:border-[rgba(0,61,165,0.15)]">">
                 <div className="flex flex-col items-center gap-5 p-1 text-center">
                     <div className="w-14 h-14 rounded-2xl flex items-center justify-center bg-red-50 dark:bg-[rgba(239,68,68,0.1)]">
                         <Users className="w-7 h-7 text-red-400" />

@@ -140,7 +140,7 @@ export const EmployeeProfilePage = () => {
             {/* Header */}
             <div>
                 <p className="text-[10px] font-semibold uppercase tracking-[0.2em] mb-1
-                    text-indigo-500 dark:text-indigo-400">
+                    text-blue-500 dark:text-blue-400">
                     Mi Cuenta
                 </p>
                 <h1 className="text-2xl xl:text-3xl font-bold tracking-tight
@@ -173,7 +173,7 @@ export const EmployeeProfilePage = () => {
                     <div className="flex items-center justify-center sm:justify-start gap-2 mt-1">
                         <span className={`flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-semibold border ${emp?.isverified
                                 ? "bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-[rgba(16,185,129,0.12)] dark:text-emerald-400 dark:border-[rgba(16,185,129,0.3)]"
-                                : "bg-amber-50 text-amber-700 border-amber-200 dark:bg-[rgba(245,158,11,0.12)] dark:text-amber-400 dark:border-[rgba(245,158,11,0.3)]"
+                                : "bg-yellow-50 text-yellow-700 border-yellow-200 dark:bg-[rgba(245,158,11,0.12)] dark:text-yellow-400 dark:border-[rgba(245,158,11,0.3)]"
                             }`}>
                             {emp?.isverified
                                 ? <><ShieldCheck className="w-3 h-3" /> Verificado</>
@@ -181,8 +181,8 @@ export const EmployeeProfilePage = () => {
                             }
                         </span>
                         <span className="flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-semibold border
-                            bg-indigo-50 text-indigo-700 border-indigo-200
-                            dark:bg-[rgba(99,102,241,0.12)] dark:text-indigo-400 dark:border-[rgba(99,102,241,0.3)]">
+                            bg-blue-50 text-blue-700 border-blue-200
+                            dark:bg-[rgba(99,102,241,0.12)] dark:text-blue-400 dark:border-[rgba(99,102,241,0.3)]">
                             <Briefcase className="w-3 h-3" /> Empleado
                         </span>
                     </div>
@@ -205,7 +205,7 @@ export const EmployeeProfilePage = () => {
             {/* Información personal */}
             <div>
                 <p className="text-[10px] font-semibold uppercase tracking-[0.18em] mb-3
-                    text-indigo-500 dark:text-indigo-400">
+                    text-blue-500 dark:text-blue-400">
                     Información Personal
                 </p>
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
@@ -221,7 +221,7 @@ export const EmployeeProfilePage = () => {
             {/* Resumen de asistencia */}
             <div>
                 <p className="text-[10px] font-semibold uppercase tracking-[0.18em] mb-3
-                    text-indigo-500 dark:text-indigo-400">
+                    text-blue-500 dark:text-blue-400">
                     Resumen de Asistencia
                 </p>
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
@@ -237,7 +237,7 @@ export const EmployeeProfilePage = () => {
             {/* Mis documentos */}
             <div>
                 <p className="text-[10px] font-semibold uppercase tracking-[0.18em] mb-3
-                    text-indigo-500 dark:text-indigo-400">
+                    text-blue-500 dark:text-blue-400">
                     Mis Documentos
                 </p>
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">

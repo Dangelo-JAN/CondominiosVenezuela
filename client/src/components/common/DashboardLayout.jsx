@@ -28,7 +28,7 @@ export const DashboardLayout = ({ sidebar }) => {
                                 <PanelLeft className="w-4 h-4" />
                             </SidebarTrigger>
                             <p className="text-sm font-semibold text-gray-900 dark:text-white">
-                                EMS<span className="text-indigo-500">.</span>
+                                EMS<span className="text-blue-500">.</span>
                             </p>
                         </div>
 
@@ -46,7 +46,7 @@ export const DashboardLayout = ({ sidebar }) => {
                                     bg-amber-50 dark:bg-[rgba(99,102,241,0.1)] transition-colors duration-300">
                                     {isDark
                                         ? <Sun className="w-3.5 h-3.5 text-amber-400" />
-                                        : <Moon className="w-3.5 h-3.5 text-indigo-400" />
+                                        : <Moon className="w-3.5 h-3.5 text-blue-400" />
                                     }
                                 </div>
                                 <span className="hidden sm:block text-xs font-medium

@@ -5,7 +5,7 @@ export const Loading = ({ height }) => {
             <div role="status">
                 <svg
                     aria-hidden="true"
-                    className="w-10 h-10 animate-spin text-gray-200 dark:text-gray-700 fill-indigo-500"
+                    className="w-10 h-10 animate-spin text-gray-200 dark:text-gray-700 fill-blue-500"
                     viewBox="0 0 100 101"
                     fill="none"
                     xmlns="http://www.w3.org/2000/svg"

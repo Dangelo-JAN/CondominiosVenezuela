@@ -21,7 +21,7 @@ const formatDuration = (minutes) => {
 }
 
 // ── Tokens de contraste actualizados ─────────────────────────────────────
-// Claro:  card bg = #f0f2ff  |  border = #c7d2fe  |  shadow = indigo glow
+// Claro:  card bg = #f0f2ff  |  border = #c7d2fe  |  shadow = blue glow
 // Oscuro: card bg = rgba(255,255,255,0.05)  |  border = rgba(255,255,255,0.12)
 // Sub-card claro:  bg = #ffffff  |  border = #e0e7ff
 // Sub-card oscuro: bg = rgba(255,255,255,0.06)  |  border = rgba(255,255,255,0.1)
@@ -129,7 +129,7 @@ export const EmployeeHomePage = () => {
             {/* Header */}
             <div>
                 <p className="text-[10px] font-semibold uppercase tracking-[0.2em] mb-1
-                    text-indigo-500 dark:text-indigo-400">
+                    text-blue-500 dark:text-blue-400">
                     Mi Panel
                 </p>
                 <h1 className="text-2xl xl:text-3xl font-bold tracking-tight
@@ -155,7 +155,7 @@ export const EmployeeHomePage = () => {
                     <div className="flex items-center justify-between">
                         <div>
                             <p className="text-[10px] font-semibold uppercase tracking-[0.18em]
-                                text-indigo-500 dark:text-indigo-400">
+                                text-blue-500 dark:text-blue-400">
                                 Jornada de hoy
                             </p>
                             <h2 className="text-base font-bold mt-0.5
@@ -212,8 +212,8 @@ export const EmployeeHomePage = () => {
                                 background: isDark ? "rgba(99,102,241,0.12)" : "#eef2ff",
                                 border: `1px solid ${isDark ? "rgba(99,102,241,0.25)" : "#c7d2fe"}`,
                             }}>
-                            <Clock className="w-4 h-4 text-indigo-500" />
-                            <span className="text-sm font-semibold text-indigo-600 dark:text-indigo-400">
+                            <Clock className="w-4 h-4 text-blue-500" />
+                            <span className="text-sm font-semibold text-blue-600 dark:text-blue-400">
                                 Jornada: {formatDuration(todayLog.duration)}
                             </span>
                         </div>
@@ -257,7 +257,7 @@ export const EmployeeHomePage = () => {
                     <div className="flex items-center justify-between">
                         <div>
                             <p className="text-[10px] font-semibold uppercase tracking-[0.18em]
-                                text-indigo-500 dark:text-indigo-400">
+                                text-blue-500 dark:text-blue-400">
                                 {todayDay}
                             </p>
                             <h2 className="text-base font-bold mt-0.5
@@ -347,8 +347,8 @@ export const EmployeeHomePage = () => {
                         background: isDark ? "rgba(245,158,11,0.1)" : "#fffbeb",
                         border: `1px solid ${isDark ? "rgba(245,158,11,0.25)" : "#fde68a"}`,
                     }}>
-                    <AlertCircle className="w-4 h-4 flex-shrink-0 text-amber-500" />
-                    <p className="text-sm text-amber-700 dark:text-amber-400">
+                    <AlertCircle className="w-4 h-4 flex-shrink-0 text-yellow-500" />
+                    <p className="text-sm text-yellow-700 dark:text-yellow-400">
                         No tienes un horario activo asignado. Contacta a tu supervisor.
                     </p>
                 </div>

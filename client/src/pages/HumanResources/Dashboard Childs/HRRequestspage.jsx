@@ -30,7 +30,7 @@ const STATUS_OPTIONS = [
     { value: "Rejected", label: "Rechazado" },
 ]
 
-// ── Tokens amber para esta página ─────────────────────────────────────────
+// ── Tokens yellow para esta página ─────────────────────────────────────────
 const AMBER = {
     // Avatar
     avatarLight: { bg: "#fef3c7", color: "#d97706" },
@@ -79,7 +79,7 @@ const getStatusBadge = (status, isDark) => {
 
 const inputCls = `w-full rounded-xl px-3 py-2.5 text-sm outline-none transition-all duration-200 appearance-none
     bg-gray-50 border border-gray-200 text-gray-900
-    focus:border-amber-400 focus:bg-white focus:ring-2 focus:ring-amber-100
+    focus:border-yellow-400 focus:bg-white focus:ring-2 focus:ring-yellow-100
     dark:bg-[rgba(255,255,255,0.05)] dark:border-[rgba(255,255,255,0.12)] dark:text-white dark:placeholder:text-[rgba(255,255,255,0.4)]
     dark:focus:border-[rgba(245,158,11,0.5)] dark:focus:bg-[rgba(245,158,11,0.06)]`
 
@@ -166,7 +166,7 @@ const RequestForm = ({ initialData, employees, onSubmit, onClose, isLoading }) =
                     Cancelar
                 </Button>
                 <Button type="submit" disabled={isLoading}
-                    className="rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white">
+                    className="rounded-xl bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-600 hover:to-orange-600 text-white">
                     {isLoading ? "Guardando..." : initialData ? "Actualizar" : "Crear"}
                 </Button>
             </div>
@@ -257,7 +257,7 @@ const RequestDetailsDialog = ({ request, onClose, onApprove, onReject, onEdit, o
                             style={{ borderColor: isDark ? "rgba(255,255,255,0.1)" : "#fde68a" }}>
                             <div className="flex gap-2">
                                 <Button onClick={() => onEdit(request)} variant="outline"
-                                    className="rounded-xl text-amber-600 border-amber-300 hover:bg-amber-50 dark:text-amber-400 dark:border-amber-700 dark:hover:bg-[rgba(245,158,11,0.08)]">
+                                    className="rounded-xl text-yellow-600 border-yellow-300 hover:bg-yellow-50 dark:text-yellow-400 dark:border-yellow-700 dark:hover:bg-[rgba(245,158,11,0.08)]">
                                     <Edit className="w-4 h-4 mr-1" /> Editar
                                 </Button>
                                 <Button onClick={() => onDelete(request._id)} variant="outline" disabled={isLoading}
@@ -411,7 +411,7 @@ export const HRRequestspage = () => {
                 </div>
                 <Button
                     onClick={() => setIsCreateOpen(true)}
-                    className="rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white">
+                    className="rounded-xl bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-600 hover:to-orange-600 text-white">
                     <Plus className="w-4 h-4 mr-2" /> Nueva Solicitud
                 </Button>
             </div>
@@ -472,9 +472,9 @@ export const HRRequestspage = () => {
             <div className="flex flex-col gap-3 flex-1 overflow-auto">
 
                 {/* Header de columnas */}
-                <ThemedListWrapper accent="amber">
+                <ThemedListWrapper accent="yellow">
                     <ThemedHeadingBar
-                        accent="amber"
+                        accent="yellow"
                         table_layout="grid-cols-6"
                         table_headings={table_headings}
                         hiddenCols={hiddenCols}
@@ -482,7 +482,7 @@ export const HRRequestspage = () => {
                 </ThemedListWrapper>
 
                 {/* Filas */}
-                <ThemedListContainer accent="amber">
+                <ThemedListContainer accent="yellow">
                     {requestsCount === 0 ? (
                         <div className="flex flex-col items-center justify-center py-16 gap-3">
                             <div className="w-12 h-12 rounded-2xl flex items-center justify-center"
@@ -597,7 +597,7 @@ export const HRRequestspage = () => {
                 open={isCreateOpen}
                 onOpenChange={setIsCreateOpen}
                 title="Nueva solicitud de ausencia"
-                accent="amber"
+                accent="yellow"
             >
                 <RequestForm employees={HREmployeesState.data} onSubmit={handleCreate}
                     onClose={() => setIsCreateOpen(false)} isLoading={HRLeavesState.isLoading} />
@@ -608,7 +608,7 @@ export const HRRequestspage = () => {
                 open={isEditOpen}
                 onOpenChange={setIsEditOpen}
                 title="Editar solicitud"
-                accent="amber"
+                accent="yellow"
             >
                 <RequestForm initialData={selectedRequest} employees={HREmployeesState.data}
                     onSubmit={handleEdit}

@@ -88,7 +88,7 @@ const HRCard = ({ hr, isCurrentUser, onUpdatePermissions, onUpdateRole, onToggle
     // Badge para usuario actual
     const currentUserBadge = isCurrentUser && (
         <span className="text-[10px] font-semibold px-1.5 py-0.5 rounded-full
-            bg-indigo-50 text-indigo-500 dark:bg-[rgba(99,102,241,0.15)] dark:text-indigo-300">
+            bg-blue-50 text-blue-500 dark:bg-[rgba(99,102,241,0.15)] dark:text-blue-300">
             Tú
         </span>
     )
@@ -104,7 +104,7 @@ const HRCard = ({ hr, isCurrentUser, onUpdatePermissions, onUpdateRole, onToggle
     // Badge de verificación pendiente
     const pendingBadge = !hr.isverified && (
         <span className="text-[10px] font-semibold px-1.5 py-0.5 rounded-full
-            bg-amber-50 text-amber-500 dark:bg-[rgba(245,158,11,0.15)] dark:text-amber-300">
+            bg-yellow-50 text-yellow-500 dark:bg-[rgba(252,227,0,0.15)] dark:text-yellow-300">
             Pendiente
         </span>
     )
@@ -220,7 +220,7 @@ const HRCard = ({ hr, isCurrentUser, onUpdatePermissions, onUpdateRole, onToggle
 
     return (
         <ListItemCard
-            accent="indigo"
+            accent="blue"
             title={hr.firstname + " " + hr.lastname}
             description={hr.email}
             badge={
@@ -424,7 +424,7 @@ export const HRProfilesPage = () => {
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                 <div>
                     <p className="text-[10px] font-semibold uppercase tracking-[0.2em] mb-1
-                        text-indigo-500 dark:text-indigo-400">
+                        text-blue-500 dark:text-blue-400">
                         Administración
                     </p>
                     <div className="flex items-center gap-3">
@@ -433,8 +433,8 @@ export const HRProfilesPage = () => {
                             Perfiles HR
                         </h1>
                         <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold
-                            bg-indigo-50 text-indigo-600 border border-indigo-100
-                            dark:bg-[rgba(99,102,241,0.12)] dark:text-indigo-300
+                            bg-blue-50 text-blue-600 border border-blue-100
+                            dark:bg-[rgba(99,102,241,0.12)] dark:text-blue-300
                             dark:border-[rgba(99,102,241,0.2)]">
                             {profiles.length} total
                         </span>
@@ -462,8 +462,8 @@ export const HRProfilesPage = () => {
             {profiles.length === 0 ? (
                 <div className="flex flex-col items-center justify-center py-20 gap-3">
                     <div className="w-14 h-14 rounded-2xl flex items-center justify-center
-                        bg-indigo-50 dark:bg-[rgba(99,102,241,0.1)]">
-                        <Users className="w-7 h-7 text-indigo-300 dark:text-indigo-600" />
+                        bg-blue-50 dark:bg-[rgba(99,102,241,0.1)]">
+                        <Users className="w-7 h-7 text-blue-300 dark:text-blue-600" />
                     </div>
                     <p className="text-base font-semibold text-gray-400 dark:text-gray-500">
                         Sin perfiles HR adicionales

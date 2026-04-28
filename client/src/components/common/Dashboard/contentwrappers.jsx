@@ -16,7 +16,7 @@ export const KeyDetailBoxContentWrapper = ({ imagedataarray, data }) => {
                 <Link
                     to={item.path}
                     key={item.dataname}
-                    className="block focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 rounded-2xl"
+                    className="block focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 rounded-2xl"
                 >
                     <KeyDetailsBox
                         image={item.image}

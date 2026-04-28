@@ -223,7 +223,7 @@ export const EmployeeWorkPhotosPage = () => {
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                 <div>
                     <p className="text-[10px] font-semibold uppercase tracking-[0.2em] mb-1
-                        text-indigo-500 dark:text-indigo-400">
+                        text-blue-500 dark:text-blue-400">
                         Mis Fotos
                     </p>
                     <h1 className="text-2xl xl:text-3xl font-bold tracking-tight
@@ -289,7 +289,7 @@ export const EmployeeWorkPhotosPage = () => {
                                 onChange={e => setForm(p => ({ ...p, description: e.target.value }))}
                                 className="px-3 py-2 rounded-xl text-sm outline-none transition-colors duration-150
                                     bg-white border border-gray-200 text-gray-900 placeholder-gray-300
-                                    focus:border-indigo-300 focus:ring-2 focus:ring-indigo-100
+                                    focus:border-blue-300 focus:ring-2 focus:ring-blue-100
                                     dark:bg-[rgba(255,255,255,0.05)] dark:border-[rgba(255,255,255,0.08)]
                                     dark:text-white dark:placeholder-[rgba(255,255,255,0.2)]
                                     dark:focus:border-[rgba(99,102,241,0.4)] dark:focus:ring-[rgba(99,102,241,0.1)]"
@@ -307,7 +307,7 @@ export const EmployeeWorkPhotosPage = () => {
                                 onChange={e => setForm(p => ({ ...p, workdate: e.target.value }))}
                                 className="px-3 py-2 rounded-xl text-sm outline-none transition-colors duration-150
                                     bg-white border border-gray-200 text-gray-900
-                                    focus:border-indigo-300 focus:ring-2 focus:ring-indigo-100
+                                    focus:border-blue-300 focus:ring-2 focus:ring-blue-100
                                     dark:bg-[rgba(255,255,255,0.05)] dark:border-[rgba(255,255,255,0.08)]
                                     dark:text-white dark:focus:border-[rgba(99,102,241,0.4)]
                                     dark:focus:ring-[rgba(99,102,241,0.1)]"

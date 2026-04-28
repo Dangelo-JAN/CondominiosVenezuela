@@ -2,41 +2,41 @@ import * as Dialog from "@radix-ui/react-dialog"
 import { X } from "lucide-react"
 import { useIsDark } from "../../../hooks/useIsDark.js"
 
-// ── Tokens de Accent según Design System v2 ─────────────────────────────────
+// ── Tokens de Accent según Design System v4 (Venezuela) ───────────────────
 const ACCENT_TOKENS = {
-    indigo: {
-        lightBg: "#e0e7ff",
-        lightBorder: "#a5b4fc",
-        darkBg: "rgba(99,102,241,.15)",
-        darkBorder: "rgba(99,102,241,.35)",
-        color: "#6366f1",
+    blue: {
+        lightBg: "#dbeafe",
+        lightBorder: "#93c5fd",
+        darkBg: "rgba(0,61,165,0.15)",
+        darkBorder: "rgba(0,61,165,0.35)",
+        color: "#003DA5",
     },
-    amber: {
-        lightBg: "#fef3c7",
-        lightBorder: "#fcd34d",
-        darkBg: "rgba(245,158,11,.15)",
-        darkBorder: "rgba(245,158,11,.35)",
-        color: "#f59e0b",
+    yellow: {
+        lightBg: "#fef9c3",
+        lightBorder: "#fde047",
+        darkBg: "rgba(252,227,0,0.15)",
+        darkBorder: "rgba(252,227,0,0.35)",
+        color: "#FCE300",
     },
     emerald: {
         lightBg: "#d1fae5",
         lightBorder: "#6ee7b7",
-        darkBg: "rgba(16,185,129,.15)",
-        darkBorder: "rgba(16,185,129,.35)",
+        darkBg: "rgba(16,185,129,0.15)",
+        darkBorder: "rgba(16,185,129,0.35)",
         color: "#10b981",
     },
     cyan: {
         lightBg: "#cffafe",
         lightBorder: "#67e8f9",
-        darkBg: "rgba(6,182,212,.15)",
-        darkBorder: "rgba(6,182,212,.35)",
+        darkBg: "rgba(6,182,212,0.15)",
+        darkBorder: "rgba(6,182,212,0.35)",
         color: "#06b6d4",
     },
     purple: {
         lightBg: "#ede9fe",
         lightBorder: "#c4b5fd",
-        darkBg: "rgba(139,92,246,.15)",
-        darkBorder: "rgba(139,92,246,.35)",
+        darkBg: "rgba(139,92,246,0.15)",
+        darkBorder: "rgba(139,92,246,0.35)",
         color: "#8b5cf6",
     },
 }
@@ -47,7 +47,7 @@ const ACCENT_TOKENS = {
  * @param {boolean} open - Estado de apertura (controlado)
  * @param {function} onOpenChange - Callback de cambio de estado
  * @param {string} title - Título del modal
- * @param {string} accent - Color de acento ("indigo" | "amber" | "emerald" | "cyan" | "purple")
+ * @param {string} accent - Color de acento ("blue" | "yellow" | "emerald" | "cyan" | "purple")
  * @param {ReactNode} children - Contenido del modal
  * @param {string} maxWidth - Ancho máximo (default: "max-w-lg")
  * @param {boolean} showCloseButton - Mostrar botón de cierre (default: true)
@@ -57,14 +57,14 @@ export const ThemedModal = ({
     open,
     onOpenChange,
     title,
-    accent = "indigo",
+    accent = "blue",
     children,
     maxWidth = "max-w-lg",
     showCloseButton = true,
     footer,
 }) => {
     const isDark = useIsDark()
-    const tokens = ACCENT_TOKENS[accent] || ACCENT_TOKENS.indigo
+    const tokens = ACCENT_TOKENS[accent] || ACCENT_TOKENS.blue
 
     // Estilos dinámicos según el tema
     const contentStyle = {
@@ -150,7 +150,7 @@ export { ACCENT_TOKENS }
 
 // Exportar función helper para obtener estilos de inputs según accent
 export const getInputStyles = (accent, isDark) => {
-    const tokens = ACCENT_TOKENS[accent] || ACCENT_TOKENS.indigo
+    const tokens = ACCENT_TOKENS[accent] || ACCENT_TOKENS.blue
     return {
         bg: isDark ? "rgba(255,255,255,0.04)" : "#f9fafb",
         border: isDark ? "rgba(255,255,255,0.08)" : "#e5e7eb",

@@ -32,7 +32,7 @@ export const Reset_Password = ({ handlepasswordsubmit, handlepasswordform, passw
                                     required
                                     // autoComplete="email"
                                     onChange={handlepasswordform}
-                                    className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm/6 p-2"
+                                    className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm/6 p-2"
                                 />
                             </div>
                         </div>
@@ -44,7 +44,7 @@ export const Reset_Password = ({ handlepasswordsubmit, handlepasswordform, passw
                                 </label>
                                 {/* <div className="text-sm">
                                         <Link to={"/forgot-password"}>
-                                            <a className="font-semibold text-indigo-600 hover:text-indigo-500">
+                                            <a className="font-semibold text-blue-600 hover:text-blue-500">
                                                 Forgot password?
                                             </a>
                                         </Link>
@@ -58,7 +58,7 @@ export const Reset_Password = ({ handlepasswordsubmit, handlepasswordform, passw
                                     required
                                     autoComplete="current-password"
                                     onChange={handlepasswordform}
-                                    className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm/6 p-2"
+                                    className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm/6 p-2"
                                 />
                             </div>
                         </div>
@@ -66,7 +66,7 @@ export const Reset_Password = ({ handlepasswordsubmit, handlepasswordform, passw
                         <div>
                             <button
                                 type="submit"
-                                className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm/6 font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                                className="flex w-full justify-center rounded-md bg-blue-600 px-3 py-1.5 text-sm/6 font-semibold text-white shadow-sm hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
                                 onClick={handlepasswordsubmit}>
                                 Confirm
                             </button>

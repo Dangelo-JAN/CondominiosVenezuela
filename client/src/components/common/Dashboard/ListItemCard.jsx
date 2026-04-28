@@ -3,23 +3,23 @@ import { ChevronDown, ChevronUp } from "lucide-react"
 
 // ── Tokens de acento para ListItemCard ────────────────────────────────
 const ACCENT_TOKENS = {
-    indigo: {
-        lightBg: "#e0e7ff",
-        lightBorder: "#a5b4fc",
-        darkBg: "rgba(99,102,241,0.15)",
-        darkBorder: "rgba(99,102,241,0.35)",
-        color: "#6366f1",
-        hoverLight: "#eef2ff",
-        hoverDark: "rgba(99,102,241,0.08)",
+    blue: {
+        lightBg: "#dbeafe",
+        lightBorder: "#93c5fd",
+        darkBg: "rgba(0,61,165,0.15)",
+        darkBorder: "rgba(0,61,165,0.35)",
+        color: "#003DA5",
+        hoverLight: "#e0f2fe",
+        hoverDark: "rgba(0,61,165,0.08)",
     },
-    amber: {
-        lightBg: "#fef3c7",
-        lightBorder: "#fcd34d",
-        darkBg: "rgba(245,158,11,0.15)",
-        darkBorder: "rgba(245,158,11,0.35)",
-        color: "#f59e0b",
-        hoverLight: "#fffbeb",
-        hoverDark: "rgba(245,158,11,0.08)",
+    yellow: {
+        lightBg: "#fef9c3",
+        lightBorder: "#fde047",
+        darkBg: "rgba(252,227,0,0.15)",
+        darkBorder: "rgba(252,227,0,0.35)",
+        color: "#FCE300",
+        hoverLight: "#fef9c3",
+        hoverDark: "rgba(252,227,0,0.08)",
     },
     emerald: {
         lightBg: "#d1fae5",
@@ -53,7 +53,7 @@ const ACCENT_TOKENS = {
 // ── ListItemCard: Componente genérico para cards de lista ─────────────
 // Cumple con Design System v2 - sección 3 (Cards y Contenedores)
 export const ListItemCard = ({
-    accent = "indigo",
+    accent = "blue",
     title,
     description,
     badge,
@@ -65,7 +65,7 @@ export const ListItemCard = ({
     className = "",
 }) => {
     const isDark = useIsDark()
-    const t = ACCENT_TOKENS[accent] || ACCENT_TOKENS.indigo
+    const t = ACCENT_TOKENS[accent] || ACCENT_TOKENS.blue
 
     // Estilos según Design System sección 3
     // Fondo mínimo oscuro = 0.05, Borde mínimo oscuro = 0.12
@@ -202,9 +202,9 @@ export const StatusBadge = ({ active, activeLabel = "Activo", inactiveLabel = "I
 }
 
 // ── Avatar con iniciales para usar con ListItemCard ────────────────────
-export const InitialsAvatar = ({ firstname, lastname, accent = "indigo" }) => {
+export const InitialsAvatar = ({ firstname, lastname, accent = "blue" }) => {
     const isDark = useIsDark()
-    const t = ACCENT_TOKENS[accent] || ACCENT_TOKENS.indigo
+    const t = ACCENT_TOKENS[accent] || ACCENT_TOKENS.blue
 
     const avatarBg = isDark ? t.darkBg : t.lightBg
     const avatarColor = isDark ? t.color : "#374151"

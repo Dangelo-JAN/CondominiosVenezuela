@@ -74,7 +74,7 @@ export const AcceptInvitationPage = () => {
                     </div>
                     <div className="text-center">
                         <h1 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
-                            EMS<span className="text-indigo-500">.</span>
+                            EMS<span className="text-blue-500">.</span>
                         </h1>
                         <p className="text-sm text-gray-400 dark:text-gray-500 mt-1">
                             Acepta tu invitación para unirte al equipo
@@ -105,7 +105,7 @@ export const AcceptInvitationPage = () => {
                         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
                             <div>
                                 <p className="text-[10px] font-semibold uppercase tracking-[0.2em] mb-1
-                                    text-indigo-500 dark:text-indigo-400">
+                                    text-blue-500 dark:text-blue-400">
                                     Configurar cuenta
                                 </p>
                                 <h2 className="text-lg font-bold text-gray-900 dark:text-white">

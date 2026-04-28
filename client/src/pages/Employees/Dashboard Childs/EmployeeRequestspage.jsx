@@ -37,7 +37,7 @@ const LeaveRequestForm = ({ initialData, onSubmit, onClose, isLoading }) => {
     // Estilos de input matching HRRequestspage - aplicados a TODOS los inputs
     const inputCls = `w-full rounded-xl px-3 py-2.5 text-sm outline-none transition-all duration-200 appearance-none
         bg-gray-50 border border-gray-200 text-gray-900
-        focus:border-amber-400 focus:bg-white focus:ring-2 focus:ring-amber-100
+        focus:border-yellow-400 focus:bg-white focus:ring-2 focus:ring-yellow-100
         dark:bg-[rgba(255,255,255,0.05)] dark:border-[rgba(255,255,255,0.12)] dark:text-white dark:placeholder:text-[rgba(255,255,255,0.4)]
         dark:focus:border-[rgba(245,158,11,0.5)] dark:focus:bg-[rgba(245,158,11,0.06)]`
 
@@ -107,7 +107,7 @@ const LeaveRequestForm = ({ initialData, onSubmit, onClose, isLoading }) => {
                     Cancelar
                 </Button>
                 <Button type="submit" disabled={isLoading}
-                    className="rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white">
+                    className="rounded-xl bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-600 hover:to-orange-600 text-white">
                     {isLoading ? "Guardando..." : initialData ? "Actualizar" : "Crear"}
                 </Button>
             </div>
@@ -165,7 +165,7 @@ const RequestDetailsDialog = ({ request, onClose, onEdit, onDelete, isLoading })
             open={true}
             onOpenChange={onClose}
             title="Detalles de mi Solicitud"
-            accent="amber"
+            accent="yellow"
             footer={
                 request.status === "Pending" && (
                     <div className="flex justify-end gap-2">
@@ -179,7 +179,7 @@ const RequestDetailsDialog = ({ request, onClose, onEdit, onDelete, isLoading })
                         </Button>
                         <Button
                             onClick={() => onEdit(request)}
-                            className="rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white"
+                            className="rounded-xl bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-600 hover:to-orange-600 text-white"
                         >
                             <Edit className="w-4 h-4 mr-1" /> Editar
                         </Button>
@@ -464,7 +464,7 @@ export const EmployeeRequestspage = () => {
                 open={isCreateOpen}
                 onOpenChange={setIsCreateOpen}
                 title="Nueva Solicitud de Ausencia"
-                accent="amber"
+                accent="yellow"
             >
                 <LeaveRequestForm 
                     onSubmit={handleCreate} 
@@ -478,7 +478,7 @@ export const EmployeeRequestspage = () => {
                 open={isEditOpen}
                 onOpenChange={setIsEditOpen}
                 title="Editar Solicitud"
-                accent="amber"
+                accent="yellow"
             >
                 <LeaveRequestForm 
                     initialData={selectedRequest} 

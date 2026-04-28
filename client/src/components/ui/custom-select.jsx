@@ -25,7 +25,7 @@ const SelectTrigger = React.forwardRef(({ className, children, searchPlaceholder
         "flex h-10 w-full items-center justify-between rounded-xl px-3 py-2.5 text-sm outline-none transition-all duration-200",
         "bg-gray-50 border border-gray-200 text-gray-900",
         "placeholder:text-gray-400",
-        "focus:border-amber-400 focus:bg-white focus:ring-2 focus:ring-amber-100",
+        "focus:border-yellow-400 focus:bg-white focus:ring-2 focus:ring-yellow-100",
         "disabled:cursor-not-allowed disabled:opacity-50",
         // Dark mode
         "dark:bg-[rgba(255,255,255,0.05)] dark:border-[rgba(255,255,255,0.12)] dark:text-white",
@@ -122,7 +122,7 @@ const SelectItem = React.forwardRef(({ className, children, ...props }, ref) => 
     >
       <span className="absolute left-2 flex h-3.5 w-3.5 items-center justify-center">
         <SelectPrimitive.ItemIndicator>
-          <Check className="h-4 w-4 text-amber-500" />
+          <Check className="h-4 w-4 text-yellow-500" />
         </SelectPrimitive.ItemIndicator>
       </span>
       <SelectPrimitive.ItemText>{children}</SelectPrimitive.ItemText>
@@ -197,7 +197,7 @@ const CustomSelect = ({
                 "w-full h-9 rounded-lg pl-9 pr-3 text-sm outline-none transition-colors",
                 "bg-gray-50 border border-gray-200 text-gray-900",
                 "placeholder:text-gray-400",
-                "focus:border-amber-400 focus:ring-2 focus:ring-amber-100",
+                "focus:border-yellow-400 focus:ring-2 focus:ring-yellow-100",
                 "dark:bg-[rgba(255,255,255,0.05)] dark:border-[rgba(255,255,255,0.12)] dark:text-white",
                 "dark:placeholder:text-[rgba(255,255,255,0.4)]",
                 "dark:focus:border-[rgba(245,158,11,0.5)] dark:focus:ring-[rgba(245,158,11,0.15)]"

@@ -10,7 +10,7 @@ export const ResetEmailConfirmaction = ({ redirectpath }) => {
                     <p className="md:text-lg text-green-600 font-bold sm:text-sm lg:text-xl">We have successfully send you a Reset email, Click on The Reset Password To Reset Your Password.</p>
                     <p className="md:text-lg text-red-600 font-bold sm:text-sm lg:text-xl">Please do not forward reset passowrd email</p>
                     <div className="back-login-button">
-                        <Link to={redirectpath} className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm/6 font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+                        <Link to={redirectpath} className="flex w-full justify-center rounded-md bg-blue-600 px-3 py-1.5 text-sm/6 font-semibold text-white shadow-sm hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600">
                             Back to Login
                         </Link>
                     </div>
