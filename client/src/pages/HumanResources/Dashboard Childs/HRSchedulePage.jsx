@@ -445,7 +445,7 @@ const ScheduleForm = ({ employees, onSubmit, onCancel, editingSchedule, viewMode
                     className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold
                         text-white transition-all duration-200 disabled:opacity-40 disabled:cursor-not-allowed
                         hover:opacity-90 active:scale-95"
-                    style={{ background: "linear-gradient(135deg, #6366f1, #8b5cf6)" }}
+                    style={{ background: "linear-gradient(135deg, #003DA5, #8b5cf6)" }}
                 >
                     <CheckCircle2 className="w-4 h-4" />
                     {isEdit ? "Guardar cambios" : "Crear horario"}
@@ -622,7 +622,7 @@ export const HRSchedulePage = () => {
                         className="flex items-center gap-2 px-4 py-2.5 rounded-xl self-start sm:self-auto
                             text-sm font-semibold text-white transition-all duration-200
                             hover:opacity-90 active:scale-95"
-                        style={{ background: "linear-gradient(135deg, #6366f1, #8b5cf6)" }}
+                        style={{ background: "linear-gradient(135deg, #003DA5, #8b5cf6)" }}
                     >
                         <Plus className="w-4 h-4" />
                         Nuevo horario

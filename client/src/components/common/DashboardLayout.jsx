@@ -57,7 +57,7 @@ export const DashboardLayout = ({ sidebar }) => {
                                 {/* Toggle pill — inline styles para evitar purge de Tailwind en producción */}
                                 <div
                                     className="flex-shrink-0 w-8 h-4 rounded-full relative transition-colors duration-300"
-                                    style={{ background: isDark ? "#6366f1" : "#e5e7eb" }}
+                                    style={{ background: isDark ? "#003DA5" : "#e5e7eb" }}
                                 >
                                     <div
                                         className="absolute top-0.5 w-3 h-3 rounded-full bg-white shadow-sm transition-all duration-300"

@@ -31,7 +31,7 @@ const ACTIONS = ["create", "read", "update", "delete"]
 const ACTION_LABELS = { create: "Crear", read: "Ver", update: "Editar", delete: "Eliminar" }
 
 const ROLE_STYLES = {
-    "HR-Admin":   { bg: "rgba(99,102,241,0.15)",  border: "rgba(99,102,241,0.35)", color: "#6366f1",  icon: ShieldCheck },
+    "HR-Admin":   { bg: "rgba(99,102,241,0.15)",  border: "rgba(99,102,241,0.35)", color: "#003DA5",  icon: ShieldCheck },
     "HR-Manager": { bg: "rgba(139,92,246,0.15)",  border: "rgba(139,92,246,0.35)", color: "#8b5cf6",  icon: Shield },
     "HR-Viewer":  { bg: "rgba(100,116,139,0.15)", border: "rgba(100,116,139,0.35)",color: "#64748b",  icon: ShieldAlert },
 }
@@ -43,7 +43,7 @@ const PermToggle = ({ value, onChange, disabled }) => (
         disabled={disabled}
         className={`w-8 h-4 rounded-full relative transition-colors duration-200 flex-shrink-0
             ${disabled ? "opacity-40 cursor-not-allowed" : "cursor-pointer"}`}
-        style={{ background: value ? "#6366f1" : "#e2e8f0" }}
+        style={{ background: value ? "#003DA5" : "#e2e8f0" }}
     >
         <div
             className="absolute top-0.5 w-3 h-3 rounded-full bg-white shadow-sm transition-all duration-200"
@@ -209,7 +209,7 @@ const HRCard = ({ hr, isCurrentUser, onUpdatePermissions, onUpdateRole, onToggle
                         disabled={saving}
                         className="flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold
                             text-white transition-all duration-200 disabled:opacity-50"
-                        style={{ background: "linear-gradient(135deg, #6366f1, #8b5cf6)" }}
+                        style={{ background: "linear-gradient(135deg, #003DA5, #8b5cf6)" }}
                     >
                         {saving ? "Guardando..." : "Guardar permisos"}
                     </button>
@@ -351,7 +351,7 @@ const InviteModal = ({ onClose, onInvite }) => {
                         className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl
                             text-sm font-semibold text-white transition-all duration-200
                             disabled:opacity-50 hover:opacity-90"
-                        style={{ background: "linear-gradient(135deg, #6366f1, #8b5cf6)" }}
+                        style={{ background: "linear-gradient(135deg, #003DA5, #8b5cf6)" }}
                     >
                         <Send className="w-4 h-4" />
                         {sending ? "Enviando..." : "Enviar invitación"}
@@ -449,7 +449,7 @@ export const HRProfilesPage = () => {
                     className="flex items-center gap-2 px-4 py-2.5 rounded-xl self-start sm:self-auto
                         text-sm font-semibold text-white transition-all duration-200
                         hover:opacity-90 active:scale-95"
-                    style={{ background: "linear-gradient(135deg, #6366f1, #8b5cf6)" }}
+                    style={{ background: "linear-gradient(135deg, #003DA5, #8b5cf6)" }}
                 >
                     <Plus className="w-4 h-4" />
                     Invitar coordinador

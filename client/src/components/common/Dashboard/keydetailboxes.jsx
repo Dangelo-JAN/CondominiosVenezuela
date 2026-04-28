@@ -10,7 +10,7 @@ export const KeyDetailsBox = ({ image, dataname, data }) => {
 
     const colorMap = {
         employees: {
-            accent: "#6366f1",
+            accent: "#003DA5",
             lightBg: "#e0e7ff", lightBorder: "#a5b4fc",
             darkBg: "rgba(99,102,241,0.18)", darkBorder: "rgba(99,102,241,0.4)",
             glow: "rgba(99,102,241,0.15)", iconBg: "#c7d2fe", darkIconBg: "rgba(99,102,241,0.25)"

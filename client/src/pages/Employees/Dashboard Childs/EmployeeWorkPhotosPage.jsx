@@ -240,7 +240,7 @@ export const EmployeeWorkPhotosPage = () => {
                     className="flex items-center gap-2 px-4 py-2.5 rounded-xl self-start sm:self-auto
                         text-sm font-semibold text-white transition-all duration-200
                         hover:opacity-90 active:scale-95"
-                    style={{ background: "linear-gradient(135deg, #6366f1, #8b5cf6)" }}
+                    style={{ background: "linear-gradient(135deg, #003DA5, #8b5cf6)" }}
                 >
                     <Camera className="w-4 h-4" />
                     Subir foto
@@ -321,7 +321,7 @@ export const EmployeeWorkPhotosPage = () => {
                                 className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold
                                     text-white transition-all duration-200 disabled:opacity-50
                                     disabled:cursor-not-allowed"
-                                style={{ background: "linear-gradient(135deg, #6366f1, #8b5cf6)" }}
+                                style={{ background: "linear-gradient(135deg, #003DA5, #8b5cf6)" }}
                             >
                                 <Upload className="w-4 h-4" />
                                 {uploading ? "Subiendo..." : "Confirmar"}

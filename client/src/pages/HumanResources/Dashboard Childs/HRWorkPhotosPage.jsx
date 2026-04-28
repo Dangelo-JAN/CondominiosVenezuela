@@ -287,7 +287,7 @@ export const HRWorkPhotosPage = () => {
                 }}>
 
                 <div className="flex items-center gap-2 flex-shrink-0">
-                    <Filter className="w-4 h-4 transition-colors duration-300" style={{ color: isDark ? "#6366f1" : "#4f46e5" }} />
+                    <Filter className="w-4 h-4 transition-colors duration-300" style={{ color: isDark ? "#003DA5" : "#4f46e5" }} />
                     <span className="text-xs font-semibold uppercase tracking-wider transition-colors duration-300"
                         style={{ color: isDark ? "rgba(255,255,255,0.5)" : "#6b7280" }}>
                         Filtros
@@ -375,7 +375,7 @@ export const HRWorkPhotosPage = () => {
                     {hasActiveFilters && (
                         <button onClick={resetFilters}
                             className="text-sm font-medium transition-colors"
-                            style={{ color: isDark ? "#818cf8" : "#6366f1" }}>
+                            style={{ color: isDark ? "#818cf8" : "#003DA5" }}>
                             Limpiar filtros
                         </button>
                     )}

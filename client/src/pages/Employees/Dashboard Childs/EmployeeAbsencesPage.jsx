@@ -88,7 +88,7 @@ export const EmployeeAbsencesPage = () => {
                     </p>
                 </div>
                 <div className="p-4 rounded-xl border" style={{ background: isDark ? "rgba(99,102,241,0.05)" : "#eef2ff", borderColor: isDark ? "rgba(99,102,241,0.2)" : "#c7d2fe" }}>
-                    <p className="text-xs font-semibold uppercase tracking-wider" style={{ color: isDark ? "#818cf8" : "#6366f1" }}>Este Mes</p>
+                    <p className="text-xs font-semibold uppercase tracking-wider" style={{ color: isDark ? "#818cf8" : "#003DA5" }}>Este Mes</p>
                     <p className="text-2xl font-bold mt-1" style={{ color: isDark ? "#fff" : "#111827" }}>
                         {absences.filter(a => {
                             const now = new Date()

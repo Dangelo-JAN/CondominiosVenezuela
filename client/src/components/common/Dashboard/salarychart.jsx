@@ -58,7 +58,7 @@ export const SalaryChart = ({ balancedata }) => {
         ? chartData[chartData.length - 1]["AvailableAmount"] : 0
 
     const TrendIcon = trendingUp > 0 ? TrendingUp : trendingUp < 0 ? TrendingDown : Minus
-    const trendColor = trendingUp > 0 ? "#10b981" : trendingUp < 0 ? "#ef4444" : "#6366f1"
+    const trendColor = trendingUp > 0 ? "#10b981" : trendingUp < 0 ? "#ef4444" : "#003DA5"
 
     const dateRange = chartData.length > 0
         ? `${chartData[0]["month"]} — ${chartData[chartData.length - 1]["month"]} 2024` : null
@@ -68,7 +68,7 @@ export const SalaryChart = ({ balancedata }) => {
     const labelColor = isDark ? "rgba(255,255,255,0.4)" : "rgba(0,0,0,0.45)"
     const legendColor = isDark ? "rgba(255,255,255,0.45)" : "rgba(0,0,0,0.5)"
     const emptyColor = isDark ? "rgba(255,255,255,0.25)" : "rgba(0,0,0,0.3)"
-    const sectionLabel = isDark ? "rgba(99,102,241,0.9)" : "#6366f1"
+    const sectionLabel = isDark ? "rgba(99,102,241,0.9)" : "#003DA5"
 
     return (
         <div className="flex flex-col h-full p-5 gap-4">
@@ -90,7 +90,7 @@ export const SalaryChart = ({ balancedata }) => {
                     <p className="text-[10px] uppercase tracking-wider" style={{ color: labelColor }}>
                         Disponible
                     </p>
-                    <p className="text-lg font-bold" style={{ color: "#6366f1" }}>
+                    <p className="text-lg font-bold" style={{ color: "#003DA5" }}>
                         ${availableAmount.toLocaleString()}
                     </p>
                     <div className="flex items-center gap-1 px-2 py-0.5 rounded-full"
@@ -117,8 +117,8 @@ export const SalaryChart = ({ balancedata }) => {
                                     <stop offset="95%" stopColor="#8b5cf6" stopOpacity={0} />
                                 </linearGradient>
                                 <linearGradient id="gradAvailable" x1="0" y1="0" x2="0" y2="1">
-                                    <stop offset="5%" stopColor="#6366f1" stopOpacity={isDark ? 0.4 : 0.25} />
-                                    <stop offset="95%" stopColor="#6366f1" stopOpacity={0} />
+                                    <stop offset="5%" stopColor="#003DA5" stopOpacity={isDark ? 0.4 : 0.25} />
+                                    <stop offset="95%" stopColor="#003DA5" stopOpacity={0} />
                                 </linearGradient>
                             </defs>
                             <CartesianGrid strokeDasharray="3 3" stroke={gridColor} vertical={false} />
@@ -135,7 +135,7 @@ export const SalaryChart = ({ balancedata }) => {
                                 stroke="#8b5cf6" strokeWidth={2} />
                             <Area dataKey="AvailableAmount" name="Monto disponible"
                                 type="monotone" fill="url(#gradAvailable)"
-                                stroke="#6366f1" strokeWidth={2} />
+                                stroke="#003DA5" strokeWidth={2} />
                         </AreaChart>
                     </ResponsiveContainer>
                 )}
@@ -144,7 +144,7 @@ export const SalaryChart = ({ balancedata }) => {
             <div className="flex items-center gap-4 pt-1">
                 {[
                     { color: "#8b5cf6", label: "Nóminas pagadas" },
-                    { color: "#6366f1", label: "Monto disponible" }
+                    { color: "#003DA5", label: "Monto disponible" }
                 ].map(item => (
                     <div key={item.label} className="flex items-center gap-2">
                         <div className="w-6 h-0.5 rounded-full" style={{ background: item.color }} />

@@ -48,7 +48,7 @@ export function DashboardSidebar({ navItems = [], onLogout, appName = "EMS", app
                 >
                     <div
                         className="flex items-center justify-center w-9 h-9 rounded-xl flex-shrink-0"
-                        style={{ background: "linear-gradient(135deg, #6366f1, #8b5cf6)" }}
+                        style={{ background: "linear-gradient(135deg, #003DA5, #8b5cf6)" }}
                     >
                         <Zap className="w-5 h-5 text-white" />
                     </div>
@@ -109,7 +109,7 @@ export function DashboardSidebar({ navItems = [], onLogout, appName = "EMS", app
                                                         </div>
                                                         <span
                                                             className="text-sm font-medium"
-                                                            style={{ color: isActive ? "#6366f1" : undefined }}
+                                                            style={{ color: isActive ? "#003DA5" : undefined }}
                                                         >
                                                             {!isActive && (
                                                                 <span className="text-gray-500 dark:text-[rgba(255,255,255,0.45)]">
