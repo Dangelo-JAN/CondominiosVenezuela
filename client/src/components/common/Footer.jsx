@@ -14,7 +14,7 @@ export const Footer = () => {
                     <div className="flex flex-col items-center sm:items-start gap-2">
                         <div className="flex items-center gap-2">
                             <div className="w-8 h-8 rounded-lg flex items-center justify-center"
-                                style={{ background: "linear-gradient(135deg, #7c3aed, #6366f1)" }}>
+                                style={{ background: "linear-gradient(135deg, #7c3aed, #003DA5)" }}>
                                 <Zap className="text-white w-4 h-4" />
                             </div>
                             <span className="text-base font-bold"

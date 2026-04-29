@@ -48,13 +48,13 @@ export function DashboardSidebar({ navItems = [], onLogout, appName = "EMS", app
                 >
                     <div
                         className="flex items-center justify-center w-9 h-9 rounded-xl flex-shrink-0"
-                        style={{ background: "linear-gradient(135deg, #6366f1, #8b5cf6)" }}
+                        style={{ background: "linear-gradient(135deg, #003DA5, #8b5cf6)" }}
                     >
                         <Zap className="w-5 h-5 text-white" />
                     </div>
                     <div>
                         <p className="font-bold text-base tracking-tight leading-none text-gray-900 dark:text-white">
-                            {appName}<span className="text-indigo-500">.</span>
+                            {appName}<span className="text-blue-500">.</span>
                         </p>
                         <p className="text-xs mt-0.5 text-gray-400 dark:text-[rgba(255,255,255,0.3)]">
                             {appSubtitle}
@@ -109,7 +109,7 @@ export function DashboardSidebar({ navItems = [], onLogout, appName = "EMS", app
                                                         </div>
                                                         <span
                                                             className="text-sm font-medium"
-                                                            style={{ color: isActive ? "#6366f1" : undefined }}
+                                                            style={{ color: isActive ? "#003DA5" : undefined }}
                                                         >
                                                             {!isActive && (
                                                                 <span className="text-gray-500 dark:text-[rgba(255,255,255,0.45)]">
@@ -119,7 +119,7 @@ export function DashboardSidebar({ navItems = [], onLogout, appName = "EMS", app
                                                             {isActive && item.label}
                                                         </span>
                                                         {isActive && (
-                                                            <div className="ml-auto w-1.5 h-1.5 rounded-full flex-shrink-0 bg-indigo-500" />
+                                                            <div className="ml-auto w-1.5 h-1.5 rounded-full flex-shrink-0 bg-blue-500" />
                                                         )}
                                                     </>
                                                 )}
@@ -144,7 +144,7 @@ export function DashboardSidebar({ navItems = [], onLogout, appName = "EMS", app
                                                     {item.label}
                                                 </span>
                                                 <span className="ml-auto text-[9px] font-semibold px-1.5 py-0.5 rounded-full uppercase tracking-wider flex-shrink-0
-                                                    bg-indigo-50 text-indigo-400 border border-indigo-100
+                                                    bg-blue-50 text-blue-400 border border-blue-100
                                                     dark:bg-[rgba(99,102,241,0.1)] dark:text-[rgba(99,102,241,0.6)] dark:border-[rgba(99,102,241,0.15)]">
                                                     Soon
                                                 </span>

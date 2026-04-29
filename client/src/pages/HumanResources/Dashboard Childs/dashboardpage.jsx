@@ -37,7 +37,7 @@ export const HRDashboardPage = () => {
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                 <div>
                     <p className="text-[10px] font-semibold uppercase tracking-[0.2em] mb-1
-                        text-indigo-500 dark:text-indigo-400">
+                        text-blue-500 dark:text-blue-400">
                         Panel de Control
                     </p>
                     <h1 className="text-2xl xl:text-3xl font-bold tracking-tight
@@ -51,10 +51,10 @@ export const HRDashboardPage = () => {
                 <div className="flex items-center gap-2 px-4 py-2 rounded-xl self-start sm:self-auto transition-colors duration-300"
                     style={{ background: isDark ? "rgba(99,102,241,0.2)" : "#e0e7ff", border: isDark ? "1px solid rgba(99,102,241,0.4)" : "1px solid #a5b4fc" }}>
                     <span className="relative flex h-2 w-2">
-                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full opacity-75 bg-indigo-400" />
-                        <span className="relative inline-flex rounded-full h-2 w-2 bg-indigo-500" />
+                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full opacity-75 bg-blue-400" />
+                        <span className="relative inline-flex rounded-full h-2 w-2 bg-blue-500" />
                     </span>
-                    <span className="text-xs font-medium text-indigo-600 dark:text-indigo-300">En vivo</span>
+                    <span className="text-xs font-medium text-blue-600 dark:text-blue-300">En vivo</span>
                 </div>
             </div>
 

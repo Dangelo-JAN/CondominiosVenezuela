@@ -16,7 +16,7 @@ const ToolbarButton = ({ onClick, active, title, children }) => (
         title={title}
         className={`p-1.5 rounded-lg transition-all duration-150 ${
             active
-                ? "bg-indigo-100 text-indigo-600 dark:bg-[rgba(99,102,241,0.25)] dark:text-indigo-300"
+                ? "bg-blue-100 text-blue-600 dark:bg-[rgba(99,102,241,0.25)] dark:text-blue-300"
                 : "text-gray-500 hover:bg-gray-100 hover:text-gray-800 dark:text-[rgba(255,255,255,0.4)] dark:hover:bg-[rgba(255,255,255,0.06)] dark:hover:text-white"
         }`}
     >
@@ -59,7 +59,7 @@ export const RichTextEditor = ({ value, onChange }) => {
         <div className="flex flex-col rounded-xl overflow-hidden
             border border-gray-200 bg-white
             dark:border-[rgba(99,102,241,0.2)] dark:bg-[rgba(255,255,255,0.03)]
-            focus-within:border-indigo-400 focus-within:ring-2 focus-within:ring-indigo-100
+            focus-within:border-blue-400 focus-within:ring-2 focus-within:ring-blue-100
             dark:focus-within:border-[rgba(99,102,241,0.5)] dark:focus-within:ring-0
             transition-all duration-200">
 

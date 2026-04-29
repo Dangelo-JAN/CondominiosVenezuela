@@ -58,7 +58,7 @@ const toastVariants = cva(
 
 // Icon per variant
 const variantIcon = {
-    default:     <Info className="w-4 h-4 mt-0.5 flex-shrink-0 text-indigo-500" />,
+    default:     <Info className="w-4 h-4 mt-0.5 flex-shrink-0 text-blue-500" />,
     destructive: <AlertCircle className="w-4 h-4 mt-0.5 flex-shrink-0 text-red-500" />,
     success:     <CheckCircle2 className="w-4 h-4 mt-0.5 flex-shrink-0 text-emerald-500" />,
 }
@@ -77,10 +77,10 @@ const ToastAction = React.forwardRef(({ className, ...props }, ref) => (
         ref={ref}
         className={cn(
             "inline-flex h-8 shrink-0 items-center justify-center rounded-lg px-3 text-xs font-semibold",
-            "border border-indigo-200 text-indigo-600 bg-transparent",
-            "hover:bg-indigo-50 transition-colors duration-150",
-            "focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-1",
-            "dark:border-[rgba(99,102,241,0.3)] dark:text-indigo-400 dark:hover:bg-[rgba(99,102,241,0.1)]",
+            "border border-blue-200 text-blue-600 bg-transparent",
+            "hover:bg-blue-50 transition-colors duration-150",
+            "focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1",
+            "dark:border-[rgba(99,102,241,0.3)] dark:text-blue-400 dark:hover:bg-[rgba(99,102,241,0.1)]",
             "disabled:pointer-events-none disabled:opacity-50",
             className
         )}
@@ -97,7 +97,7 @@ const ToastClose = React.forwardRef(({ className, ...props }, ref) => (
             "transition-all duration-150",
             "text-gray-400 hover:text-gray-700 hover:bg-gray-100",
             "dark:text-[rgba(255,255,255,0.3)] dark:hover:text-white dark:hover:bg-[rgba(255,255,255,0.08)]",
-            "focus:opacity-100 focus:outline-none focus:ring-2 focus:ring-indigo-500",
+            "focus:opacity-100 focus:outline-none focus:ring-2 focus:ring-blue-500",
             className
         )}
         toast-close=""

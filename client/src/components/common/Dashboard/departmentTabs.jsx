@@ -76,8 +76,8 @@ export const HRDepartmentTabs = () => {
 
     return (
         <div className="flex flex-col gap-4 rounded-2xl h-full overflow-auto
-            bg-indigo-50/50 border border-indigo-100 p-3 sm:p-5
-            dark:bg-[rgba(99,102,241,0.04)] dark:border-[rgba(99,102,241,0.1)]">
+            bg-blue-50/50 border border-blue-100 p-3 sm:p-5
+            dark:bg-[rgba(0,61,165,0.04)] dark:border-[rgba(0,61,165,0.1)]">
 
             {/* Selector + Settings row */}
             <div className="flex justify-between items-center gap-3">
@@ -97,8 +97,8 @@ export const HRDepartmentTabs = () => {
                     <DropdownMenu>
                         <DropdownMenuTrigger asChild>
                             <Button className="flex items-center gap-2 px-3 py-2 rounded-xl text-sm font-semibold
-                                text-indigo-600 bg-indigo-50 border border-indigo-100 hover:bg-indigo-100
-                                dark:text-indigo-300 dark:bg-[rgba(99,102,241,0.1)] dark:border-[rgba(99,102,241,0.2)] dark:hover:bg-[rgba(99,102,241,0.18)]"
+                                text-blue-600 bg-blue-50 border border-blue-100 hover:bg-blue-100
+                                dark:text-blue-300 dark:bg-[rgba(0,61,165,0.1)] dark:border-[rgba(0,61,165,0.2)] dark:hover:bg-[rgba(0,61,165,0.18)]"
                                 style={{ background: "none" }}>
                                 <Settings className="w-4 h-4" />
                                 <span className="hidden sm:inline">Ajustes</span>
@@ -106,7 +106,7 @@ export const HRDepartmentTabs = () => {
                         </DropdownMenuTrigger>
                         <DropdownMenuContent className="flex flex-col gap-1 p-2 rounded-xl
                             bg-white border border-gray-100 shadow-xl
-                            dark:bg-[#13131f] dark:border-[rgba(99,102,241,0.15)]">
+                            dark:bg-[#13131f] dark:border-[rgba(0,61,165,0.15)]">
                             <DropdownMenuItem
                                 onClick={() => {
                                     const currentDept = HRDepartmentState.data?.find((item) => item.name === department)
@@ -116,8 +116,8 @@ export const HRDepartmentTabs = () => {
                                     }
                                 }}
                                 className="flex items-center gap-2 px-3 py-2 rounded-lg cursor-pointer text-sm font-medium
-                                text-indigo-600 hover:bg-indigo-50
-                                dark:text-indigo-300 dark:hover:bg-[rgba(99,102,241,0.1)]">
+                                text-blue-600 hover:bg-blue-50
+                                dark:text-blue-300 dark:hover:bg-[rgba(0,61,165,0.1)]">
                                 <Pencil className="w-4 h-4" />
                                 Actualizar
                             </DropdownMenuItem>
@@ -151,22 +151,22 @@ export const HRDepartmentTabs = () => {
                 const currentDeptData = HRDepartmentState.data?.find((item) => item.name === department)
                 const inputCls = `w-full rounded-xl px-3 py-2 text-sm outline-none transition-all duration-200
                     bg-gray-50 border border-gray-200 text-gray-900
-                    focus:border-indigo-400 focus:bg-white focus:ring-2 focus:ring-indigo-100
+                    focus:border-blue-400 focus:bg-white focus:ring-2 focus:ring-blue-100
                     dark:bg-[rgba(255,255,255,0.04)] dark:border-[rgba(255,255,255,0.08)] dark:text-white
-                    dark:focus:border-[rgba(99,102,241,0.5)] dark:focus:bg-[rgba(99,102,241,0.06)]`
+                    dark:focus:border-[rgba(0,61,165,0.5)] dark:focus:bg-[rgba(0,61,165,0.06)]`
                 return (
                     <Dialog open={showEditDialog} onOpenChange={setShowEditDialog}>
                         <DialogContent className="max-w-[340px] lg:max-w-[620px]
                             bg-white border border-gray-100 shadow-2xl rounded-2xl
-                            dark:bg-[#13131f] dark:border-[rgba(99,102,241,0.15)]">
+                            dark:bg-[#13131f] dark:border-[rgba(0,61,165,0.15)]">
                             <div className="flex flex-col gap-5 p-1">
-                                <div className="flex items-center gap-3 pb-3 border-b border-gray-100 dark:border-[rgba(99,102,241,0.1)]">
+                                <div className="flex items-center gap-3 pb-3 border-b border-gray-100 dark:border-[rgba(0,61,165,0.1)]">
                                     <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0
-                                        bg-indigo-100 dark:bg-[rgba(99,102,241,0.15)]">
-                                        <Pencil className="w-5 h-5 text-indigo-500 dark:text-indigo-300" />
+                                        bg-blue-100 dark:bg-[rgba(0,61,165,0.15)]">
+                                        <Pencil className="w-5 h-5 text-blue-500 dark:text-blue-300" />
                                     </div>
                                     <div>
-                                        <p className="text-[10px] font-bold uppercase tracking-wider text-indigo-500 dark:text-indigo-400">
+                                        <p className="text-[10px] font-bold uppercase tracking-wider text-blue-500 dark:text-blue-400">
                                             Editar departamento
                                         </p>
                                         <h2 className="text-lg font-bold text-gray-900 dark:text-white">
@@ -214,7 +214,7 @@ export const HRDepartmentTabs = () => {
                                             }
                                         }}
                                         className="flex-1 py-2.5 rounded-xl text-sm font-semibold text-white
-                                            bg-indigo-600 hover:bg-indigo-700 border-0">
+                                            bg-blue-600 hover:bg-blue-700 border-0">
                                         <Check className="w-4 h-4 mr-2 inline" />
                                         Guardar cambios
                                     </Button>
@@ -239,7 +239,7 @@ export const HRDepartmentTabs = () => {
                     <Dialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
                         <DialogContent className="max-w-[340px]
                             bg-white border border-gray-100 shadow-2xl rounded-2xl
-                            dark:bg-[#13131f] dark:border-[rgba(99,102,241,0.15)]">
+                            dark:bg-[#13131f] dark:border-[rgba(0,61,165,0.15)]">
                             <div className="flex flex-col items-center gap-5 p-1 text-center">
                                 <div className="w-14 h-14 rounded-2xl flex items-center justify-center
                                     bg-red-50 dark:bg-[rgba(239,68,68,0.1)]">
@@ -308,7 +308,7 @@ export const ComboDropDown = ({ DepartmentData, CurrentDepartment, SetCurrentDep
             </PopoverTrigger>
             <PopoverContent className="w-auto p-0 rounded-xl shadow-xl
                 bg-white border border-gray-100
-                dark:bg-[#13131f] dark:border-[rgba(99,102,241,0.15)]">
+                dark:bg-[#13131f] dark:border-[rgba(0,61,165,0.15)]">
                 <Command className="dark:bg-transparent">
                     <CommandInput placeholder="Buscar departamento..." className="text-sm" />
                     <CommandList>
@@ -328,7 +328,7 @@ export const ComboDropDown = ({ DepartmentData, CurrentDepartment, SetCurrentDep
                                         text-gray-700 dark:text-[rgba(255,255,255,0.7)]"
                                 >
                                     <Check className={cn(
-                                        "mr-2 h-4 w-4 text-indigo-500",
+                                        "mr-2 h-4 w-4 text-blue-500",
                                         CurrentDepartment === dept.value ? "opacity-100" : "opacity-0"
                                     )} />
                                     {dept.label}
@@ -353,8 +353,8 @@ export const DepartmentContent = ({ CurrentDepartmentData }) => {
             <div className="flex flex-col gap-2">
                 <div className="flex items-center gap-2">
                     <div className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0
-                        bg-indigo-100 dark:bg-[rgba(99,102,241,0.15)]">
-                        <Building2 className="w-5 h-5 text-indigo-500 dark:text-indigo-300" />
+                        bg-blue-100 dark:bg-[rgba(0,61,165,0.15)]">
+                        <Building2 className="w-5 h-5 text-blue-500 dark:text-blue-300" />
                     </div>
                     <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold tracking-tight
                         text-gray-900 dark:text-white">
@@ -379,19 +379,19 @@ export const DepartmentContent = ({ CurrentDepartmentData }) => {
             <Tabs defaultValue="account" className="w-full h-full">
                 <div className="flex justify-between items-center flex-col-reverse sm:flex-row gap-3 mb-2">
                     <TabsList className="rounded-xl p-1
-                        bg-indigo-50 border border-indigo-100
+                        bg-blue-50 border border-blue-100
                         dark:bg-[rgba(99,102,241,0.08)] dark:border-[rgba(99,102,241,0.15)]">
                         <TabsTrigger value="account"
                             className="rounded-lg px-4 py-1.5 text-sm font-semibold transition-all
-                                text-indigo-400 data-[state=active]:text-indigo-700 data-[state=active]:bg-white data-[state=active]:shadow-sm
-                                dark:text-indigo-400 dark:data-[state=active]:text-white dark:data-[state=active]:bg-[rgba(99,102,241,0.25)]">
+                                text-blue-400 data-[state=active]:text-blue-700 data-[state=active]:bg-white data-[state=active]:shadow-sm
+                                dark:text-blue-400 dark:data-[state=active]:text-white dark:data-[state=active]:bg-[rgba(99,102,241,0.25)]">
                             <Users className="w-4 h-4 mr-1.5 inline" />
                             {CurrentDepartmentData.employees.length} Empleados
                         </TabsTrigger>
                         <TabsTrigger value="password"
                             className="rounded-lg px-4 py-1.5 text-sm font-semibold transition-all
-                                text-indigo-400 data-[state=active]:text-indigo-700 data-[state=active]:bg-white data-[state=active]:shadow-sm
-                                dark:text-indigo-400 dark:data-[state=active]:text-white dark:data-[state=active]:bg-[rgba(99,102,241,0.25)]">
+                                text-blue-400 data-[state=active]:text-blue-700 data-[state=active]:bg-white data-[state=active]:shadow-sm
+                                dark:text-blue-400 dark:data-[state=active]:text-white dark:data-[state=active]:bg-[rgba(99,102,241,0.25)]">
                             {CurrentDepartmentData.notice.length} Avisos
                         </TabsTrigger>
                     </TabsList>
@@ -400,16 +400,16 @@ export const DepartmentContent = ({ CurrentDepartmentData }) => {
 
                 <TabsContent value="account"
                     className="rounded-xl overflow-auto p-2 h-[85%]
-                        border border-indigo-100 bg-white
-                        dark:border-[rgba(99,102,241,0.1)] dark:bg-[rgba(255,255,255,0.02)]">
+                        border border-blue-100 bg-white
+                        dark:border-[rgba(0,61,165,0.1)] dark:bg-[rgba(255,255,255,0.02)]">
                     <ThemedHeadingBar accent="purple" table_layout={"sm:grid-cols-4"} table_headings={table_headings_employees} />
                     <DepartmentListItems TargetedState={CurrentDepartmentData} />
                 </TabsContent>
 
                 <TabsContent value="password"
                     className="rounded-xl overflow-auto p-2 h-[85%]
-                        border border-indigo-100 bg-white
-                        dark:border-[rgba(99,102,241,0.1)] dark:bg-[rgba(255,255,255,0.02)]">
+                        border border-blue-100 bg-white
+                        dark:border-[rgba(0,61,165,0.1)] dark:bg-[rgba(255,255,255,0.02)]">
                     <ThemedHeadingBar accent="purple" table_layout={"sm:grid-cols-4"} table_headings={table_headings_notice} />
                 </TabsContent>
             </Tabs>
@@ -424,13 +424,13 @@ export const AllDepartments = ({ DepartmentData, SetCurrentDepartment }) => {
             {DepartmentData.data ? DepartmentData.data.map((department) => (
                 <div key={department.name}
                     className="flex flex-col gap-3 p-4 rounded-2xl transition-all duration-200
-                        bg-white border border-gray-100 hover:border-indigo-200 hover:shadow-md
-                        dark:bg-[rgba(255,255,255,0.02)] dark:border-[rgba(99,102,241,0.1)] dark:hover:border-[rgba(99,102,241,0.25)] dark:hover:bg-[rgba(99,102,241,0.05)]">
+                        bg-white border border-gray-100 hover:border-blue-200 hover:shadow-md
+                        dark:bg-[rgba(255,255,255,0.02)] dark:border-[rgba(0,61,165,0.1)] dark:hover:border-[rgba(99,102,241,0.25)] dark:hover:bg-[rgba(99,102,241,0.05)]">
                     <div className="flex justify-between items-center gap-3">
                         <div className="flex items-center gap-3 min-w-0">
                             <div className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0
-                                bg-indigo-100 dark:bg-[rgba(99,102,241,0.15)]">
-                                <Building2 className="w-5 h-5 text-indigo-500 dark:text-indigo-300" />
+                                bg-blue-100 dark:bg-[rgba(0,61,165,0.15)]">
+                                <Building2 className="w-5 h-5 text-blue-500 dark:text-blue-300" />
                             </div>
                             <h2 className="text-lg sm:text-xl font-bold truncate
                                 text-gray-900 dark:text-white">
@@ -440,8 +440,8 @@ export const AllDepartments = ({ DepartmentData, SetCurrentDepartment }) => {
                         <Button
                             onClick={() => SetCurrentDepartment(department.name)}
                             className="flex-shrink-0 px-3 py-1.5 rounded-xl text-sm font-semibold
-                                text-indigo-600 bg-indigo-50 border border-indigo-100 hover:bg-indigo-100
-                                dark:text-indigo-300 dark:bg-[rgba(99,102,241,0.1)] dark:border-[rgba(99,102,241,0.2)] dark:hover:bg-[rgba(99,102,241,0.2)]"
+                                text-blue-600 bg-blue-50 border border-blue-100 hover:bg-blue-100
+                                dark:text-blue-300 dark:bg-[rgba(99,102,241,0.1)] dark:border-[rgba(99,102,241,0.2)] dark:hover:bg-[rgba(99,102,241,0.2)]"
                             style={{ background: "none" }}>
                             Ver
                         </Button>

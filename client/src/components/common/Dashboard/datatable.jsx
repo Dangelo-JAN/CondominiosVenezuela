@@ -28,7 +28,7 @@ export const DataTable = ({ noticedata }) => {
                 border-gray-100 dark:border-[rgba(255,255,255,0.06)]">
                 <div>
                     <p className="text-[10px] font-semibold uppercase tracking-[0.18em] mb-0.5
-                        text-indigo-500 dark:text-indigo-400">
+                        text-blue-500 dark:text-blue-400">
                         Tablón
                     </p>
                     <h2 className="text-base font-bold text-gray-900 dark:text-white">
@@ -36,9 +36,9 @@ export const DataTable = ({ noticedata }) => {
                     </h2>
                 </div>
                 <span className="text-xs font-semibold px-2.5 py-1 rounded-full
-                    bg-indigo-50 text-indigo-600
-                    dark:bg-[rgba(99,102,241,0.12)] dark:text-indigo-400
-                    border border-indigo-100 dark:border-[rgba(99,102,241,0.2)]">
+                    bg-blue-50 text-blue-600
+                    dark:bg-[rgba(99,102,241,0.12)] dark:text-blue-400
+                    border border-blue-100 dark:border-[rgba(99,102,241,0.2)]">
                     {Notices.length}
                 </span>
             </div>
@@ -85,11 +85,11 @@ export const DataTable = ({ noticedata }) => {
                                 <TableRow
                                     key={Notice.noticeID}
                                     className="border-gray-50 dark:border-[rgba(255,255,255,0.04)]
-                                        hover:bg-indigo-50/50 dark:hover:bg-[rgba(99,102,241,0.05)]
+                                        hover:bg-blue-50/50 dark:hover:bg-[rgba(99,102,241,0.05)]
                                         transition-colors duration-150"
                                 >
                                     <TableCell className="font-semibold text-sm
-                                        text-indigo-500 dark:text-indigo-400">
+                                        text-blue-500 dark:text-blue-400">
                                         {Notice.noticeID}
                                     </TableCell>
                                     <TableCell className="text-sm font-medium

@@ -68,14 +68,14 @@ export const VerifyEmailPage = () => {
                 <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50
                     w-full max-w-sm mx-4">
                     <div className="rounded-2xl p-4 flex flex-col gap-3
-                        bg-white border border-indigo-100 shadow-xl shadow-indigo-100/50
+                        bg-white border border-blue-100 shadow-xl shadow-blue-100/50
                         dark:bg-[#0d0d18] dark:border-[rgba(99,102,241,0.2)]
                         dark:shadow-[0_8px_32px_rgba(99,102,241,0.1)]">
 
                         <div className="flex items-center gap-2">
                             <div className="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0
-                                bg-indigo-50 dark:bg-[rgba(99,102,241,0.1)]">
-                                <Mail className="w-4 h-4 text-indigo-500" />
+                                bg-blue-50 dark:bg-[rgba(99,102,241,0.1)]">
+                                <Mail className="w-4 h-4 text-blue-500" />
                             </div>
                             <div>
                                 <p className="text-xs font-semibold text-gray-700 dark:text-white">
@@ -88,9 +88,9 @@ export const VerifyEmailPage = () => {
                         </div>
 
                         <div className="flex items-center justify-between gap-3 px-3 py-2.5 rounded-xl
-                            bg-indigo-50 border border-indigo-100
+                            bg-blue-50 border border-blue-100
                             dark:bg-[rgba(99,102,241,0.08)] dark:border-[rgba(99,102,241,0.15)]">
-                            <span className="text-lg font-bold tracking-[0.25em] text-indigo-600 dark:text-indigo-400
+                            <span className="text-lg font-bold tracking-[0.25em] text-blue-600 dark:text-blue-400
                                 font-mono">
                                 {fallbackCode}
                             </span>
@@ -98,8 +98,8 @@ export const VerifyEmailPage = () => {
                                 onClick={handleCopyCode}
                                 className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-semibold
                                     transition-all duration-200
-                                    bg-indigo-500 text-white hover:bg-indigo-600
-                                    dark:bg-indigo-500 dark:hover:bg-indigo-600"
+                                    bg-blue-500 text-white hover:bg-blue-600
+                                    dark:bg-blue-500 dark:hover:bg-blue-600"
                             >
                                 {copied
                                     ? <><CheckCircle2 className="w-3.5 h-3.5" /> Copiado</>
