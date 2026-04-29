@@ -10,7 +10,7 @@ import {
 import { NavLink } from "react-router-dom"
 import { Zap, LogOut } from "lucide-react"
 
-export function DashboardSidebar({ navItems = [], onLogout, appName = "EMS", appSubtitle = "Panel" }) {
+export function DashboardSidebar({ navItems = [], onLogout, appName = "CondoVE SGC", appSubtitle = "Panel" }) {
     const { setOpenMobile, isMobile } = useSidebar()
 
     const handleNavClick = () => {

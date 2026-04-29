@@ -49,7 +49,7 @@ export const HandleContactSalesRequest = async (req, res) => {
             try {
                 await sgMail.send({
                     to: process.env.SENDGRID_SENDER_EMAIL,
-                    from: { email: process.env.SENDGRID_SENDER_EMAIL, name: "EMS" },
+                    from: { email: process.env.SENDGRID_SENDER_EMAIL, name: "CondoVE SGC" },
                     subject: `🚀 Nuevo Contacto de Ventas: ${companyname} (${companysize} empleados)`,
                     text: `Nuevo cliente potencial:\n\nNombre: ${fullname}\nEmail: ${workemail}\nEmpresa: ${companyname}\nTamaño: ${companysize}\nMensaje:\n${message}`,
                     html: `
@@ -81,7 +81,7 @@ export const HandleContactSalesRequest = async (req, res) => {
                                 <p style="white-space: pre-wrap; margin-bottom: 0;">${message}</p>
                             </div>
                             <p style="margin-top: 30px; font-size: 12px; color: #9ca3af;">
-                                Generado automáticamente por EMS.
+                                Generado automáticamente por CondoVE SGC.
                             </p>
                         </div>
                     `

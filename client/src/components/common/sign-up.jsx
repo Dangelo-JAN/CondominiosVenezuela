@@ -77,7 +77,7 @@ export const SignUP = ({ handlesignupform, handlesubmitform, stateformdata, erro
                         <Zap className="w-5 h-5 text-white" />
                     </div>
                     <span className="text-white font-bold text-lg tracking-tight">
-                        EMS<span style={{ color: "#003DA5" }}>.</span>
+                        CondoVE<span className="text-blue-500" style={{ fontSize: "0.75em", marginLeft: "0.1em" }}>SGC</span><span style={{ color: "#003DA5" }}>.</span>
                     </span>
                 </Link>
 
@@ -270,7 +270,7 @@ export const SignUP = ({ handlesignupform, handlesubmitform, stateformdata, erro
             <footer className="relative z-10 py-6 text-center"
                 style={{ borderTop: "1px solid rgba(255,255,255,0.04)" }}>
                 <p className="text-xs" style={{ color: "rgba(255,255,255,0.2)" }}>
-                    © {new Date().getFullYear()} Employee Management System. Todos los derechos reservados.
+                    © {new Date().getFullYear()} Sistema de Gestión Condominial. Todos los derechos reservados.
                 </p>
             </footer>
         </div>

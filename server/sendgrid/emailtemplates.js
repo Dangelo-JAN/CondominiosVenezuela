@@ -30,10 +30,10 @@ const HEADER = (title) => `
             <span style="color: white; font-size: 22px;">⚡</span>
         </div>
         <h1 style="margin: 0; font-size: 22px; font-weight: 700; color: #1a1a2e; letter-spacing: -0.5px;">
-            EMS<span style="color: #6366f1;">.</span>
+            CondoVE SGC<span style="color: #6366f1;">.</span>
         </h1>
         <p style="margin: 6px 0 0; font-size: 13px; color: #9ca3af; font-weight: 500;">
-            Employee Management System
+            Sistema de Gestión Condominial
         </p>
     </div>
     <div style="
@@ -53,7 +53,7 @@ const FOOTER = `
             Este es un mensaje automático, por favor no respondas a este correo.
         </p>
         <p style="margin: 6px 0 0; font-size: 12px; color: #9ca3af;">
-            © ${new Date().getFullYear()} EMS — Employee Management System
+            © ${new Date().getFullYear()} CondoVE SGC — Sistema de Gestión Condominial
         </p>
     </div>
 `
@@ -65,14 +65,14 @@ export const INVITATION_HR_TEMPLATE = `
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Invitación a EMS</title>
+  <title>Invitación a CondoVE SGC</title>
 </head>
 <body style="${BASE_STYLE}">
   <div style="${CARD_STYLE}">
-    ${HEADER("Te han invitado a EMS")}
+    ${HEADER("Te han invitado a CondoVE SGC")}
     <p style="margin: 0 0 12px; color: #4b5563; font-size: 15px;">Hola, <strong>{name}</strong>,</p>
     <p style="margin: 0 0 24px; color: #4b5563; font-size: 15px;">
-        Has sido invitado a unirte al equipo de gestión de EMS como <strong>{role}</strong>.
+        Has sido invitado a unirte al equipo de gestión de CondoVE SGC como <strong>{role}</strong>.
     </p>
     <div style="text-align: center; margin: 32px 0;">
         <a href="{inviteURL}" style="
@@ -108,14 +108,14 @@ export const VERIFICATION_EMAIL_TEMPLATE = `
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Verifica tu correo — EMS</title>
+  <title>Verifica tu correo — CondoVE SGC</title>
 </head>
 <body style="${BASE_STYLE}">
   <div style="${CARD_STYLE}">
     ${HEADER("Verifica tu correo electrónico")}
     <p style="margin: 0 0 12px; color: #4b5563; font-size: 15px;">Hola,</p>
     <p style="margin: 0 0 24px; color: #4b5563; font-size: 15px;">
-        Gracias por registrarte en EMS. Usa el siguiente código para verificar tu correo electrónico:
+        Gracias por registrarte en CondoVE SGC. Usa el siguiente código para verificar tu correo electrónico:
     </p>
     <div style="
         text-align: center;
@@ -140,7 +140,7 @@ export const VERIFICATION_EMAIL_TEMPLATE = `
         ⏱ Este código expirará en <strong>5 minutos</strong> por razones de seguridad.
     </p>
     <p style="margin: 0; color: #9ca3af; font-size: 13px;">
-        Si no creaste una cuenta en EMS, puedes ignorar este correo.
+        Si no creaste una cuenta en CondoVE SGC, puedes ignorar este correo.
     </p>
     ${FOOTER}
   </div>
@@ -155,14 +155,14 @@ export const WELCOME_HR_TEMPLATE = `
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Bienvenido a EMS</title>
+  <title>Bienvenido a CondoVE SGC</title>
 </head>
 <body style="${BASE_STYLE}">
   <div style="${CARD_STYLE}">
-    ${HEADER("¡Bienvenido a EMS!")}
+    ${HEADER("¡Bienvenido a CondoVE SGC!")}
     <p style="margin: 0 0 12px; color: #4b5563; font-size: 15px;">Hola, <strong>{name}</strong>,</p>
     <p style="margin: 0 0 24px; color: #4b5563; font-size: 15px;">
-        Tu correo ha sido verificado exitosamente. Ya tienes acceso completo al panel de administración de EMS como <strong>HR Admin</strong>.
+        Tu correo ha sido verificado exitosamente. Ya tienes acceso completo al panel de administración de CondoVE SGC como <strong>HR Admin</strong>.
     </p>
     <div style="
         background: linear-gradient(135deg, rgba(99,102,241,0.06), rgba(139,92,246,0.06));
@@ -195,14 +195,14 @@ export const WELCOME_EMPLOYEE_TEMPLATE = `
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Bienvenido a EMS</title>
+  <title>Bienvenido a CondoVE SGC</title>
 </head>
 <body style="${BASE_STYLE}">
   <div style="${CARD_STYLE}">
     ${HEADER("¡Bienvenido al equipo!")}
     <p style="margin: 0 0 12px; color: #4b5563; font-size: 15px;">Hola, <strong>{name}</strong>,</p>
     <p style="margin: 0 0 24px; color: #4b5563; font-size: 15px;">
-        Tu cuenta en EMS ha sido verificada exitosamente. Ya puedes acceder a tu panel de empleado.
+        Tu cuenta en CondoVE SGC ha sido verificada exitosamente. Ya puedes acceder a tu panel de empleado.
     </p>
     <div style="
         background: linear-gradient(135deg, rgba(99,102,241,0.06), rgba(139,92,246,0.06));
@@ -235,7 +235,7 @@ export const PASSWORD_RESET_REQUEST_TEMPLATE = `
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Restablecer contraseña — EMS</title>
+  <title>Restablecer contraseña — CondoVE SGC</title>
 </head>
 <body style="${BASE_STYLE}">
   <div style="${CARD_STYLE}">
@@ -278,7 +278,7 @@ export const PASSWORD_RESET_SUCCESS_TEMPLATE = `
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Contraseña restablecida — EMS</title>
+  <title>Contraseña restablecida — CondoVE SGC</title>
 </head>
 <body style="${BASE_STYLE}">
   <div style="${CARD_STYLE}">
@@ -339,7 +339,7 @@ export const INVITATION_EMPLOYEE_TEMPLATE = `
     ${HEADER("Invitación al equipo")}
     <p style="margin: 0 0 12px; color: #4b5563; font-size: 15px;">Hola, <strong>{name}</strong>,</p>
     <p style="margin: 0 0 24px; color: #4b5563; font-size: 15px;">
-        Has sido invitado a unirte al equipo de <strong>{companyName}</strong> en EMS.
+        Has sido invitado a unirte al equipo de <strong>{companyName}</strong> en CondoVE SGC.
     </p>
     <div style="text-align: center; margin: 32px 0;">
         <a href="{inviteURL}" style="
