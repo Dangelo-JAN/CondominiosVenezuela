@@ -3,20 +3,20 @@ import { DeleteEmployeeDialogBox } from "./dialogboxes.jsx"
 import { RemoveEmployeeFromDepartmentDialogBox } from "./dialogboxes.jsx"
 
 // ── ThemedListWrapper — header genérico con color de acento personalizable ─
-// Uso: <ThemedListWrapper accent="amber"> o accent="indigo" (default)
+// Uso: <ThemedListWrapper accent="yellow"> o accent="blue" (default)
 // Tokens por acento:
-//   indigo: claro bg #e0e7ff / bdr #a5b4fc  |  oscuro bg rgba(99,102,241,.15) / bdr rgba(99,102,241,.35)
-//   amber:  claro bg #fef3c7 / bdr #fcd34d  |  oscuro bg rgba(245,158,11,.15) / bdr rgba(245,158,11,.35)
+//   blue: claro bg #dbeafe / bdr #93c5fd  |  oscuro bg rgba(0,61,165,.15) / bdr rgba(0,61,165,.35)
+//   yellow: claro bg #fef9c3 / bdr #fde047  |  oscuro bg rgba(252,227,0,.15) / bdr rgba(252,227,0,.35)
 const WRAPPER_TOKENS = {
-    indigo: {
-        light: "bg-[#e0e7ff] border-[#a5b4fc]",
-        dark:  "dark:bg-[rgba(99,102,241,0.15)] dark:border-[rgba(99,102,241,0.35)]",
-        text:  "text-indigo-700 dark:text-indigo-300",
+    blue: {
+        light: "bg-[#dbeafe] border-[#93c5fd]",
+        dark:  "dark:bg-[rgba(0,61,165,0.15)] dark:border-[rgba(0,61,165,0.35)]",
+        text:  "text-blue-700 dark:text-blue-300",
     },
-    amber: {
-        light: "bg-[#fef3c7] border-[#fcd34d]",
-        dark:  "dark:bg-[rgba(245,158,11,0.15)] dark:border-[rgba(245,158,11,0.35)]",
-        text:  "text-amber-700 dark:text-amber-300",
+    yellow: {
+        light: "bg-[#fef9c3] border-[#fde047]",
+        dark:  "dark:bg-[rgba(252,227,0,0.15)] dark:border-[rgba(252,227,0,0.35)]",
+        text:  "text-yellow-700 dark:text-yellow-300",
     },
     emerald: {
         light: "bg-[#d1fae5] border-[#6ee7b7]",
@@ -36,18 +36,18 @@ const WRAPPER_TOKENS = {
 }
 
 // ── ThemedListContainer — contenedor de filas con acento personalizable ────
-// indigo: claro bg #f5f7ff / bdr #c7d2fe  |  oscuro bg rgba(255,255,255,.04) / bdr rgba(255,255,255,.12)
-// amber:  claro bg #fffbeb / bdr #fde68a  |  oscuro bg rgba(255,255,255,.04) / bdr rgba(255,255,255,.12)
+// blue: claro bg #dbf4ff / bdr #b9daff  |  oscuro bg rgba(255,255,255,.04) / bdr rgba(255,255,255,.12)
+// yellow: claro bg #fef9c3 / bdr #fde047  |  oscuro bg rgba(255,255,255,.04) / bdr rgba(255,255,255,.12)
 const CONTAINER_TOKENS = {
-    indigo:  { light: "bg-[#f5f7ff] border-[#c7d2fe]" },
-    amber:   { light: "bg-[#fffbeb] border-[#fde68a]" },
+    blue:  { light: "bg-[#dbf4ff] border-[#b9daff]" },
+    yellow: { light: "bg-[#fef9c3] border-[#fde047]" },
     emerald: { light: "bg-[#f0fdf4] border-[#bbf7d0]" },
     cyan:    { light: "bg-[#ecfeff] border-[#a5f3fc]" },
     purple:  { light: "bg-[#f5f3ff] border-[#ddd6fe]" },
 }
 
-export const ThemedListWrapper = ({ children, accent = "indigo" }) => {
-    const t = WRAPPER_TOKENS[accent] || WRAPPER_TOKENS.indigo
+export const ThemedListWrapper = ({ children, accent = "blue" }) => {
+    const t = WRAPPER_TOKENS[accent] || WRAPPER_TOKENS.blue
     return (
         <div className={`w-full rounded-xl overflow-hidden border ${t.light} ${t.dark}`}>
             {children}
@@ -55,8 +55,8 @@ export const ThemedListWrapper = ({ children, accent = "indigo" }) => {
     )
 }
 
-export const ThemedHeadingBar = ({ table_layout, table_headings, accent = "indigo", hiddenCols = [] }) => {
-    const t = WRAPPER_TOKENS[accent] || WRAPPER_TOKENS.indigo
+export const ThemedHeadingBar = ({ table_layout, table_headings, accent = "blue", hiddenCols = [] }) => {
+    const t = WRAPPER_TOKENS[accent] || WRAPPER_TOKENS.blue
     const gridClass = table_layout ?? "sm:grid-cols-5"
     return (
         <div className={`grid grid-cols-2 ${gridClass} gap-2 px-3 py-2`}>
@@ -74,8 +74,8 @@ export const ThemedHeadingBar = ({ table_layout, table_headings, accent = "indig
     )
 }
 
-export const ThemedListContainer = ({ children, accent = "indigo" }) => {
-    const t = CONTAINER_TOKENS[accent] || CONTAINER_TOKENS.indigo
+export const ThemedListContainer = ({ children, accent = "blue" }) => {
+    const t = CONTAINER_TOKENS[accent] || CONTAINER_TOKENS.blue
     return (
         <div className={`w-full rounded-xl overflow-hidden border ${t.light}
             dark:bg-[rgba(255,255,255,0.04)] dark:border-[rgba(255,255,255,0.12)]`}>
@@ -88,12 +88,12 @@ export const ThemedListContainer = ({ children, accent = "indigo" }) => {
 // BACKWARD COMPATIBILITY - Mantener exports originales para backward compatibility
 // ============================================================================
 
-// ── ListWrapper — contenedor del HeadingBar (indigo por defecto) ───────────
+// ── ListWrapper — contenedor del HeadingBar (blue por defecto) ───────────
 export const ListWrapper = ({ children }) => {
     return (
         <div className="w-full rounded-xl overflow-hidden
-            bg-[#e0e7ff] border border-[#a5b4fc]
-            dark:bg-[rgba(99,102,241,0.15)] dark:border-[rgba(99,102,241,0.35)]">
+            bg-[#dbeafe] border border-[#93c5fd]
+            dark:bg-[rgba(0,61,165,0.15)] dark:border-[rgba(0,61,165,0.35)]">
             {children}
         </div>
     )
@@ -107,7 +107,7 @@ export const HeadingBar = ({ table_layout, table_headings }) => {
                 <div
                     key={item}
                     className={`text-xs font-bold uppercase tracking-wider text-center px-2 py-1.5 rounded-lg
-                        text-indigo-700 dark:text-indigo-300
+                        text-blue-700 dark:text-blue-300
                         ${["Email", "Department", "Contact Number"].includes(item)
                             ? "hidden sm:flex sm:justify-center sm:items-center"
                             : "flex justify-center items-center"
@@ -120,18 +120,18 @@ export const HeadingBar = ({ table_layout, table_headings }) => {
     )
 }
 
-// ── ListContainer — contenedor de filas (indigo por defecto) ────────────────
+// ── ListContainer — contenedor de filas (blue por defecto) ────────────────
 export const ListContainer = ({ children }) => {
     return (
         <div className="w-full rounded-xl overflow-hidden
-            border border-[#c7d2fe] bg-[#f5f7ff]
+            border border-[#b9daff] bg-[#dbf4ff]
             dark:border-[rgba(255,255,255,0.12)] dark:bg-[rgba(255,255,255,0.04)]">
             {children}
         </div>
     )
 }
 
-// ── ListItems — filas de empleados (indigo por defecto) ───────────────────
+// ── ListItems — filas de empleados (blue por defecto) ───────────────────
 export const ListItems = ({ TargetedState }) => {
     return (
         <>
@@ -141,14 +141,14 @@ export const ListItems = ({ TargetedState }) => {
                     className="grid min-[250px]:grid-cols-2 sm:grid-cols-5 gap-2 px-3 py-3 items-center
                         border-b last:border-b-0 transition-colors duration-150
                         border-[#dde5ff] dark:border-[rgba(255,255,255,0.08)]
-                        hover:bg-[#eef2ff] dark:hover:bg-[rgba(99,102,241,0.08)]"
+                        hover:bg-[#e0f2fe] dark:hover:bg-[rgba(0,61,165,0.08)]"
                 >
                     {/* Full Name */}
                     <div className="flex items-center gap-2.5 min-w-0">
                         <div className="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 text-xs font-bold
-                            bg-indigo-100 text-indigo-700
-                            dark:bg-[rgba(99,102,241,0.25)] dark:text-indigo-300
-                            border border-indigo-200 dark:border-[rgba(99,102,241,0.4)]">
+                            bg-blue-100 text-blue-700
+                            dark:bg-[rgba(0,61,165,0.25)] dark:text-blue-300
+                            border border-blue-200 dark:border-[rgba(0,61,165,0.4)]">
                             {item.firstname?.slice(0, 1).toUpperCase()}{item.lastname?.slice(0, 1).toUpperCase()}
                         </div>
                         <p className="text-sm font-semibold truncate text-gray-900 dark:text-white">
@@ -202,14 +202,14 @@ export const DepartmentListItems = ({ TargetedState }) => {
                     className="grid min-[250px]:grid-cols-2 sm:grid-cols-4 gap-2 px-3 py-3 items-center
                         border-b last:border-b-0 transition-colors duration-150
                         border-[#dde5ff] dark:border-[rgba(255,255,255,0.08)]
-                        hover:bg-[#eef2ff] dark:hover:bg-[rgba(99,102,241,0.08)]"
+                        hover:bg-[#e0f2fe] dark:hover:bg-[rgba(0,61,165,0.08)]"
                 >
                     {/* Full Name */}
                     <div className="flex items-center gap-2.5 min-w-0">
                         <div className="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 text-xs font-bold
-                            bg-indigo-100 text-indigo-700
-                            dark:bg-[rgba(99,102,241,0.25)] dark:text-indigo-300
-                            border border-indigo-200 dark:border-[rgba(99,102,241,0.4)]">
+                            bg-blue-100 text-blue-700
+                            dark:bg-[rgba(0,61,165,0.25)] dark:text-blue-300
+                            border border-blue-200 dark:border-[rgba(0,61,165,0.4)]">
                             {item.firstname?.slice(0, 1).toUpperCase()}{item.lastname?.slice(0, 1).toUpperCase()}
                         </div>
                         <p className="text-sm font-semibold truncate text-gray-900 dark:text-white">

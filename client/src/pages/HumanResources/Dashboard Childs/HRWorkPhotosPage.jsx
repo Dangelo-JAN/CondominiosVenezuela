@@ -259,7 +259,7 @@ export const HRWorkPhotosPage = () => {
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                 <div>
                     <p className="text-[10px] font-semibold uppercase tracking-[0.2em] mb-1
-                        text-indigo-500 dark:text-indigo-400">
+                        text-blue-500 dark:text-blue-400">
                         Gestión de personal
                     </p>
                     <div className="flex items-center gap-3">
@@ -268,8 +268,8 @@ export const HRWorkPhotosPage = () => {
                             Fotos de Trabajo
                         </h1>
                         <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold
-                            bg-indigo-50 text-indigo-600 border border-indigo-100
-                            dark:bg-[rgba(99,102,241,0.12)] dark:text-indigo-300
+                            bg-blue-50 text-blue-600 border border-blue-100
+                            dark:bg-[rgba(99,102,241,0.12)] dark:text-blue-300
                             dark:border-[rgba(99,102,241,0.2)]">
                             {filteredPhotos.length} foto{filteredPhotos.length !== 1 ? "s" : ""}
                         </span>
@@ -287,7 +287,7 @@ export const HRWorkPhotosPage = () => {
                 }}>
 
                 <div className="flex items-center gap-2 flex-shrink-0">
-                    <Filter className="w-4 h-4 transition-colors duration-300" style={{ color: isDark ? "#6366f1" : "#4f46e5" }} />
+                    <Filter className="w-4 h-4 transition-colors duration-300" style={{ color: isDark ? "#003DA5" : "#4f46e5" }} />
                     <span className="text-xs font-semibold uppercase tracking-wider transition-colors duration-300"
                         style={{ color: isDark ? "rgba(255,255,255,0.5)" : "#6b7280" }}>
                         Filtros
@@ -375,7 +375,7 @@ export const HRWorkPhotosPage = () => {
                     {hasActiveFilters && (
                         <button onClick={resetFilters}
                             className="text-sm font-medium transition-colors"
-                            style={{ color: isDark ? "#818cf8" : "#6366f1" }}>
+                            style={{ color: isDark ? "#818cf8" : "#003DA5" }}>
                             Limpiar filtros
                         </button>
                     )}

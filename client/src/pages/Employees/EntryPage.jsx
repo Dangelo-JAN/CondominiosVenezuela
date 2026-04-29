@@ -37,7 +37,7 @@ export const EntryPage = () => {
                 {/* Logo */}
                 <div className="flex items-center gap-2">
                     <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-lg flex items-center justify-center"
-                        style={{ background: "linear-gradient(135deg, #7c3aed, #6366f1)" }}>
+                        style={{ background: "linear-gradient(135deg, #7c3aed, #003DA5)" }}>
                         <Zap className="text-white w-5 h-5 sm:w-6 sm:h-6" />
                     </div>
                     <span className="text-xl sm:text-2xl font-bold tracking-tight"
@@ -93,7 +93,7 @@ export const EntryPage = () => {
                         </span>
                         {/* Pill */}
                         <div className="flex-shrink-0 w-7 h-3.5 rounded-full relative transition-colors duration-300"
-                            style={{ background: isDark ? "#6366f1" : "#e5e7eb" }}>
+                            style={{ background: isDark ? "#003DA5" : "#e5e7eb" }}>
                             <div className="absolute top-0.5 w-2.5 h-2.5 rounded-full bg-white shadow-sm transition-all duration-300"
                                 style={{ left: isDark ? "15px" : "2px" }} />
                         </div>
@@ -103,7 +103,7 @@ export const EntryPage = () => {
                     {installPrompt && !isInstalled && (
                         <button onClick={handleInstall}
                             className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-sm font-semibold text-white transition-all hover:opacity-90"
-                            style={{ background: "linear-gradient(135deg, #6366f1, #8b5cf6)" }}>
+                            style={{ background: "linear-gradient(135deg, #003DA5, #8b5cf6)" }}>
                             <Download className="w-4 h-4" />
                             <span className="hidden sm:block">Instalar</span>
                         </button>
@@ -145,7 +145,7 @@ export const EntryPage = () => {
                                 px-6 sm:px-8 py-3.5 sm:py-4 text-base sm:text-lg font-semibold rounded-xl
                                 text-white transition-all duration-200 hover:opacity-90 hover:scale-105"
                                 style={{
-                                    background: "linear-gradient(135deg, #7c3aed, #6366f1)",
+                                    background: "linear-gradient(135deg, #7c3aed, #003DA5)",
                                     boxShadow: "0 8px 25px rgba(124,58,237,0.3)"
                                 }}>
                                 Empezar como HR-Admin
@@ -171,7 +171,7 @@ export const EntryPage = () => {
                                 borderColor: "rgba(99,102,241,0.2)"
                             }}>
                             <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0"
-                                style={{ background: "linear-gradient(135deg, #6366f1, #8b5cf6)" }}>
+                                style={{ background: "linear-gradient(135deg, #003DA5, #8b5cf6)" }}>
                                 <Zap className="w-5 h-5 text-white" />
                             </div>
                             <div className="flex-1 min-w-0">
@@ -186,7 +186,7 @@ export const EntryPage = () => {
                             <button onClick={handleInstall}
                                 className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold
                                     text-white flex-shrink-0 transition-all hover:opacity-90"
-                                style={{ background: "linear-gradient(135deg, #6366f1, #8b5cf6)" }}>
+                                style={{ background: "linear-gradient(135deg, #003DA5, #8b5cf6)" }}>
                                 <Download className="w-3.5 h-3.5" />
                                 Instalar
                             </button>

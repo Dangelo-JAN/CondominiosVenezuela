@@ -28,7 +28,7 @@ export const DashboardLayout = ({ sidebar }) => {
                                 <PanelLeft className="w-4 h-4" />
                             </SidebarTrigger>
                             <p className="text-sm font-semibold text-gray-900 dark:text-white">
-                                EMS<span className="text-indigo-500">.</span>
+                                EMS<span className="text-blue-500">.</span>
                             </p>
                         </div>
 
@@ -46,7 +46,7 @@ export const DashboardLayout = ({ sidebar }) => {
                                     bg-amber-50 dark:bg-[rgba(99,102,241,0.1)] transition-colors duration-300">
                                     {isDark
                                         ? <Sun className="w-3.5 h-3.5 text-amber-400" />
-                                        : <Moon className="w-3.5 h-3.5 text-indigo-400" />
+                                        : <Moon className="w-3.5 h-3.5 text-blue-400" />
                                     }
                                 </div>
                                 <span className="hidden sm:block text-xs font-medium
@@ -57,7 +57,7 @@ export const DashboardLayout = ({ sidebar }) => {
                                 {/* Toggle pill — inline styles para evitar purge de Tailwind en producción */}
                                 <div
                                     className="flex-shrink-0 w-8 h-4 rounded-full relative transition-colors duration-300"
-                                    style={{ background: isDark ? "#6366f1" : "#e5e7eb" }}
+                                    style={{ background: isDark ? "#003DA5" : "#e5e7eb" }}
                                 >
                                     <div
                                         className="absolute top-0.5 w-3 h-3 rounded-full bg-white shadow-sm transition-all duration-300"

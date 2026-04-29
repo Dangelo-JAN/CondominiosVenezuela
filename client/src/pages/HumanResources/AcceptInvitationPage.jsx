@@ -69,12 +69,12 @@ export const AcceptInvitationPage = () => {
                 {/* Logo */}
                 <div className="flex flex-col items-center gap-3 mb-8">
                     <div className="w-12 h-12 rounded-2xl flex items-center justify-center"
-                        style={{ background: "linear-gradient(135deg, #6366f1, #8b5cf6)" }}>
+                        style={{ background: "linear-gradient(135deg, #003DA5, #8b5cf6)" }}>
                         <Zap className="w-6 h-6 text-white" />
                     </div>
                     <div className="text-center">
                         <h1 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
-                            EMS<span className="text-indigo-500">.</span>
+                            EMS<span className="text-blue-500">.</span>
                         </h1>
                         <p className="text-sm text-gray-400 dark:text-gray-500 mt-1">
                             Acepta tu invitación para unirte al equipo
@@ -105,7 +105,7 @@ export const AcceptInvitationPage = () => {
                         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
                             <div>
                                 <p className="text-[10px] font-semibold uppercase tracking-[0.2em] mb-1
-                                    text-indigo-500 dark:text-indigo-400">
+                                    text-blue-500 dark:text-blue-400">
                                     Configurar cuenta
                                 </p>
                                 <h2 className="text-lg font-bold text-gray-900 dark:text-white">
@@ -191,7 +191,7 @@ export const AcceptInvitationPage = () => {
                                 className="w-full py-3 rounded-xl text-sm font-semibold text-white
                                     transition-all duration-200 hover:opacity-90 disabled:opacity-50
                                     disabled:cursor-not-allowed mt-1"
-                                style={{ background: "linear-gradient(135deg, #6366f1, #8b5cf6)" }}
+                                style={{ background: "linear-gradient(135deg, #003DA5, #8b5cf6)" }}
                             >
                                 {status === "loading" ? "Activando cuenta..." : "Activar mi cuenta"}
                             </button>

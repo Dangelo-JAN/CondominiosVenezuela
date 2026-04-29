@@ -36,7 +36,7 @@ export const HREmployeesPage = () => {
             {/* Header */}
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div className="flex flex-col gap-1">
-                    <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-indigo-500 dark:text-indigo-400">
+                    <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-blue-500 dark:text-blue-400">
                         Gestión de personal
                     </p>
                     <div className="flex items-center gap-3">
@@ -45,7 +45,7 @@ export const HREmployeesPage = () => {
                         </h1>
                         <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold transition-colors duration-300"
                             style={{
-                                background: isDark ? "rgba(99,102,241,0.12)" : "rgba(99,102,241,0.10)",
+                                background: isDark ? "rgba(0,61,165,0.12)" : "rgba(0,61,165,0.10)",
                                 color: isDark ? "#a5b4fc" : "#4f46e5",
                                 border: isDark ? "1px solid rgba(99,102,241,0.30)" : "1px solid rgba(99,102,241,0.25)"
                             }}>
@@ -61,20 +61,20 @@ export const HREmployeesPage = () => {
 
             {/* Table */}
             <div className="flex flex-col gap-3 flex-1 overflow-auto">
-                <ThemedListWrapper accent="indigo">
+                <ThemedListWrapper accent="blue">
                     <ThemedHeadingBar 
-                        accent="indigo"
+                        accent="blue"
                         table_layout={"grid-cols-5"} 
                         table_headings={table_headings}
                         hiddenCols={hiddenCols}
                     />
                 </ThemedListWrapper>
-                <ThemedListContainer accent="indigo">
+                <ThemedListContainer accent="blue">
                     {employeeCount === 0 ? (
                         <div className="flex flex-col items-center justify-center py-16 gap-3">
                             <div className="w-12 h-12 rounded-2xl flex items-center justify-center transition-colors duration-300"
                                 style={{ background: isDark ? "rgba(99,102,241,0.1)" : "#e0e7ff" }}>
-                                <Users className="w-6 h-6 transition-colors duration-300" style={{ color: isDark ? "#6366f1" : "#a5b4fc" }} />
+                                <Users className="w-6 h-6 transition-colors duration-300" style={{ color: isDark ? "#003DA5" : "#a5b4fc" }} />
                             </div>
                             <p className="text-sm font-medium transition-colors duration-300"
                                 style={{ color: isDark ? "rgba(255,255,255,0.35)" : "#9ca3af" }}>

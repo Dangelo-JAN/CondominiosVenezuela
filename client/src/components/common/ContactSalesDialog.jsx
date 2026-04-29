@@ -9,7 +9,7 @@ const API_URL = import.meta.env.VITE_BACKEND_API
 
 const inputCls = `w-full rounded-xl px-3 py-2.5 sm:py-2 text-sm outline-none transition-all duration-200
     bg-gray-50 border border-gray-200 text-gray-900
-    focus:border-indigo-400 focus:bg-white focus:ring-2 focus:ring-indigo-100
+    focus:border-blue-400 focus:bg-white focus:ring-2 focus:ring-blue-100
     dark:bg-[rgba(255,255,255,0.04)] dark:border-[rgba(255,255,255,0.08)] dark:text-white
     dark:focus:border-[rgba(99,102,241,0.5)] dark:focus:bg-[rgba(99,102,241,0.06)] dark:focus:ring-0`
 
@@ -81,7 +81,7 @@ export const ContactSalesDialog = () => {
                         <Rocket className="w-4 h-4 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
                         Hablemos
                     </span>
-                    <div className="absolute inset-0 rounded-full blur-md bg-gradient-to-r from-indigo-500/30 to-purple-500/30 dark:from-indigo-400/40 dark:to-purple-400/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                    <div className="absolute inset-0 rounded-full blur-md bg-gradient-to-r from-blue-500/30 to-purple-500/30 dark:from-blue-400/40 dark:to-purple-400/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                 </button>
             </DialogTrigger>
 
@@ -96,11 +96,11 @@ export const ContactSalesDialog = () => {
                     {/* Left Side Branding */}
                     <div className="hidden md:flex flex-col justify-between w-[240px] p-8 text-white relative overflow-hidden shrink-0"
                         style={{ background: "linear-gradient(135deg, #0d0d18, #1a1a2e)" }}>
-                        <div className="absolute -top-16 -left-16 w-32 h-32 rounded-full bg-indigo-500/20 blur-3xl" />
+                        <div className="absolute -top-16 -left-16 w-32 h-32 rounded-full bg-blue-500/20 blur-3xl" />
                         <div className="absolute bottom-0 right-0 w-48 h-48 rounded-full bg-purple-500/10 blur-3xl" />
                         <div className="relative z-10 flex flex-col gap-4">
                             <span className="text-2xl font-bold tracking-tight">
-                                EMS<span className="text-indigo-400">.</span>
+                                EMS<span className="text-blue-400">.</span>
                             </span>
                             <h3 className="text-lg font-bold leading-tight mt-4 text-[rgba(255,255,255,0.9)]">
                                 Potencia a tu equipo como los líderes de la industria
@@ -110,7 +110,7 @@ export const ContactSalesDialog = () => {
                             </p>
                         </div>
                         <div className="relative z-10 flex items-center gap-2 mt-8 text-xs font-semibold text-[rgba(255,255,255,0.4)] uppercase tracking-wider">
-                            <CheckCircle2 className="w-4 h-4 text-indigo-400" />
+                            <CheckCircle2 className="w-4 h-4 text-blue-400" />
                             Soporte 24/7 Premium
                         </div>
                     </div>
@@ -118,11 +118,11 @@ export const ContactSalesDialog = () => {
                     {/* Right Side Form */}
                     <div className="flex-1 p-6 sm:p-8 max-h-[85vh] overflow-y-auto">
                         <div className="mb-6 md:mb-8">
-                            <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-indigo-600 dark:text-indigo-400 mb-2">
+                            <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-blue-600 dark:text-blue-400 mb-2">
                                 Contacto Comercial
                             </p>
                             <h2 className="text-2xl sm:text-3xl font-extrabold text-gray-900 dark:text-white leading-tight">
-                                Hablemos de <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-500 to-purple-500">tu empresa</span>
+                                Hablemos de <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-purple-500">tu empresa</span>
                             </h2>
                             <p className="text-sm text-gray-500 dark:text-[rgba(255,255,255,0.4)] mt-2 md:hidden">
                                 Cuéntanos sobre tus necesidades y te contactaremos a la brevedad.
@@ -196,7 +196,7 @@ export const ContactSalesDialog = () => {
                             <div className="pt-2">
                                 <button type="submit" disabled={isLoading}
                                     className="w-full flex items-center justify-center gap-2 px-6 py-3.5 sm:py-3 rounded-xl text-base sm:text-sm font-bold text-white transition-all duration-300
-                                        bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700
+                                        bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700
                                         disabled:opacity-50 disabled:cursor-not-allowed shadow-[0_8px_20px_rgba(99,102,241,0.25)] hover:shadow-[0_8px_25px_rgba(99,102,241,0.4)]">
                                     {isLoading ? (
                                         <>
@@ -206,7 +206,7 @@ export const ContactSalesDialog = () => {
                                     ) : "Solicitar Demostración"}
                                 </button>
                                 <p className="text-center text-[10px] sm:text-xs text-gray-400 dark:text-[rgba(255,255,255,0.3)] mt-4">
-                                    Al continuar, aceptas nuestras <a href="#" className="underline hover:text-indigo-500">Políticas de Privacidad</a>.
+                                    Al continuar, aceptas nuestras <a href="#" className="underline hover:text-blue-500">Políticas de Privacidad</a>.
                                 </p>
                             </div>
                         </form>

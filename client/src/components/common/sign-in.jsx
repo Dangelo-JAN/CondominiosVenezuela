@@ -13,7 +13,7 @@ const InputField = ({ id, name, type = "text", label, icon: Icon, value, onChang
         <div className="relative">
             {Icon && (
                 <div className="absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none">
-                    <Icon className="w-4 h-4 text-indigo-400" />
+                    <Icon className="w-4 h-4 text-blue-400" />
                 </div>
             )}
             <input
@@ -33,9 +33,9 @@ const InputField = ({ id, name, type = "text", label, icon: Icon, value, onChang
                     paddingRight: "0.875rem",
                 }}
                 onFocus={e => {
-                    e.target.style.border = "1.5px solid #6366f1"
+                    e.target.style.border = "1.5px solid #003DA5"
                     e.target.style.background = "#f5f5ff"
-                    e.target.style.boxShadow = "0 0 0 3px rgba(99,102,241,0.1)"
+                    e.target.style.boxShadow = "0 0 0 3px rgba(0,61,165,0.1)"
                 }}
                 onBlur={e => {
                     e.target.style.border = "1.5px solid #e5e7f0"
@@ -54,7 +54,7 @@ export const SignIn = ({ image, handlesigninform, handlesigninsubmit, targetedst
             {/* Subtle top gradient */}
             <div className="fixed inset-0 pointer-events-none"
                 style={{
-                    background: "radial-gradient(ellipse 80% 50% at 50% -10%, rgba(99,102,241,0.07) 0%, transparent 70%)"
+                    background: "radial-gradient(ellipse 80% 50% at 50% -10%, rgba(0,61,165,0.07) 0%, transparent 70%)"
                 }}
             />
 
@@ -62,19 +62,19 @@ export const SignIn = ({ image, handlesigninform, handlesigninsubmit, targetedst
             <nav className="relative z-10 flex items-center justify-between px-8 py-5 border-b border-gray-100">
                 <Link to="/" className="flex items-center gap-2.5">
                     <div className="flex items-center justify-center w-9 h-9 rounded-xl"
-                        style={{ background: "linear-gradient(135deg, #6366f1, #8b5cf6)" }}
+                        style={{ background: "linear-gradient(135deg, #003DA5, #8b5cf6)" }}
                     >
                         <Zap className="w-5 h-5 text-white" />
                     </div>
                     <span className="font-bold text-lg tracking-tight text-gray-900">
-                        EMS<span className="text-indigo-600">.</span>
+                        EMS<span className="text-blue-600">.</span>
                     </span>
                 </Link>
 
                 <div className="flex items-center gap-3">
                     <span className="text-sm hidden sm:block text-gray-400">¿No tienes cuenta?</span>
                     <Link to="/auth/HR/signup">
-                        <button className="px-4 py-2 rounded-xl text-sm font-semibold text-indigo-600 transition-all duration-200 border border-indigo-200 hover:bg-indigo-50 hover:border-indigo-300">
+                        <button className="px-4 py-2 rounded-xl text-sm font-semibold text-blue-600 transition-all duration-200 border border-blue-200 hover:bg-blue-50 hover:border-blue-300">
                             Registrarse
                         </button>
                     </Link>
@@ -92,9 +92,9 @@ export const SignIn = ({ image, handlesigninform, handlesigninsubmit, targetedst
                     <div className="flex-1 flex flex-col gap-6 text-center lg:text-left max-w-md">
                         <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-semibold uppercase tracking-wider self-center lg:self-start"
                             style={{
-                                background: "rgba(99,102,241,0.08)",
-                                border: "1px solid rgba(99,102,241,0.18)",
-                                color: "#6366f1"
+                                background: "rgba(0,61,165,0.08)",
+                                border: "1px solid rgba(0,61,165,0.18)",
+                                color: "#003DA5"
                             }}
                         >
                             <ShieldCheck className="w-3.5 h-3.5" />
@@ -104,7 +104,7 @@ export const SignIn = ({ image, handlesigninform, handlesigninsubmit, targetedst
                         <h1 className="text-4xl lg:text-5xl font-extrabold text-gray-900 leading-tight tracking-tight">
                             Bienvenido de
                             <br />
-                            <span className="text-indigo-600 italic">vuelta.</span>
+                            <span className="text-blue-600 italic">vuelta.</span>
                         </h1>
 
                         <p className="text-gray-500 text-base leading-relaxed">
@@ -134,7 +134,7 @@ export const SignIn = ({ image, handlesigninform, handlesigninsubmit, targetedst
                             style={{
                                 background: "#fff",
                                 border: "1px solid #ebebf5",
-                                boxShadow: "0 20px 60px rgba(99,102,241,0.08), 0 4px 16px rgba(0,0,0,0.04)"
+                                boxShadow: "0 20px 60px rgba(0,61,165,0.08), 0 4px 16px rgba(0,0,0,0.04)"
                             }}
                         >
                             <div className="mb-6">
@@ -167,7 +167,7 @@ export const SignIn = ({ image, handlesigninform, handlesigninsubmit, targetedst
                                     placeholder="••••••••"
                                     extra={
                                         <Link to={redirectpath}
-                                            className="text-xs font-semibold text-indigo-500 hover:text-indigo-700 transition-colors">
+                                            className="text-xs font-semibold text-blue-500 hover:text-blue-700 transition-colors">
                                             ¿Olvidaste tu contraseña?
                                         </Link>
                                     }
@@ -177,15 +177,15 @@ export const SignIn = ({ image, handlesigninform, handlesigninsubmit, targetedst
                                     type="submit"
                                     className="w-full flex items-center justify-center gap-2 py-3 rounded-xl font-bold text-sm text-white transition-all duration-200 mt-2"
                                     style={{
-                                        background: "linear-gradient(135deg, #6366f1, #8b5cf6)",
-                                        boxShadow: "0 8px 24px rgba(99,102,241,0.3)"
+                                        background: "linear-gradient(135deg, #003DA5, #8b5cf6)",
+                                        boxShadow: "0 8px 24px rgba(0,61,165,0.3)"
                                     }}
                                     onMouseEnter={e => {
-                                        e.currentTarget.style.boxShadow = "0 12px 32px rgba(99,102,241,0.45)"
+                                        e.currentTarget.style.boxShadow = "0 12px 32px rgba(0,61,165,0.45)"
                                         e.currentTarget.style.transform = "translateY(-1px)"
                                     }}
                                     onMouseLeave={e => {
-                                        e.currentTarget.style.boxShadow = "0 8px 24px rgba(99,102,241,0.3)"
+                                        e.currentTarget.style.boxShadow = "0 8px 24px rgba(0,61,165,0.3)"
                                         e.currentTarget.style.transform = "translateY(0)"
                                     }}
                                 >
@@ -198,7 +198,7 @@ export const SignIn = ({ image, handlesigninform, handlesigninsubmit, targetedst
                             <div className="flex items-center justify-center gap-2 mt-5 pt-5 border-t border-gray-100">
                                 <span className="text-sm text-gray-400">¿No tienes cuenta?</span>
                                 <Link to="/auth/HR/signup"
-                                    className="text-sm font-semibold text-indigo-600 hover:text-indigo-800 transition-colors">
+                                    className="text-sm font-semibold text-blue-600 hover:text-blue-800 transition-colors">
                                     Regístrate gratis →
                                 </Link>
                             </div>

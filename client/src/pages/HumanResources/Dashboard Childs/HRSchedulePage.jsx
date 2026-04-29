@@ -34,7 +34,7 @@ const ScheduleCard = ({ schedule, employees, onDelete, onToggle, onEdit, onDupli
                 title="Copiar horario"
                 className="p-1.5 rounded-lg transition-colors duration-150 hover:bg-gray-100 dark:hover:bg-[rgba(255,255,255,0.06)]"
             >
-                <Copy className="w-4 h-4 text-gray-400 hover:text-indigo-500 transition-colors" />
+                <Copy className="w-4 h-4 text-gray-400 hover:text-blue-500 transition-colors" />
             </button>
             <button
                 onClick={() => onToggle(schedule)}
@@ -50,7 +50,7 @@ const ScheduleCard = ({ schedule, employees, onDelete, onToggle, onEdit, onDupli
                 onClick={() => onEdit(schedule)}
                 className="p-1.5 rounded-lg transition-colors duration-150 hover:bg-gray-100 dark:hover:bg-[rgba(255,255,255,0.06)]"
             >
-                <Pencil className="w-4 h-4 text-gray-400 hover:text-indigo-500 transition-colors" />
+                <Pencil className="w-4 h-4 text-gray-400 hover:text-blue-500 transition-colors" />
             </button>
             <button
                 onClick={() => onDelete(schedule._id)}
@@ -66,8 +66,8 @@ const ScheduleCard = ({ schedule, employees, onDelete, onToggle, onEdit, onDupli
         <div className="flex items-center gap-3 flex-wrap">
             {assignedEmployee && (
                 <div className="flex items-center gap-1">
-                    <Users className="w-3 h-3 text-indigo-400" />
-                    <span className="text-[11px] text-indigo-500 dark:text-indigo-400 font-medium">
+                    <Users className="w-3 h-3 text-blue-400" />
+                    <span className="text-[11px] text-blue-500 dark:text-blue-400 font-medium">
                         {assignedEmployee.firstname} {assignedEmployee.lastname}
                     </span>
                 </div>
@@ -92,7 +92,7 @@ const ScheduleCard = ({ schedule, employees, onDelete, onToggle, onEdit, onDupli
         <div className="flex flex-col gap-2">
             {schedule.schedule?.map(day => (
                 <div key={day._id} className="flex flex-col gap-1.5">
-                    <p className="text-[11px] font-semibold uppercase tracking-wider text-indigo-500 dark:text-indigo-400">
+                    <p className="text-[11px] font-semibold uppercase tracking-wider text-blue-500 dark:text-blue-400">
                         {day.day}
                     </p>
                     {day.tasks.map(task => (
@@ -134,7 +134,7 @@ const ScheduleCard = ({ schedule, employees, onDelete, onToggle, onEdit, onDupli
 
     return (
         <ListItemCard
-            accent="indigo"
+            accent="blue"
             title={schedule.title}
             description={schedule.description}
             badge={<StatusBadge active={isActive} />}
@@ -222,7 +222,7 @@ const DayEditor = ({ dayItem, dayIndex, onChange, onRemove, canRemove }) => {
             <div className="flex items-center justify-between px-4 py-3 border-b
                 border-gray-50 dark:border-[rgba(255,255,255,0.04)]">
                 <div className="flex items-center gap-2">
-                    <CalendarDays className="w-4 h-4 text-indigo-400" />
+                    <CalendarDays className="w-4 h-4 text-blue-400" />
                     <select
                         value={dayItem.day}
                         onChange={e => onChange(dayIndex, "day", e.target.value)}
@@ -259,8 +259,8 @@ const DayEditor = ({ dayItem, dayIndex, onChange, onRemove, canRemove }) => {
                 ))}
                 <button
                     onClick={addTask}
-                    className="flex items-center gap-1.5 text-xs font-semibold text-indigo-500
-                        hover:text-indigo-600 transition-colors duration-150 w-fit"
+                    className="flex items-center gap-1.5 text-xs font-semibold text-blue-500
+                        hover:text-blue-600 transition-colors duration-150 w-fit"
                 >
                     <Plus className="w-3.5 h-3.5" /> Agregar tarea
                 </button>
@@ -331,7 +331,7 @@ const ScheduleForm = ({ employees, onSubmit, onCancel, editingSchedule, viewMode
                 bg-gray-50 border border-gray-100
                 dark:bg-[rgba(255,255,255,0.02)] dark:border-[rgba(255,255,255,0.06)]">
 
-                <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-indigo-500 dark:text-indigo-400">
+                <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-blue-500 dark:text-blue-400">
                     Información general
                 </p>
 
@@ -409,14 +409,14 @@ const ScheduleForm = ({ employees, onSubmit, onCancel, editingSchedule, viewMode
             {/* Días y tareas */}
             <div className="flex flex-col gap-3">
                 <div className="flex items-center justify-between">
-                    <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-indigo-500 dark:text-indigo-400">
+                    <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-blue-500 dark:text-blue-400">
                         Días y tareas
                     </p>
                     <button
                         onClick={addDay}
                         className="flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-xl
-                            bg-indigo-50 text-indigo-600 border border-indigo-100 hover:bg-indigo-100
-                            dark:bg-[rgba(99,102,241,0.1)] dark:text-indigo-400
+                            bg-blue-50 text-blue-600 border border-blue-100 hover:bg-blue-100
+                            dark:bg-[rgba(99,102,241,0.1)] dark:text-blue-400
                             dark:border-[rgba(99,102,241,0.2)] dark:hover:bg-[rgba(99,102,241,0.15)]
                             transition-colors duration-150"
                     >
@@ -445,7 +445,7 @@ const ScheduleForm = ({ employees, onSubmit, onCancel, editingSchedule, viewMode
                     className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold
                         text-white transition-all duration-200 disabled:opacity-40 disabled:cursor-not-allowed
                         hover:opacity-90 active:scale-95"
-                    style={{ background: "linear-gradient(135deg, #6366f1, #8b5cf6)" }}
+                    style={{ background: "linear-gradient(135deg, #003DA5, #8b5cf6)" }}
                 >
                     <CheckCircle2 className="w-4 h-4" />
                     {isEdit ? "Guardar cambios" : "Crear horario"}
@@ -594,7 +594,7 @@ export const HRSchedulePage = () => {
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                 <div>
                     <p className="text-[10px] font-semibold uppercase tracking-[0.2em] mb-1
-                        text-indigo-500 dark:text-indigo-400">
+                        text-blue-500 dark:text-blue-400">
                         Gestión de personal
                     </p>
                     <div className="flex items-center gap-3">
@@ -607,8 +607,8 @@ export const HRSchedulePage = () => {
                         </h1>
                         {view === "list" && (
                             <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold
-                                bg-indigo-50 text-indigo-600 border border-indigo-100
-                                dark:bg-[rgba(99,102,241,0.12)] dark:text-indigo-300
+                                bg-blue-50 text-blue-600 border border-blue-100
+                                dark:bg-[rgba(99,102,241,0.12)] dark:text-blue-300
                                 dark:border-[rgba(99,102,241,0.2)]">
                                 {schedules.length} total
                             </span>
@@ -622,7 +622,7 @@ export const HRSchedulePage = () => {
                         className="flex items-center gap-2 px-4 py-2.5 rounded-xl self-start sm:self-auto
                             text-sm font-semibold text-white transition-all duration-200
                             hover:opacity-90 active:scale-95"
-                        style={{ background: "linear-gradient(135deg, #6366f1, #8b5cf6)" }}
+                        style={{ background: "linear-gradient(135deg, #003DA5, #8b5cf6)" }}
                     >
                         <Plus className="w-4 h-4" />
                         Nuevo horario
@@ -638,8 +638,8 @@ export const HRSchedulePage = () => {
                     {schedules.length === 0 ? (
                         <div className="flex flex-col items-center justify-center py-20 gap-3">
                             <div className="w-14 h-14 rounded-2xl flex items-center justify-center
-                                bg-indigo-50 dark:bg-[rgba(99,102,241,0.1)]">
-                                <ClipboardList className="w-7 h-7 text-indigo-300 dark:text-indigo-500" />
+                                bg-blue-50 dark:bg-[rgba(99,102,241,0.1)]">
+                                <ClipboardList className="w-7 h-7 text-blue-300 dark:text-blue-500" />
                             </div>
                             <p className="text-base font-semibold text-gray-400 dark:text-gray-500">
                                 Sin horarios creados

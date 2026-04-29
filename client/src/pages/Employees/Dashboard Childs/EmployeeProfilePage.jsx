@@ -20,7 +20,7 @@ const formatTime = (d) => d ? new Date(d).toLocaleTimeString("es-ES", {
 
 // Mapa de colores de acento → valores concretos para claro y oscuro
 const ACCENT_MAP = {
-    "#6366f1": { lightBg: "#e0e7ff", lightBorder: "#a5b4fc", darkBg: "rgba(99,102,241,0.2)", darkBorder: "rgba(99,102,241,0.4)" },
+    "#003DA5": { lightBg: "#e0e7ff", lightBorder: "#a5b4fc", darkBg: "rgba(99,102,241,0.2)", darkBorder: "rgba(99,102,241,0.4)" },
     "#8b5cf6": { lightBg: "#ede9fe", lightBorder: "#c4b5fd", darkBg: "rgba(139,92,246,0.2)", darkBorder: "rgba(139,92,246,0.4)" },
     "#06b6d4": { lightBg: "#cffafe", lightBorder: "#67e8f9", darkBg: "rgba(6,182,212,0.2)", darkBorder: "rgba(6,182,212,0.4)" },
     "#f59e0b": { lightBg: "#fef3c7", lightBorder: "#fcd34d", darkBg: "rgba(245,158,11,0.2)", darkBorder: "rgba(245,158,11,0.4)" },
@@ -30,7 +30,7 @@ const ACCENT_MAP = {
 
 // ── Tarjeta de información ────────────────────────────────────────────────
 const InfoCard = ({ icon: Icon, label, value, accent, isDark }) => {
-    const colors = ACCENT_MAP[accent] || ACCENT_MAP["#6366f1"]
+    const colors = ACCENT_MAP[accent] || ACCENT_MAP["#003DA5"]
     return (
         <div className="flex items-center gap-3 p-4 rounded-2xl transition-all duration-200"
             style={{
@@ -61,7 +61,7 @@ const InfoCard = ({ icon: Icon, label, value, accent, isDark }) => {
 
 // ── Tarjeta de estadística ────────────────────────────────────────────────
 const StatCard = ({ icon: Icon, label, value, accent, isDark }) => {
-    const colors = ACCENT_MAP[accent] || ACCENT_MAP["#6366f1"]
+    const colors = ACCENT_MAP[accent] || ACCENT_MAP["#003DA5"]
     return (
         <div className="flex flex-col gap-2 p-4 rounded-2xl transition-all duration-200"
             style={{
@@ -140,7 +140,7 @@ export const EmployeeProfilePage = () => {
             {/* Header */}
             <div>
                 <p className="text-[10px] font-semibold uppercase tracking-[0.2em] mb-1
-                    text-indigo-500 dark:text-indigo-400">
+                    text-blue-500 dark:text-blue-400">
                     Mi Cuenta
                 </p>
                 <h1 className="text-2xl xl:text-3xl font-bold tracking-tight
@@ -161,7 +161,7 @@ export const EmployeeProfilePage = () => {
 
                 <div className="w-20 h-20 rounded-2xl flex items-center justify-center flex-shrink-0
                     text-white text-2xl font-bold"
-                    style={{ background: "linear-gradient(135deg, #6366f1, #8b5cf6)" }}>
+                    style={{ background: "linear-gradient(135deg, #003DA5, #8b5cf6)" }}>
                     {emp?.firstname?.[0]?.toUpperCase()}{emp?.lastname?.[0]?.toUpperCase()}
                 </div>
 
@@ -173,7 +173,7 @@ export const EmployeeProfilePage = () => {
                     <div className="flex items-center justify-center sm:justify-start gap-2 mt-1">
                         <span className={`flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-semibold border ${emp?.isverified
                                 ? "bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-[rgba(16,185,129,0.12)] dark:text-emerald-400 dark:border-[rgba(16,185,129,0.3)]"
-                                : "bg-amber-50 text-amber-700 border-amber-200 dark:bg-[rgba(245,158,11,0.12)] dark:text-amber-400 dark:border-[rgba(245,158,11,0.3)]"
+                                : "bg-yellow-50 text-yellow-700 border-yellow-200 dark:bg-[rgba(245,158,11,0.12)] dark:text-yellow-400 dark:border-[rgba(245,158,11,0.3)]"
                             }`}>
                             {emp?.isverified
                                 ? <><ShieldCheck className="w-3 h-3" /> Verificado</>
@@ -181,8 +181,8 @@ export const EmployeeProfilePage = () => {
                             }
                         </span>
                         <span className="flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-semibold border
-                            bg-indigo-50 text-indigo-700 border-indigo-200
-                            dark:bg-[rgba(99,102,241,0.12)] dark:text-indigo-400 dark:border-[rgba(99,102,241,0.3)]">
+                            bg-blue-50 text-blue-700 border-blue-200
+                            dark:bg-[rgba(99,102,241,0.12)] dark:text-blue-400 dark:border-[rgba(99,102,241,0.3)]">
                             <Briefcase className="w-3 h-3" /> Empleado
                         </span>
                     </div>
@@ -205,27 +205,27 @@ export const EmployeeProfilePage = () => {
             {/* Información personal */}
             <div>
                 <p className="text-[10px] font-semibold uppercase tracking-[0.18em] mb-3
-                    text-indigo-500 dark:text-indigo-400">
+                    text-blue-500 dark:text-blue-400">
                     Información Personal
                 </p>
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-                    <InfoCard icon={User} label="Nombre" value={`${emp?.firstname} ${emp?.lastname}`} accent="#6366f1" isDark={isDark} />
+                    <InfoCard icon={User} label="Nombre" value={`${emp?.firstname} ${emp?.lastname}`} accent="#003DA5" isDark={isDark} />
                     <InfoCard icon={Mail} label="Correo" value={emp?.email} accent="#8b5cf6" isDark={isDark} />
                     <InfoCard icon={Phone} label="Teléfono" value={emp?.contactnumber} accent="#06b6d4" isDark={isDark} />
                     <InfoCard icon={Building2} label="Departamento" value={emp?.department?.name || "Sin asignar"} accent="#f59e0b" isDark={isDark} />
                     <InfoCard icon={CalendarDays} label="Miembro desde" value={formatDate(emp?.createdAt)} accent="#10b981" isDark={isDark} />
-                    <InfoCard icon={Clock} label="Último acceso" value={`${formatDate(emp?.lastlogin)} · ${formatTime(emp?.lastlogin)}`} accent="#6366f1" isDark={isDark} />
+                    <InfoCard icon={Clock} label="Último acceso" value={`${formatDate(emp?.lastlogin)} · ${formatTime(emp?.lastlogin)}`} accent="#003DA5" isDark={isDark} />
                 </div>
             </div>
 
             {/* Resumen de asistencia */}
             <div>
                 <p className="text-[10px] font-semibold uppercase tracking-[0.18em] mb-3
-                    text-indigo-500 dark:text-indigo-400">
+                    text-blue-500 dark:text-blue-400">
                     Resumen de Asistencia
                 </p>
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-                    <StatCard icon={CalendarDays} label="Total días" value={totalLogs} accent="#6366f1" isDark={isDark} />
+                    <StatCard icon={CalendarDays} label="Total días" value={totalLogs} accent="#003DA5" isDark={isDark} />
                     <StatCard icon={ShieldCheck} label="Presencias" value={presentDays} accent="#10b981" isDark={isDark} />
                     <StatCard icon={ShieldAlert} label="Ausencias" value={absentDays} accent="#ef4444" isDark={isDark} />
                     <StatCard icon={Clock} label="Hoy entrada"
@@ -237,11 +237,11 @@ export const EmployeeProfilePage = () => {
             {/* Mis documentos */}
             <div>
                 <p className="text-[10px] font-semibold uppercase tracking-[0.18em] mb-3
-                    text-indigo-500 dark:text-indigo-400">
+                    text-blue-500 dark:text-blue-400">
                     Mis Documentos
                 </p>
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-                    <StatCard icon={DollarSign} label="Nóminas" value={emp?.salary?.length ?? 0} accent="#6366f1" isDark={isDark} />
+                    <StatCard icon={DollarSign} label="Nóminas" value={emp?.salary?.length ?? 0} accent="#003DA5" isDark={isDark} />
                     <StatCard icon={FileText} label="Avisos" value={emp?.notice?.length ?? 0} accent="#8b5cf6" isDark={isDark} />
                     <StatCard icon={ClipboardList} label="Ausencias" value={emp?.leaverequest?.length ?? 0} accent="#06b6d4" isDark={isDark} />
                     <StatCard icon={Briefcase} label="Solicitudes" value={emp?.generaterequest?.length ?? 0} accent="#f59e0b" isDark={isDark} />
