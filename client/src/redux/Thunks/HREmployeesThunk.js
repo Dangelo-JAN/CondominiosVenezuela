@@ -15,9 +15,19 @@ export const HandleGetHREmployees = createAsyncThunk('HandleGetHREmployees', asy
 export const HandlePostHREmployees = createAsyncThunk('HandlePostHREmploy', async (HREmployeeData, { rejectWithValue }) => {
     try {
         const { apiroute, data } = HREmployeeData
-        const response = await hrApiService.post(`${HREmployeesPageEndPoints[apiroute]}`, data)
+        console.log("[LOG THUNK] HandlePostHREmployees - apiroute:", apiroute)
+        console.log("[LOG THUNK] HandlePostHREmployees - ENVIANDO DATOS:", data)
+        
+        const endpoint = HREmployeesPageEndPoints[apiroute]
+        console.log("[LOG THUNK] HandlePostHREmployees - endpoint:", endpoint)
+        
+        const response = await hrApiService.post(endpoint, data)
+        
+        console.log("[LOG THUNK] HandlePostHREmployees - RESPUESTA STATUS:", response.status)
+        console.log("[LOG THUNK] HandlePostHREmployees - RESPUESTA DATA:", response.data)
         return response.data
     } catch (error) {
+        console.error("[LOG THUNK] HandlePostHREmployees - ERROR:", error.response?.data || error.message)
         return rejectWithValue(error.response.data)
     }
 })

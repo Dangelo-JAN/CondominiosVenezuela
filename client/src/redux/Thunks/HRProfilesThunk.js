@@ -22,7 +22,9 @@ export const HandleHRProfiles = createAsyncThunk(
             }
 
             if (type === "Invite") {
+                console.log("[LOG] HandleHRProfiles Invite - ENVIANDO DATOS:", data)
                 const res = await hrApiService.post(HRProfilesEndPoints.INVITE, data)
+                console.log("[LOG] HandleHRProfiles Invite - RESPUESTA:", res.data)
                 return { ...res.data, type: "Invite" }
             }
 
@@ -47,6 +49,7 @@ export const HandleHRProfiles = createAsyncThunk(
             }
 
         } catch (error) {
+            console.error("[LOG] HandleHRProfiles - ERROR:", error.response?.data || error.message)
             return rejectWithValue(error.response?.data || { message: "Error desconocido" })
         }
     }
