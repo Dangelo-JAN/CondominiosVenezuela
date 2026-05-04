@@ -33,7 +33,7 @@ export const SendInvitationEmail = async (email, firstname, inviteURL, role) => 
     const roleLabel = role === "HR-Manager" ? "HR Manager" : "HR Viewer"
     return sendMail({
         to: email,
-        subject: "Te han invitado a unirte a EMS",
+        subject: "Te han invitado a unirte a CondoVE SGC",
         html: INVITATION_HR_TEMPLATE
             .replace("{name}", firstname)
             .replace("{role}", roleLabel)
@@ -57,7 +57,7 @@ export const SendEmployeeInvitationEmail = async (email, firstname, inviteURL, c
 export const SendVerificationEmail = async (email, verificationcode) => {
     return sendMail({
         to: email,
-        subject: "Verifica tu correo electrónico — EMS",
+        subject: "Verifica tu correo electrónico — CondoVE SGC",
         html: VERIFICATION_EMAIL_TEMPLATE.replace("{verificationCode}", verificationcode),
     })
 }
@@ -69,7 +69,7 @@ export const SendWelcomeEmail = async (email, firstname, lastname, role) => {
     if (role === "HR-Admin") {
         return sendMail({
             to: email,
-            subject: "¡Bienvenido a EMS! Tu cuenta está lista",
+            subject: "¡Bienvenido a CondoVE SGC! Tu cuenta está lista",
             html: WELCOME_HR_TEMPLATE.replace("{name}", name),
         })
     } else {
@@ -85,7 +85,7 @@ export const SendWelcomeEmail = async (email, firstname, lastname, role) => {
 export const SendForgotPasswordEmail = async (email, resetURL) => {
     return sendMail({
         to: email,
-        subject: "Restablecer contraseña — EMS",
+        subject: "Restablecer contraseña — CondoVE SGC",
         html: PASSWORD_RESET_REQUEST_TEMPLATE.replace(/{resetURL}/g, resetURL),
     })
 }
@@ -94,7 +94,7 @@ export const SendForgotPasswordEmail = async (email, resetURL) => {
 export const SendResetPasswordConfimation = async (email) => {
     return sendMail({
         to: email,
-        subject: "Contraseña restablecida exitosamente — EMS",
+        subject: "Contraseña restablecida exitosamente — CondoVE SGC",
         html: PASSWORD_RESET_SUCCESS_TEMPLATE,
     })
 }

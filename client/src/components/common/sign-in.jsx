@@ -67,7 +67,7 @@ export const SignIn = ({ image, handlesigninform, handlesigninsubmit, targetedst
                         <Zap className="w-5 h-5 text-white" />
                     </div>
                     <span className="font-bold text-lg tracking-tight text-gray-900">
-                        EMS<span className="text-blue-600">.</span>
+                        CondoVE<span className="text-blue-500" style={{ fontSize: "0.75em", marginLeft: "0.1em" }}>SGC</span><span className="text-blue-600">.</span>
                     </span>
                 </Link>
 
@@ -216,7 +216,7 @@ export const SignIn = ({ image, handlesigninform, handlesigninsubmit, targetedst
             {/* Footer */}
             <footer className="relative z-10 py-6 text-center border-t border-gray-50">
                 <p className="text-xs text-gray-300">
-                    © {new Date().getFullYear()} Employee Management System. Todos los derechos reservados.
+                    © {new Date().getFullYear()} Sistema de Gestión Condominial. Todos los derechos reservados.
                 </p>
             </footer>
         </div>

@@ -32,8 +32,8 @@ export function EmployeeDashboardSidebar() {
         <DashboardSidebar
             navItems={EMPLOYEE_NAV_ITEMS}
             onLogout={handleLogout}
-            appName="EMS"
-            appSubtitle="Employee Panel"
+            appName="CondoVE SGC"
+            appSubtitle="Panel de Empleado"
         />
     )
 }

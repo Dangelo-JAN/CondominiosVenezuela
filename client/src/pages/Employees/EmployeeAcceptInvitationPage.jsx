@@ -74,7 +74,7 @@ export const EmployeeAcceptInvitationPage = () => {
                     </div>
                     <div className="text-center">
                         <h1 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
-                            EMS<span className="text-emerald-500">.</span>
+                            CondoVE<span className="text-blue-500" style={{ fontSize: "0.7em", marginLeft: "0.1em" }}>SGC</span>.
                         </h1>
                         <p className="text-sm text-gray-400 dark:text-gray-500 mt-1">
                             Acepta tu invitación para unirte al equipo
@@ -112,7 +112,7 @@ export const EmployeeAcceptInvitationPage = () => {
                                     Completa tu registro
                                 </h2>
                                 <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">
-                                    Define tu contraseña para activar tu cuenta EMS
+                                    Define tu contraseña para activar tu cuenta CondoVE SGC
                                 </p>
                             </div>
 
