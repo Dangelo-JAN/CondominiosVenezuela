@@ -28,7 +28,7 @@ export const DashboardLayout = ({ sidebar }) => {
                                 <PanelLeft className="w-4 h-4" />
                             </SidebarTrigger>
                             <p className="text-sm font-semibold text-gray-900 dark:text-white">
-                                EMS<span className="text-blue-500">.</span>
+                                CondoVE<span className="text-blue-500" style={{ fontSize: "0.7em", marginLeft: "0.1em" }}>SGC</span>.
                             </p>
                         </div>
 

@@ -100,7 +100,7 @@ export const ContactSalesDialog = () => {
                         <div className="absolute bottom-0 right-0 w-48 h-48 rounded-full bg-purple-500/10 blur-3xl" />
                         <div className="relative z-10 flex flex-col gap-4">
                             <span className="text-2xl font-bold tracking-tight">
-                                EMS<span className="text-blue-400">.</span>
+                                CondoVE<span className="text-blue-500" style={{ fontSize: "0.7em", marginLeft: "0.1em" }}>SGC</span>.
                             </span>
                             <h3 className="text-lg font-bold leading-tight mt-4 text-[rgba(255,255,255,0.9)]">
                                 Potencia a tu equipo como los líderes de la industria

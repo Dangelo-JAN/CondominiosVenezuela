@@ -33,8 +33,8 @@ export function HRdashboardSidebar() {
         <DashboardSidebar
             navItems={HR_NAV_ITEMS}
             onLogout={handleLogout}
-            appName="EMS"
-            appSubtitle="HR Panel"
+            appName="CondoVE SGC"
+            appSubtitle="Panel HR"
         />
     )
 }

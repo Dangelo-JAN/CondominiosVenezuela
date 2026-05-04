@@ -36,13 +36,14 @@ export const EntryPage = () => {
 
                 {/* Logo */}
                 <div className="flex items-center gap-2">
-                    <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-lg flex items-center justify-center"
-                        style={{ background: "linear-gradient(135deg, #7c3aed, #003DA5)" }}>
-                        <Zap className="text-white w-5 h-5 sm:w-6 sm:h-6" />
-                    </div>
+                    <img
+                        src="/icons/IsotipoMarca-CondoVe-64x64-solo.png"
+                        alt="Logo CondoVe SGC"
+                        className="w-9 h-9 sm:w-10 sm:h-10 rounded-lg object-contain"
+                    />
                     <span className="text-xl sm:text-2xl font-bold tracking-tight"
                         style={{ color: isDark ? "#ffffff" : "#111827" }}>
-                        EMS<span style={{ color: "#7c3aed" }}>.</span>
+                        CondoVE<span style={{ color: "#003DA5", fontSize: "0.65em", marginLeft: "0.15em" }}>SGC</span><span style={{ color: "#7c3aed" }}>.</span>
                     </span>
                 </div>
 
@@ -121,21 +122,21 @@ export const EntryPage = () => {
                     <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-sm font-medium self-center lg:self-start"
                         style={{ background: isDark ? "rgba(124,58,237,0.12)" : "#f3e8ff", color: "#7c3aed" }}>
                         <ShieldCheck className="w-4 h-4" />
-                        Sistema de Gestión Empresarial N°1
+                        Sistema de Gestión Condominial
                     </div>
 
                     {/* Título */}
                     <h1 className="text-4xl sm:text-5xl lg:text-7xl font-extrabold leading-tight"
                         style={{ color: isDark ? "#ffffff" : "#111827" }}>
                         Gestiona tu equipo de forma{" "}
-                        <span style={{ color: "#7c3aed" }} className="italic">inteligente.</span>
+                        <span style={{ color: "#003DA5" }} className="italic">inteligente.</span>
                     </h1>
 
                     {/* Descripción */}
                     <p className="text-base sm:text-xl leading-relaxed"
                         style={{ color: isDark ? "rgba(255,255,255,0.55)" : "#4b5563" }}>
                         Optimiza el control de asistencia, nómina y comunicación interna en una sola plataforma.
-                        Diseñada para equipos modernos que buscan eficiencia y transparencia.
+                        Diseñada para condominios modernos que buscan eficiencia y transparencia.
                     </p>
 
                     {/* CTAs */}
@@ -177,7 +178,7 @@ export const EntryPage = () => {
                             <div className="flex-1 min-w-0">
                                 <p className="text-sm font-semibold"
                                     style={{ color: isDark ? "#ffffff" : "#111827" }}>
-                                    Instala EMS en tu móvil
+                                    Instala SGC en tu móvil
                                 </p>
                                 <p className="text-xs" style={{ color: isDark ? "rgba(255,255,255,0.4)" : "#6b7280" }}>
                                     Accede rápido desde tu pantalla de inicio
@@ -256,7 +257,7 @@ export const EntryPage = () => {
             </main>
 
             {/* Footer — componente reutilizable */}
-            <Footer />
+            <Footer appName="SGC" appSubtitle="Sistema de Gestión Condominial" />
         </div>
     )
 }

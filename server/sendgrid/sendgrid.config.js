@@ -6,7 +6,7 @@ sgMail.setApiKey(process.env.SENDGRID_API_KEY)
 
 export const sender = {
     email: process.env.SENDGRID_SENDER_EMAIL,
-    name: 'EMS',
+    name: 'CondoVE SGC',
 }
 
 export { sgMail }
