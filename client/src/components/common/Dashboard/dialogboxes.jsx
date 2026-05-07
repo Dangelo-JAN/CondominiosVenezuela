@@ -44,36 +44,43 @@ const SectionLabel = ({ children }) => (
 
 // ── Add Employees ──────────────────────────────────────────────────────────
 export const AddEmployeesDialogBox = () => {
+    const dispatch = useDispatch()
     const [formdata, setformdata] = useState({
         firstname: "", lastname: "", email: "",
         contactnumber: "", textpassword: "", password: "",
     })
-    const [sendInvitation, setSendInvitation] = useState(false)
     const { toast } = useToast()
 
+    console.log("[LOG CLIENT] AddEmployeesDialogBox - formdata state:", formdata)
+
     const handleformchange = (event) => {
+        console.log("[LOG CLIENT] handleformchange - event:", event.target.name, event.target.value)
         CommonStateHandler(formdata, setformdata, event)
     }
 
     const handleSubmit = async () => {
         try {
-            // Si sendInvitation es true, no enviar password
-            const dataToSend = sendInvitation 
-                ? { firstname: formdata.firstname, lastname: formdata.lastname, email: formdata.email, contactnumber: formdata.contactnumber }
-                : formdata
+            console.log("[LOG CLIENT] handleSubmit - ejecutando...")
+            console.log("[LOG CLIENT] handleSubmit - formdata:", formdata)
 
-            const res = await HandlePostHREmployees({ apiroute: "ADDEMPLOYEE", data: dataToSend })
-            
-            if (sendInvitation) {
-                toast({ variant: "success", title: "Invitación enviada", description: `Se envió un correo a ${formdata.email}` })
-            } else {
-                toast({ variant: "success", title: "Empleado registrado", description: `${formdata.firstname} ${formdata.lastname} ha sido agregado` })
+            console.log("[LOG CLIENT] handleSubmit - dispatching HandlePostHREmployees...")
+
+            // CORREGIDO: usar dispatch() para async thunks - siempre envía todos los datos
+            const result = await dispatch(HandlePostHREmployees({ apiroute: "ADDEMPLOYEE", data: formdata }))
+
+            console.log("[LOG CLIENT] handleSubmit - result:", result)
+
+            if (result.error) {
+                console.error("[LOG CLIENT] handleSubmit - ERROR:", result.payload)
+                throw new Error(result.payload?.message || "Error al procesar")
             }
-            
+
+            toast({ variant: "success", title: "Empleado registrado", description: `${formdata.firstname} ${formdata.lastname} ha sido agregado. Se envió un correo de verificación automáticamente.` })
+
             // Limpiar formulario
             setformdata({ firstname: "", lastname: "", email: "", contactnumber: "", textpassword: "", password: "" })
-            setSendInvitation(false)
         } catch (error) {
+            console.error("[LOG CLIENT] handleSubmit - ERROR:", error)
             toast({ variant: "destructive", title: "Error", description: error.message || "Error al procesar la solicitud" })
         }
     }
@@ -97,20 +104,6 @@ export const AddEmployeesDialogBox = () => {
                         <p className="text-sm text-gray-400 dark:text-[rgba(255,255,255,0.3)] mt-1">
                             Completa todos los campos para registrar al empleado. Se enviará un correo de verificación automáticamente.
                         </p>
-                    </div>
-
-                    {/* Toggle Invitación */}
-                    <div className="flex items-center gap-3 p-3 rounded-xl bg-emerald-50 border border-emerald-100 dark:bg-[rgba(16,185,129,0.08)] dark:border-[rgba(16,185,129,0.2)]">
-                        <input
-                            type="checkbox"
-                            id="sendInvitation"
-                            checked={sendInvitation}
-                            onChange={(e) => setSendInvitation(e.target.checked)}
-                            className="w-4 h-4 rounded border-gray-300 text-emerald-600 focus:ring-emerald-500"
-                        />
-                        <label htmlFor="sendInvitation" className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                            Enviar invitación por correo electrónico
-                        </label>
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -147,32 +140,14 @@ export const AddEmployeesDialogBox = () => {
                         ))}
                     </div>
 
-                    {/* Contraseñas - solo si no es invitación */}
-                    {!sendInvitation && (
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            {[
-                                { id: "text-password", name: "textpassword", label: "Contraseña", type: "text", value: formdata.textpassword },
-                                { id: "password", name: "password", label: "Confirmar contraseña", type: "password", value: formdata.password },
-                            ].map(field => (
-                                <div key={field.id} className="flex flex-col gap-1.5">
-                                    <label htmlFor={field.id} className={labelCls}>{field.label}</label>
-                                    <input
-                                        id={field.id} name={field.name} type={field.type}
-                                        value={field.value} onChange={handleformchange}
-                                        className={inputCls}
-                                    />
-                                </div>
-                            ))}
-                        </div>
-                    )}
-
                     <div className="flex justify-end pt-1">
                         <Button
                             type="button"
                             onClick={handleSubmit}
-                            className="bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-lg px-4 py-2"
+                            className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-lg px-4 py-2"
                         >
-                            {sendInvitation ? "Enviar invitación" : "Agregar empleado"}
+                            <UserPlus className="w-4 h-4" />
+                            Agregar Empleado
                         </Button>
                     </div>
                 </div>
@@ -188,7 +163,7 @@ export const EmployeeDetailsDialogBox = ({ EmployeeID }) => {
 
     if (!employeeData) return null
 
-    const initials = `${employeeData.firstname?.slice(0,1).toUpperCase()}${employeeData.lastname?.slice(0,1).toUpperCase()}`
+    const initials = `${employeeData.firstname?.slice(0, 1).toUpperCase()}${employeeData.lastname?.slice(0, 1).toUpperCase()}`
 
     const details = [
         { label: "Nombre", value: employeeData.firstname },
@@ -217,7 +192,7 @@ export const EmployeeDetailsDialogBox = ({ EmployeeID }) => {
 
             <DialogContent className="max-w-[340px] lg:max-w-[580px]
                 bg-white border border-gray-100 shadow-2xl rounded-2xl
-                dark:bg-[#13131f] dark:border-[rgba(0,61,165,0.15)]">">
+                dark:bg-[#13131f] dark:border-[rgba(0,61,165,0.15)]">
                 <div className="flex flex-col gap-5 p-1">
                     {/* Profile header */}
                     <div className="flex items-center gap-4 pb-4 border-b border-gray-100 dark:border-[rgba(0,61,165,0.1)]">
@@ -284,7 +259,7 @@ export const DeleteEmployeeDialogBox = ({ EmployeeID }) => {
 
             <DialogContent className="max-w-[340px]
                 bg-white border border-gray-100 shadow-2xl rounded-2xl
-                dark:bg-[#13131f] dark:border-[rgba(0,61,165,0.15)]">">
+                dark:bg-[#13131f] dark:border-[rgba(0,61,165,0.15)]">
                 <div className="flex flex-col items-center gap-5 p-1 text-center">
                     <div className="w-14 h-14 rounded-2xl flex items-center justify-center
                         bg-red-50 dark:bg-[rgba(239,68,68,0.1)]">
@@ -357,7 +332,7 @@ export const CreateDepartmentDialogBox = () => {
 
             <DialogContent className="max-w-[340px] lg:max-w-[620px]
                 bg-white border border-gray-100 shadow-2xl rounded-2xl
-                dark:bg-[#13131f] dark:border-[rgba(0,61,165,0.15)]">">
+                dark:bg-[#13131f] dark:border-[rgba(0,61,165,0.15)]">
                 <div className="flex flex-col gap-5 p-1">
                     <div>
                         <SectionLabel>Nuevo Departamento</SectionLabel>
@@ -457,7 +432,7 @@ export const EmployeesIDSDialogBox = ({ DepartmentID }) => {
 
             <DialogContent className="max-w-[340px] lg:max-w-[420px]
                 bg-white border border-gray-100 shadow-2xl rounded-2xl
-                dark:bg-[#13131f] dark:border-[rgba(0,61,165,0.15)]">">
+                dark:bg-[#13131f] dark:border-[rgba(0,61,165,0.15)]">
                 {EmployeesIDState.isLoading ? <Loading height={"h-auto"} /> : (
                     <div className="flex flex-col gap-5 p-1">
                         <div>
@@ -545,7 +520,7 @@ export const RemoveEmployeeFromDepartmentDialogBox = ({ DepartmentName, Departme
 
             <DialogContent className="max-w-[340px]
                 bg-white border border-gray-100 shadow-2xl rounded-2xl
-                dark:bg-[#13131f] dark:border-[rgba(0,61,165,0.15)]">">
+                dark:bg-[#13131f] dark:border-[rgba(0,61,165,0.15)]">
                 <div className="flex flex-col items-center gap-5 p-1 text-center">
                     <div className="w-14 h-14 rounded-2xl flex items-center justify-center bg-red-50 dark:bg-[rgba(239,68,68,0.1)]">
                         <Users className="w-7 h-7 text-red-400" />
@@ -605,8 +580,8 @@ export const LeaveActionsDialogBox = ({ LeaveID, EmployeeName }) => {
             if (result.error) {
                 toast({ title: "Error", description: result.payload?.message || "Error al actualizar", variant: "destructive" })
             } else {
-                toast({ 
-                    title: status === "Approved" ? "Aprobado" : "Rechazado", 
+                toast({
+                    title: status === "Approved" ? "Aprobado" : "Rechazado",
                     description: `La solicitud de ${EmployeeName} ha sido ${status === "Approved" ? "aprobada" : "rechazada"}`,
                     variant: "default"
                 })
@@ -641,7 +616,7 @@ export const LeaveActionsDialogBox = ({ LeaveID, EmployeeName }) => {
                     </div>
 
                     <div className="flex flex-col gap-3">
-                        <Button 
+                        <Button
                             onClick={() => HandleUpdateLeaveStatus("Approved")}
                             disabled={isLoading}
                             className="flex items-center justify-center gap-2 py-2.5 rounded-xl text-sm font-semibold text-white
@@ -651,7 +626,7 @@ export const LeaveActionsDialogBox = ({ LeaveID, EmployeeName }) => {
                             <CheckCircle className="w-4 h-4" />
                             Aprobar
                         </Button>
-                        <Button 
+                        <Button
                             onClick={() => HandleUpdateLeaveStatus("Rejected")}
                             disabled={isLoading}
                             className="flex items-center justify-center gap-2 py-2.5 rounded-xl text-sm font-semibold text-white

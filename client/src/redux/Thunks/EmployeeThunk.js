@@ -67,15 +67,4 @@ export const HandleDeleteEmployees = createAsyncThunk("HandleDeleteEmployees", a
     }
 })
 
-// Verificar código de email del empleado
-export const HandleEmployeeVerifyEmail = createAsyncThunk(
-    "HandleEmployeeVerifyEmail",
-    async (verificationcode, { rejectWithValue }) => {
-        try {
-            const response = await employeeApiService.post("/api/auth/employee/verify-email", { verificationcode })
-            return response.data
-        } catch (error) {
-            return rejectWithValue(error.response.data)
-        }
-    }
-)
+// HandleEmployeeVerifyEmail eliminado - ya no se usa (ver issue #013)

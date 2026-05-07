@@ -1,7 +1,7 @@
 import { useState } from "react"
 import { useParams, useNavigate } from "react-router-dom"
 import { employeeApiService } from "../../redux/apis/EmployeeApiService.js"
-import { Zap, Eye, EyeOff, CheckCircle2, AlertCircle } from "lucide-react"
+import { Zap, CheckCircle2, AlertCircle } from "lucide-react"
 import LoadingBar from "react-top-loading-bar"
 import { useRef } from "react"
 
@@ -10,39 +10,20 @@ export const EmployeeAcceptInvitationPage = () => {
     const navigate = useNavigate()
     const loadingbar = useRef(null)
 
-    const [form, setForm] = useState({ password: "", confirmpassword: "", contactnumber: "" })
-    const [showPassword, setShowPassword] = useState(false)
     const [status, setStatus] = useState("idle") // idle | loading | success | error
     const [errorMsg, setErrorMsg] = useState("")
 
-    const handleSubmit = async (e) => {
-        e.preventDefault()
-
-        if (form.password !== form.confirmpassword) {
-            setErrorMsg("Las contraseñas no coinciden")
-            return
-        }
-        if (form.password.length < 8) {
-            setErrorMsg("La contraseña debe tener al menos 8 caracteres")
-            return
-        }
-        if (!form.contactnumber) {
-            setErrorMsg("El número de contacto es requerido")
-            return
-        }
-
+    const handleActivate = async () => {
         setStatus("loading")
         setErrorMsg("")
         loadingbar.current?.continuousStart()
 
         try {
-            const res = await employeeApiService.post(`/api/v1/employee/accept-invitation/${token}`, {
-                password: form.password,
-                contactnumber: form.contactnumber
-            })
+            // Enviar cuerpo vacío - el HR ya proporcionó password y teléfono
+            const res = await employeeApiService.post(`/api/auth/employee/accept-invitation/${token}`, {})
 
             if (res.data?.success) {
-                // Guardar token en localStorage
+                // Guardar token en localStorage si existe
                 if (res.data?.token) {
                     localStorage.setItem("EmployeeToken", res.data.token)
                 }
@@ -50,7 +31,7 @@ export const EmployeeAcceptInvitationPage = () => {
                 setStatus("success")
                 setTimeout(() => navigate("/auth/employee/employee-dashboard/home"), 2000)
             } else {
-                setErrorMsg(res.data?.message || "Error al aceptar la invitación")
+                setErrorMsg(res.data?.message || "Error al activar la invitación")
                 setStatus("error")
                 loadingbar.current?.complete()
             }
@@ -77,7 +58,7 @@ export const EmployeeAcceptInvitationPage = () => {
                             CondoVE<span className="text-blue-500" style={{ fontSize: "0.7em", marginLeft: "0.1em" }}>SGC</span>.
                         </h1>
                         <p className="text-sm text-gray-400 dark:text-gray-500 mt-1">
-                            Acepta tu invitación para unirte al equipo
+                            Tu cuenta está lista para ser activada
                         </p>
                     </div>
                 </div>
@@ -102,89 +83,18 @@ export const EmployeeAcceptInvitationPage = () => {
                             </p>
                         </div>
                     ) : (
-                        <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+                        <div className="flex flex-col gap-4">
                             <div>
                                 <p className="text-[10px] font-semibold uppercase tracking-[0.2em] mb-1
                                     text-emerald-500 dark:text-emerald-400">
-                                    Configurar cuenta
+                                    Activación de cuenta
                                 </p>
                                 <h2 className="text-lg font-bold text-gray-900 dark:text-white">
-                                    Completa tu registro
+                                    Activa tu cuenta
                                 </h2>
                                 <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">
-                                    Define tu contraseña para activar tu cuenta CondoVE SGC
+                                    Tu coordinador HR ya ha registrado tu información. Solo necesitas activar tu cuenta para comenzar.
                                 </p>
-                            </div>
-
-                            {/* Teléfono */}
-                            <div className="flex flex-col gap-1.5">
-                                <label className="text-[11px] font-semibold uppercase tracking-wider
-                                    text-gray-400 dark:text-gray-500">
-                                    Número de contacto
-                                </label>
-                                <input
-                                    type="tel"
-                                    placeholder="Ej: +58 412 1234567"
-                                    value={form.contactnumber}
-                                    onChange={e => setForm(p => ({ ...p, contactnumber: e.target.value }))}
-                                    className="w-full rounded-xl px-3 py-2.5 text-sm outline-none transition-all duration-200
-                                        bg-gray-50 border border-gray-200 text-gray-900
-                                        focus:border-emerald-400 focus:bg-white focus:ring-2 focus:ring-emerald-100
-                                        dark:bg-[rgba(255,255,255,0.05)] dark:border-[rgba(255,255,255,0.12)] dark:text-white
-                                        dark:focus:border-emerald-500 dark:focus:bg-[rgba(16,185,129,0.06)]"
-                                    required
-                                />
-                            </div>
-
-                            {/* Contraseña */}
-                            <div className="flex flex-col gap-1.5">
-                                <label className="text-[11px] font-semibold uppercase tracking-wider
-                                    text-gray-400 dark:text-gray-500">
-                                    Contraseña
-                                </label>
-                                <div className="relative">
-                                    <input
-                                        type={showPassword ? "text" : "password"}
-                                        placeholder="Mínimo 8 caracteres"
-                                        value={form.password}
-                                        onChange={e => setForm(p => ({ ...p, password: e.target.value }))}
-                                        className="w-full rounded-xl px-3 py-2.5 text-sm outline-none transition-all duration-200
-                                            bg-gray-50 border border-gray-200 text-gray-900
-                                            focus:border-emerald-400 focus:bg-white focus:ring-2 focus:ring-emerald-100
-                                            dark:bg-[rgba(255,255,255,0.05)] dark:border-[rgba(255,255,255,0.12)] dark:text-white
-                                            dark:focus:border-emerald-500 dark:focus:bg-[rgba(16,185,129,0.06)] pr-10"
-                                        required
-                                    />
-                                    <button type="button"
-                                        onClick={() => setShowPassword(p => !p)}
-                                        className="absolute right-3 top-1/2 -translate-y-1/2
-                                            text-gray-400 hover:text-gray-600 transition-colors">
-                                        {showPassword
-                                            ? <EyeOff className="w-4 h-4" />
-                                            : <Eye    className="w-4 h-4" />
-                                        }
-                                    </button>
-                                </div>
-                            </div>
-
-                            {/* Confirmar contraseña */}
-                            <div className="flex flex-col gap-1.5">
-                                <label className="text-[11px] font-semibold uppercase tracking-wider
-                                    text-gray-400 dark:text-gray-500">
-                                    Confirmar contraseña
-                                </label>
-                                <input
-                                    type={showPassword ? "text" : "password"}
-                                    placeholder="Repite tu contraseña"
-                                    value={form.confirmpassword}
-                                    onChange={e => setForm(p => ({ ...p, confirmpassword: e.target.value }))}
-                                    className="w-full rounded-xl px-3 py-2.5 text-sm outline-none transition-all duration-200
-                                        bg-gray-50 border border-gray-200 text-gray-900
-                                        focus:border-emerald-400 focus:bg-white focus:ring-2 focus:ring-emerald-100
-                                        dark:bg-[rgba(255,255,255,0.05)] dark:border-[rgba(255,255,255,0.12)] dark:text-white
-                                        dark:focus:border-emerald-500 dark:focus:bg-[rgba(16,185,129,0.06)]"
-                                    required
-                                />
                             </div>
 
                             {/* Error */}
@@ -198,7 +108,8 @@ export const EmployeeAcceptInvitationPage = () => {
                             )}
 
                             <button
-                                type="submit"
+                                type="button"
+                                onClick={handleActivate}
                                 disabled={status === "loading"}
                                 className="w-full py-3 rounded-xl text-sm font-semibold text-white
                                     transition-all duration-200 hover:opacity-90 disabled:opacity-50
@@ -207,7 +118,7 @@ export const EmployeeAcceptInvitationPage = () => {
                             >
                                 {status === "loading" ? "Activando cuenta..." : "Activar mi cuenta"}
                             </button>
-                        </form>
+                        </div>
                     )}
                 </div>
             </div>
