@@ -9,112 +9,70 @@ import { Attendance } from "../models/Attendance.model.js"
 
 export const HandleEmplyoeeSignup = async (req, res) => {
     const { firstname, lastname, email, password, contactnumber } = req.body
+    
+    console.log("[LOG SERVER] HandleEmplyoeeSignup - datos recibidos:", { firstname, lastname, email, hasPassword: !!password, contactnumber })
+    
     try {
         if (!firstname || !lastname || !email || !contactnumber) {
+            console.log("[LOG SERVER] HandleEmplyoeeSignup - ERROR: campos requeridos faltantes")
             throw new Error("All Fields are required")
         }
 
         const organization = await Organization.findOne({ _id: req.ORGID })
 
         if (!organization) {
+            console.log("[LOG SERVER] HandleEmplyoeeSignup - ERROR: organización no encontrada")
             return res.status(404).json({ success: false, message: "Organization or Company not found" })
         }
 
         try {
-            // Si no hay password, crear token de invitación
-            const isInvitation = !password
-            let hashedPassword
+            // El HR siempre crea empleados con password - se envía correo de invitación para activar
+            const hashedPassword = await bcrypt.hash(password, 10)
             
-            if (isInvitation) {
-                // Crear token de invitación
-                const invitationtoken = crypto.randomBytes(32).toString("hex")
-                const invitationtokenexpires = Date.now() + 1000 * 60 * 60 * 48 // 48 horas
-                
-                // Password temporal hasta que acepte la invitación
-                hashedPassword = await bcrypt.hash(crypto.randomBytes(16).toString("hex"), 10)
-                
-                const newEmployee = await Employee.create({
-                    firstname, lastname, email, password: hashedPassword, contactnumber,
-                    role: "Employee",
-                    invitationtoken,
-                    invitationtokenexpires,
-                    isverified: false,
-                    isactive: false, // inactivo hasta que acepte la invitación
-                    organizationID: organization._id
-                })
+            // Crear token de invitación
+            const invitationtoken = crypto.randomBytes(32).toString("hex")
+            const invitationtokenexpires = Date.now() + 1000 * 60 * 60 * 48 // 48 horas
+            
+            console.log("[LOG SERVER] HandleEmplyoeeSignup - creando empleado con invitationtoken")
 
-                // Auto-inicializar asistencia al crear el empleado
-                const newAttendance = await Attendance.create({
-                    employee: newEmployee._id,
-                    status: "Not Specified",
-                    organizationID: organization._id
-                })
-                newEmployee.attendance = newAttendance._id
-                await newEmployee.save()
+            const newEmployee = await Employee.create({
+                firstname, lastname, email, password: hashedPassword, contactnumber,
+                role: "Employee",
+                invitationtoken,
+                invitationtokenexpires,
+                isverified: false,
+                isactive: false, // Inactivo hasta que active su cuenta con el token de invitación
+                organizationID: organization._id
+            })
 
-                organization.employees.push(newEmployee._id)
-                await organization.save()
+            // Auto-inicializar asistencia al crear el empleado
+            const newAttendance = await Attendance.create({
+                employee: newEmployee._id,
+                status: "Not Specified",
+                organizationID: organization._id
+            })
+            newEmployee.attendance = newAttendance._id
+            await newEmployee.save()
 
-                // Enviar correo de invitación
-                const inviteURL = `${process.env.CLIENT_URL}/auth/employee/accept-invitation/${invitationtoken}`
-                await SendEmployeeInvitationEmail(email, firstname, inviteURL, organization.name)
+            organization.employees.push(newEmployee._id)
+            await organization.save()
 
-                return res.status(201).json({ 
-                    success: true, 
-                    message: `Invitación enviada a ${email}`, 
-                    data: {
-                        _id: newEmployee._id,
-                        firstname: newEmployee.firstname,
-                        lastname: newEmployee.lastname,
-                        email: newEmployee.email,
-                        isverified: newEmployee.isverified
-                    },
-                    type: "EmployeeInvite" 
-                })
-            } else {
-                // Flujo original: crear empleado con password directo
-                hashedPassword = await bcrypt.hash(password, 10)
-                const verificationcode = GenerateVerificationToken(6)
+            // Enviar correo de invitación (el empleado debe activar su cuenta)
+            const inviteURL = `${process.env.CLIENT_URL}/auth/employee/accept-invitation/${invitationtoken}`
+            await SendEmployeeInvitationEmail(email, firstname, inviteURL, organization.name)
 
-                const newEmployee = await Employee.create({
-                    firstname, lastname, email, password: hashedPassword, contactnumber,
-                    role: "Employee",
-                    verificationtoken: verificationcode,
-                    verificationtokenexpires: Date.now() + 24 * 60 * 60 * 1000,
-                    isverified: false,
-                    isactive: true, // Activo pero requiere verificar email
-                    organizationID: organization._id
-                })
-
-                // Auto-inicializar asistencia al crear el empleado
-                const newAttendance = await Attendance.create({
-                    employee: newEmployee._id,
-                    status: "Not Specified",
-                    organizationID: organization._id
-                })
-                newEmployee.attendance = newAttendance._id
-                await newEmployee.save()
-
-                organization.employees.push(newEmployee._id)
-                await organization.save()
-
-                // Enviar correo de verificación de email
-                const verifyURL = `${process.env.CLIENT_URL}/auth/employee/verify-email`
-                await SendVerificationEmail(email, verificationcode)
-
-                return res.status(201).json({ 
-                    success: true, 
-                    message: "Empleado registrado. Se envió un correo de verificación.",
-                    data: {
-                        _id: newEmployee._id,
-                        firstname: newEmployee.firstname,
-                        lastname: newEmployee.lastname,
-                        email: newEmployee.email,
-                        isverified: newEmployee.isverified
-                    },
-                    type: "EmployeeCreate" 
-                })
-            }
+            return res.status(201).json({ 
+                success: true, 
+                message: "Empleado registrado. Se envió un correo de verificación.",
+                data: {
+                    _id: newEmployee._id,
+                    firstname: newEmployee.firstname,
+                    lastname: newEmployee.lastname,
+                    email: newEmployee.email,
+                    isverified: newEmployee.isverified
+                },
+                type: "EmployeeCreate" 
+            })
         } catch (error) {
             res.status(400).json({ success: false, message: "Oops! Something went wrong", error: error })
         }
@@ -305,26 +263,48 @@ export const HandleAcceptEmployeeInvitation = async (req, res) => {
         const { token } = req.params
         const { password, contactnumber } = req.body
 
-        if (!password || !contactnumber) {
-            return res.status(400).json({ success: false, message: "Contraseña y teléfono son requeridos" })
-        }
+        console.log("[LOG DEBUG] HandleAcceptEmployeeInvitation - token recibido:", token)
+        console.log("[LOG DEBUG] HandleAcceptEmployeeInvitation - password presente:", !!password)
+        console.log("[LOG DEBUG] HandleAcceptEmployeeInvitation - contactnumber presente:", !!contactnumber)
 
+        // Buscar empleado por invitationtoken
         const employee = await Employee.findOne({
             invitationtoken: token,
             invitationtokenexpires: { $gt: Date.now() }
         })
 
+        console.log("[LOG DEBUG] HandleAcceptEmployeeInvitation - resultado búsqueda:", employee ? "ENCONTRADO" : "NO ENCONTRADO")
+        
+        if (employee) {
+            console.log("[LOG DEBUG] - email:", employee.email)
+            console.log("[LOG DEBUG] - isverified:", employee.isverified)
+            console.log("[LOG DEBUG] - isactive:", employee.isactive)
+            console.log("[LOG DEBUG] - invitationtokenexpires:", employee.invitationtokenexpires)
+        }
+
         if (!employee) {
             return res.status(404).json({ success: false, message: "Invitación inválida o expirada" })
         }
 
-        employee.password = await bcrypt.hash(password, 10)
-        employee.contactnumber = contactnumber
+        // Actualizar campos - password y contactnumber son opcionales
+        // Si se envían, se actualizan; si no, se mantienen los existentes
+        if (password) {
+            employee.password = await bcrypt.hash(password, 10)
+        }
+        if (contactnumber) {
+            employee.contactnumber = contactnumber
+        }
+        
+        // Siempre activar el empleado
         employee.isverified = true
         employee.isactive = true
         employee.invitationtoken = undefined
         employee.invitationtokenexpires = undefined
         await employee.save()
+
+        console.log("[LOG DEBUG] HandleAcceptEmployeeInvitation - empleado activado")
+        console.log("[LOG DEBUG] - isverified:", employee.isverified)
+        console.log("[LOG DEBUG] - isactive:", employee.isactive)
 
         const jwtToken = GenerateJwtTokenAndSetCookiesEmployee(res, employee._id, employee.role, employee.organizationID)
 

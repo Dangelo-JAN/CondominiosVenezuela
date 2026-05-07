@@ -9,20 +9,26 @@ import { GenerateJwtTokenAndSetCookiesHR } from "../utils/generatejwttokenandset
 export const HandleInviteHR = async (req, res) => {
     try {
         const { email, role, firstname, lastname } = req.body
+        
+        console.log("[LOG SERVER] HandleInviteHR - datos recibidos:", { email, role, firstname, lastname, orgID: req.ORGID, hrID: req.HRid })
 
         if (!email || !role || !firstname || !lastname) {
+            console.log("[LOG SERVER] HandleInviteHR - ERROR: campos requeridos faltantes")
             return res.status(400).json({ success: false, message: "Todos los campos son requeridos" })
         }
 
         if (!["HR-Manager", "HR-Viewer"].includes(role)) {
+            console.log("[LOG SERVER] HandleInviteHR - ERROR: rol inválido:", role)
             return res.status(400).json({ success: false, message: "Rol inválido — solo HR-Manager o HR-Viewer" })
         }
 
         const existing = await HumanResources.findOne({ email })
         if (existing) {
+            console.log("[LOG SERVER] HandleInviteHR - ERROR: email ya existe:", email)
             return res.status(400).json({ success: false, message: "Ya existe un HR con ese email" })
         }
 
+        console.log("[LOG SERVER] HandleInviteHR - creando invitación para:", email)
         const invitationtoken = crypto.randomBytes(32).toString("hex")
         const invitationtokenexpires = Date.now() + 1000 * 60 * 60 * 48 // 48 horas
 
@@ -47,8 +53,12 @@ export const HandleInviteHR = async (req, res) => {
         organization.HRs.push(newHR._id)
         await organization.save()
 
+        console.log("[LOG SERVER] HandleInviteHR - HR creado, enviando correo a:", email)
+        
         const inviteURL = `${process.env.CLIENT_URL}/auth/HR/accept-invitation/${invitationtoken}`
         await SendInvitationEmail(email, firstname, inviteURL, role)
+        
+        console.log("[LOG SERVER] HandleInviteHR - correo enviado exitosamente a:", email)
 
         return res.status(201).json({
             success: true,
@@ -64,7 +74,8 @@ export const HandleInviteHR = async (req, res) => {
         })
 
     } catch (error) {
-        return res.status(500).json({ success: false, message: "Internal Server Error", error })
+        console.error("[LOG SERVER] HandleInviteHR - ERROR:", error.message)
+        return res.status(500).json({ success: false, message: "Internal Server Error", error: error.message })
     }
 }
 

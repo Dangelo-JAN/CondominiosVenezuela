@@ -284,8 +284,8 @@ const InviteModal = ({ onClose, onInvite }) => {
                         </p>
                     </div>
                     <button onClick={onClose}
-                        className="p-1.5 rounded-lg hover:bg-gray-100 dark:hover:bg-[rgba(255,255,255,0.06)] transition-colors">
-                        <X className="w-4 h-4 text-gray-400" />
+                        className="p-1.5 rounded-lg hover:bg-gray-100 dark:hover:bg-[rgba(255,255,255,0.1)] transition-colors">
+                        <X className={`w-4 h-4 ${isDark ? "text-white opacity-90" : "text-gray-400"}`} />
                     </button>
                 </div>
 
