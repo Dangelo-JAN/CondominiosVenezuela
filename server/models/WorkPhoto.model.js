@@ -21,10 +21,20 @@ const WorkPhotoSchema = new Schema({
         type: String,
         default: null
     },
-    // Fecha de la jornada a la que corresponde la foto
+    // Fecha de la jornada a la que corresponde la foto (seleccionada por el usuario)
     workdate: {
         type: Date,
         required: true
+    },
+    // Fecha real de captura de la foto (extraída de metadata EXIF)
+    captureDate: {
+        type: Date,
+        required: false // Se hace obligatorio en el controller
+    },
+    // Ubicación GPS de la foto (extraída de metadata EXIF - opcional)
+    gpsLocation: {
+        lat: { type: Number, default: null },
+        lng: { type: Number, default: null }
     },
     // HR puede marcar la foto como vista
     reviewedby: {

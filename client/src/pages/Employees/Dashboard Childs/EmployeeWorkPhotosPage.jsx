@@ -9,17 +9,29 @@ import {
 } from "lucide-react"
 import { useIsDark } from "../../../hooks/useIsDark.js"
 
-const formatDate = (dateStr) => {
+// ── Helper: Formatear fecha usando timezone del browser (fix timezone) ──
+const formatDate = (dateStr, options = {}) => {
     if (!dateStr) return ""
-    return new Date(dateStr).toLocaleDateString("es-ES", {
-        day: "numeric", month: "short", year: "numeric"
+    const date = new Date(dateStr)
+    // Usar timezone del browser para evitar UTC shift
+    const userTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone
+    return date.toLocaleDateString("es-ES", {
+        timeZone: userTimezone,
+        day: "numeric",
+        month: "short",
+        year: "numeric",
+        ...options
     })
 }
 
 const formatTime = (dateStr) => {
     if (!dateStr) return ""
-    return new Date(dateStr).toLocaleTimeString("es-ES", {
-        hour: "2-digit", minute: "2-digit"
+    const date = new Date(dateStr)
+    const userTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone
+    return date.toLocaleTimeString("es-ES", {
+        timeZone: userTimezone,
+        hour: "2-digit",
+        minute: "2-digit"
     })
 }
 
@@ -57,7 +69,12 @@ const PhotoModal = ({ photo, onClose }) => {
                             <p className="text-sm text-white font-medium">{photo.description}</p>
                         )}
                         {photo.workdate && (
-                            <p className="text-xs text-white/60 mt-0.5">{formatDate(photo.workdate)}</p>
+                            <div className="flex flex-col gap-0.5 mt-1">
+                                <p className="text-lg font-bold text-white">{formatDate(photo.workdate)}</p>
+                                {photo.captureDate && (
+                                    <p className="text-xs text-white/60">Capturada: {formatDate(photo.captureDate)}</p>
+                                )}
+                            </div>
                         )}
                     </div>
                 )}
@@ -115,17 +132,25 @@ const PhotoCard = ({ photo, onDelete, onPreview }) => {
             )}
         </div>
 
-        {/* Info */}
+        {/* Info: descripción a la izquierda, fechas a la derecha */}
         <div className="px-3 py-2.5 flex items-center justify-between gap-2">
-            <p className="text-xs font-medium truncate flex-1 transition-colors duration-300"
-                style={{ color: isDark ? "rgba(255,255,255,0.5)" : "#6b7280" }}>
+            <p className="text-base font-bold truncate flex-1 transition-colors duration-300"
+                style={{ color: isDark ? "#ffffff" : "#111827" }}>
                 {photo.description || "Sin descripción"}
             </p>
-            <div className="flex items-center gap-1 flex-shrink-0">
-                <CalendarDays className="w-3 h-3 transition-colors duration-300" style={{ color: isDark ? "rgba(255,255,255,0.5)" : "#9ca3af" }} />
-                <span className="text-[11px] transition-colors duration-300" style={{ color: isDark ? "rgba(255,255,255,0.5)" : "#9ca3af" }}>
-                    {formatDate(photo.workdate)}
-                </span>
+            {/* Fechas a la derecha: workdate grande + captureDate debajo */}
+            <div className="flex flex-col items-end flex-shrink-0">
+                <div className="flex items-center gap-1">
+                    <CalendarDays className="w-3 h-3" style={{ color: isDark ? "#ffffff" : "#111827" }} />
+                    <span className="text-base font-bold" style={{ color: isDark ? "#ffffff" : "#111827" }}>
+                        {formatDate(photo.workdate)}
+                    </span>
+                </div>
+                {photo.captureDate && (
+                    <span className="text-[10px] font-medium" style={{ color: isDark ? "rgba(255,255,255,0.5)" : "#9ca3af" }}>
+                        Capturada: {formatDate(photo.captureDate)}
+                    </span>
+                )}
             </div>
         </div>
     </div>
@@ -179,10 +204,22 @@ export const EmployeeWorkPhotosPage = () => {
             return
         }
         setUploading(true)
-        const base64 = await toBase64(form.file)
+        
+        // Enviar como FormData para preservar metadata EXIF
+        const uploadData = new FormData()
+        uploadData.append("photo", form.file)
+        uploadData.append("description", form.description)
+        uploadData.append("workdate", form.workdate)
+        
+        // Obtener timezone del browser del usuario (Opción C - Timezone dinámico)
+        const userTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone
+        console.log("[DEBUG] Timezone del browser:", userTimezone)
+        uploadData.append("timezone", userTimezone)
+        
         const res = await dispatch(HandleEmployeeDashboard({
             type: "UploadPhoto",
-            data: { photo: base64, description: form.description, workdate: form.workdate }
+            data: uploadData,
+            isFormData: true
         }))
         setUploading(false)
         if (res.payload?.success) {

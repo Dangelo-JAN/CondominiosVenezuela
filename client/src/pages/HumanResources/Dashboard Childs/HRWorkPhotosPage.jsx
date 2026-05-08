@@ -11,13 +11,29 @@ import {
     Filter, Users, Building2, CalendarDays, RotateCcw
 } from "lucide-react"
 
-const formatDate = (d) => d ? new Date(d).toLocaleDateString("es-ES", {
-    day: "numeric", month: "short", year: "numeric"
-}) : ""
+// ── Helper: Formatear fecha usando timezone del browser (fix timezone) ──
+const formatDate = (d) => {
+    if (!d) return ""
+    const date = new Date(d)
+    const userTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone
+    return date.toLocaleDateString("es-ES", {
+        timeZone: userTimezone,
+        day: "numeric",
+        month: "short",
+        year: "numeric"
+    })
+}
 
-const formatTime = (d) => d ? new Date(d).toLocaleTimeString("es-ES", {
-    hour: "2-digit", minute: "2-digit"
-}) : ""
+const formatTime = (d) => {
+    if (!d) return ""
+    const date = new Date(d)
+    const userTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone
+    return date.toLocaleTimeString("es-ES", {
+        timeZone: userTimezone,
+        hour: "2-digit",
+        minute: "2-digit"
+    })
+}
 
 // ── Modal de vista previa ─────────────────────────────────────────────────
 const PhotoModal = ({ photo, onClose, onDelete, onReview }) => {
@@ -46,8 +62,16 @@ const PhotoModal = ({ photo, onClose, onDelete, onReview }) => {
                             {photo.employee?.firstname} {photo.employee?.lastname}
                         </p>
                         <p className="text-xs text-white/50">
-                            {photo.description || "Sin descripción"} · {formatDate(photo.workdate)}
+                            {photo.description || "Sin descripción"}
                         </p>
+                        <p className="text-lg font-bold text-white mt-1">
+                            {formatDate(photo.workdate)}
+                        </p>
+                        {photo.captureDate && (
+                            <p className="text-xs text-white/60">
+                                Capturada: {formatDate(photo.captureDate)}
+                            </p>
+                        )}
                         {photo.reviewedby && (
                             <p className="text-xs text-emerald-400 flex items-center gap-1 mt-0.5">
                                 <CheckCircle2 className="w-3 h-3" />
@@ -150,14 +174,24 @@ const PhotoCard = ({ photo, onPreview, onDelete, onReview }) => {
                 {photo.employee?.firstname} {photo.employee?.lastname}
             </p>
             <div className="flex items-center justify-between mt-0.5">
-                <p className="text-[11px] truncate flex-1 transition-colors duration-300"
-                    style={{ color: isDark ? "rgba(255,255,255,0.5)" : "#6b7280" }}>
+                <p className="text-base font-bold truncate flex-1 transition-colors duration-300"
+                    style={{ color: isDark ? "#ffffff" : "#111827" }}>
                     {photo.description || "Sin descripción"}
                 </p>
-                <span className="text-[11px] flex-shrink-0 ml-2 transition-colors duration-300"
-                    style={{ color: isDark ? "rgba(255,255,255,0.5)" : "#9ca3af" }}>
-                    {formatDate(photo.workdate)}
-                </span>
+                {/* Fechas a la derecha: workdate grande + captureDate debajo */}
+                <div className="flex flex-col items-end flex-shrink-0 ml-2">
+                    <div className="flex items-center gap-1">
+                        <CalendarDays className="w-3 h-3" style={{ color: isDark ? "#ffffff" : "#111827" }} />
+                        <span className="text-base font-bold" style={{ color: isDark ? "#ffffff" : "#111827" }}>
+                            {formatDate(photo.workdate)}
+                        </span>
+                    </div>
+                    {photo.captureDate && (
+                        <span className="text-[10px] font-medium" style={{ color: isDark ? "rgba(255,255,255,0.5)" : "#9ca3af" }}>
+                            Capturada: {formatDate(photo.captureDate)}
+                        </span>
+                    )}
+                </div>
             </div>
         </div>
     </div>
@@ -237,10 +271,12 @@ export const HRWorkPhotosPage = () => {
                 if (empID !== filters.employee) return false
             }
 
-            // Filtro por fecha
+            // Filtro por fecha (usar timezone del browser)
             if (filters.date) {
-                const photoDate = new Date(photo.workdate).toISOString().split("T")[0]
-                if (photoDate !== filters.date) return false
+                const date = new Date(photo.workdate)
+                const userTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone
+                const photoDateStr = date.toLocaleDateString("en-CA", { timeZone: userTimezone })
+                if (photoDateStr !== filters.date) return false
             }
 
             return true
