@@ -13,11 +13,13 @@ import {
     VerifyhHRToken
 } from '../middlewares/Auth.middleware.js'
 import { PermissionCheck } from '../middlewares/RoleAuth.middleware.js'
+import { uploadWorkPhotoMiddleware } from '../middlewares/WorkPhotoUpload.middleware.js'
 
 const router = express.Router()
 
 // ── Rutas Employee ────────────────────────────────────────────────────────
-router.post("/upload", VerifyEmployeeToken, HandleUploadWorkPhoto)
+// Multer procesa el multipart/form-data, luego VerifyEmployeeToken decodifica el token
+router.post("/upload", uploadWorkPhotoMiddleware.single("photo"), VerifyEmployeeToken, HandleUploadWorkPhoto)
 router.get("/my-photos", VerifyEmployeeToken, HandleGetMyWorkPhotos)
 router.delete("/delete/:photoID", VerifyEmployeeToken, HandleDeleteMyWorkPhoto)
 

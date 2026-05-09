@@ -44,7 +44,9 @@ export const HandleEmployeeDashboard = createAsyncThunk(
             }
 
             if (type === "UploadPhoto") {
-                const res = await employeeApiService.post(EmployeeEndPoints.UPLOAD_PHOTO, data)
+                // Si es FormData, no setear Content-Type para que el browser agregue el multipart boundary
+                const headers = payload.isFormData ? { "Content-Type": "multipart/form-data" } : {}
+                const res = await employeeApiService.post(EmployeeEndPoints.UPLOAD_PHOTO, data, { headers })
                 return { ...res.data, type: "UploadPhoto" }
             }
 
