@@ -4,17 +4,15 @@
  * 
  * @returns {Object} {
  *   role: string,          // "HR-Admin" | "HR-Manager" | "HR-Viewer"
- *   permissions: Object,   // { employees: {...}, departments: {...}, ... }
+ *   permissions: Object,  // { employees: {...}, departments: {...}, ... }
  *   isAdmin: boolean,
  *   isManager: boolean,
  *   isViewer: boolean,
- *   isReady: boolean,      // true cuando el usuario está logueado (tiene role)
- *   can: Function          // (module: string, action: string) => boolean
+ *   can: Function        // (module: string, action: string) => boolean
  * }
  * 
  * @example
- * const { role, isViewer, isReady, can } = useHRAuth()
- * if (!isReady) return <Loading />
+ * const { role, isViewer, can } = useHRAuth()
  * if (isViewer) { /* restringido /* }
  * if (can("employees", "create")) { /* tiene permiso /* }
  */
@@ -24,36 +22,21 @@ import { useSelector } from "react-redux"
 
 export const useHRAuth = () => {
     // ── Obtener datos del HRReducer ───────────────────────────────────
-    // El rol viene del login (CHECKLOGIN) y está siempre disponible cuando el usuario está logueado
-    // Los permissions vienen del endpoint /me que se llama después del login
-    const role = useSelector(s => s.HRReducer?.data?.role)
+    const role       = useSelector(s => s.HRReducer?.data?.role)
     const permissions = useSelector(s => s.HRReducer?.data?.permissions)
     
-    // ── Estado de carga ──────────────────────────────────────────────
-    // isReady = true cuando el usuario está logueado (tiene role)
-    // El rol siempre está disponible desde el login, no necesitamos permissions para saber si está logueado
-    const isReady = !!(role)
+    // ── Computar helpers de rol ───────────────────────────────────────
+    const isAdmin   = role === "HR-Admin"
+    const isManager = role === "HR-Manager"
+    const isViewer  = role === "HR-Viewer"
     
-    // ── Memoización para computar helpers ────────────────────────────
-    const authData = useMemo(() => {
-        const isAdmin   = role === "HR-Admin"
-        const isManager = role === "HR-Manager"
-        const isViewer  = role === "HR-Viewer"
-        
-        /**
-         * Verifica si el HR actual tiene permiso para una acción específica
-         * HR-Admin siempre tiene todos los permisos (bypass automático)
-         * HR-Manager y HR-Viewer consultan permissions[module][action]
-         * 
-         * @param {string} module - Nombre del módulo (ej: "employees", "departments")
-         * @param {string} action - Acción a verificar (ej: "create", "read", "update", "delete")
-         * @returns {boolean} true si tiene permiso, false si no
-         */
-        const can = (module, action) => {
+    // ── Función can memoizada ─────────────────────────────────────────
+    const can = useMemo(() => {
+        return (module, action) => {
             // HR-Admin tiene todos los permisos
             if (isAdmin) return true
             
-            // Si no hay permissions aún (antes de GET_HR_ME), denegar
+            // Si no hay permissions, denegar (excepto read)
             if (!permissions || typeof permissions !== "object") {
                 return false
             }
@@ -67,41 +50,21 @@ export const useHRAuth = () => {
             // Retornar el valor booleano del permiso específico
             return modulePerms[action] === true
         }
-        
-        return {
-            isAdmin,
-            isManager,
-            isViewer,
-            can
-        }
-    }, [role, permissions])
+    }, [isAdmin, permissions])
     
-    // ── Retornar datos y helpers ───────────────────────────────────────────
+    // ── Retornar datos y helpers ───────────────────────────────────────
     return {
-        // ── Datos principales ─────────────────────────────────────────────
         role: role || null,
         permissions: permissions || {},
-        
-        // ── Estado de carga ─────────────────────────────────────────────
-        // isReady indica que el usuario está logueado (tiene role)
-        // Usar este flag para mostrar loading mientras se verifican permisos
-        isReady,
-        
-        // ── Helpers de rol ────────────────────────────────────────────────
-        isAdmin:   authData.isAdmin,
-        isManager: authData.isManager,
-        isViewer:  authData.isViewer,
-        
-        // ── Función de verificación de permisos ───────────────────────────
-        can: authData.can,
-        
-        // ── Helpers rápidos ───────────────────────────────────────────────
-        canCreate: (module) => authData.can(module, "create"),
-        canUpdate: (module) => authData.can(module, "update"),
-        canDelete: (module) => authData.can(module, "delete"),
-        canRead:   (module) => authData.can(module, "read"),
+        isAdmin,
+        isManager,
+        isViewer,
+        can,
+        canCreate: (module) => can(module, "create"),
+        canUpdate: (module) => can(module, "update"),
+        canDelete: (module) => can(module, "delete"),
+        canRead:   (module) => can(module, "read"),
     }
 }
 
-// ── Exportación por defecto ──────────────────────────────────────────────
 export default useHRAuth

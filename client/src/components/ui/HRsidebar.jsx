@@ -1,9 +1,7 @@
-import { useDispatch } from "react-redux"
+import { useDispatch, useSelector } from "react-redux"
 import { useNavigate } from "react-router-dom"
-import { useMemo } from "react"
 import { HandleHRLogout } from "../../redux/Thunks/HRThunk.js"
 import { DashboardSidebar } from "./DashboardSidebar.jsx"
-import { useHRAuth } from "../../hooks/useHRAuth.js"
 
 // ── Items del menú (se filtran según rol) ──────────────────────────────
 const HR_NAV_ITEMS_ALL = [
@@ -25,26 +23,19 @@ const HR_NAV_ITEMS_ALL = [
 export function HRdashboardSidebar() {
     const dispatch = useDispatch()
     const navigate = useNavigate()
-    const { isViewer, isReady } = useHRAuth()
-
+    
+    // ── Obtener rol directamente del HRReducer ───────────────────────
+    // El rol viene del CHECKLOGIN o GET_HR_ME, ambos establecen HRReducer.data.role
+    const role = useSelector(s => s.HRReducer?.data?.role)
+    
+    // ── Determinar si es HR-Viewer ───────────────────────────────────
+    const isViewer = role === "HR-Viewer"
+    
     // ── Filtrar items según rol ───────────────────────────────────────
-    // Si no estamos listos, mostrar todos los items (evitar flash de contenido)
-    // Cuando isReady sea true, el filtrado se actualizará automáticamente
-    const navItems = useMemo(() => {
-        // Mientras no esté listo, mostrar todos los items
-        if (!isReady) {
-            return HR_NAV_ITEMS_ALL
-        }
-        
-        // Cuando esté listo, filtrar para HR-Viewer
-        return HR_NAV_ITEMS_ALL.filter(item => {
-            // Ocultar "Perfiles HR" solo para HR-Viewer
-            if (item.label === "Perfiles HR" && isViewer) {
-                return false
-            }
-            return true
-        })
-    }, [isReady, isViewer])
+    // Si es HR-Viewer, ocultar "Perfiles HR"
+    const navItems = isViewer 
+        ? HR_NAV_ITEMS_ALL.filter(item => item.label !== "Perfiles HR")
+        : HR_NAV_ITEMS_ALL
 
     const handleLogout = () => {
         dispatch(HandleHRLogout()).finally(() => {
