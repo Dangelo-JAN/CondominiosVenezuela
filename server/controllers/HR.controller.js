@@ -21,7 +21,8 @@ export const HandleHRMe = async (req, res) => {
                 lastname: HR.lastname,
                 email: HR.email,
                 role: HR.role,
-                organizationID: HR.organizationID
+                organizationID: HR.organizationID,
+                permissions: HR.permissions ? HR.permissions.toObject() : {}
             }
         })
     } catch (error) {
