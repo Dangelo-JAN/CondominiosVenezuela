@@ -4,6 +4,7 @@ import { useMemo } from "react"
 import { HandleHRLogout } from "../../redux/Thunks/HRThunk.js"
 import { DashboardSidebar } from "./DashboardSidebar.jsx"
 import { useHRAuth } from "../../hooks/useHRAuth.js"
+import { Loading } from "../common/loading.jsx"
 
 // ── Items del menú (se filtran según rol) ──────────────────────────────
 const HR_NAV_ITEMS_ALL = [
@@ -25,7 +26,13 @@ const HR_NAV_ITEMS_ALL = [
 export function HRdashboardSidebar() {
     const dispatch = useDispatch()
     const navigate = useNavigate()
-    const { isViewer } = useHRAuth()
+    const { isViewer, isReady } = useHRAuth()
+
+    // ── No renderizar hasta que los datos estén listos ────────────────
+    // Esto asegura que role y permissions están disponibles antes de filtrar
+    if (!isReady) {
+        return <Loading />
+    }
 
     // ── Filtrar items según rol ───────────────────────────────────────
     // HR-Viewer NO ve "Perfiles HR" (restricción de navegación)

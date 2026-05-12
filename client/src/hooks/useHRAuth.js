@@ -1,7 +1,7 @@
 /**
  * @name useHRAuth
  * @description Hook personalizado para acceder a los permisos y rol del HR autenticado.
- *              Utiliza los datos del HRReducer que ahora incluye permissions del endpoint GET /api/v1/HR/me
+ *              Espera a que los datos completos (incluyendo permissions) estén disponibles.
  * 
  * @returns {Object} {
  *   role: string,          // "HR-Admin" | "HR-Manager" | "HR-Viewer"
@@ -9,11 +9,13 @@
  *   isAdmin: boolean,
  *   isManager: boolean,
  *   isViewer: boolean,
+ *   isReady: boolean,      // true cuando role y permissions están disponibles
  *   can: Function          // (module: string, action: string) => boolean
  * }
  * 
  * @example
- * const { role, isViewer, can } = useHRAuth()
+ * const { role, isViewer, isReady, can } = useHRAuth()
+ * if (!isReady) return <Loading />
  * if (isViewer) { /* restringido /* }
  * if (can("employees", "create")) { /* tiene permiso /* }
  */
@@ -22,12 +24,19 @@ import { useMemo } from "react"
 import { useSelector } from "react-redux"
 
 export const useHRAuth = () => {
-    // ── Obtener datos directamente del HRReducer ────────────────────────
-    // HRReducer.data viene del endpoint GET /api/v1/HR/me que ahora incluye permissions
-    const role       = useSelector(s => s.HRReducer?.data?.role)
-    const permissions = useSelector(s => s.HRReducer?.data?.permissions)
+    // ── Obtener datos del HRReducer ───────────────────────────────────
+    // IMPORTANTE: Solo consideramos que los datos están listos cuando
+    // tanto role como permissions están disponibles (indicador de GET_HR_ME completado)
+    const HRData = useSelector(s => s.HRReducer?.data)
+    const role       = HRData?.role
+    const permissions = HRData?.permissions
     
-    // ── Memoización para computar helpers ────────────────────────────────
+    // ── Estado de carga ──────────────────────────────────────────────
+    // Solo estamos "listos" cuando tenemos role Y permissions (del endpoint GET_HR_ME)
+    // Esto evita problemas cuando CHECKLOGIN llena state.data sin permissions
+    const isReady = !!(role && permissions)
+    
+    // ── Memoización para computar helpers ────────────────────────────
     const authData = useMemo(() => {
         const isAdmin   = role === "HR-Admin"
         const isManager = role === "HR-Manager"
@@ -72,6 +81,11 @@ export const useHRAuth = () => {
         // ── Datos principales ─────────────────────────────────────────────
         role: role || null,
         permissions: permissions || {},
+        
+        // ── Estado de carga ─────────────────────────────────────────────
+        // isReady indica que los datos están completamente cargados
+        // Usar este flag para mostrar loading mientras se verifican permisos
+        isReady,
         
         // ── Helpers de rol ────────────────────────────────────────────────
         isAdmin:   authData.isAdmin,
