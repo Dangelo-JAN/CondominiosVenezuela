@@ -4,7 +4,6 @@ import { useMemo } from "react"
 import { HandleHRLogout } from "../../redux/Thunks/HRThunk.js"
 import { DashboardSidebar } from "./DashboardSidebar.jsx"
 import { useHRAuth } from "../../hooks/useHRAuth.js"
-import { Loading } from "../common/loading.jsx"
 
 // ── Items del menú (se filtran según rol) ──────────────────────────────
 const HR_NAV_ITEMS_ALL = [
@@ -28,15 +27,16 @@ export function HRdashboardSidebar() {
     const navigate = useNavigate()
     const { isViewer, isReady } = useHRAuth()
 
-    // ── No renderizar hasta que los datos estén listos ────────────────
-    // Esto asegura que role y permissions están disponibles antes de filtrar
-    if (!isReady) {
-        return <Loading />
-    }
-
     // ── Filtrar items según rol ───────────────────────────────────────
-    // HR-Viewer NO ve "Perfiles HR" (restricción de navegación)
+    // Si no estamos listos, mostrar todos los items (evitar flash de contenido)
+    // Cuando isReady sea true, el filtrado se actualizará automáticamente
     const navItems = useMemo(() => {
+        // Mientras no esté listo, mostrar todos los items
+        if (!isReady) {
+            return HR_NAV_ITEMS_ALL
+        }
+        
+        // Cuando esté listo, filtrar para HR-Viewer
         return HR_NAV_ITEMS_ALL.filter(item => {
             // Ocultar "Perfiles HR" solo para HR-Viewer
             if (item.label === "Perfiles HR" && isViewer) {
@@ -44,7 +44,7 @@ export function HRdashboardSidebar() {
             }
             return true
         })
-    }, [isViewer])
+    }, [isReady, isViewer])
 
     const handleLogout = () => {
         dispatch(HandleHRLogout()).finally(() => {

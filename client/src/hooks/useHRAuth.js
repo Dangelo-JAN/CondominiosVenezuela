@@ -1,7 +1,6 @@
 /**
  * @name useHRAuth
  * @description Hook personalizado para acceder a los permisos y rol del HR autenticado.
- *              Espera a que los datos completos (incluyendo permissions) estén disponibles.
  * 
  * @returns {Object} {
  *   role: string,          // "HR-Admin" | "HR-Manager" | "HR-Viewer"
@@ -9,7 +8,7 @@
  *   isAdmin: boolean,
  *   isManager: boolean,
  *   isViewer: boolean,
- *   isReady: boolean,      // true cuando role y permissions están disponibles
+ *   isReady: boolean,      // true cuando el usuario está logueado (tiene role)
  *   can: Function          // (module: string, action: string) => boolean
  * }
  * 
@@ -25,16 +24,15 @@ import { useSelector } from "react-redux"
 
 export const useHRAuth = () => {
     // ── Obtener datos del HRReducer ───────────────────────────────────
-    // IMPORTANTE: Solo consideramos que los datos están listos cuando
-    // tanto role como permissions están disponibles (indicador de GET_HR_ME completado)
-    const HRData = useSelector(s => s.HRReducer?.data)
-    const role       = HRData?.role
-    const permissions = HRData?.permissions
+    // El rol viene del login (CHECKLOGIN) y está siempre disponible cuando el usuario está logueado
+    // Los permissions vienen del endpoint /me que se llama después del login
+    const role = useSelector(s => s.HRReducer?.data?.role)
+    const permissions = useSelector(s => s.HRReducer?.data?.permissions)
     
     // ── Estado de carga ──────────────────────────────────────────────
-    // Solo estamos "listos" cuando tenemos role Y permissions (del endpoint GET_HR_ME)
-    // Esto evita problemas cuando CHECKLOGIN llena state.data sin permissions
-    const isReady = !!(role && permissions)
+    // isReady = true cuando el usuario está logueado (tiene role)
+    // El rol siempre está disponible desde el login, no necesitamos permissions para saber si está logueado
+    const isReady = !!(role)
     
     // ── Memoización para computar helpers ────────────────────────────
     const authData = useMemo(() => {
@@ -55,11 +53,13 @@ export const useHRAuth = () => {
             // HR-Admin tiene todos los permisos
             if (isAdmin) return true
             
+            // Si no hay permissions aún (antes de GET_HR_ME), denegar
+            if (!permissions || typeof permissions !== "object") {
+                return false
+            }
+            
             // Verificar que el módulo y acción existan
             if (!module || !action) return false
-            
-            // Verificar que las estructuras de permisos existan
-            if (!permissions || typeof permissions !== "object") return false
             
             const modulePerms = permissions[module]
             if (!modulePerms || typeof modulePerms !== "object") return false
@@ -83,7 +83,7 @@ export const useHRAuth = () => {
         permissions: permissions || {},
         
         // ── Estado de carga ─────────────────────────────────────────────
-        // isReady indica que los datos están completamente cargados
+        // isReady indica que el usuario está logueado (tiene role)
         // Usar este flag para mostrar loading mientras se verifican permisos
         isReady,
         
