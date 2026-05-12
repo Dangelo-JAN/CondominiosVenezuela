@@ -16,6 +16,7 @@ import { useSelector, useDispatch } from "react-redux"
 import { HandleGetHRDepartments, HandleDeleteHRDepartments, HandlePatchHRDepartments } from "../../../redux/Thunks/HRDepartmentPageThunk"
 import { Dialog, DialogContent, DialogClose } from "@/components/ui/dialog"
 import { Loading } from "../loading.jsx"
+import { useHRAuth } from "../../../hooks/useHRAuth.js"
 import { ThemedHeadingBar } from "./ListDesigns.jsx"
 import { DepartmentListItems } from "./ListDesigns.jsx"
 import { useToast } from "../../../hooks/use-toast.js"
@@ -27,6 +28,7 @@ export const HRDepartmentTabs = () => {
     const { toast } = useToast()
     const HRDepartmentState = useSelector((state) => state.HRDepartmentPageReducer)
     const dispatch = useDispatch()
+    const { isViewer: isHRViewer } = useHRAuth()
     const [department, setdepartment] = useState("All Departments")
     const [showDeleteDialog, setShowDeleteDialog] = useState(false)
     const [showEditDialog, setShowEditDialog] = useState(false)
@@ -93,7 +95,7 @@ export const HRDepartmentTabs = () => {
                     />
                 </div>
 
-                {department !== "All Departments" && (
+                {department !== "All Departments" && !isHRViewer && (
                     <DropdownMenu>
                         <DropdownMenuTrigger asChild>
                             <Button className="flex items-center gap-2 px-3 py-2 rounded-xl text-sm font-semibold

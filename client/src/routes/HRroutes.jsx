@@ -8,6 +8,7 @@ import { ResetHRPasswordPage } from "../pages/HumanResources/resetpassword.jsx"
 import { ResetHRVerifyEmailPage } from "../pages/HumanResources/resetemail.jsx"
 import { HRDashboardPage } from "../pages/HumanResources/Dashboard Childs/dashboardpage.jsx"
 import { HRProtectedRoutes } from "./HRprotectedroutes.jsx"
+import { ProtectedHRRoute } from "../components/common/ProtectedHRRoute.jsx"
 import { HREmployeesPage } from "../pages/HumanResources/Dashboard Childs/employeespage.jsx"
 import { HRDepartmentPage } from "../pages/HumanResources/Dashboard Childs/departmentpage.jsx"
 import { HRSchedulePage } from "../pages/HumanResources/Dashboard Childs/HRSchedulePage.jsx"
@@ -69,7 +70,11 @@ export const HRRoutes = [
             },
             {
                 path: "/HR/dashboard/hr-profiles",
-                element: <HRProfilesPage />
+                element: (
+                    <ProtectedHRRoute allowedRoles={["HR-Admin", "HR-Manager"]}>
+                        <HRProfilesPage />
+                    </ProtectedHRRoute>
+                )
             },
             {
                 path: "/HR/dashboard/bitacoras",

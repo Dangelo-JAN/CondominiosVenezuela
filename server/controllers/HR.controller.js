@@ -6,14 +6,14 @@ import { Organization } from "../models/Organization.model.js"
 export const HandleHRMe = async (req, res) => {
     try {
         const HR = await HumanResources.findOne({ _id: req.HRid, organizationID: req.ORGID })
-        
+
         if (!HR) {
             return res.status(404).json({ success: false, message: "HR Not Found", type: "HRMe" })
         }
 
-        return res.status(200).json({ 
-            success: true, 
-            message: "HR Data Retrieved Successfully", 
+        return res.status(200).json({
+            success: true,
+            message: "HR Data Retrieved Successfully",
             type: "HRMe",
             data: {
                 _id: HR._id,
@@ -22,7 +22,8 @@ export const HandleHRMe = async (req, res) => {
                 email: HR.email,
                 role: HR.role,
                 cargo: HR.cargo,
-                organizationID: HR.organizationID
+                organizationID: HR.organizationID,
+                permissions: HR.permissions ? HR.permissions.toObject() : {}
             }
         })
     } catch (error) {
@@ -104,7 +105,7 @@ export const HandleDeleteHR = async (req, res) => {
 
         await organization.save()
         await HR.deleteOne()
-        
+
         return res.status(200).json({ success: true, message: "Human Resources Deleted Successfully" })
     } catch (error) {
         return res.status(500).json({ success: false, message: "Internal Server Error", error: error })
