@@ -54,7 +54,12 @@ export const HRAsyncReducer = (builder, thunk) => {
                 state.isAuthenticated = true
                 state.isAuthourized = true
                 state.error.status = false;
-                state.data = action.payload;
+                // Preserve existing data, only update role/permissions if provided
+                state.data = {
+                    ...state.data,
+                    ...(action.payload.role && { role: action.payload.role }),
+                    ...(action.payload.permissions && { permissions: action.payload.permissions })
+                }
             }
             if (action.payload.type == "HRverifyemail") {
                 state.isSignUp = true
@@ -100,7 +105,11 @@ export const HRAsyncReducer = (builder, thunk) => {
             if (action.payload.type == "HRMe") {
                 state.isLoading = false;
                 state.error.status = false;
-                state.data = action.payload.data;
+                // Actualizar todos los campos del HR desde /me
+                state.data = {
+                    ...state.data,
+                    ...action.payload.data
+                }
             }
         })
         .addCase(thunk.rejected, (state, action) => {
