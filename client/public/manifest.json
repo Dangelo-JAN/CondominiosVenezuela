@@ -1,11 +1,11 @@
 {
-    "name": "EMS — Employee Management System",
-    "short_name": "EMS",
+    "name": "Condominios Venezuela - SGC",
+    "short_name": "CondoVe SGC",
     "description": "Gestiona tu equipo de forma inteligente",
     "start_url": "/",
     "display": "standalone",
     "background_color": "#0f0f1a",
-    "theme_color": "#6366f1",
+    "theme_color": "#003DA5",
     "orientation": "portrait-primary",
     "icons": [
         { "src": "/icons/icon-72x72.png",   "sizes": "72x72",   "type": "image/png" },

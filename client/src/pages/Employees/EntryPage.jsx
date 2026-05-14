@@ -34,14 +34,14 @@ export const EntryPage = () => {
             <nav className="flex items-center justify-between px-5 sm:px-8 py-4 sm:py-6 border-b transition-colors duration-300"
                 style={{ borderColor: isDark ? "rgba(99,102,241,0.12)" : "#f3f4f6" }}>
 
-                {/* Logo */}
-                <div className="flex items-center gap-2">
+                {/* Logo - texto debajo en móvil */}
+                <div className="flex flex-col sm:flex-row items-center gap-1 sm:gap-2">
                     <img
                         src="/icons/IsotipoMarca-CondoVe-64x64-solo.png"
                         alt="Logo CondoVe SGC"
                         className="w-9 h-9 sm:w-10 sm:h-10 rounded-lg object-contain"
                     />
-                    <span className="text-xl sm:text-2xl font-bold tracking-tight"
+                    <span className="text-lg sm:text-2xl font-bold tracking-tight text-center sm:text-left"
                         style={{ color: isDark ? "#ffffff" : "#111827" }}>
                         CondoVE<span style={{ color: "#003DA5", fontSize: "0.65em", marginLeft: "0.15em" }}>SGC</span><span style={{ color: "#7c3aed" }}>.</span>
                     </span>

@@ -10,7 +10,15 @@ import { useIsDark } from "../../../hooks/useIsDark.js"
 export const HRDashboardPage = () => {
     const isDark = useIsDark()
     const DashboardState = useSelector((state) => state.dashboardreducer)
+    const HRState = useSelector((state) => state.HRReducer)
     const dispatch = useDispatch()
+
+    // Datos del usuario HR actual
+    const hrUser = HRState?.data
+    const hrName = hrUser?.firstname && hrUser?.lastname 
+        ? `${hrUser.firstname} ${hrUser.lastname}` 
+        : null
+    const hrRole = hrUser?.role || null
 
     const DataArray = [
         { image: "/assets/HR-Dashboard/employee-2.png", dataname: "employees",   path: "/HR/dashboard/employees" },
@@ -42,8 +50,13 @@ export const HRDashboardPage = () => {
                     </p>
                     <h1 className="text-2xl xl:text-3xl font-bold tracking-tight
                         text-gray-900 dark:text-white">
-                        {timeGreeting} 👋
+                        {hrName ? `${timeGreeting}, ${hrName}` : timeGreeting} 👋
                     </h1>
+                    {hrRole && (
+                        <p className="text-xs font-semibold text-blue-500 dark:text-blue-400">
+                            {hrRole}
+                        </p>
+                    )}
                     <p className="text-sm mt-1 text-gray-400 dark:text-gray-500">
                         {now.toLocaleDateString("es-ES", { weekday: "long", year: "numeric", month: "long", day: "numeric" })}
                     </p>
