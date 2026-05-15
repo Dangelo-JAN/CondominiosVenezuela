@@ -25,6 +25,11 @@ export const HRProtectedRoutes = ({ children }) => {
             const isAuthenticated = loginPayload?.success === true && !loginPayload?.gologin
             const isVerified      = verifyPayload?.alreadyverified === true
 
+            // Obtener datos del usuario HR actual
+            if (isAuthenticated) {
+                await dispatch(HandleGetHumanResources({ apiroute: "GET_HR_ME" }))
+            }
+
             setAuthResult({ isAuthenticated, isVerified })
             setIsChecking(false)
         }

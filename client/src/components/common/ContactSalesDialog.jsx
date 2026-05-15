@@ -72,13 +72,13 @@ export const ContactSalesDialog = () => {
     return (
         <Dialog open={isOpen} onOpenChange={setIsOpen}>
             <DialogTrigger asChild>
-                <button className="relative group flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-semibold transition-all duration-300
+                <button className="relative group flex items-center gap-1.5 sm:gap-2 px-3 sm:px-5 py-2 sm:py-2.5 rounded-full text-xs sm:text-sm font-semibold transition-all duration-300
                     text-white bg-[#111827] hover:bg-[#1f2937] border border-gray-800 shadow-xl shadow-gray-900/10
                     dark:bg-[#ffffff] dark:hover:bg-gray-100 dark:text-[#111827] dark:border-white/90 dark:shadow-white/10
                     hover:-translate-y-0.5"
                 >
-                    <span className="relative z-10 flex items-center gap-2">
-                        <Rocket className="w-4 h-4 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
+                    <span className="relative z-10 flex items-center gap-1.5 sm:gap-2">
+                        <Rocket className="w-3.5 h-3.5 sm:w-4 sm:h-4 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
                         Hablemos
                     </span>
                     <div className="absolute inset-0 rounded-full blur-md bg-gradient-to-r from-blue-500/30 to-purple-500/30 dark:from-blue-400/40 dark:to-purple-400/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
