@@ -8,7 +8,7 @@ import {
     useSidebar,
 } from "@/components/ui/sidebar"
 import { NavLink } from "react-router-dom"
-import { Zap, LogOut } from "lucide-react"
+import { LogOut } from "lucide-react"
 
 export function DashboardSidebar({ navItems = [], onLogout, appName = "CondoVE SGC", appSubtitle = "Panel" }) {
     const { setOpenMobile, isMobile } = useSidebar()
@@ -46,11 +46,12 @@ export function DashboardSidebar({ navItems = [], onLogout, appName = "CondoVE S
                     className="flex items-center gap-3 px-5 py-5 border-b"
                     style={{ borderColor: "var(--sidebar-border)" }}
                 >
-                    <div
-                        className="flex items-center justify-center w-9 h-9 rounded-xl flex-shrink-0"
-                        style={{ background: "linear-gradient(135deg, #003DA5, #8b5cf6)" }}
-                    >
-                        <Zap className="w-5 h-5 text-white" />
+                    <div className="w-9 h-9 rounded-xl flex-shrink-0 overflow-hidden">
+                        <img 
+                            src="/icons/IsotipoMarca-CondoVe-logo-32x32.png" 
+                            alt="CondoVe Logo" 
+                            className="w-full h-full object-contain"
+                        />
                     </div>
                     <div>
                         <p className="font-bold text-base tracking-tight leading-none text-gray-900 dark:text-white">

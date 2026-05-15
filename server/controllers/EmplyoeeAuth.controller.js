@@ -170,11 +170,25 @@ export const HandleEmplyoeeLogin = async (req, res) => {
 
 export const HandleEmployeeCheck = async (req, res) => {
     try {
-        const employee = await Employee.findOne({ _id: req.EMPID, organizationID: req.ORGID })
+        const employee = await Employee.findOne({ _id: req.EMPID, organizationID: req.ORGID }).populate("department")
         if (!employee) {
             return res.status(404).json({ success: false, message: "Employee not found" })
         }
-        return res.status(200).json({ success: true, message: "Employee Already Logged In" })
+        return res.status(200).json({ 
+            success: true, 
+            message: "Employee Already Logged In",
+            employee: {
+                _id: employee._id,
+                firstname: employee.firstname,
+                lastname: employee.lastname,
+                email: employee.email,
+                position: employee.position,
+                department: employee.department ? {
+                    _id: employee.department._id,
+                    name: employee.department.name
+                } : null
+            }
+        })
     } catch (error) {
         return res.status(500).json({ success: false, error: error, message: "internal error" })
     }

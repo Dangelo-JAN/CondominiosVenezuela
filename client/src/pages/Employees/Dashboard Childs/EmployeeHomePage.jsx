@@ -48,8 +48,15 @@ export const EmployeeHomePage = () => {
     const dispatch = useDispatch()
     const { toast } = useToast()
     const { attendance, schedules, isLoading } = useSelector(s => s.employeedashboardreducer)
+    const employeeData = useSelector(s => s.employeereducer.data?.employee)
     const [actionLoading, setActionLoading] = useState(false)
     const isDark = useIsDark()
+
+    // Datos del empleado actual
+    const empName = employeeData?.firstname && employeeData?.lastname 
+        ? `${employeeData.firstname} ${employeeData.lastname}` 
+        : null
+    const empDepartment = employeeData?.department?.name || employeeData?.position || null
 
     const today = new Date()
     const todayStr = today.toISOString().split("T")[0]
@@ -134,8 +141,13 @@ export const EmployeeHomePage = () => {
                 </p>
                 <h1 className="text-2xl xl:text-3xl font-bold tracking-tight
                     text-gray-900 dark:text-white">
-                    Bienvenido 👋
+                    {empName ? `Bienvenido, ${empName} 👋` : "Bienvenido 👋"}
                 </h1>
+                {empDepartment && (
+                    <p className="text-xs font-semibold text-blue-500 dark:text-blue-400">
+                        {empDepartment}
+                    </p>
+                )}
                 <p className="text-sm mt-1 text-gray-400 dark:text-gray-500">
                     {today.toLocaleDateString("es-ES", { weekday: "long", year: "numeric", month: "long", day: "numeric" })}
                 </p>
