@@ -1,41 +1,66 @@
-# Employees Management System (EMS)
+# Condominios Venezuela - SGC (Sistema de Gestión Condominial)
 
 > [!IMPORTANT]
 > Note: This project is currently under development. All the relevant details will be updated as the project progresses.
 
 ## 🚀 Project Overview
-The Employees Management System (EMS) is a robust, full-stack web application designed to streamline and optimize employee management processes for small- to medium-sized organizations. 
-Built on the MERN stack (MongoDB, Express.js, React.js, Node.js), the EMS provides a seamless, user-friendly experience for employees and HR professionals alike.
+The CondoVe is a robust, full-stack web application designed to streamline and optimize employee management processes. 
+Built on the MERN stack (MongoDB, Express.js, React.js, Node.js), the SGC provides a seamless, user-friendly experience for employees and HR professionals alike.
 
 ## Early Screenshots
 
-### EMS Entry Page : 
+### CondoVE Entry Page : 
 
-![EMS Entry](https://github.com/user-attachments/assets/75dc7a8d-d816-4597-b89c-6ade8998afd9)
+![CondoVE Entry](client/public/images/HOME-Modo-claro.png)
+![CondoVE Entry](client/public/images/HOME-Modo-oscuro.png)
 
-### EMS HR Sign Up : 
+### CondoVE Coordinación/Junta Sign Up : 
 
-![EMS HR-Sign up](https://github.com/user-attachments/assets/3f576691-78fb-4e66-b409-bd9ed9a1eb2c)
+![CondoVE Coordinación/Junta Sign up](client/public/images/SIGNUP.png)
 
-### EMS HR Login : 
+### CondoVE Login : 
 
-![EMS HR-login](https://github.com/user-attachments/assets/c9156026-cd16-4423-a7da-ddc2bdad053e)
+![CondoVE Login](client/public/images/LOGIN.png)
 
-### EMS HR Dashboard : 
+### CondoVE Coordinación/Junta Dashboard : 
 
-![HR-Dashboard](https://github.com/user-attachments/assets/ca4c14e0-dcfd-41b2-83cd-1ad67a474142)
+![CondoVE Coordinación/Junta Dashboard](client/public/images/DASHBOARDCoordinacion-Modo-oscuro.png)
 
-### EMS HR Employees Page : 
 
-![Employees-Data](https://github.com/user-attachments/assets/b84d5027-1cc2-4083-aa89-770db32a2b39)
+### CondoVE Coordinación/Junta Photos Page : 
 
-### EMS HR Departments Page : 
+![CondoVE Coordinación/Junta Photos](client/public/images/FOTOS-Modo-oscuro.png)
 
-![Department-Data](https://github.com/user-attachments/assets/30606767-745a-4898-bb44-4dd453a5db24)
+### CondoVE Coordinación/Junta Schedule Page : 
 
-### EMS HR Departments Data : 
+![CondoVE Coordinación/Junta Schedule](client/public/images/HORARIOS-Modo-oscuro.png)
 
-![Department-Data](https://github.com/user-attachments/assets/b21a4de2-1993-463f-99e2-c699ea07e0ec)
+### CondoVE Empleados My Schedule Page : 
+
+![CondoVE Empleados My Schedule](client/public/images/MI-HORARIO-Modo-claro.png)
+
+### CondoVE Empleados My Profile Page : 
+
+![CondoVE Empleados My Profile](client/public/images/MI-PERFIL-Modo-claro.png)
+
+### CondoVe Mobile Light Mode : 
+<p align="center">
+  <img src="client/public/images/Movil-DASHBOARD-Modo-claro.jpeg" width="18%" alt="Vista de Dashboard">
+  <img src="client/public/images/Movil-FOTOS-Modo-claro.jpeg" width="18%" alt="Vista de Fotos">
+  <img src="client/public/images/Movil-HOME-Modo-claro.jpeg" width="18%" alt="Vista de Home">
+  <img src="client/public/images/Movil-LOGIN-Modo-claro.jpeg" width="18%" alt="Vista de Login">
+  <img src="client/public/images/Movil-SIDEBAR-Modo-claro.jpeg" width="18%" alt="Vista de Sidebar">
+</p>
+
+### CondoVe Mobile Dark Mode : 
+<p align="center">
+  <img src="client/public/images/Movil-HORARIO-Modo-oscuro.jpeg" width="18%" alt="Vista de horario">
+  <img src="client/public/images/Movil-INICIO-Modo-oscuro.jpeg" width="18%" alt="Vista de Inicio">
+  <img src="client/public/images/Movil-HOME-Modo-oscuro.jpeg" width="18%" alt="Vista de Home">
+  <img src="client/public/images/Movil-PERFIL-Modo-oscuro.jpeg" width="18%" alt="Vista de Perfil">
+  <img src="client/public/images/Movil-SIGNUP-Modo-oscuro.jpeg" width="18%" alt="Vista de Signup">
+</p>
+
 
 
 ## 🌟 Key Features
@@ -106,7 +131,7 @@ Built on the MERN stack (MongoDB, Express.js, React.js, Node.js), the EMS provid
 
 ## 💡 Problem Solved
 
-The EMS addresses key challenges faced by small to medium-sized organizations, such as:
+The CondoVe - SGC addresses key challenges faced by small to medium-sized organizations, such as:
 
 * Inefficient Employee Management: By automating attendance, leave, and salary management.
 
@@ -128,94 +153,12 @@ The EMS addresses key challenges faced by small to medium-sized organizations, s
 
 * Version Control: Git, GitHub
 
-## 📦 Installation & Setup
 
-Follow these steps to set up the project locally:
-
-Prerequisites:
-
-* Node.js
-
-* MongoDB
-
-* Git
-
-> [!IMPORTANT]
-> Note: This project is currently under development. Installation instructions will be updated as the project progresses.
-
-### steps : 
-
-#### 1 Clone the repository : 
+#### Clone the repository : 
 
 ```
 
-https://github.com/Darsh-Jogi/Employee-Management-System.git
-
-```
-
-#### 2 Navigate to the project directory : 
-
-```
-
-cd employee-management-system
-
-```
-
-#### 3 Install dependencies :
-
-```
-
-cd client
-npm install
-
-```
-```
-
-cd server
-npm install
-
-```
-
-#### 4 Set up environment variables: 
-
-Create a .env file in the server directory and configure the following :
-
-```
-
-MONGODB_URI = your mongoDB connection URI
-appName = your app name
-PORT = your port
-MAILTRAP_TOKEN = your mailtrap token
-JWT_SECRET = your jwt secret
-CLIENT_URL = your client URL
-
-```
-
-Create a .env file in the client directory and configure the following :
-
-```
-
-VITE_BACKEND_API= your employee api (backend)
-
-```
-
-#### 5 Start the development server: 
-
-```
-
-cd server
-npm run server
-
-```
-
-#### 6 Navigate to the frontend : 
-
-```
-
-cd client
-npm run dev
-
-```
+https://github.com/Dangelo-JAN/CondominiosVenezuela.git
 
 
 ## 🚀 Future Enhancements
@@ -225,28 +168,9 @@ npm run dev
 * Third-Party Integrations: Integration with tools like Slack and Zoom.
 
 
-## 🙌 Contributing
-
-We welcome contributions to enhance the EMS! Feel free to fork the repository and submit pull requests.
-
-
-### Roadmap
-
-Phase 1: Implement core employee features (Dashboard, Attendance, Salary Information).
-
-Phase 2: Develop HR functionalities (Employee Management, Leave Approvals).
-
-Phase 3: Add advanced features like Recruitment and Interview Insights.
-
-Phase 4: Optimize for scalability and deploy a production-ready version.
-
-
-
 ## 🧑‍💻 Authors & Acknowledgments
 
-Darsh Jogi: Project Lead and Software Engineer
-
-Special Thanks: To all contributors and testers who made this project possible.
+Dangelo Arrivillaga: Project Lead and Software Engineer
 
 
 ## 📄 License
@@ -257,8 +181,8 @@ This project is licensed under the MIT License.
 
 For any questions or support, feel free to reach out:
 
-Email: darshjogi001@gmail.com
+Email: [Dangelo Arrivillaga GMAIL](dangeloarrivillaga@gmail.com)
 
-LinkedIn: [Darsh Jogi](https://www.linkedin.com/in/darsh-jogi-info/).
+LinkedIn: [Dangelo Arrivillaga](https://ve.linkedin.com/in/soluciones-empresariales-dangelo-arrivillaga).
 
-Thank you for visiting the Employees Management System (EMS) project! We hope it provides valuable insights into how technology can simplify employee management.
+Thank you for visiting the CondoVE project! We hope it provides valuable insights into how technology can simplify employee management.
