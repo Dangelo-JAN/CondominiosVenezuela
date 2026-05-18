@@ -412,7 +412,12 @@ export const EmployeesIDSDialogBox = ({ DepartmentID }) => {
 
     const SetEmployees = () => {
         dispatch(HandlePatchHRDepartments({ apiroute: "UPDATE", data: SelectedEmployeesData }))
-        ClearSelectedEmployeesData()
+            .then(() => {
+                dispatch(fetchEmployeesIDs({ apiroute: "GETALL" }))
+            })
+            .finally(() => {
+                ClearSelectedEmployeesData()
+            })
     }
 
     useEffect(() => {
@@ -451,26 +456,38 @@ export const EmployeesIDSDialogBox = ({ DepartmentID }) => {
                                         <CommandItem 
                                             key={index} 
                                             onSelect={(e) => e.preventDefault()}
-                                            className="cursor-default"
+                                            className={`cursor-default transition-all duration-200 ${!item.department ? 'hover:!bg-[#d9e2f2] hover:rounded-lg dark:hover:!bg-[rgba(0,61,165,0.25)] dark:hover:rounded-lg' : 'opacity-50'}`}
                                         >
                                             <div 
-                                                className="flex items-center gap-3 w-full cursor-pointer"
+                                                className={`flex items-center gap-3 w-full cursor-pointer rounded-lg px-3 py-2 transition-all duration-200 ${item.department ? 'opacity-50 dark:opacity-40 cursor-not-allowed' : ''}`}
                                                 onClick={(e) => { 
                                                     e.stopPropagation(); 
-                                                    SelectEmployees(item._id); 
+                                                    if (!item.department) {
+                                                        SelectEmployees(item._id); 
+                                                    }
                                                 }}
                                             >
                                                 <input
                                                     type="checkbox"
                                                     id={`EmployeeID-${index + 1}`}
-                                                    className="w-4 h-4 accent-blue-600 cursor-pointer"
+                                                    className={`w-4 h-4 accent-[#003DA5] rounded cursor-pointer transition-all duration-200 disabled:opacity-40 disabled:cursor-not-allowed disabled:bg-gray-200 disabled:border disabled:border-gray-300 dark:disabled:opacity-30 dark:disabled:bg-[rgba(255,255,255,0.15)] dark:disabled:border-[rgba(255,255,255,0.08)] ${item.department ? '' : 'hover:border-[#99b1db] hover:shadow-sm dark:hover:border-[rgba(0,61,165,0.40)] dark:hover:bg-[rgba(0,61,165,0.15)]'}`}
                                                     onChange={() => SelectEmployees(item._id)}
                                                     checked={SelectedEmployeesData.employeeIDArray.includes(item._id) || false}
                                                     disabled={!!item.department}
                                                     onClick={(e) => e.stopPropagation()}
                                                 />
-                                                <label htmlFor={`EmployeeID-${index + 1}`} className="text-sm flex items-center gap-2 cursor-pointer">
-                                                    <span className="font-medium text-gray-800 dark:text-white">
+                                                <label 
+                                                    htmlFor={`EmployeeID-${index + 1}`} 
+                                                    className={`text-sm flex items-center gap-2 cursor-pointer transition-all duration-200 ${item.department ? 'text-gray-400 dark:text-[rgba(255,255,255,0.35)] cursor-not-allowed' : 'text-gray-800 dark:text-white hover:text-[#003DA5] dark:hover:text-[#99b1db]'}`}
+                                                    onClick={(e) => {
+                                                        e.preventDefault();
+                                                        e.stopPropagation();
+                                                        if (!item.department) {
+                                                            document.getElementById(`EmployeeID-${index + 1}`)?.click();
+                                                        }
+                                                    }}
+                                                >
+                                                    <span className="font-medium">
                                                         {`${item.firstname} ${item.lastname}`}
                                                     </span>
                                                     {item.department && (
