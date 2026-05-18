@@ -448,15 +448,26 @@ export const EmployeesIDSDialogBox = ({ DepartmentID }) => {
                                 </CommandEmpty>
                                 <CommandGroup heading="Todos los empleados">
                                     {EmployeesIDState.data ? EmployeesIDState.data.map((item, index) => (
-                                        <CommandItem key={index}>
-                                            <div className="flex items-center gap-3 w-full">
+                                        <CommandItem 
+                                            key={index} 
+                                            onSelect={(e) => e.preventDefault()}
+                                            className="cursor-default"
+                                        >
+                                            <div 
+                                                className="flex items-center gap-3 w-full cursor-pointer"
+                                                onClick={(e) => { 
+                                                    e.stopPropagation(); 
+                                                    SelectEmployees(item._id); 
+                                                }}
+                                            >
                                                 <input
                                                     type="checkbox"
                                                     id={`EmployeeID-${index + 1}`}
-                                                    className="w-4 h-4 accent-blue-600"
-                                                    onClick={() => SelectEmployees(item._id)}
-                                                    checked={SelectedEmployeesData.employeeIDArray.includes(item._id)}
+                                                    className="w-4 h-4 accent-blue-600 cursor-pointer"
+                                                    onChange={() => SelectEmployees(item._id)}
+                                                    checked={SelectedEmployeesData.employeeIDArray.includes(item._id) || false}
                                                     disabled={!!item.department}
+                                                    onClick={(e) => e.stopPropagation()}
                                                 />
                                                 <label htmlFor={`EmployeeID-${index + 1}`} className="text-sm flex items-center gap-2 cursor-pointer">
                                                     <span className="font-medium text-gray-800 dark:text-white">
