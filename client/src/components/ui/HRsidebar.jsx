@@ -34,7 +34,7 @@ export function HRdashboardSidebar() {
             navItems={HR_NAV_ITEMS}
             onLogout={handleLogout}
             appName="CondoVE SGC"
-            appSubtitle="Panel HR"
+            appSubtitle="Panel Junta de Condominio"
         />
     )
 }

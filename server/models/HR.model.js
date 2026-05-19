@@ -23,6 +23,19 @@ const PermissionsSchema = new Schema({
     hrprofiles:     { type: PermissionModuleSchema, default: () => ({}) },
 }, { _id: false })
 
+// ── Mapeo de Cargo a Rol ─────────────────────────────────────────────────
+export const CARGO_TO_ROLE = {
+    "Presidente": "HR-Admin",
+    "Vice Presidente": "HR-Admin",
+    "Secretario": "HR-Manager",
+    "Coordinador": "HR-Manager",
+    "Propietario": "HR-Viewer",
+    "General": "HR-Viewer"
+}
+
+// ── Cargos que solo pueden tener un usuario por organización ─────────────
+export const UNIQUE_CARGOS = ["Presidente", "Vice Presidente", "Secretario", "Coordinador"]
+
 // ── Permisos por defecto según rol ────────────────────────────────────────
 export const DEFAULT_PERMISSIONS = {
     "HR-Admin": {
@@ -86,6 +99,12 @@ const HumanResourcesSchema = new Schema({
         enum: ["HR-Admin", "HR-Manager", "HR-Viewer"],
         required: true,
         default: "HR-Admin"
+    },
+    // ── Campo Cargo (posición en la junta de condominio) ──────────────────
+    cargo: {
+        type: String,
+        enum: ["Presidente", "Vice Presidente", "Secretario", "Coordinador", "Propietario", "General"],
+        default: null
     },
     permissions: {
         type: PermissionsSchema,
