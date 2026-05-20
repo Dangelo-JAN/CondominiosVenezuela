@@ -36,6 +36,16 @@ const ROLE_STYLES = {
     "HR-Viewer":  { bg: "rgba(100,116,139,0.15)", border: "rgba(100,116,139,0.35)",color: "#64748b",  icon: ShieldAlert },
 }
 
+// ── Estilos por Cargo ───────────────────────────────────────────────────────
+const CARGO_STYLES = {
+    "Presidente":       { bg: "rgba(239,68,68,0.15)",   border: "rgba(239,68,68,0.35)",   color: "#EF3340", icon: ShieldCheck },
+    "Vice Presidente": { bg: "rgba(249,115,22,0.15)",   border: "rgba(249,115,22,0.35)",   color: "#F97316", icon: ShieldCheck },
+    "Secretario":       { bg: "rgba(34,197,94,0.15)",    border: "rgba(34,197,94,0.35)",    color: "#22C55E", icon: Shield },
+    "Coordinador":      { bg: "rgba(59,130,246,0.15)",   border: "rgba(59,130,246,0.35)",   color: "#3B82F6", icon: Shield },
+    "Propietario":      { bg: "rgba(168,85,247,0.15)",   border: "rgba(168,85,247,0.35)",   color: "#A855F7", icon: ShieldAlert },
+    "General":          { bg: "rgba(100,116,139,0.15)",  border: "rgba(100,116,139,0.35)",  color: "#64748b", icon: ShieldAlert },
+}
+
 // ── Toggle de permiso ─────────────────────────────────────────────────────
 const PermToggle = ({ value, onChange, disabled }) => (
     <button
@@ -62,6 +72,7 @@ const HRCard = ({ hr, isCurrentUser, onUpdatePermissions, onUpdateRole, onToggle
 
     const isAdmin = hr.role === "HR-Admin"
     const roleStyle = ROLE_STYLES[hr.role] || ROLE_STYLES["HR-Viewer"]
+    const cargoStyle = CARGO_STYLES[hr.cargo] || roleStyle
     const RoleIcon = roleStyle.icon
 
     const handlePermChange = (module, action, value) => {
@@ -134,11 +145,11 @@ const HRCard = ({ hr, isCurrentUser, onUpdatePermissions, onUpdateRole, onToggle
         />
     )
 
-    // Badge de Admin
-    const adminBadge = isAdmin && (
+    // Badge de Cargo (mostrar cargo en lugar de rol)
+    const cargoBadge = hr.cargo && (
         <span className="text-xs font-semibold px-2.5 py-1 rounded-lg"
-            style={{ background: roleStyle.bg, color: roleStyle.color, border: `1px solid ${roleStyle.border}` }}>
-            HR-Admin
+            style={{ background: cargoStyle.bg, color: cargoStyle.color, border: `1px solid ${cargoStyle.border}` }}>
+            {hr.cargo}
         </span>
     )
 
@@ -226,11 +237,11 @@ const HRCard = ({ hr, isCurrentUser, onUpdatePermissions, onUpdateRole, onToggle
             badge={
                 <div className="flex items-center gap-2">
                     <div className="w-9 h-9 rounded-xl flex items-center justify-center"
-                        style={{ background: roleStyle.bg, border: `1px solid ${roleStyle.border}` }}>
-                        <RoleIcon className="w-4 h-4" style={{ color: roleStyle.color }} />
+                        style={{ background: cargoStyle.bg, border: `1px solid ${cargoStyle.border}` }}>
+                        <cargoStyle.icon className="w-4 h-4" style={{ color: cargoStyle.color }} />
                     </div>
                     {roleSelector}
-                    {adminBadge}
+                    {cargoBadge}
                 </div>
             }
             actions={actionButtons}
@@ -242,12 +253,45 @@ const HRCard = ({ hr, isCurrentUser, onUpdatePermissions, onUpdateRole, onToggle
     )
 }
 
+// ── Opciones de cargo según el cargo del invitador ───────────────────────
+const getCargoOptions = (inviterCargo) => {
+    const optionsMap = {
+        "Presidente": [
+            { value: "Vice Presidente", label: "Vice Presidente" },
+            { value: "Secretario", label: "Secretario" },
+            { value: "Coordinador", label: "Coordinador" },
+            { value: "Propietario", label: "Propietario" },
+            { value: "General", label: "General" },
+        ],
+        "Vice Presidente": [
+            { value: "Secretario", label: "Secretario" },
+            { value: "Coordinador", label: "Coordinador" },
+            { value: "Propietario", label: "Propietario" },
+            { value: "General", label: "General" },
+        ],
+        "Secretario": [
+            { value: "Propietario", label: "Propietario" },
+            { value: "General", label: "General" },
+        ],
+        "Coordinador": [
+            { value: "Propietario", label: "Propietario" },
+            { value: "General", label: "General" },
+        ],
+    }
+    return optionsMap[inviterCargo] || []
+}
+
 // ── Modal de invitación ───────────────────────────────────────────────────
-const InviteModal = ({ onClose, onInvite }) => {
-    const [form, setForm] = useState({ firstname: "", lastname: "", email: "", role: "HR-Manager" })
+const InviteModal = ({ onClose, onInvite, currentCargo }) => {
+    const defaultCargoOptions = getCargoOptions(currentCargo)
+    const defaultCargo = defaultCargoOptions[0]?.value || ""
+    
+    const [form, setForm] = useState({ firstname: "", lastname: "", email: "", cargo: defaultCargo })
     const [sending, setSending] = useState(false)
     const { toast } = useToast()
     const isDark = useIsDark()
+
+    const cargoOptions = getCargoOptions(currentCargo)
 
     const handleSubmit = async () => {
         if (!form.firstname || !form.lastname || !form.email) {
@@ -330,15 +374,12 @@ const InviteModal = ({ onClose, onInvite }) => {
 
                     <div className="flex flex-col gap-1">
                         <label className="text-[11px] font-semibold uppercase tracking-wider
-                            text-gray-400 dark:text-gray-500">Rol</label>
+                            text-gray-400 dark:text-gray-500">Cargo</label>
                         <CustomSelect
-                            value={form.role}
-                            onValueChange={(val) => setForm(p => ({ ...p, role: val }))}
-                            options={[
-                                { value: "HR-Manager", label: "HR-Manager" },
-                                { value: "HR-Viewer", label: "HR-Viewer" },
-                            ]}
-                            placeholder="Seleccionar rol"
+                            value={form.cargo}
+                            onValueChange={(val) => setForm(p => ({ ...p, cargo: val }))}
+                            options={cargoOptions}
+                            placeholder="Seleccionar cargo"
                             className="input-field w-full"
                         />
                     </div>
@@ -375,6 +416,7 @@ export const HRProfilesPage = () => {
     const { toast } = useToast()
     const { data: profiles, isLoading } = useSelector(s => s.HRProfilesReducer)
     const currentHRId = useSelector(s => s.HRReducer.data?.HRid)
+    const currentCargo = useSelector(s => s.HRReducer.data?.cargo)
     const [showInvite, setShowInvite] = useState(false)
 
     useEffect(() => {
@@ -492,6 +534,7 @@ export const HRProfilesPage = () => {
                 <InviteModal
                     onClose={() => setShowInvite(false)}
                     onInvite={handleInvite}
+                    currentCargo={currentCargo}
                 />
             )}
         </div>

@@ -1,25 +1,62 @@
-import { HumanResources, DEFAULT_PERMISSIONS } from "../models/HR.model.js"
+import { HumanResources, DEFAULT_PERMISSIONS, CARGO_TO_ROLE, UNIQUE_CARGOS } from "../models/HR.model.js"
 import { Organization } from "../models/Organization.model.js"
 import { SendInvitationEmail } from "../sendgrid/emails.js"
 import crypto from "crypto"
 import bcrypt from "bcrypt"
 import { GenerateJwtTokenAndSetCookiesHR } from "../utils/generatejwttokenandsetcookies.js"
 
-// ── HR-Admin: Invitar nuevo HR ────────────────────────────────────────────
+// ── Permisos de invitación por cargo ──────────────────────────────────────
+const CAN_INVITE_CARGOS = {
+    "Presidente": ["Vice Presidente", "Secretario", "Coordinador", "Propietario", "General"],
+    "Vice Presidente": ["Secretario", "Coordinador", "Propietario", "General"],
+    "Secretario": ["Propietario", "General"],
+    "Coordinador": ["Propietario", "General"]
+}
+
+// ── Invitar nuevo HR (por cargo) ──────────────────────────────────────────
 export const HandleInviteHR = async (req, res) => {
     try {
-        const { email, role, firstname, lastname } = req.body
+        const { email, cargo, firstname, lastname } = req.body
         
-        console.log("[LOG SERVER] HandleInviteHR - datos recibidos:", { email, role, firstname, lastname, orgID: req.ORGID, hrID: req.HRid })
+        console.log("[LOG SERVER] HandleInviteHR - datos recibidos:", { email, cargo, firstname, lastname, orgID: req.ORGID, hrID: req.HRid })
 
-        if (!email || !role || !firstname || !lastname) {
+        if (!email || !cargo || !firstname || !lastname) {
             console.log("[LOG SERVER] HandleInviteHR - ERROR: campos requeridos faltantes")
             return res.status(400).json({ success: false, message: "Todos los campos son requeridos" })
         }
 
-        if (!["HR-Manager", "HR-Viewer"].includes(role)) {
-            console.log("[LOG SERVER] HandleInviteHR - ERROR: rol inválido:", role)
-            return res.status(400).json({ success: false, message: "Rol inválido — solo HR-Manager o HR-Viewer" })
+        // Validar cargo válido
+        const validCargos = ["Vice Presidente", "Secretario", "Coordinador", "Propietario", "General"]
+        if (!validCargos.includes(cargo)) {
+            console.log("[LOG SERVER] HandleInviteHR - ERROR: cargo inválido:", cargo)
+            return res.status(400).json({ success: false, message: "Cargo inválido para invitación" })
+        }
+
+        // Obtener el HR que está invitando para validar permisos
+        const invitingHR = await HumanResources.findById(req.HRid)
+        if (!invitingHR) {
+            return res.status(404).json({ success: false, message: "HR no encontrado" })
+        }
+
+        // Validar que el invitador tiene permisos para invitar este cargo
+        const invitingCargo = invitingHR.cargo
+        const canInvite = CAN_INVITE_CARGOS[invitingCargo]?.includes(cargo)
+        
+        if (!canInvite) {
+            console.log("[LOG SERVER] HandleInviteHR - ERROR: permisos insuficientes:", invitingCargo, "no puede invitar", cargo)
+            return res.status(403).json({ success: false, message: `No tienes permisos para invitar el cargo de ${cargo}` })
+        }
+
+        // Validar unicidad de cargo (Presidente, Vice Presidente, Coordinador, Secretario solo uno por org)
+        if (UNIQUE_CARGOS.includes(cargo)) {
+            const existingCargo = await HumanResources.findOne({
+                organizationID: req.ORGID,
+                cargo: cargo
+            })
+            if (existingCargo) {
+                console.log("[LOG SERVER] HandleInviteHR - ERROR: cargo ya existe:", cargo)
+                return res.status(400).json({ success: false, message: `Ya existe un ${cargo} en la organización` })
+            }
         }
 
         const existing = await HumanResources.findOne({ email })
@@ -32,6 +69,9 @@ export const HandleInviteHR = async (req, res) => {
         const invitationtoken = crypto.randomBytes(32).toString("hex")
         const invitationtokenexpires = Date.now() + 1000 * 60 * 60 * 48 // 48 horas
 
+        // Mapear cargo a rol
+        const role = CARGO_TO_ROLE[cargo]
+
         // Crear HR con permisos por defecto del rol — sin password aún
         const newHR = await HumanResources.create({
             firstname,
@@ -40,6 +80,7 @@ export const HandleInviteHR = async (req, res) => {
             password: await bcrypt.hash(crypto.randomBytes(16).toString("hex"), 10), // temp password
             contactnumber: "pendiente",
             role,
+            cargo,
             permissions: DEFAULT_PERMISSIONS[role],
             organizationID: req.ORGID,
             invitedby: req.HRid,
@@ -56,7 +97,7 @@ export const HandleInviteHR = async (req, res) => {
         console.log("[LOG SERVER] HandleInviteHR - HR creado, enviando correo a:", email)
         
         const inviteURL = `${process.env.CLIENT_URL}/auth/HR/accept-invitation/${invitationtoken}`
-        await SendInvitationEmail(email, firstname, inviteURL, role)
+        await SendInvitationEmail(email, firstname, inviteURL, cargo)
         
         console.log("[LOG SERVER] HandleInviteHR - correo enviado exitosamente a:", email)
 
@@ -68,6 +109,7 @@ export const HandleInviteHR = async (req, res) => {
                 firstname: newHR.firstname,
                 lastname: newHR.lastname,
                 email: newHR.email,
+                cargo: newHR.cargo,
                 role: newHR.role,
                 isactive: newHR.isactive
             }

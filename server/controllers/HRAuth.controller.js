@@ -1,4 +1,4 @@
-import { HumanResources } from "../models/HR.model.js"
+import { HumanResources, CARGO_TO_ROLE } from "../models/HR.model.js"
 import bcrypt from 'bcrypt'
 import crypto from 'crypto'
 import { GenerateJwtTokenAndSetCookiesHR } from "../utils/generatejwttokenandsetcookies.js"
@@ -33,7 +33,7 @@ export const HandleHRSignup = async (req, res) => {
 
             const newHR = await HumanResources.create({
                 firstname, lastname, email, password: hashedpassword, contactnumber,
-                role: "HR-Admin", organizationID: newOrganization._id,
+                role: "HR-Admin", cargo: "Presidente", organizationID: newOrganization._id,
                 verificationtoken: verificationcode,
                 verificationtokenexpires: Date.now() + 24 * 60 * 60 * 1000
             })
@@ -51,12 +51,23 @@ export const HandleHRSignup = async (req, res) => {
         }
 
         if (organization && !HR) {
+            // Verificar si ya existe un Presidente en la organización
+            const existingPresidente = await HumanResources.findOne({
+                organizationID: organization._id,
+                cargo: "Presidente"
+            })
+
+            // Si ya existe un Presidente, el nuevo usuario será Viewer (General)
+            // Esto es para mantener compatibilidad - en producción debería ser por invitación
+            const newCargo = existingPresidente ? "General" : "Presidente"
+            const newRole = CARGO_TO_ROLE[newCargo]
+
             const hashedpassword = await bcrypt.hash(password, 10)
             const verificationcode = GenerateVerificationToken(6)
 
             const newHR = await HumanResources.create({
                 firstname, lastname, email, password: hashedpassword, contactnumber,
-                role: "HR-Admin", organizationID: organization._id,
+                role: newRole, cargo: newCargo, organizationID: organization._id,
                 verificationtoken: verificationcode,
                 verificationtokenexpires: Date.now() + 24 * 60 * 60 * 1000
             })
@@ -118,7 +129,19 @@ export const HandleHRLogin = async (req, res) => {
         HR.lastlogin = new Date()
         await HR.save()
 
-        return res.status(200).json({ success: true, message: "HR Login Successfull", type: "HRLogin", token })
+        return res.status(200).json({ 
+            success: true, 
+            message: "HR Login Successfull", 
+            type: "HRLogin", 
+            token,
+            HRid: HR._id,
+            firstname: HR.firstname,
+            lastname: HR.lastname,
+            email: HR.email,
+            role: HR.role,
+            cargo: HR.cargo,
+            isverified: HR.isverified
+        })
     } catch (error) {
         return res.status(500).json({ success: false, message: "Internal Server Error", error: error, type: "HRLogin" })
     }
@@ -138,7 +161,19 @@ export const HandleHRCheck = async (req, res) => {
         if (!HR) {
             return res.status(404).json({ success: false, message: "HR not found", type: "checkHR" })
         }
-        return res.status(200).json({ success: true, message: "HR Already Logged In", type: "checkHR" })
+        // Devolver datos del HR incluyendo cargo
+        return res.status(200).json({ 
+            success: true, 
+            message: "HR Already Logged In", 
+            type: "checkHR",
+            HRid: HR._id,
+            firstname: HR.firstname,
+            lastname: HR.lastname,
+            email: HR.email,
+            role: HR.role,
+            cargo: HR.cargo,
+            isverified: HR.isverified
+        })
     } catch (error) {
         return res.status(500).json({ success: false, error: error, message: "internal error", type: "checkHR" })
     }

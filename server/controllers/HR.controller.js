@@ -21,6 +21,7 @@ export const HandleHRMe = async (req, res) => {
                 lastname: HR.lastname,
                 email: HR.email,
                 role: HR.role,
+                cargo: HR.cargo,
                 organizationID: HR.organizationID
             }
         })
