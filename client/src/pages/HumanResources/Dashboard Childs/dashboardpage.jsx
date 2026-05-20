@@ -15,16 +15,17 @@ export const HRDashboardPage = () => {
 
     // Datos del usuario HR actual
     const hrUser = HRState?.data
-    const hrName = hrUser?.firstname && hrUser?.lastname 
-        ? `${hrUser.firstname} ${hrUser.lastname}` 
+    const hrName = hrUser?.firstname && hrUser?.lastname
+        ? `${hrUser.firstname} ${hrUser.lastname}`
         : null
-    const hrRole = hrUser?.role || null
+    // Mostrar cargo, con fallback a rol si cargo no existe
+    const hrCargo = hrUser?.cargo || hrUser?.role || null
 
     const DataArray = [
-        { image: "/assets/HR-Dashboard/employee-2.png", dataname: "employees",   path: "/HR/dashboard/employees" },
-        { image: "/assets/HR-Dashboard/department.png",  dataname: "departments", path: "/HR/dashboard/departments" },
-        { image: "/assets/HR-Dashboard/leave.png",       dataname: "leaves",      path: "/HR/dashboard/leaves" },
-        { image: "/assets/HR-Dashboard/request.png",     dataname: "requestes",   path: "/HR/dashboard/requestes" }
+        { image: "/assets/HR-Dashboard/employee-2.png", dataname: "employees", path: "/HR/dashboard/employees" },
+        { image: "/assets/HR-Dashboard/department.png", dataname: "departments", path: "/HR/dashboard/departments" },
+        { image: "/assets/HR-Dashboard/leave.png", dataname: "leaves", path: "/HR/dashboard/leaves" },
+        { image: "/assets/HR-Dashboard/request.png", dataname: "requestes", path: "/HR/dashboard/requestes" }
     ]
 
     useEffect(() => {
@@ -36,7 +37,7 @@ export const HRDashboardPage = () => {
     const now = new Date()
     const timeGreeting = now.getHours() < 12
         ? "Buenos días" : now.getHours() < 18
-        ? "Buenas tardes" : "Buenas noches"
+            ? "Buenas tardes" : "Buenas noches"
 
     return (
         <div className="flex flex-col h-full w-full px-4 py-6 gap-6 overflow-y-auto
@@ -52,9 +53,9 @@ export const HRDashboardPage = () => {
                         text-gray-900 dark:text-white">
                         {hrName ? `${timeGreeting}, ${hrName}` : timeGreeting} 👋
                     </h1>
-                    {hrRole && (
+                    {hrCargo && (
                         <p className="text-xs font-semibold text-blue-500 dark:text-blue-400">
-                            {hrRole}
+                            {hrCargo}
                         </p>
                     )}
                     <p className="text-sm mt-1 text-gray-400 dark:text-gray-500">
@@ -83,18 +84,18 @@ export const HRDashboardPage = () => {
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 flex-1">
                 <div className="rounded-2xl overflow-hidden transition-all duration-300"
-                    style={{ 
+                    style={{
                         background: isDark ? "linear-gradient(135deg, rgba(99,102,241,0.18) 0%, rgba(255,255,255,0.02) 100%)" : "linear-gradient(135deg, #e0e7ff 0%, #ffffff 60%)",
                         border: isDark ? "1px solid rgba(99,102,241,0.40)" : "1px solid #a5b4fc",
-                        boxShadow: "0 2px 12px rgba(0,0,0,0.06)" 
+                        boxShadow: "0 2px 12px rgba(0,0,0,0.06)"
                     }}>
                     <SalaryChart balancedata={DashboardState.data} />
                 </div>
                 <div className="rounded-2xl overflow-hidden transition-all duration-300"
-                    style={{ 
+                    style={{
                         background: isDark ? "linear-gradient(135deg, rgba(99,102,241,0.18) 0%, rgba(255,255,255,0.02) 100%)" : "linear-gradient(135deg, #e0e7ff 0%, #ffffff 60%)",
                         border: isDark ? "1px solid rgba(99,102,241,0.40)" : "1px solid #a5b4fc",
-                        boxShadow: "0 2px 12px rgba(0,0,0,0.06)" 
+                        boxShadow: "0 2px 12px rgba(0,0,0,0.06)"
                     }}>
                     <DataTable noticedata={DashboardState.data} />
                 </div>
