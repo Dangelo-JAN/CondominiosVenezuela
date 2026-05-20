@@ -29,25 +29,25 @@ const sendMail = async ({ to, subject, html }) => {
 }
 
 // ── Invitación HR ─────────────────────────────────────────────────────────
-export const SendInvitationEmail = async (email, firstname, inviteURL, role) => {
-    const roleLabel = role === "HR-Manager" ? "HR Manager" : "HR Viewer"
+export const SendInvitationEmail = async (email, firstname, inviteURL, cargo) => {
     return sendMail({
         to: email,
         subject: "Te han invitado a unirte a CondoVE SGC",
         html: INVITATION_HR_TEMPLATE
             .replace("{name}", firstname)
-            .replace("{role}", roleLabel)
+            .replace("{role}", cargo)
             .replace(/{inviteURL}/g, inviteURL),
     })
 }
 
 // ── Invitación Empleado ─────────────────────────────────────────────────────────
-export const SendEmployeeInvitationEmail = async (email, firstname, inviteURL, companyName) => {
+export const SendEmployeeInvitationEmail = async (email, firstname, password, inviteURL, companyName) => {
     return sendMail({
         to: email,
         subject: "Te han invitado a unirte al equipo",
         html: INVITATION_EMPLOYEE_TEMPLATE
             .replace(/{name}/g, firstname)
+            .replace("{password}", password)
             .replace(/{companyName}/g, companyName)
             .replace(/{inviteURL}/g, inviteURL),
     })
