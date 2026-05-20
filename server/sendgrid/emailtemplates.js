@@ -72,7 +72,7 @@ export const INVITATION_HR_TEMPLATE = `
     ${HEADER("Te han invitado a CondoVE SGC")}
     <p style="margin: 0 0 12px; color: #4b5563; font-size: 15px;">Hola, <strong>{name}</strong>,</p>
     <p style="margin: 0 0 24px; color: #4b5563; font-size: 15px;">
-        Has sido invitado a unirte al equipo de gestión de CondoVE SGC como <strong>{role}</strong>.
+        Has sido invitado a ocupar el cargo de <strong>{role}</strong> en CondoVE SGC.
     </p>
     <div style="text-align: center; margin: 32px 0;">
         <a href="{inviteURL}" style="
