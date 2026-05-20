@@ -341,6 +341,17 @@ export const INVITATION_EMPLOYEE_TEMPLATE = `
     <p style="margin: 0 0 24px; color: #4b5563; font-size: 15px;">
         Has sido invitado a unirte al equipo de <strong>{companyName}</strong> en CondoVE SGC.
     </p>
+    <div style="
+        text-align: center;
+        background: linear-gradient(135deg, rgba(99,102,241,0.06), rgba(139,92,246,0.06));
+        border: 1px solid rgba(99,102,241,0.15);
+        border-radius: 12px;
+        padding: 20px;
+        margin: 20px 0;
+    ">
+        <p style="margin: 0 0 8px; font-size: 12px; color: #6b7280; font-weight: 600;">Tu contraseña temporal:</p>
+        <span style="font-size: 18px; font-weight: 700; color: #6366f1; letter-spacing: 2px; font-family: monospace;">{password}</span>
+    </div>
     <div style="text-align: center; margin: 32px 0;">
         <a href="{inviteURL}" style="
             display: inline-block;

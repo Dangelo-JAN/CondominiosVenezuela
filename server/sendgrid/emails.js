@@ -41,12 +41,13 @@ export const SendInvitationEmail = async (email, firstname, inviteURL, cargo) =>
 }
 
 // ── Invitación Empleado ─────────────────────────────────────────────────────────
-export const SendEmployeeInvitationEmail = async (email, firstname, inviteURL, companyName) => {
+export const SendEmployeeInvitationEmail = async (email, firstname, password, inviteURL, companyName) => {
     return sendMail({
         to: email,
         subject: "Te han invitado a unirte al equipo",
         html: INVITATION_EMPLOYEE_TEMPLATE
             .replace(/{name}/g, firstname)
+            .replace("{password}", password)
             .replace(/{companyName}/g, companyName)
             .replace(/{inviteURL}/g, inviteURL),
     })
