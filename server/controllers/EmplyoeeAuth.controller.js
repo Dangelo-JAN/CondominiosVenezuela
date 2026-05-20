@@ -59,7 +59,7 @@ export const HandleEmplyoeeSignup = async (req, res) => {
 
             // Enviar correo de invitación (el empleado debe activar su cuenta)
             const inviteURL = `${process.env.CLIENT_URL}/auth/employee/accept-invitation/${invitationtoken}`
-            await SendEmployeeInvitationEmail(email, firstname, inviteURL, organization.name)
+            await SendEmployeeInvitationEmail(email, firstname, password, inviteURL, organization.name)
 
             return res.status(201).json({ 
                 success: true, 
