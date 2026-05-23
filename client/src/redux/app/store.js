@@ -10,6 +10,8 @@ import HRScheduleReducer from '../Slices/HRScheduleSlice.js'
 import HRWorkPhotoReducer from '../Slices/HRWorkPhotoSlice.js'
 import HRProfilesReducer from '../Slices/HRProfilesSlice.js'
 import HRLeavesReducer from '../Slices/HRLeavesSlice.js'
+import HRBitacorasReducer from '../Slices/HRBitacorasSlice.js'
+import HRNotificationsReducer from '../Slices/HRNotificationsSlice.js'
 
 export const store = configureStore({
     reducer: {
@@ -24,5 +26,7 @@ export const store = configureStore({
         HRWorkPhotoReducer: HRWorkPhotoReducer,
         HRProfilesReducer: HRProfilesReducer,
         HRLeavesReducer: HRLeavesReducer,
+        HRBitacorasReducer: HRBitacorasReducer,
+        HRNotificationsReducer: HRNotificationsReducer,
     }
 })
