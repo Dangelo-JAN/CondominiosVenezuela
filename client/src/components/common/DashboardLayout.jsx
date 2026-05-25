@@ -2,6 +2,7 @@ import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar"
 import { Outlet } from "react-router-dom"
 import { PanelLeft, Sun, Moon } from "lucide-react"
 import { useTheme } from "../../hooks/useTheme.js"
+import { NotificationBell } from "./NotificationBell.jsx"
 
 export const DashboardLayout = ({ sidebar }) => {
     const { isDark, toggleTheme } = useTheme()
@@ -33,6 +34,11 @@ export const DashboardLayout = ({ sidebar }) => {
                         </div>
 
                         <div className="flex-1" />
+
+                        {/* Notification Bell */}
+                        <div className="mr-2">
+                            <NotificationBell />
+                        </div>
 
                         <div className="mr-4">
                             <button

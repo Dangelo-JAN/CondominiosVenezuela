@@ -21,6 +21,8 @@ import ScheduleRouter from './routes/Schedule.route.js'
 import WorkPhotoRouter from './routes/WorkPhoto.route.js'
 import HRProfilesRouter from './routes/HRProfiles.route.js'
 import ContactSalesRouter from './routes/ContactSales.route.js'
+import BitacoraRouter from './routes/Bitacora.route.js'
+import NotificationRouter from './routes/Notification.route.js'
 import { ConnectDB } from './config/connectDB.js';
 import cookieParser from 'cookie-parser';
 import cors from "cors"
@@ -76,6 +78,8 @@ app.use("/api/v1/schedule", ScheduleRouter)
 app.use("/api/v1/workphoto", WorkPhotoRouter)
 app.use("/api/v1/hr-profiles", HRProfilesRouter)
 app.use("/api/v1/contact", ContactSalesRouter)
+app.use("/api/v1/bitacora", BitacoraRouter)
+app.use("/api/v1/notification", NotificationRouter)
 
 // ✅ Health check (MUY recomendado)
 app.get("/api/health", (req, res) => {
