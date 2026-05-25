@@ -466,3 +466,96 @@ export const HRLeavesAsyncReducer = (builder, thunk, thunkName) => {
         state.error.content = action.payload;
     })
 }
+
+// ── HR Bitácoras ────────────────────────────────────────────────────────────
+export const HRBitacorasAsyncReducer = (builder, thunk, thunkName) => {
+    builder.addCase(thunk.pending, (state) => {
+        state.isLoading = true;
+        state.error.content = null;
+    })
+    builder.addCase(thunk.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.error.status = false;
+        state.error.message = null;
+        state.error.content = null;
+
+        const payload = action.payload;
+
+        // Obtener mis bitácoras (empleado) o todas (HR)
+        if (thunkName === "HandleGetMyBitacoras" || thunkName === "HandleGetAllBitacoras") {
+            state.data = payload?.data || null;
+        }
+        // Crear bitácora
+        else if (thunkName === "HandleCreateBitacora") {
+            if (payload?.success && payload?.data) {
+                state.data = state.data ? [payload.data, ...state.data] : [payload.data];
+            }
+            state.success = payload?.success ?? false;
+            state.message = payload?.message || null;
+        }
+        // Actualizar bitácora
+        else if (thunkName === "HandleUpdateBitacora") {
+            state.data = (state.data || []).map(b =>
+                b._id === payload?.data?._id ? payload.data : b
+            );
+            state.success = payload?.success ?? false;
+            state.message = payload?.message || null;
+        }
+        // Eliminar bitácora (HR)
+        else if (thunkName === "HandleDeleteBitacoraByHR") {
+            state.data = (state.data || []).filter(b => b._id !== action.meta.arg);
+            state.success = payload?.success ?? false;
+            state.message = payload?.message || null;
+        }
+    })
+    builder.addCase(thunk.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error.status = true;
+        state.error.message = action.payload?.message;
+        state.success = false;
+        state.error.content = action.payload;
+    })
+}
+
+// ── HR Notificaciones ──────────────────────────────────────────────────────
+export const HRNotificationsAsyncReducer = (builder, thunk, thunkName) => {
+    builder.addCase(thunk.pending, (state) => {
+        state.isLoading = true;
+        state.error.content = null;
+    })
+    builder.addCase(thunk.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.error.status = false;
+        state.error.message = null;
+        state.error.content = null;
+
+        const payload = action.payload;
+
+        // Obtener notificaciones
+        if (thunkName === "HandleGetMyNotifications") {
+            state.notifications = payload?.data || null;
+        }
+        // Obtener conteo de no leídas
+        else if (thunkName === "HandleGetUnreadNotificationCount") {
+            state.unreadCount = payload?.data?.unreadCount ?? 0;
+        }
+        // Marcar una como leída
+        else if (thunkName === "HandleMarkNotificationRead") {
+            state.notifications = (state.notifications || []).map(n =>
+                n._id === payload?.data?._id ? { ...n, isRead: true } : n
+            );
+            state.unreadCount = Math.max(0, (state.unreadCount || 0) - 1);
+        }
+        // Marcar todas como leídas
+        else if (thunkName === "HandleMarkAllNotificationsRead") {
+            state.notifications = (state.notifications || []).map(n => ({ ...n, isRead: true }));
+            state.unreadCount = 0;
+        }
+    })
+    builder.addCase(thunk.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error.status = true;
+        state.error.message = action.payload?.message;
+        state.error.content = action.payload;
+    })
+}

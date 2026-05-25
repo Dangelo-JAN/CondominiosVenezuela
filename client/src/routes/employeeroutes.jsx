@@ -11,6 +11,7 @@ import { EmployeeWorkPhotosPage } from "../pages/Employees/Dashboard Childs/Empl
 import { EmployeeProfilePage } from "../pages/Employees/Dashboard Childs/EmployeeProfilePage.jsx"
 import { EmployeeRequestspage } from "../pages/Employees/Dashboard Childs/EmployeeRequestspage.jsx"
 import { EmployeeAbsencesPage } from "../pages/Employees/Dashboard Childs/EmployeeAbsencesPage.jsx"
+import { EmployeeBitacorasPage } from "../pages/Employees/Dashboard Childs/bitacoraspage.jsx"
 import { EmployeeAcceptInvitationPage } from "../pages/Employees/EmployeeAcceptInvitationPage.jsx"
 // EmployeeVerifyEmailPage eliminado - ya no se usa (ver issue #013)
 
@@ -54,6 +55,10 @@ export const EmployeeRoutes = [
             {
                 path: "/auth/employee/employee-dashboard/absences",
                 element: <EmployeeAbsencesPage />
+            },
+            {
+                path: "/auth/employee/employee-dashboard/bitacoras",
+                element: <EmployeeBitacorasPage />
             }
         ]
     },

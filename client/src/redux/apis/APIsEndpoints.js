@@ -63,3 +63,24 @@ export const HRAbsencesEndPoints = {
     GET_BY_EMPLOYEE: (employeeID) => `/api/v1/absence/employee/${employeeID}`,
     DELETE: (absenceID) => `/api/v1/absence/delete/${absenceID}`
 }
+
+// ── Bitácoras ──────────────────────────────────────────────────────────────
+export const HRBitacorasEndPoints = {
+    // Empleado
+    CREATE: "/api/v1/bitacora/create",
+    UPDATE: (id) => `/api/v1/bitacora/update/${id}`,
+    GET_MY: "/api/v1/bitacora/my-bitacoras",
+
+    // HR
+    GET_ALL: "/api/v1/bitacora/all",
+    GET_BY_ID: (id) => `/api/v1/bitacora/${id}`,
+    DELETE: (id) => `/api/v1/bitacora/delete/${id}`
+}
+
+// ── Notificaciones In-App ──────────────────────────────────────────────────
+export const HRNotificationsEndPoints = {
+    GET_MY: "/api/v1/notification/my-notifications",
+    UNREAD_COUNT: "/api/v1/notification/unread-count",
+    MARK_READ: (id) => `/api/v1/notification/read/${id}`,
+    MARK_ALL_READ: "/api/v1/notification/read-all"
+}
