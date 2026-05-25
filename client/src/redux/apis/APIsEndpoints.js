@@ -82,5 +82,10 @@ export const HRNotificationsEndPoints = {
     GET_MY: "/api/v1/notification/my-notifications",
     UNREAD_COUNT: "/api/v1/notification/unread-count",
     MARK_READ: (id) => `/api/v1/notification/read/${id}`,
-    MARK_ALL_READ: "/api/v1/notification/read-all"
+    MARK_ALL_READ: "/api/v1/notification/read-all",
+
+    // Push Notifications (FCM)
+    SUBSCRIBE: "/api/v1/push/subscribe",
+    UNSUBSCRIBE: (token) => `/api/v1/push/unsubscribe/${encodeURIComponent(token)}`,
+    TEST_PUSH: "/api/v1/push/test",
 }

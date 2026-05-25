@@ -2,6 +2,7 @@ import { Bitacora } from "../models/Bitacora.model.js"
 import { Employee } from "../models/Employee.model.js"
 import { HumanResources } from "../models/HR.model.js"
 import { Notification } from "../models/Notification.model.js"
+import { sendPushToAll } from "../services/fcm.service.js"
 import { v2 as cloudinary } from "cloudinary"
 
 // Configurar Cloudinary
@@ -69,6 +70,15 @@ const notifyAllHRs = async (orgID, bitacora, employeeName) => {
         }))
 
         await Notification.insertMany(notifications)
+
+        // También enviar push notification FCM
+        const pushTitle = "Nueva Bitácora"
+        const pushBody = `${employeeName} ha creado una nueva novedad: "${bitacora.title}"`
+        await sendPushToAll(orgID, pushTitle, pushBody, {
+            type: "bitacora_created",
+            bitacoraId: String(bitacora._id),
+            url: "/HR/dashboard/bitacoras",
+        })
     } catch (error) {
         console.error("[ERROR] notifyAllHRs:", error.message)
         // No lanzar el error — la notificación no debe romper la creación

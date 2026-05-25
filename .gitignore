@@ -7,3 +7,6 @@ AGENTS.md
 
 # Ignorar bitácoras 
 .bitacoras/
+
+# Ignorar Service Worker generado dinámicamente (firebase-messaging-sw.js)
+client/public/firebase-messaging-sw.js
