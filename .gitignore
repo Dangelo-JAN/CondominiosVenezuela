@@ -1,6 +1,9 @@
+# Ignorar carpetas de IA
 .agent/
 .git-hooks/
 .opencode/
 opencode.json
 AGENTS.md
+
+# Ignorar bitácoras 
 .bitacoras/
