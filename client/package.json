@@ -4,7 +4,9 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
+    "predev": "node scripts/generate-firebase-sw.mjs",
     "dev": "vite",
+    "prebuild": "node scripts/generate-firebase-sw.mjs",
     "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview",
@@ -41,6 +43,7 @@
     "clsx": "^2.1.1",
     "cmdk": "^1.0.0",
     "dotenv": "^16.4.5",
+    "firebase": "^12.13.0",
     "input-otp": "^1.4.1",
     "lucide-react": "^0.460.0",
     "react": "^18.3.1",
