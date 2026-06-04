@@ -2,10 +2,15 @@ import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar"
 import { Outlet } from "react-router-dom"
 import { PanelLeft, Sun, Moon } from "lucide-react"
 import { useTheme } from "../../hooks/useTheme.js"
+import { usePushNotifications } from "../../hooks/usePushNotifications.js"
 import { NotificationBell } from "./NotificationBell.jsx"
 
 export const DashboardLayout = ({ sidebar }) => {
     const { isDark, toggleTheme } = useTheme()
+
+    // Iniciar notificaciones push FCM solo para HR
+    const hasHRToken = !!localStorage.getItem("HRtoken")
+    usePushNotifications(hasHRToken)
 
     return (
         <SidebarProvider>
