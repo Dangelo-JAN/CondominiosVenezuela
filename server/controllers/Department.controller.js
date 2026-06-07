@@ -9,7 +9,7 @@ export const HandleCreateDepartment = async (req, res) => {
             return res.status(400).json({ success: false, message: "All fields are required" })
         }
 
-        const department = await Department.findOne({ name: name })
+        const department = await Department.findOne({ name: name, organizationID: req.ORGID })
 
         if (department) {
             return res.status(400).json({ success: false, message: "Department already exists" })

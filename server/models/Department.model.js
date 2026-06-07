@@ -34,4 +34,7 @@ const DepartmentSchema = new Schema({
     }
 }, { timestamps: true });
 
+// Compound index: same department name allowed across different organizations, but unique within one
+DepartmentSchema.index({ name: 1, organizationID: 1 }, { unique: true })
+
 export const Department = mongoose.model("Department", DepartmentSchema)
