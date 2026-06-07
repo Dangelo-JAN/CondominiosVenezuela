@@ -132,7 +132,7 @@ export const ListContainer = ({ children }) => {
 }
 
 // ── ListItems — filas de empleados (blue por defecto) ───────────────────
-export const ListItems = ({ TargetedState }) => {
+export const ListItems = ({ TargetedState, hideDelete = false }) => {
     return (
         <>
             {TargetedState.data ? TargetedState.data.map((item, index) => (
@@ -184,7 +184,7 @@ export const ListItems = ({ TargetedState }) => {
                     {/* Actions */}
                     <div className="flex justify-center items-center gap-2">
                         <EmployeeDetailsDialogBox EmployeeID={item._id} />
-                        <DeleteEmployeeDialogBox EmployeeID={item._id} />
+                        {!hideDelete && <DeleteEmployeeDialogBox EmployeeID={item._id} />}
                     </div>
                 </div>
             )) : null}

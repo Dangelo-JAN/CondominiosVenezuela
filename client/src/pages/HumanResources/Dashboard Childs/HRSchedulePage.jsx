@@ -4,6 +4,7 @@ import { HandleHRSchedule } from "../../../redux/Thunks/HRScheduleThunk.js"
 import { HandleGetHREmployees } from "../../../redux/Thunks/HREmployeesThunk.js"
 import { Loading } from "../../../components/common/loading.jsx"
 import { useToast } from "@/hooks/use-toast"
+import { useHRAuth } from "../../../hooks/useHRAuth.js"
 import { ListItemCard, StatusBadge } from "../../../components/common/Dashboard/ListItemCard.jsx"
 import {
     Plus, Trash2, CalendarDays, ChevronDown, ChevronUp,
@@ -19,7 +20,7 @@ const emptyDay  = () => ({ day: "Lunes", tasks: [emptyTask()] })
 const formatDate = (d) => d ? new Date(d).toLocaleDateString("es-ES", { day: "numeric", month: "short", year: "numeric" }) : ""
 
 // ── Card de horario en la lista (usando ListItemCard) ───────────────────
-const ScheduleCard = ({ schedule, employees, onDelete, onToggle, onEdit, onDuplicate }) => {
+const ScheduleCard = ({ schedule, employees, onDelete, onToggle, onEdit, onDuplicate, isViewer = false }) => {
     const [open, setOpen] = useState(false)
     const assignedEmployee = employees?.find(e => e._id === schedule.employee?._id || e._id === schedule.employee)
 
@@ -27,7 +28,7 @@ const ScheduleCard = ({ schedule, employees, onDelete, onToggle, onEdit, onDupli
     const completed = allTasks.filter(t => t.completed).length
 
     // Botones de acción (sin el toggle de expandir - se maneja en ListItemCard)
-    const actionButtons = (
+    const actionButtons = isViewer ? null : (
         <>
             <button
                 onClick={() => onDuplicate(schedule)}
@@ -469,6 +470,7 @@ const ScheduleForm = ({ employees, onSubmit, onCancel, editingSchedule, viewMode
 export const HRSchedulePage = () => {
     const dispatch = useDispatch()
     const { toast }     = useToast()
+    const { isViewer: isHRViewer } = useHRAuth()
     const scheduleState = useSelector(s => s.HRScheduleReducer)
     const employeesState = useSelector(s => s.HREmployeesPageReducer)
 
@@ -616,7 +618,7 @@ export const HRSchedulePage = () => {
                     </div>
                 </div>
 
-                {view === "list" && (
+                {view === "list" && !isHRViewer && (
                     <button
                         onClick={() => setView("create")}
                         className="flex items-center gap-2 px-4 py-2.5 rounded-xl self-start sm:self-auto
@@ -658,6 +660,7 @@ export const HRSchedulePage = () => {
                                 onToggle={handleToggle}
                                 onEdit={handleEdit}
                                 onDuplicate={handleDuplicate}
+                                isViewer={isHRViewer}
                             />
                         ))
                     )}

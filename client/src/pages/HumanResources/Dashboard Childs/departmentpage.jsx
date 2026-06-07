@@ -2,9 +2,11 @@ import { HRDepartmentTabs } from "../../../components/common/Dashboard/departmen
 import { CreateDepartmentDialogBox } from "../../../components/common/Dashboard/dialogboxes"
 import { Building2 } from "lucide-react"
 import { useIsDark } from "../../../hooks/useIsDark"
+import { useHRAuth } from "../../../hooks/useHRAuth"
 
 export const HRDepartmentPage = () => {
     const isDark = useIsDark();
+    const { isViewer: isHRViewer } = useHRAuth();
 
     return (
         <div className="w-full h-full flex flex-col gap-6 px-4 py-6 overflow-y-auto bg-white dark:bg-[#0f0f1a]">
@@ -21,7 +23,7 @@ export const HRDepartmentPage = () => {
                         </h1>
                     </div>
                 </div>
-                <CreateDepartmentDialogBox />
+                {!isHRViewer && <CreateDepartmentDialogBox />}
             </div>
 
             {/* Divider */}

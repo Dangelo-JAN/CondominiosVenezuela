@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from "react-redux"
 import { HandleGetHREmployees } from "../../../redux/Thunks/HREmployeesThunk.js"
 import { Loading } from "../../../components/common/loading.jsx"
 import { useIsDark } from "../../../hooks/useIsDark.js"
+import { useHRAuth } from "../../../hooks/useHRAuth.js"
 import { AddEmployeesDialogBox } from "../../../components/common/Dashboard/dialogboxes.jsx"
 import { Users } from "lucide-react"
 import { ThemedListWrapper, ThemedHeadingBar, ThemedListContainer, ListItems } from "../../../components/common/Dashboard/ListDesigns"
@@ -10,6 +11,7 @@ import { ThemedListWrapper, ThemedHeadingBar, ThemedListContainer, ListItems } f
 export const HREmployeesPage = () => {
     const isDark = useIsDark()
     const dispatch = useDispatch()
+    const { isViewer: isHRViewer } = useHRAuth()
     const HREmployeesState = useSelector((state) => state.HREmployeesPageReducer)
     const table_headings = ["Full Name", "Email", "Department", "Contact Number", "Modify Employee"]
     const hiddenCols = ["Email", "Department", "Contact Number"]
@@ -53,7 +55,7 @@ export const HREmployeesPage = () => {
                         </span>
                     </div>
                 </div>
-                <AddEmployeesDialogBox />
+                {!isHRViewer && <AddEmployeesDialogBox />}
             </div>
 
             {/* Divider */}
@@ -82,7 +84,7 @@ export const HREmployeesPage = () => {
                             </p>
                         </div>
                     ) : (
-                        <ListItems TargetedState={HREmployeesState} />
+                        <ListItems TargetedState={HREmployeesState} hideDelete={isHRViewer} />
                     )}
                 </ThemedListContainer>
             </div>

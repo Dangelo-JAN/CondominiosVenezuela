@@ -1,4 +1,4 @@
-import { HandleGetHumanResources } from "../redux/Thunks/HRThunk.js"
+import { HandleGetHumanResources, HandlePostHumanResources } from "../redux/Thunks/HRThunk.js"
 import { useDispatch, useSelector } from "react-redux"
 import { useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
@@ -15,15 +15,23 @@ export const HRProtectedRoutes = ({ children }) => {
         const checkAuth = async () => {
             setIsChecking(true)
 
-            const loginRes  = await dispatch(HandleGetHumanResources({ apiroute: "CHECKLOGIN" }))
-            const verifyRes = await dispatch(HandleGetHumanResources({ apiroute: "CHECK_VERIFY_EMAIL" }))
-
-            // gologin:true significa sin token — no es un usuario inválido, es que no hay sesión
-            const loginPayload  = loginRes.payload
-            const verifyPayload = verifyRes.payload
+            // 1. Verificar login
+            const loginRes = await dispatch(HandleGetHumanResources({ apiroute: "CHECKLOGIN" }))
+            const loginPayload = loginRes.payload
 
             const isAuthenticated = loginPayload?.success === true && !loginPayload?.gologin
-            const isVerified      = verifyPayload?.alreadyverified === true
+
+            // 2. Verificar email
+            const verifyRes = await dispatch(HandleGetHumanResources({ apiroute: "CHECK_VERIFY_EMAIL" }))
+            const verifyPayload = verifyRes.payload
+            const isVerified = verifyPayload?.alreadyverified === true
+
+            // 3. Si está autenticado, obtener datos completos del HR (/me)
+            // Esto asegura que tenemos role y permissions disponibles para useHRAuth
+            // NOTA: GET_HR_ME es GET (HandleGetHumanResources), NO POST
+            if (isAuthenticated) {
+                await dispatch(HandleGetHumanResources({ apiroute: "GET_HR_ME" }))
+            }
 
             // Obtener datos del usuario HR actual
             if (isAuthenticated) {
