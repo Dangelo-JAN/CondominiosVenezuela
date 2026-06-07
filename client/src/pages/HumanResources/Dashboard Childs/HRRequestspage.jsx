@@ -1,6 +1,7 @@
 import { useEffect, useState, useMemo } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { useIsDark } from "../../../hooks/useIsDark.js"
+import { useHRAuth } from "../../../hooks/useHRAuth.js"
 import { Loading } from "../../../components/common/loading.jsx"
 import {
     HandleGetHRLeaves,
@@ -20,6 +21,7 @@ import {
     ThemedListContainer,
 } from "../../../components/common/Dashboard/ListDesigns.jsx"
 import { CustomSelect } from "../../../components/ui/custom-select.jsx"
+import * as Dialog from "@radix-ui/react-dialog"
 import { ThemedModal } from "../../../components/common/Dashboard/ThemedModal.jsx"
 
 const LEAVE_TYPES = ["Vacaciones", "Reposo Médico", "Personal", "Otro"]
@@ -175,7 +177,7 @@ const RequestForm = ({ initialData, employees, onSubmit, onClose, isLoading }) =
 }
 
 // ── Modal detalle solicitud ───────────────────────────────────────────────
-const RequestDetailsDialog = ({ request, onClose, onApprove, onReject, onEdit, onDelete, isLoading }) => {
+const RequestDetailsDialog = ({ request, onClose, onApprove, onReject, onEdit, onDelete, isLoading, isViewer = false }) => {
     const isDark = useIsDark()
     if (!request) return null
 
@@ -252,7 +254,7 @@ const RequestDetailsDialog = ({ request, onClose, onApprove, onReject, onEdit, o
                         )}
                     </div>
 
-                    {request.status === "Pending" && (
+                    {request.status === "Pending" && !isViewer && (
                         <div className="flex justify-between mt-6 pt-4 border-t"
                             style={{ borderColor: isDark ? "rgba(255,255,255,0.1)" : "#fde68a" }}>
                             <div className="flex gap-2">
@@ -293,6 +295,7 @@ const RequestDetailsDialog = ({ request, onClose, onApprove, onReject, onEdit, o
 export const HRRequestspage = () => {
     const isDark = useIsDark()
     const dispatch = useDispatch()
+    const { isViewer: isHRViewer } = useHRAuth()
     const HRLeavesState    = useSelector(s => s.HRLeavesReducer)
     const HREmployeesState = useSelector(s => s.HREmployeesPageReducer)
 
@@ -409,11 +412,13 @@ export const HRRequestspage = () => {
                         </span>
                     </div>
                 </div>
-                <Button
-                    onClick={() => setIsCreateOpen(true)}
-                    className="rounded-xl bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-600 hover:to-orange-600 text-white">
-                    <Plus className="w-4 h-4 mr-2" /> Nueva Solicitud
-                </Button>
+                {!isHRViewer && (
+                    <Button
+                        onClick={() => setIsCreateOpen(true)}
+                        className="rounded-xl bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-600 hover:to-orange-600 text-white">
+                        <Plus className="w-4 h-4 mr-2" /> Nueva Solicitud
+                    </Button>
+                )}
             </div>
 
             {/* Divider */}
@@ -563,7 +568,7 @@ export const HRRequestspage = () => {
                                         title="Ver detalles">
                                         <Eye className="w-4 h-4" />
                                     </button>
-                                    {leave.status === "Pending" && (
+                                    {leave.status === "Pending" && !isHRViewer && (
                                         <>
                                             <button
                                                 onClick={() => { setSelectedRequest(leave); setIsEditOpen(true) }}
@@ -626,6 +631,7 @@ export const HRRequestspage = () => {
                     onEdit={req => { setIsDetailsOpen(false); setSelectedRequest(req); setIsEditOpen(true) }}
                     onDelete={handleDelete}
                     isLoading={HRLeavesState.isLoading}
+                    isViewer={isHRViewer}
                 />
             )}
         </div>

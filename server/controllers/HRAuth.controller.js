@@ -129,10 +129,10 @@ export const HandleHRLogin = async (req, res) => {
         HR.lastlogin = new Date()
         await HR.save()
 
-        return res.status(200).json({ 
-            success: true, 
-            message: "HR Login Successfull", 
-            type: "HRLogin", 
+        return res.status(200).json({
+            success: true,
+            message: "HR Login Successfull",
+            type: "HRLogin",
             token,
             HRid: HR._id,
             firstname: HR.firstname,
@@ -161,10 +161,11 @@ export const HandleHRCheck = async (req, res) => {
         if (!HR) {
             return res.status(404).json({ success: false, message: "HR not found", type: "checkHR" })
         }
-        // Devolver datos del HR incluyendo cargo
-        return res.status(200).json({ 
-            success: true, 
-            message: "HR Already Logged In", 
+
+        // Devolver datos del HR incluyendo cargo, rol y permisos
+        return res.status(200).json({
+            success: true,
+            message: "HR Already Logged In",
             type: "checkHR",
             HRid: HR._id,
             firstname: HR.firstname,
@@ -172,7 +173,8 @@ export const HandleHRCheck = async (req, res) => {
             email: HR.email,
             role: HR.role,
             cargo: HR.cargo,
-            isverified: HR.isverified
+            isverified: HR.isverified,
+            permissions: HR.permissions ? HR.permissions.toObject() : {}
         })
     } catch (error) {
         return res.status(500).json({ success: false, error: error, message: "internal error", type: "checkHR" })
