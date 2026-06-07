@@ -370,6 +370,7 @@ export const DepartmentContent = ({ CurrentDepartmentData }) => {
                         [&_ul]:list-disc [&_ul]:pl-4 [&_ul]:my-1
                         [&_ol]:list-decimal [&_ol]:pl-4 [&_ol]:my-1
                         [&_li]:mb-0.5 [&_strong]:font-semibold [&_strong]:text-gray-600
+                        [&_>_p]:my-3
                         [&_hr]:border-gray-200 [&_hr]:my-2
                         dark:[&_h2]:text-[rgba(255,255,255,0.7)] dark:[&_strong]:text-[rgba(255,255,255,0.6)]
                         dark:[&_hr]:border-[rgba(255,255,255,0.08)]"
@@ -455,6 +456,7 @@ export const AllDepartments = ({ DepartmentData, SetCurrentDepartment }) => {
                             [&_ul]:list-disc [&_ul]:pl-4 [&_ul]:my-1
                             [&_ol]:list-decimal [&_ol]:pl-4 [&_ol]:my-1
                             [&_li]:mb-0.5 [&_strong]:font-semibold [&_strong]:text-gray-600
+                            [&_>_p]:my-3
                             [&_hr]:border-gray-200 [&_hr]:my-2
                             dark:[&_h2]:text-[rgba(255,255,255,0.7)] dark:[&_strong]:text-[rgba(255,255,255,0.6)]
                             dark:[&_hr]:border-[rgba(255,255,255,0.08)]"

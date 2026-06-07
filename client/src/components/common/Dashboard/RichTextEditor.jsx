@@ -148,6 +148,7 @@ export const RichTextEditor = ({ value, onChange }) => {
                 [&_.ProseMirror_ul]:list-disc [&_.ProseMirror_ul]:pl-4
                 [&_.ProseMirror_ol]:list-decimal [&_.ProseMirror_ol]:pl-4
                 [&_.ProseMirror_li]:mb-0.5
+                [&_.ProseMirror>p]:my-3
                 [&_.ProseMirror_hr]:border-gray-200 [&_.ProseMirror_hr]:my-2
                 [&_.ProseMirror_p.is-editor-empty:first-child::before]:content-['Escribe_la_descripción...']
                 [&_.ProseMirror_p.is-editor-empty:first-child::before]:text-gray-300
