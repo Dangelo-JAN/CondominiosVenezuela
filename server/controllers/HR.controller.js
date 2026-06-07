@@ -6,7 +6,6 @@ import { Organization } from "../models/Organization.model.js"
 export const HandleHRMe = async (req, res) => {
     try {
         const HR = await HumanResources.findOne({ _id: req.HRid, organizationID: req.ORGID })
-            .populate("department")
 
         if (!HR) {
             return res.status(404).json({ success: false, message: "HR Not Found", type: "HRMe" })
@@ -31,6 +30,8 @@ export const HandleHRMe = async (req, res) => {
                 isverified: HR.isverified,
                 lastlogin: HR.lastlogin,
                 createdAt: HR.createdAt
+                organizationID: HR.organizationID,
+                permissions: HR.permissions ? HR.permissions.toObject() : {}
             }
         })
     } catch (error) {

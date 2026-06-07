@@ -72,15 +72,7 @@ export const HRRoutes = [
             },
             {
                 path: "/HR/dashboard/hr-profiles",
-                element: (
-                    <ProtectedHRRoute allowedRoles={["HR-Admin", "HR-Manager"]}>
-                        <HRProfilesPage />
-                    </ProtectedHRRoute>
-                )
-            },
-            {
-                path: "/HR/dashboard/hr-profile",
-                element: <HRProfilePage />
+                element: <HRProfilesPage />
             },
             {
                 path: "/HR/dashboard/bitacoras",
