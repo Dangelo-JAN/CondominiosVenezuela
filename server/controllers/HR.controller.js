@@ -6,6 +6,7 @@ import { Organization } from "../models/Organization.model.js"
 export const HandleHRMe = async (req, res) => {
     try {
         const HR = await HumanResources.findOne({ _id: req.HRid, organizationID: req.ORGID })
+            .populate("department")
 
         if (!HR) {
             return res.status(404).json({ success: false, message: "HR Not Found", type: "HRMe" })
