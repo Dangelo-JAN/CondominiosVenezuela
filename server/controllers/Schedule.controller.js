@@ -365,6 +365,18 @@ export const HandleRegisterDailyAbsences = async (req, res) => {
             const incompleteTasks = daySchedule.tasks.filter(t => !t.completed)
 
             if (incompleteTasks.length > 0) {
+                // ── Verificar que no exista ausencia duplicada ─────────────────
+                const existingAbsence = await Absence.findOne({
+                    employee: schedule.employee,
+                    scheduleId: schedule._id,
+                    startdate: { $gte: yesterday, $lt: today },
+                    leavetype: "Tarea No Realizada"
+                })
+                if (existingAbsence) {
+                    console.log(`[CRON] Ausencia ya existe para empleado ${schedule.employee} en fecha ${yesterday.toISOString().split('T')[0]} — saltando`)
+                    continue
+                }
+
                 const taskNames = incompleteTasks.map(t => t.title).join(", ")
 
                 await Absence.create({
