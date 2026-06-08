@@ -2,7 +2,7 @@ import { useEffect, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { HandleEmployeeDashboard } from "../../../redux/Thunks/EmployeeDashboardThunk.js"
 import { Loading } from "../../../components/common/loading.jsx"
-import { LogIn, LogOut, Clock, CheckCircle2, Circle, CalendarDays, AlertCircle } from "lucide-react"
+import { LogIn, LogOut, Clock, CheckCircle2, Circle, CalendarDays, AlertCircle, Building2 } from "lucide-react"
 import { useToast } from "@/hooks/use-toast"
 import { useIsDark } from "../../../hooks/useIsDark.js"
 
@@ -362,6 +362,48 @@ export const EmployeeHomePage = () => {
                     <AlertCircle className="w-4 h-4 flex-shrink-0 text-yellow-500" />
                     <p className="text-sm text-yellow-700 dark:text-yellow-400">
                         No tienes un horario activo asignado. Contacta a tu supervisor.
+                    </p>
+                </div>
+            )}
+
+            {/* Manual General — Descripción del departamento */}
+            {employeeData?.department ? (
+                <div className="rounded-2xl p-5 flex flex-col gap-4"
+                    style={{
+                        background: card.bg,
+                        border: `1px solid ${card.border}`,
+                        boxShadow: card.shadow,
+                    }}>
+                    <div className="flex items-center gap-2">
+                        <Building2 className="w-4 h-4 text-blue-500 dark:text-blue-400" />
+                        <p className="text-[10px] font-semibold uppercase tracking-[0.18em]
+                            text-blue-500 dark:text-blue-400">
+                            Manual General
+                        </p>
+                    </div>
+                    <div
+                        className="text-sm text-gray-500 dark:text-[rgba(255,255,255,0.4)]
+                            prose prose-sm max-w-none
+                            [&_h2]:text-gray-700 [&_h2]:font-bold [&_h2]:text-sm [&_h2]:mt-2 [&_h2]:mb-1
+                            [&_ul]:list-disc [&_ul]:pl-4 [&_ul]:my-1
+                            [&_ol]:list-decimal [&_ol]:pl-4 [&_ol]:my-1
+                            [&_li]:mb-0.5 [&_strong]:font-semibold [&_strong]:text-gray-600
+                            [&_>_p]:my-3
+                            [&_hr]:border-gray-200 [&_hr]:my-2
+                            dark:[&_h2]:text-[rgba(255,255,255,0.7)] dark:[&_strong]:text-[rgba(255,255,255,0.6)]
+                            dark:[&_hr]:border-[rgba(255,255,255,0.08)]"
+                        dangerouslySetInnerHTML={{ __html: employeeData.department.description }}
+                    />
+                </div>
+            ) : (
+                <div className="flex items-center gap-3 px-4 py-3 rounded-xl"
+                    style={{
+                        background: isDark ? "rgba(245,158,11,0.1)" : "#fffbeb",
+                        border: `1px solid ${isDark ? "rgba(245,158,11,0.25)" : "#fde68a"}`,
+                    }}>
+                    <AlertCircle className="w-4 h-4 flex-shrink-0 text-yellow-500" />
+                    <p className="text-sm text-yellow-700 dark:text-yellow-400">
+                        No tienes un departamento asignado. Contacta a tu supervisor.
                     </p>
                 </div>
             )}
