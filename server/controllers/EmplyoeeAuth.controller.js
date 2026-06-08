@@ -185,7 +185,8 @@ export const HandleEmployeeCheck = async (req, res) => {
                 position: employee.position,
                 department: employee.department ? {
                     _id: employee.department._id,
-                    name: employee.department.name
+                    name: employee.department.name,
+                    description: employee.department.description
                 } : null
             }
         })
