@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeAll, afterAll } from 'jest/globals'
+import { describe, it, expect, beforeAll, afterAll, jest } from '@jest/globals'
 
 // Mock mongoose models for testing
 const mockLeave = {
@@ -48,5 +48,4 @@ describe('Leave Controller', () => {
   })
 })
 
-// Export for Jest to recognize
-module.exports = {}
+// Los tests usan import ESM — no requiere export adicional
