@@ -309,6 +309,8 @@ export const HandleCloseSchedule = async (req, res) => {
 
 // ── CRON: Cerrar horarios vencidos ───────────────────────────────────────────
 export const HandleCloseExpiredSchedules = async (req, res) => {
+    const startTime = new Date().toISOString()
+    console.log(`[CRON] close-expired INICIADO — ${startTime}`)
     try {
         const today = new Date()
         today.setHours(0, 0, 0, 0)
@@ -324,6 +326,8 @@ export const HandleCloseExpiredSchedules = async (req, res) => {
             }
         )
 
+        console.log(`[CRON] close-expired FINALIZADO — ${result.modifiedCount} horarios cerrados — ${new Date().toISOString()}`)
+
         return res.status(200).json({
             success: true,
             message: `Se cerraron ${result.modifiedCount} horarios vencidos`,
@@ -331,12 +335,14 @@ export const HandleCloseExpiredSchedules = async (req, res) => {
         })
 
     } catch (error) {
+        console.error(`[CRON] ERROR en close-expired:`, error.message, error.stack)
         return res.status(500).json({ success: false, message: "Internal Server Error", error: error })
     }
 }
 
 // ── CRON: Registro de ausencias por tareas no completadas ─────────────
 export const HandleRegisterDailyAbsences = async (req, res) => {
+    const startTime = new Date().toISOString()
     try {
         const yesterday = new Date()
         yesterday.setDate(yesterday.getDate() - 1)
@@ -346,6 +352,8 @@ export const HandleRegisterDailyAbsences = async (req, res) => {
         today.setHours(0, 0, 0, 0)
 
         const yesterdayDayName = DAYS_ORDER[yesterday.getDay()]
+
+        console.log(`[CRON] register-absences INICIADO — ${startTime} — ayer: ${yesterdayDayName}`)
 
         const activeSchedules = await Schedule.find({
             status: "active",
@@ -365,6 +373,18 @@ export const HandleRegisterDailyAbsences = async (req, res) => {
             const incompleteTasks = daySchedule.tasks.filter(t => !t.completed)
 
             if (incompleteTasks.length > 0) {
+                // ── Verificar que no exista ausencia duplicada ─────────────────
+                const existingAbsence = await Absence.findOne({
+                    employee: schedule.employee,
+                    scheduleId: schedule._id,
+                    startdate: { $gte: yesterday, $lt: today },
+                    leavetype: "Tarea No Realizada"
+                })
+                if (existingAbsence) {
+                    console.log(`[CRON] Ausencia ya existe para empleado ${schedule.employee} en fecha ${yesterday.toISOString().split('T')[0]} — saltando`)
+                    continue
+                }
+
                 const taskNames = incompleteTasks.map(t => t.title).join(", ")
 
                 await Absence.create({
@@ -384,6 +404,8 @@ export const HandleRegisterDailyAbsences = async (req, res) => {
             }
         }
 
+        console.log(`[CRON] register-absences FINALIZADO — ${absencesRegistered} ausencias registradas — ${new Date().toISOString()}`)
+
         return res.status(200).json({
             success: true,
             message: `Se registraron ${absencesRegistered} ausencias por tareas no completadas`,
@@ -391,6 +413,7 @@ export const HandleRegisterDailyAbsences = async (req, res) => {
         })
 
     } catch (error) {
+        console.error(`[CRON] ERROR en register-absences:`, error.message, error.stack)
         return res.status(500).json({ success: false, message: "Internal Server Error", error: error })
     }
 }
