@@ -10,6 +10,7 @@ import {
     ImageIcon, Trash2, Eye, CheckCircle2, X,
     Filter, Users, Building2, CalendarDays, RotateCcw
 } from "lucide-react"
+import { CustomSelect } from "../../../components/ui/custom-select.jsx"
 
 // ── Helper: Formatear fecha usando timezone del browser (fix timezone) ──
 const formatDate = (d) => {
@@ -209,8 +210,8 @@ export const HRWorkPhotosPage = () => {
 
     const [previewPhoto, setPreviewPhoto] = useState(null)
     const [filters, setFilters] = useState({
-        department: "",
-        employee: "",
+        department: "all",
+        employee: "all",
         date: ""
     })
 
@@ -242,11 +243,11 @@ export const HRWorkPhotosPage = () => {
         }
     }
 
-    const resetFilters = () => setFilters({ department: "", employee: "", date: "" })
+    const resetFilters = () => setFilters({ department: "all", employee: "all", date: "" })
 
     // Empleados filtrados por departamento seleccionado
     const filteredEmployeeOptions = useMemo(() => {
-        if (!filters.department) return employees
+        if (filters.department === "all") return employees
         return employees.filter(e =>
             e.department === filters.department ||
             e.department?._id === filters.department
@@ -260,13 +261,13 @@ export const HRWorkPhotosPage = () => {
             const emp = photo.employee
 
             // Filtro por departamento
-            if (filters.department) {
+            if (filters.department !== "all") {
                 const empDept = emp?.department?._id || emp?.department
                 if (empDept !== filters.department) return false
             }
 
             // Filtro por empleado
-            if (filters.employee) {
+            if (filters.employee !== "all") {
                 const empID = emp?._id || emp
                 if (empID !== filters.employee) return false
             }
@@ -283,7 +284,7 @@ export const HRWorkPhotosPage = () => {
         })
     }, [photos, filters])
 
-    const hasActiveFilters = filters.department || filters.employee || filters.date
+    const hasActiveFilters = filters.department !== "all" || filters.employee !== "all" || filters.date
 
     if (isLoading && (!photos || photos.length === 0)) return <Loading />
 
@@ -334,37 +335,34 @@ export const HRWorkPhotosPage = () => {
                     {/* Departamento */}
                     <div className="flex items-center gap-2 flex-1">
                         <Building2 className="w-4 h-4 flex-shrink-0 transition-colors duration-300" style={{ color: isDark ? "rgba(255,255,255,0.5)" : "#9ca3af" }} />
-                        <select
+                        <CustomSelect
                             value={filters.department}
-                            onChange={e => setFilters(p => ({ ...p, department: e.target.value, employee: "" }))}
-                            className="input-field flex-1"
-                        >
-                            <option value="">Todos los departamentos</option>
-                            {departments.map(dept => (
-                                <option key={dept._id} value={dept._id}
-                                    className="bg-white dark:bg-[#1a1a2e]">
-                                    {dept.name}
-                                </option>
-                            ))}
-                        </select>
+                            onValueChange={(val) => setFilters(p => ({ ...p, department: val, employee: "all" }))}
+                            options={[
+                                { value: "all", label: "Todos los departamentos" },
+                                ...departments.map(dept => ({ value: dept._id, label: dept.name }))
+                            ]}
+                            accentColor="blue"
+                            className="flex-1"
+                        />
                     </div>
 
                     {/* Empleado */}
                     <div className="flex items-center gap-2 flex-1">
                         <Users className="w-4 h-4 flex-shrink-0 transition-colors duration-300" style={{ color: isDark ? "rgba(255,255,255,0.5)" : "#9ca3af" }} />
-                        <select
+                        <CustomSelect
                             value={filters.employee}
-                            onChange={e => setFilters(p => ({ ...p, employee: e.target.value }))}
-                            className="input-field flex-1"
-                        >
-                            <option value="">Todos los empleados</option>
-                            {filteredEmployeeOptions.map(emp => (
-                                <option key={emp._id} value={emp._id}
-                                    className="bg-white dark:bg-[#1a1a2e]">
-                                    {emp.firstname} {emp.lastname}
-                                </option>
-                            ))}
-                        </select>
+                            onValueChange={(val) => setFilters(p => ({ ...p, employee: val }))}
+                            options={[
+                                { value: "all", label: "Todos los empleados" },
+                                ...filteredEmployeeOptions.map(emp => ({
+                                    value: emp._id,
+                                    label: `${emp.firstname} ${emp.lastname}`
+                                }))
+                            ]}
+                            accentColor="blue"
+                            className="flex-1"
+                        />
                     </div>
 
                     {/* Fecha */}

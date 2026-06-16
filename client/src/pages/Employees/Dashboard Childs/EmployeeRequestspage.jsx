@@ -375,19 +375,13 @@ export const EmployeeRequestspage = () => {
             <div className="flex flex-col lg:flex-row gap-4">
                 <div className="flex flex-col gap-1.5 w-full lg:w-48">
                     <label className="text-xs font-semibold uppercase tracking-wider" style={{ color: isDark ? "rgba(255,255,255,0.5)" : "#6b7280" }}>Estado</label>
-                    <div className="relative">
-                        <select 
-                            value={statusFilter}
-                            onChange={(e) => setStatusFilter(e.target.value)}
-                            className={`w-full rounded-xl px-3 py-2.5 text-sm outline-none appearance-none
-                                bg-gray-50 border border-gray-200 text-gray-900
-                                focus:border-cyan-400 focus:ring-2 focus:ring-cyan-100
-                                dark:bg-[rgba(255,255,255,0.04)] dark:border-[rgba(255,255,255,0.08)] dark:text-white
-                                dark:focus:border-[rgba(6,182,212,0.5)]`}
-                        >
-                            {STATUS_OPTIONS.map(opt => (<option key={opt.value} value={opt.value}>{opt.label}</option>))}
-                        </select>
-                    </div>
+                    <CustomSelect
+                        value={statusFilter}
+                        onValueChange={(val) => setStatusFilter(val)}
+                        options={STATUS_OPTIONS}
+                        placeholder="Todos"
+                        accentColor="yellow"
+                    />
                 </div>
             </div>
 

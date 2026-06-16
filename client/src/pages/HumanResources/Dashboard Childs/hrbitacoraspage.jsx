@@ -5,13 +5,14 @@ import { HandleGetAllBitacoras, HandleDeleteBitacoraByHR } from "../../../redux/
 import { Loading } from "../../../components/common/loading.jsx"
 import { useIsDark } from "../../../hooks/useIsDark.js"
 import { Calendar, Filter, Search, Trash2, Eye, X, ChevronDown, FileText, Image as ImageIcon, Clock, User } from "lucide-react"
+import { CustomSelect } from "../../../components/ui/custom-select.jsx"
 
 export const HRBitacorasPage = () => {
     const isDark = useIsDark()
     const dispatch = useDispatch()
     const { data: bitacoras, isLoading } = useSelector((state) => state.HRBitacorasReducer)
 
-    const [employeeFilter, setEmployeeFilter] = useState("")
+    const [employeeFilter, setEmployeeFilter] = useState("all")
     const [searchTerm, setSearchTerm] = useState("")
     const [dateRange, setDateRange] = useState({ start: "", end: "" })
     const [selectedBitacora, setSelectedBitacora] = useState(null)
@@ -40,7 +41,7 @@ export const HRBitacorasPage = () => {
 
         return bitacoras.filter(b => {
             // Filter by employee
-            if (employeeFilter && b.employee?._id !== employeeFilter) return false
+            if (employeeFilter !== "all" && b.employee?._id !== employeeFilter) return false
 
             // Filter by search term (title or content)
             if (searchTerm) {
@@ -131,26 +132,18 @@ export const HRBitacorasPage = () => {
                         <Filter className="w-3 h-3 inline mr-1" />
                         Empleado
                     </label>
-                    <div className="relative">
-                        <select
-                            value={employeeFilter}
-                            onChange={(e) => setEmployeeFilter(e.target.value)}
-                            className={`w-full rounded-xl px-3 py-2.5 text-sm outline-none transition-all duration-200 appearance-none
-                                bg-gray-50 border border-gray-200 text-gray-900
-                                focus:border-yellow-400 focus:bg-white focus:ring-2 focus:ring-yellow-100
-                                dark:bg-[rgba(255,255,255,0.04)] dark:border-[rgba(255,255,255,0.08)] dark:text-white
-                                dark:focus:border-[rgba(252,227,0,0.5)] dark:focus:bg-[rgba(252,227,0,0.06)]`}
-                        >
-                            <option value="">Todos los empleados</option>
-                            {employees.map(emp => (
-                                <option key={emp._id} value={emp._id}>
-                                    {emp.firstname} {emp.lastname}
-                                </option>
-                            ))}
-                        </select>
-                        <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 pointer-events-none"
-                            style={{ color: isDark ? "rgba(255,255,255,0.4)" : "#9ca3af" }} />
-                    </div>
+                    <CustomSelect
+                        value={employeeFilter}
+                        onValueChange={(val) => setEmployeeFilter(val)}
+                        options={[
+                            { value: "all", label: "Todos los empleados" },
+                            ...employees.map(emp => ({
+                                value: emp._id,
+                                label: `${emp.firstname} ${emp.lastname}`
+                            }))
+                        ]}
+                        accentColor="yellow"
+                    />
                 </div>
 
                 {/* Search */}

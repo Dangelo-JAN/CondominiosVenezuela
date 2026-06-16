@@ -7,6 +7,20 @@ import { Check, ChevronDown, Search } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { useIsDark } from "../../hooks/useIsDark.js"
 
+// ── Accent Color Configuration ──────────────────────────────────────────────
+const ACCENT_CONFIG = {
+  yellow: {
+    trigger: "focus:border-yellow-400 focus:bg-white focus:ring-2 focus:ring-yellow-100 dark:focus:border-[rgba(245,158,11,0.5)] dark:focus:bg-[rgba(245,158,11,0.06)]",
+    search: "focus:border-yellow-400 focus:ring-2 focus:ring-yellow-100 dark:focus:border-[rgba(245,158,11,0.5)] dark:focus:ring-[rgba(245,158,11,0.15)]",
+    check: "text-yellow-500",
+  },
+  blue: {
+    trigger: "focus:border-blue-400 focus:bg-white focus:ring-2 focus:ring-blue-100 dark:focus:border-[rgba(0,61,165,0.5)] dark:focus:bg-[rgba(0,61,165,0.06)]",
+    search: "focus:border-blue-400 focus:ring-2 focus:ring-blue-100 dark:focus:border-[rgba(0,61,165,0.5)] dark:focus:ring-[rgba(0,61,165,0.15)]",
+    check: "text-blue-500",
+  },
+}
+
 // ── Select Root ─────────────────────────────────────────────────────────────
 const Select = SelectPrimitive.Root
 
@@ -25,12 +39,10 @@ const SelectTrigger = React.forwardRef(({ className, children, searchPlaceholder
         "flex h-10 w-full items-center justify-between rounded-xl px-3 py-2.5 text-sm outline-none transition-all duration-200",
         "bg-gray-50 border border-gray-200 text-gray-900",
         "placeholder:text-gray-400",
-        "focus:border-yellow-400 focus:bg-white focus:ring-2 focus:ring-yellow-100",
         "disabled:cursor-not-allowed disabled:opacity-50",
         // Dark mode
         "dark:bg-[rgba(255,255,255,0.05)] dark:border-[rgba(255,255,255,0.12)] dark:text-white",
         "dark:placeholder:text-[rgba(255,255,255,0.4)]",
-        "dark:focus:border-[rgba(245,158,11,0.5)] dark:focus:bg-[rgba(245,158,11,0.06)]",
         className
       )}
       {...props}
@@ -103,7 +115,7 @@ const SelectLabel = React.forwardRef(({ className, ...props }, ref) => {
 SelectLabel.displayName = SelectPrimitive.Label.displayName
 
 // ── Select Item (cada opción) ────────────────────────────────────────────
-const SelectItem = React.forwardRef(({ className, children, ...props }, ref) => {
+const SelectItem = React.forwardRef(({ className, children, checkClassName = "text-yellow-500", ...props }, ref) => {
   const isDark = useIsDark()
 
   return (
@@ -122,7 +134,7 @@ const SelectItem = React.forwardRef(({ className, children, ...props }, ref) => 
     >
       <span className="absolute left-2 flex h-3.5 w-3.5 items-center justify-center">
         <SelectPrimitive.ItemIndicator>
-          <Check className="h-4 w-4 text-yellow-500" />
+          <Check className={cn("h-4 w-4", checkClassName)} />
         </SelectPrimitive.ItemIndicator>
       </span>
       <SelectPrimitive.ItemText>{children}</SelectPrimitive.ItemText>
@@ -159,9 +171,13 @@ const CustomSelect = ({
   disabled = false,
   className = "",
   emptyMessage = "No hay opciones disponibles",
+  accentColor = "yellow",
 }) => {
   const isDark = useIsDark()
   const [search, setSearch] = React.useState("")
+
+  // Resolver estilos de acento
+  const accent = ACCENT_CONFIG[accentColor] || ACCENT_CONFIG.yellow
 
   // Filtrar opciones basado en búsqueda
   const filteredOptions = React.useMemo(() => {
@@ -178,7 +194,7 @@ const CustomSelect = ({
 
   return (
     <Select value={value} onValueChange={onValueChange} disabled={disabled}>
-      <SelectTrigger className={className}>
+      <SelectTrigger className={cn(className, accent.trigger)}>
         <SelectValue placeholder={placeholder} />
       </SelectTrigger>
 
@@ -197,10 +213,9 @@ const CustomSelect = ({
                 "w-full h-9 rounded-lg pl-9 pr-3 text-sm outline-none transition-colors",
                 "bg-gray-50 border border-gray-200 text-gray-900",
                 "placeholder:text-gray-400",
-                "focus:border-yellow-400 focus:ring-2 focus:ring-yellow-100",
+                accent.search,
                 "dark:bg-[rgba(255,255,255,0.05)] dark:border-[rgba(255,255,255,0.12)] dark:text-white",
-                "dark:placeholder:text-[rgba(255,255,255,0.4)]",
-                "dark:focus:border-[rgba(245,158,11,0.5)] dark:focus:ring-[rgba(245,158,11,0.15)]"
+                "dark:placeholder:text-[rgba(255,255,255,0.4)]"
               )}
               onClick={(e) => e.stopPropagation()}
             />
@@ -215,7 +230,7 @@ const CustomSelect = ({
           
           {filteredOptions.length > 0 ? (
             filteredOptions.map((option) => (
-              <SelectItem key={option.value} value={option.value}>
+              <SelectItem key={option.value} value={option.value} checkClassName={accent.check}>
                 {option.label}
               </SelectItem>
             ))
