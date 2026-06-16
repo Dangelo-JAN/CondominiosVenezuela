@@ -1,8 +1,9 @@
 import { useState } from "react"
 import { Dialog, DialogContent, DialogTrigger } from "../ui/dialog"
 import { useToast } from "../../hooks/use-toast.js"
-import { Mail, CheckCircle2, ChevronDown, Rocket, Building2, User, MessageSquare } from "lucide-react"
+import { Mail, CheckCircle2, Rocket, Building2, User, MessageSquare } from "lucide-react"
 import axios from "axios"
+import { CustomSelect } from "../ui/custom-select.jsx"
 
 // ✅ Fix 1 — usar VITE_EMPLOYEE_API que ya apunta al backend correcto
 const API_URL = import.meta.env.VITE_BACKEND_API
@@ -161,24 +162,23 @@ export const ContactSalesDialog = () => {
                                         value={formData.companyname} onChange={handleChange}
                                         className={inputCls} disabled={isLoading} />
                                 </div>
-                                <div className="flex flex-col relative">
+                                <div className="flex flex-col">
                                     <label htmlFor="companysize" className={labelCls}>
                                         Tamaño Equipo
                                     </label>
-                                    <div className="relative">
-                                        <select id="companysize" name="companysize"
-                                            value={formData.companysize} onChange={handleChange}
-                                            className={`${inputCls} appearance-none cursor-pointer pr-10`}
-                                            style={{ colorScheme: "dark" }}
-                                            disabled={isLoading}>
-                                            <option value="" disabled hidden style={{ background: "#1a1a2e", color: "white" }}>Selecciona un rango</option>
-                                            <option value="1-50" style={{ background: "#1a1a2e", color: "white" }}>1 - 50 empleados</option>
-                                            <option value="51-200" style={{ background: "#1a1a2e", color: "white" }}>51 - 200 empleados</option>
-                                            <option value="201-500" style={{ background: "#1a1a2e", color: "white" }}>201 - 500 empleados</option>
-                                            <option value="500+" style={{ background: "#1a1a2e", color: "white" }}>Más de 500 empleados</option>
-                                        </select>
-                                        <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
-                                    </div>
+                                    <CustomSelect
+                                        value={formData.companysize}
+                                        onValueChange={(val) => setFormData(p => ({ ...p, companysize: val }))}
+                                        options={[
+                                            { value: "1-50", label: "1 - 50 empleados" },
+                                            { value: "51-200", label: "51 - 200 empleados" },
+                                            { value: "201-500", label: "201 - 500 empleados" },
+                                            { value: "500+", label: "Más de 500 empleados" }
+                                        ]}
+                                        placeholder="Selecciona un rango"
+                                        disabled={isLoading}
+                                        accentColor="blue"
+                                    />
                                 </div>
                             </div>
 

@@ -11,6 +11,7 @@ import {
     Users, ClipboardList, X, CheckCircle2, Circle,
     Pencil, ToggleLeft, ToggleRight, Copy
 } from "lucide-react"
+import { CustomSelect } from "../../../components/ui/custom-select.jsx"
 
 const DAYS = ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo"]
 
@@ -224,19 +225,12 @@ const DayEditor = ({ dayItem, dayIndex, onChange, onRemove, canRemove }) => {
                 border-gray-50 dark:border-[rgba(255,255,255,0.04)]">
                 <div className="flex items-center gap-2">
                     <CalendarDays className="w-4 h-4 text-blue-400" />
-                    <select
+                    <CustomSelect
                         value={dayItem.day}
-                        onChange={e => onChange(dayIndex, "day", e.target.value)}
-                        className="text-sm font-semibold bg-transparent outline-none cursor-pointer
-                            text-gray-900 dark:text-white"
-                    >
-                        {DAYS.map(d => (
-                            <option key={d} value={d}
-                                className="bg-white dark:bg-[#1a1a2e] text-gray-900 dark:text-white">
-                                {d}
-                            </option>
-                        ))}
-                    </select>
+                        onValueChange={(val) => onChange(dayIndex, "day", val)}
+                        options={DAYS.map(d => ({ value: d, label: d }))}
+                        accentColor="blue"
+                    />
                 </div>
                 {canRemove && (
                     <button onClick={() => onRemove(dayIndex)}
@@ -356,19 +350,16 @@ const ScheduleForm = ({ employees, onSubmit, onCancel, editingSchedule, viewMode
 
                     {/* Empleado */}
                     <div className="sm:col-span-2">
-                        <select
+                        <CustomSelect
                             value={form.employee}
-                            onChange={e => setForm(p => ({ ...p, employee: e.target.value }))}
-                            className="input-field w-full"
-                        >
-                            <option value="">Seleccionar empleado *</option>
-                            {(employees || []).map(emp => (
-                                <option key={emp._id} value={emp._id}
-                                    className="bg-white dark:bg-[#1a1a2e]">
-                                    {emp.firstname} {emp.lastname}
-                                </option>
-                            ))}
-                        </select>
+                            onValueChange={(val) => setForm(p => ({ ...p, employee: val }))}
+                            options={(employees || []).map(emp => ({
+                                value: emp._id,
+                                label: `${emp.firstname} ${emp.lastname}`
+                            }))}
+                            placeholder="Seleccionar empleado *"
+                            accentColor="blue"
+                        />
                     </div>
 
                     {/* Fechas */}
