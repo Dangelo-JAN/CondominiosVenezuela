@@ -7,9 +7,10 @@ import {
     HandleUpdateBitacora,
     HandleGetMyBitacoras
 } from "../../../redux/Thunks/HRBitacorasThunk.js"
-import { FileText, Plus, Edit, Image as ImageIcon, X, Clock, ExternalLink } from "lucide-react"
+import { FileText, Plus, Edit, Image as ImageIcon, Video, X, Clock, ExternalLink } from "lucide-react"
 
 const MAX_IMAGES = 5
+const MAX_VIDEOS = 3
 
 export const EmployeeBitacorasPage = () => {
     const isDark = useIsDark()
@@ -23,7 +24,11 @@ export const EmployeeBitacorasPage = () => {
     const [selectedFiles, setSelectedFiles] = useState([])
     const [previews, setPreviews] = useState([])
     const [existingImages, setExistingImages] = useState([])
+    const [selectedVideoFiles, setSelectedVideoFiles] = useState([])
+    const [videoPreviews, setVideoPreviews] = useState([])
+    const [existingVideos, setExistingVideos] = useState([])
     const [submitting, setSubmitting] = useState(false)
+    const [isUploading, setIsUploading] = useState(false)
     const [viewingBitacora, setViewingBitacora] = useState(null)
 
     useEffect(() => {
@@ -47,6 +52,9 @@ export const EmployeeBitacorasPage = () => {
         setSelectedFiles([])
         setPreviews([])
         setExistingImages([])
+        setSelectedVideoFiles([])
+        setVideoPreviews([])
+        setExistingVideos([])
         setShowForm(true)
     }
 
@@ -57,6 +65,9 @@ export const EmployeeBitacorasPage = () => {
         setSelectedFiles([])
         setPreviews([])
         setExistingImages(bitacora.images || [])
+        setSelectedVideoFiles([])
+        setVideoPreviews([])
+        setExistingVideos(bitacora.videos || [])
         setShowForm(true)
     }
 
@@ -68,6 +79,10 @@ export const EmployeeBitacorasPage = () => {
         setSelectedFiles([])
         setPreviews([])
         setExistingImages([])
+        setSelectedVideoFiles([])
+        setVideoPreviews([])
+        setExistingVideos([])
+        setIsUploading(false)
     }
 
     const handleFileChange = (e) => {
@@ -84,7 +99,21 @@ export const EmployeeBitacorasPage = () => {
         setPreviews(prev => [...prev, ...newPreviews].slice(0, MAX_IMAGES - (editingId ? existingImages.length : 0)))
     }
 
-    const removeNewFile = (index) => {
+    const handleVideoFileChange = (e) => {
+        const files = Array.from(e.target.files || [])
+        const totalVideos = (editingId ? existingVideos.length : 0) + (selectedVideoFiles.length + files.length)
+        if (totalVideos > MAX_VIDEOS) {
+            alert(`Máximo ${MAX_VIDEOS} videos por bitácora`)
+            return
+        }
+        setSelectedVideoFiles(prev => [...prev, ...files].slice(0, MAX_VIDEOS - (editingId ? existingVideos.length : 0)))
+
+        // Generate video previews (URLs for playback)
+        const newPreviews = files.map(file => URL.createObjectURL(file))
+        setVideoPreviews(prev => [...prev, ...newPreviews].slice(0, MAX_VIDEOS - (editingId ? existingVideos.length : 0)))
+    }
+
+    const removeNewImage = (index) => {
         URL.revokeObjectURL(previews[index])
         setSelectedFiles(prev => prev.filter((_, i) => i !== index))
         setPreviews(prev => prev.filter((_, i) => i !== index))
@@ -94,11 +123,22 @@ export const EmployeeBitacorasPage = () => {
         setExistingImages(prev => prev.filter((_, i) => i !== index))
     }
 
+    const removeNewVideo = (index) => {
+        URL.revokeObjectURL(videoPreviews[index])
+        setSelectedVideoFiles(prev => prev.filter((_, i) => i !== index))
+        setVideoPreviews(prev => prev.filter((_, i) => i !== index))
+    }
+
+    const removeExistingVideo = (index) => {
+        setExistingVideos(prev => prev.filter((_, i) => i !== index))
+    }
+
     const handleSubmit = async (e) => {
         e.preventDefault()
         if (!title.trim() || !content.trim()) return
 
         setSubmitting(true)
+        setIsUploading(true)
         try {
             const formData = new FormData()
             formData.append("title", title.trim())
@@ -109,9 +149,19 @@ export const EmployeeBitacorasPage = () => {
                 formData.append("keepImages", JSON.stringify(existingImages))
             }
 
-            // Add new files
+            // Add new image files
             selectedFiles.forEach(file => {
                 formData.append("images", file)
+            })
+
+            // Add existing videos that should be kept (for edit mode)
+            if (editingId) {
+                formData.append("keepVideos", JSON.stringify(existingVideos))
+            }
+
+            // Add new video files
+            selectedVideoFiles.forEach(file => {
+                formData.append("videos", file)
             })
 
             if (editingId) {
@@ -125,6 +175,7 @@ export const EmployeeBitacorasPage = () => {
             console.error("Error submitting bitacora:", err)
         } finally {
             setSubmitting(false)
+            setIsUploading(false)
         }
     }
 
@@ -265,7 +316,7 @@ export const EmployeeBitacorasPage = () => {
                                     {bitacora.content}
                                 </p>
 
-                                {/* Footer: date + images count */}
+                                {/* Footer: date + images count + videos count */}
                                 <div className="flex items-center justify-between">
                                     <div className="flex items-center gap-1.5">
                                         <Clock className="w-3 h-3"
@@ -275,16 +326,28 @@ export const EmployeeBitacorasPage = () => {
                                             {formatDate(bitacora.createdAt)}
                                         </p>
                                     </div>
-                                    {bitacora.images?.length > 0 && (
-                                        <div className="flex items-center gap-1">
-                                            <ImageIcon className="w-3 h-3"
-                                                style={{ color: isDark ? "rgba(255,255,255,0.35)" : "#9ca3af" }} />
-                                            <p className="text-xs"
-                                                style={{ color: isDark ? "rgba(255,255,255,0.35)" : "#9ca3af" }}>
-                                                {bitacora.images.length}
-                                            </p>
-                                        </div>
-                                    )}
+                                    <div className="flex items-center gap-2">
+                                        {bitacora.images?.length > 0 && (
+                                            <div className="flex items-center gap-1">
+                                                <ImageIcon className="w-3 h-3"
+                                                    style={{ color: isDark ? "rgba(255,255,255,0.35)" : "#9ca3af" }} />
+                                                <p className="text-xs"
+                                                    style={{ color: isDark ? "rgba(255,255,255,0.35)" : "#9ca3af" }}>
+                                                    {bitacora.images.length}
+                                                </p>
+                                            </div>
+                                        )}
+                                        {bitacora.videos?.length > 0 && (
+                                            <div className="flex items-center gap-1">
+                                                <Video className="w-3 h-3"
+                                                    style={{ color: isDark ? "rgba(255,255,255,0.35)" : "#9ca3af" }} />
+                                                <p className="text-xs"
+                                                    style={{ color: isDark ? "rgba(255,255,255,0.35)" : "#9ca3af" }}>
+                                                    {bitacora.videos.length}
+                                                </p>
+                                            </div>
+                                        )}
+                                    </div>
                                 </div>
                             </div>
                         ))}
@@ -370,7 +433,7 @@ export const EmployeeBitacorasPage = () => {
                                             <div key={`new-${i}`} className="relative group">
                                                 <img src={preview} alt={`Preview ${i + 1}`}
                                                     className="w-20 h-20 rounded-xl object-cover border border-gray-200 dark:border-[rgba(255,255,255,0.1)]" />
-                                                <button type="button" onClick={() => removeNewFile(i)}
+                                                <button type="button" onClick={() => removeNewImage(i)}
                                                     className="absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full bg-red-500 text-white
                                                         flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
                                                     <X className="w-3 h-3" />
@@ -396,6 +459,63 @@ export const EmployeeBitacorasPage = () => {
                                     Formatos: JPG, PNG, WEBP. Máximo 10MB c/u.
                                 </p>
                             </div>
+
+                            {/* Videos */}
+                            <div className="flex flex-col gap-1.5">
+                                <label style={labelStyle}>
+                                    Videos ({editingId ? existingVideos.length : 0 + selectedVideoFiles.length}/{MAX_VIDEOS})
+                                </label>
+
+                                {/* Existing videos (edit mode) */}
+                                {editingId && existingVideos.length > 0 && (
+                                    <div className="flex flex-wrap gap-2 mb-2">
+                                        {existingVideos.map((url, i) => (
+                                            <div key={`exist-vid-${i}`} className="relative group">
+                                                <video src={url} muted preload="metadata"
+                                                    className="w-20 h-20 rounded-xl object-cover border border-gray-200 dark:border-[rgba(255,255,255,0.1)] bg-black" />
+                                                <button type="button" onClick={() => removeExistingVideo(i)}
+                                                    className="absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full bg-red-500 text-white
+                                                        flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                                                    <X className="w-3 h-3" />
+                                                </button>
+                                            </div>
+                                        ))}
+                                    </div>
+                                )}
+
+                                {/* New video previews */}
+                                {videoPreviews.length > 0 && (
+                                    <div className="flex flex-wrap gap-2 mb-2">
+                                        {videoPreviews.map((preview, i) => (
+                                            <div key={`new-vid-${i}`} className="relative group">
+                                                <video src={preview} muted preload="metadata"
+                                                    className="w-20 h-20 rounded-xl object-cover border border-gray-200 dark:border-[rgba(255,255,255,0.1)] bg-black" />
+                                                <button type="button" onClick={() => removeNewVideo(i)}
+                                                    className="absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full bg-red-500 text-white
+                                                        flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                                                    <X className="w-3 h-3" />
+                                                </button>
+                                            </div>
+                                        ))}
+                                    </div>
+                                )}
+
+                                {/* Upload button */}
+                                {(editingId ? existingVideos.length : 0) + selectedVideoFiles.length < MAX_VIDEOS && (
+                                    <label className={`inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium
+                                        cursor-pointer transition-all duration-200 hover:-translate-y-0.5
+                                        bg-gray-100 text-gray-700 hover:bg-gray-200
+                                        dark:bg-[rgba(255,255,255,0.05)] dark:text-gray-300 dark:hover:bg-[rgba(255,255,255,0.1)]`}>
+                                        <Video className="w-4 h-4" />
+                                        Agregar videos
+                                        <input type="file" multiple accept="video/*" onChange={handleVideoFileChange}
+                                            className="hidden" />
+                                    </label>
+                                )}
+                                <p className="text-xs" style={{ color: isDark ? "rgba(255,255,255,0.3)" : "#9ca3af" }}>
+                                    Formatos: MP4, WebM, MOV. Máximo 50MB c/u.
+                                </p>
+                            </div>
                         </form>
 
                         {/* Modal Footer */}
@@ -407,11 +527,12 @@ export const EmployeeBitacorasPage = () => {
                                     dark:bg-[rgba(255,255,255,0.05)] dark:text-gray-300 dark:hover:bg-[rgba(255,255,255,0.1)]">
                                 Cancelar
                             </button>
-                            <button type="submit" form="bitacora-form" disabled={submitting || !title.trim() || !content.trim()}
+                            <button type="submit" form="bitacora-form"
+                                disabled={submitting || isUploading || !title.trim() || !content.trim()}
                                 className="px-4 py-2 rounded-xl text-sm font-semibold transition-all duration-200 hover:-translate-y-0.5
                                     text-white disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:-translate-y-0"
                                 style={{ background: "#ca8a04" }}>
-                                {submitting ? "Guardando..." : editingId ? "Actualizar" : "Publicar"}
+                                {isUploading ? "Subiendo..." : submitting ? "Guardando..." : editingId ? "Actualizar" : "Publicar"}
                             </button>
                         </div>
                     </div>
@@ -473,6 +594,25 @@ export const EmployeeBitacorasPage = () => {
                                                     <ExternalLink className="w-5 h-5 text-white opacity-0 group-hover:opacity-100 transition-opacity" />
                                                 </div>
                                             </a>
+                                        ))}
+                                    </div>
+                                </div>
+                            )}
+
+                            {/* Videos */}
+                            {viewingBitacora.videos?.length > 0 && (
+                                <div className="space-y-2">
+                                    <div className="flex items-center gap-2">
+                                        <Video className="w-4 h-4"
+                                            style={{ color: isDark ? "#facc15" : "#ca8a04" }} />
+                                        <p className="text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-[rgba(255,255,255,0.4)]">
+                                            {viewingBitacora.videos.length} video(s)
+                                        </p>
+                                    </div>
+                                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                                        {viewingBitacora.videos.map((url, i) => (
+                                            <video key={i} src={url} controls playsInline preload="metadata"
+                                                className="w-full h-32 object-cover rounded-xl border border-gray-200 dark:border-[rgba(255,255,255,0.1)] bg-black" />
                                         ))}
                                     </div>
                                 </div>

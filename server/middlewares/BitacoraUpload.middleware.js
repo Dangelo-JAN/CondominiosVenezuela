@@ -1,22 +1,30 @@
 import multer from "multer"
 
-// ── Configuración de multer para imágenes de bitácora ──
+// ── Configuración de multer para imágenes y videos de bitácora ──
 const storage = multer.memoryStorage()
 
-// Filtro: solo imágenes
-const fileFilter = (req, file, cb) => {
-    if (file.mimetype.startsWith("image/")) {
-        cb(null, true)
-    } else {
-        cb(new Error("Solo se permiten archivos de imagen"), false)
-    }
-}
-
-export const uploadBitacoraMiddleware = multer({
+const uploadBitacoraMiddleware = multer({
     storage,
-    fileFilter,
     limits: {
-        fileSize: 10 * 1024 * 1024, // 10MB por imagen
-        files: 5 // Máximo 5 imágenes
+        fileSize: 50 * 1024 * 1024 // 50MB global (necesario para videos)
+    },
+    fileFilter: (req, file, cb) => {
+        if (file.fieldname === "images") {
+            if (!file.mimetype.startsWith("image/")) {
+                return cb(new Error("Solo se permiten archivos de imagen"), false)
+            }
+        } else if (file.fieldname === "videos") {
+            if (!file.mimetype.startsWith("video/")) {
+                return cb(new Error("Solo se permiten archivos de video"), false)
+            }
+        } else {
+            return cb(new Error("Campo de archivo desconocido"), false)
+        }
+        cb(null, true)
     }
-})
+}).fields([
+    { name: "images", maxCount: 5 },
+    { name: "videos", maxCount: 3 }
+])
+
+export { uploadBitacoraMiddleware }

@@ -23,6 +23,16 @@ const BitacoraSchema = new Schema({
       message: "Máximo 5 imágenes por bitácora"
     }
   },
+  videos: {
+    type: [String],
+    default: [],
+    validate: {
+      validator: function (arr) {
+        return arr.length <= 3
+      },
+      message: "Máximo 3 videos por bitácora"
+    }
+  },
   employee: {
     type: mongoose.Schema.Types.ObjectId,
     required: true,

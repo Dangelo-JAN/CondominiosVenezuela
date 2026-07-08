@@ -14,10 +14,10 @@ import { uploadBitacoraMiddleware } from '../middlewares/BitacoraUpload.middlewa
 const router = express.Router()
 
 // ============ RUTAS EMPLEADO ============
-// Crear bitácora (empleado autenticado) — con upload de imágenes
-router.post("/create", VerifyEmployeeToken, uploadBitacoraMiddleware.array("images", 5), HandleCreateBitacora)
+// Crear bitácora (empleado autenticado) — con upload de imágenes y videos
+router.post("/create", VerifyEmployeeToken, uploadBitacoraMiddleware, HandleCreateBitacora)
 // Actualizar bitácora propia
-router.patch("/update/:id", VerifyEmployeeToken, uploadBitacoraMiddleware.array("images", 5), HandleUpdateBitacora)
+router.patch("/update/:id", VerifyEmployeeToken, uploadBitacoraMiddleware, HandleUpdateBitacora)
 // Obtener mis bitácoras
 router.get("/my-bitacoras", VerifyEmployeeToken, HandleGetMyBitacoras)
 
