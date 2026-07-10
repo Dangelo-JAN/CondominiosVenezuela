@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from "react-redux"
 import { HandleGetAllBitacoras, HandleDeleteBitacoraByHR } from "../../../redux/Thunks/HRBitacorasThunk.js"
 import { Loading } from "../../../components/common/loading.jsx"
 import { useIsDark } from "../../../hooks/useIsDark.js"
-import { Calendar, Filter, Search, Trash2, Eye, X, ChevronDown, FileText, Image as ImageIcon, Clock, User } from "lucide-react"
+import { Calendar, Filter, Search, Trash2, Eye, X, ChevronDown, FileText, Image as ImageIcon, Video, Clock, User } from "lucide-react"
 import { CustomSelect } from "../../../components/ui/custom-select.jsx"
 
 export const HRBitacorasPage = () => {
@@ -368,6 +368,25 @@ export const HRBitacorasPage = () => {
                                                     className="w-full h-32 object-cover"
                                                 />
                                             </a>
+                                        ))}
+                                    </div>
+                                </div>
+                            )}
+
+                            {/* Videos */}
+                            {selectedBitacora.videos?.length > 0 && (
+                                <div className="space-y-2">
+                                    <div className="flex items-center gap-2">
+                                        <Video className="w-4 h-4"
+                                            style={{ color: isDark ? "#facc15" : "#ca8a04" }} />
+                                        <p className="text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-[rgba(255,255,255,0.4)]">
+                                            {selectedBitacora.videos.length} video(s)
+                                        </p>
+                                    </div>
+                                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                                        {selectedBitacora.videos.map((url, i) => (
+                                            <video key={i} src={url} controls playsInline preload="metadata"
+                                                className="w-full h-32 object-cover rounded-xl border border-gray-200 dark:border-[rgba(255,255,255,0.1)] bg-black" />
                                         ))}
                                     </div>
                                 </div>
