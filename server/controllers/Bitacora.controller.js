@@ -48,6 +48,39 @@ const deleteImagesFromCloudinary = async (imageUrls) => {
     await Promise.all(deletePromises)
 }
 
+// ── Helper: Subir videos a Cloudinary ───────────────────────────────────────
+const uploadVideosToCloudinary = async (files, orgID, empID) => {
+    if (!files || files.length === 0) return []
+
+    const uploadPromises = files.map((file) => {
+        const videoData = `data:${file.mimetype};base64,${file.buffer.toString("base64")}`
+        return cloudinary.uploader.upload(videoData, {
+            resource_type: "video",
+            folder: `ems/${orgID}/bitacoras/${empID}/videos`
+        })
+    })
+
+    const results = await Promise.all(uploadPromises)
+    return results.map((r) => r.secure_url)
+}
+
+// ── Helper: Eliminar videos de Cloudinary ──────────────────────────────────
+const deleteVideosFromCloudinary = async (videoUrls) => {
+    if (!videoUrls || videoUrls.length === 0) return
+
+    const deletePromises = videoUrls.map((url) => {
+        const folderMatch = url.match(/\/v\d+\/(.+)\.\w+$/)
+        if (folderMatch) {
+            return cloudinary.uploader.destroy(folderMatch[1], {
+                resource_type: "video"
+            })
+        }
+        return Promise.resolve()
+    })
+
+    await Promise.all(deletePromises)
+}
+
 // ── Helper: Crear notificaciones para todos los HR ─────────────────────────
 const notifyAllHRs = async (orgID, bitacora, employeeName) => {
     try {
@@ -107,14 +140,21 @@ export const HandleCreateBitacora = async (req, res) => {
 
         // Subir imágenes si existen
         let imageUrls = []
-        if (req.files && req.files.length > 0) {
-            imageUrls = await uploadImagesToCloudinary(req.files, req.ORGID, req.EMPID)
+        if (req.files?.images?.length > 0) {
+            imageUrls = await uploadImagesToCloudinary(req.files.images, req.ORGID, req.EMPID)
+        }
+
+        // Subir videos si existen
+        let videoUrls = []
+        if (req.files?.videos?.length > 0) {
+            videoUrls = await uploadVideosToCloudinary(req.files.videos, req.ORGID, req.EMPID)
         }
 
         const bitacora = await Bitacora.create({
             title: title.trim(),
             content: content.trim(),
             images: imageUrls,
+            videos: videoUrls,
             employee: req.EMPID,
             organizationID: req.ORGID
         })
@@ -143,7 +183,7 @@ export const HandleCreateBitacora = async (req, res) => {
 export const HandleUpdateBitacora = async (req, res) => {
     try {
         const { id } = req.params
-        const { title, content, keepImages } = req.body
+        const { title, content, keepImages, keepVideos } = req.body
 
         const bitacora = await Bitacora.findOne({
             _id: id,
@@ -170,18 +210,63 @@ export const HandleUpdateBitacora = async (req, res) => {
             bitacora.content = content.trim()
         }
 
-        // Manejo de imágenes: si se envían nuevas, reemplazar
-        if (req.files && req.files.length > 0) {
-            // Eliminar imágenes antiguas de Cloudinary
-            await deleteImagesFromCloudinary(bitacora.images)
+        // ── Parsear keepImages/keepVideos de JSON string a Array ──────────
+        let parsedKeepImages, parsedKeepVideos
+        try {
+            if (keepImages !== undefined) parsedKeepImages = JSON.parse(keepImages)
+            if (keepVideos !== undefined) parsedKeepVideos = JSON.parse(keepVideos)
+        } catch (e) {
+            // Si falla el parseo, tratar como no definido
+        }
 
-            // Subir nuevas imágenes
-            const newImageUrls = await uploadImagesToCloudinary(req.files, req.ORGID, req.EMPID)
-            bitacora.images = newImageUrls
-        } else if (keepImages !== undefined) {
-            // Si keepImages es un array, usarlo como la nueva lista de imágenes
-            // (útil si el empleado eliminó algunas imágenes sin subir nuevas)
-            bitacora.images = keepImages
+        // ── Manejo de imágenes: APPEND si hay nuevas, o solo keep ────────
+        const currentImages = bitacora.images || []
+
+        if (req.files?.images?.length > 0) {
+            // Subir nuevas imágenes a Cloudinary
+            const newImageUrls = await uploadImagesToCloudinary(req.files.images, req.ORGID, req.EMPID)
+
+            if (parsedKeepImages !== undefined) {
+                // Solo eliminar de Cloudinary las que el usuario quitó (no están en keepImages)
+                const removedImages = currentImages.filter(url => !parsedKeepImages.includes(url))
+                if (removedImages.length > 0) await deleteImagesFromCloudinary(removedImages)
+                // APPEND: mantener las que sobreviven + nuevas
+                bitacora.images = [...parsedKeepImages, ...newImageUrls]
+            } else {
+                // Sin keepImages: reemplazar todo (las nuevas son el único contenido)
+                await deleteImagesFromCloudinary(currentImages)
+                bitacora.images = newImageUrls
+            }
+        } else if (parsedKeepImages !== undefined) {
+            // No hay imágenes nuevas, solo se actualizó la lista de existentes
+            const removedImages = currentImages.filter(url => !parsedKeepImages.includes(url))
+            if (removedImages.length > 0) await deleteImagesFromCloudinary(removedImages)
+            bitacora.images = parsedKeepImages
+        }
+
+        // ── Manejo de videos: APPEND si hay nuevos, o solo keep ──────────
+        const currentVideos = bitacora.videos || []
+
+        if (req.files?.videos?.length > 0) {
+            // Subir nuevos videos a Cloudinary
+            const newVideoUrls = await uploadVideosToCloudinary(req.files.videos, req.ORGID, req.EMPID)
+
+            if (parsedKeepVideos !== undefined) {
+                // Solo eliminar de Cloudinary los que el usuario quitó
+                const removedVideos = currentVideos.filter(url => !parsedKeepVideos.includes(url))
+                if (removedVideos.length > 0) await deleteVideosFromCloudinary(removedVideos)
+                // APPEND: mantener los que sobreviven + nuevos
+                bitacora.videos = [...parsedKeepVideos, ...newVideoUrls]
+            } else {
+                // Sin keepVideos: reemplazar todo
+                await deleteVideosFromCloudinary(currentVideos)
+                bitacora.videos = newVideoUrls
+            }
+        } else if (parsedKeepVideos !== undefined) {
+            // No hay videos nuevos, solo se actualizó la lista de existentes
+            const removedVideos = currentVideos.filter(url => !parsedKeepVideos.includes(url))
+            if (removedVideos.length > 0) await deleteVideosFromCloudinary(removedVideos)
+            bitacora.videos = parsedKeepVideos
         }
 
         await bitacora.save()
