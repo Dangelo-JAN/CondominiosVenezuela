@@ -33,7 +33,7 @@ export const HREmployeesPage = () => {
     const employeeCount = HREmployeesState.data?.length ?? 0
 
     return (
-        <div className="w-full h-[calc(100svh-52px)] flex flex-col gap-6 px-4 py-6 overflow-y-auto bg-white dark:bg-[#0f0f1a]">
+        <div className="w-full h-full flex flex-col gap-6 px-4 py-6 overflow-y-auto bg-white dark:bg-[#0f0f1a]">
 
             {/* Header */}
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
@@ -62,7 +62,7 @@ export const HREmployeesPage = () => {
             <div className="h-px w-full transition-colors duration-300" style={{ background: isDark ? "rgba(99,102,241,0.08)" : "#f3f4f6" }} />
 
             {/* Table */}
-            <div className="flex flex-col gap-3 flex-1 min-h-0 overflow-y-auto">
+            <div className="flex flex-col gap-3 flex-1 overflow-auto">
                 <ThemedListWrapper accent="blue">
                     <ThemedHeadingBar 
                         accent="blue"

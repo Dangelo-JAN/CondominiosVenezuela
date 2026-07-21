@@ -80,7 +80,7 @@ export const DashboardLayout = ({ sidebar }) => {
                     </div>
 
                     {/* Page content */}
-                    <div className="flex-1 flex flex-col min-h-0">
+                    <div className="flex-1 overflow-y-auto">
                         <Outlet />
                     </div>
                 </div>
