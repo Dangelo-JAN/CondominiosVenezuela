@@ -199,7 +199,7 @@ export const HRBitacorasPage = () => {
             </div>
 
             {/* Table */}
-            <div className="flex flex-col gap-3 flex-1 overflow-auto">
+            <div className="flex flex-col gap-3 flex-1 min-h-0 overflow-auto">
                 <ThemedListWrapper accent="yellow">
                     <ThemedHeadingBar accent="yellow" table_layout={"grid-cols-4"} table_headings={table_headings} />
                 </ThemedListWrapper>
