@@ -100,10 +100,21 @@ Este archivo es la fuente de verdad para verificar que sigo las reglas del proye
 - [ ] NO crear PR sin aprobación explícita de tarea COMPLETADA
 - [ ] Bitácora debe estar en estado COMPLETADO antes de PR
 
-### 8. APROBACIÓN FINAL
-- [ ] Toda tarea requiere aprobación explícita del usuario para darse por COMPLETADA
-- [ ] "Completado" = el usuario lo dice, NO el agente
-- [ ] Mientras el usuario no confirme, la tarea sigue EN CURSO
+## REGLA AGÉNTICA ABSOLUTA — NO INTERCALADO DE PASOS
+
+> ⛔ **PROHIBICIÓN TOTAL e INNEGOCIABLE:**
+> Cuando se actualicen, creen o modifiquen configuraciones agénticas (archivos en `.agent/`, `AGENTS.md`, o cualquier archivo de reglas/workflows), **ESTÁ TOTALMENTE PROHIBIDO** intercalar pasos nuevos entre existentes.
+>
+> **Ejemplo de lo que NO se debe hacer (INCORRECTO):**
+> Si existen pasos 6 y 7, y se necesita agregar un paso entre ellos, **NO** se crea un "6.5".
+>
+> **Lo que SÍ se debe hacer (CORRECTO):**
+> El nuevo paso se crea como el **NUEVO paso 7**, y los pasos anteriores (7 y subsecuentes) se renumeran secuencialmente:
+> - Antiguo paso 7 → Ahora paso 8
+> - Antiguo paso 8 → Ahora paso 9
+> - Y así sucesivamente.
+>
+> **NUNCA** se usan decimales para intercalar (6.5, 7.5, etc.). Siempre se renumera todo secuencialmente.
 
 ## Notas
 - Las secciones 1-5 deben ejecutarse ANTES y DURANTE cada tarea
