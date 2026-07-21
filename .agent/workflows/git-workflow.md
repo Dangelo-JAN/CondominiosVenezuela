@@ -11,7 +11,7 @@ Este workflow define los pasos estandarizados y obligatorios para trabajar de fo
 1. Ejecuta `git status` para confirmar en qué rama te encuentras.
 2. Si estás en `main` o `dev`, **DETENTE OBLIGATORIAMENTE**. NO puedes editar ni hacer commits. Ve directamente al Paso 1.
 
-## 0.5. PLAN FIRST (Regla Suprema — NO NEGOCIABLE)
+## 1. PLAN FIRST (Regla Suprema — NO NEGOCIABLE)
 *El plan es obligatorio antes de cualquier implementación. No hay excepciones.*
 
 1. Crea un plan detallado de la tarea con: objetivo, fases, archivos a modificar, riesgos.
@@ -19,7 +19,15 @@ Este workflow define los pasos estandarizados y obligatorios para trabajar de fo
 3. ESPERA la aprobación explícita del usuario antes de escribir una sola línea de código.
 4. Sin plan aprobado → NO hay código.
 
-## 1. Sincronización Inicial
+## 2. STOP — APROBACIÓN DEL PLAN
+*Antes de comenzar cualquier desarrollo, debes asegurar que el plan está aprobado.*
+
+1. **Mostrar plan detallado al usuario** (fases, archivos, cambios propuestos).
+2. **Esperar aprobación explícita** del usuario.
+3. **NO comenzar desarrollo** sin aprobación.
+4. Si el usuario solicita cambios → ajustar plan y volver a presentar.
+
+## 3. Sincronización Inicial
 *Antes de empezar a codificar o modificar configuraciones, debes sincronizar tu entorno local con el remoto.*
 
 1. Haz checkout y actualiza la rama de producción (`main`):
@@ -37,7 +45,7 @@ Este workflow define los pasos estandarizados y obligatorios para trabajar de fo
    git pull origin dev
    ```
 
-## 2. Creación de la Rama de Trabajo
+## 4. Creación de la Rama de Trabajo
 *Todo cambio debe realizarse en una rama nueva que nazca exclusivamente de `dev`.*
 
 1. DEBES INVOCAR la skill **@git-branch-formatter** para determinar el nombre correcto de la rama según lo que se va a desarrollar. NO DEBES inventar un nombre tu misma.
@@ -49,43 +57,23 @@ Este workflow define los pasos estandarizados y obligatorios para trabajar de fo
    ```bash
    git push origin <nombre-rama-nueva> --set-upstream
    ```
-## 2.5. STOP — APROBACIÓN DEL PLAN
-*Antes de comenzar cualquier desarrollo, debes asegurar que el plan está aprobado.*
 
-1. **Mostrar plan detallado al usuario** (fases, archivos, cambios propuestos).
-2. **Esperar aprobación explícita** del usuario.
-3. **NO comenzar desarrollo** sin aprobación.
-4. Si el usuario solicita cambios → ajustar plan y volver a presentar.
-
-## 3. Desarrollo
+## 5. Desarrollo
 *Implementa los cambios por fases, deteniéndote después de cada una para verificar builds y obtener aprobación.*
 
-### 3.1. Implementar Fase N
+### 5.1. Implementar Fase N
 1. Identifica la fase actual del plan aprobado.
 2. Implementa los cambios correspondientes a esa fase.
 3. NO avances a la siguiente fase sin completar este ciclo.
 
-### 3.2. Verificación de Builds
+### 5.2. Verificación de Builds
 *Antes de cada commit, DEBES ejecutar y verificar los builds.*
 1. **Cliente:** `npm run build` — **0 errores**.
 2. **Servidor:** `npm run test` — **todas las suites pasan**.
 3. Si ALGÚN build falla → **CORREGIR**. NO hacer commit.
 4. Solo continuar cuando ambos builds sean exitosos.
 
-### 3.3. Commit + Push
-1. `git add .` para añadir los archivos de la fase.
-2. Usar `@git-commit-formatter` para generar mensaje de commit.
-3. `git commit -m "<mensaje-generado>"`
-4. `git push`
-
-### 3.4. STOP — ESPERAR APROBACIÓN DE FASE
-1. Mostrar resumen de lo implementado en la fase.
-2. Ejecutar builds (verificación opcional si ya se hizo en 3.2).
-3. **Esperar aprobación del usuario** para continuar.
-4. Si hay más fases → volver a 3.1.
-5. Si es la última fase → ir a SECUENCIA FINAL (Paso 6).
-
-## 4. Confirmación de Cambios (Commit)
+## 6. Confirmación de Cambios (Commit)
 *Una vez terminados tus cambios, guárdalos siguiendo las convenciones.*
 
 1. Añade todos los archivos modificados al área de preparación:
@@ -98,7 +86,7 @@ Este workflow define los pasos estandarizados y obligatorios para trabajar de fo
    git commit -m "<mensaje-generado>"
    ```
 
-## 5. Empujar Cambios
+## 7. Empujar Cambios
 *Publica tu trabajo en la rama remota correspondiente.*
 
 1. Sube los commits a tu rama en el origen:
@@ -106,26 +94,33 @@ Este workflow define los pasos estandarizados y obligatorios para trabajar de fo
    git push
    ```
 
-## 6. SECUENCIA FINAL OBLIGATORIA
+## 8. STOP — ESPERAR APROBACIÓN DE FASE
+1. Mostrar resumen de lo implementado en la fase.
+2. Ejecutar builds (verificación opcional si ya se hizo en 5.2).
+3. **Esperar aprobación del usuario** para continuar.
+4. Si hay más fases → volver a 5.1.
+5. Si es la última fase → ir a SECUENCIA FINAL (Paso 9).
+
+## 9. SECUENCIA FINAL OBLIGATORIA
 *Ejecutar SOLO después de completar TODAS las fases de implementación del plan aprobado.*
 
-### 6.1. Confirmación del Usuario
+### 9.1. Confirmación del Usuario
 1. **ESPERAR** confirmación explícita del usuario de que la tarea está COMPLETADA.
 2. Ninguna tarea se da por completada sin esta confirmación.
 3. Mientras el usuario no confirme, la tarea sigue EN CURSO.
 
-### 6.2. Actualizar Bitácoras
+### 9.2. Actualizar Bitácoras
 1. Crear/actualizar la bitácora de la tarea en `.bitacoras/###-nombre-tarea.md`.
 2. Actualizar `.bitacoras/index.md` con el nuevo registro de tarea completada.
 3. Limpiar `.bitacoras/actual.md` manteniendo el formato de `00-plantilla.md`.
 
-### 6.3. Auto-Mantenimiento (Post-Flight)
+### 9.3. Auto-Mantenimiento (Post-Flight)
 1. Leer `.agent/rules/global-context/self-maintenance.md`.
 2. Aplicar la matriz de actualización línea por línea.
 3. Si hay cambios → actualizar archivos correspondientes según la matriz.
 4. Si NO hay cambios → marcar explícitamente: "Sin cambios requeridos".
 
-### 6.4. Crear Pull Request
+### 9.4. Crear Pull Request
 1. Verificar que la tarea está en estado COMPLETADO en la bitácora.
 2. NUNCA PR a main directamente.
 3. Crear PR hacia **dev** exclusivamente.
