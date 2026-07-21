@@ -95,7 +95,7 @@ export const HRBitacorasPage = () => {
     const filteredCount = filteredBitacoras?.length ?? 0
 
     return (
-        <div className="w-full flex-1 min-h-0 flex flex-col gap-6 px-4 py-6 bg-white dark:bg-[#0f0f1a]">
+        <div className="w-full h-[calc(100svh-52px)] flex flex-col gap-6 px-4 py-6 overflow-y-auto bg-white dark:bg-[#0f0f1a]">
             {/* Header */}
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div className="flex flex-col gap-1">
@@ -199,7 +199,7 @@ export const HRBitacorasPage = () => {
             </div>
 
             {/* Table */}
-            <div className="flex flex-col gap-3 flex-1 min-h-0 overflow-auto">
+            <div className="flex flex-col gap-3 flex-1 min-h-0 overflow-y-auto">
                 <ThemedListWrapper accent="yellow">
                     <ThemedHeadingBar accent="yellow" table_layout={"grid-cols-4"} table_headings={table_headings} />
                 </ThemedListWrapper>

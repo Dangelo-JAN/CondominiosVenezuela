@@ -9,21 +9,21 @@
 ---
 
 ## 🚦 PUNTO DE CONTROL
-- **Lo último que funcionó:** Plan aprobado, rama creada, bitácora inicializada
-- **Dónde se rompió/detuvo:** Iniciando FASE 2 (DashboardLayout)
-- **Siguiente acción inmediata:** Modificar DashboardLayout.jsx línea 83
+- **Lo último que funcionó:** Fix de overflow-y-auto en page roots. Build 0 errores. Push completado.
+- **Dónde se rompió/detuvo:** Corrección aplicada y pusheada. Pendiente verificación visual por el usuario.
+- **Siguiente acción inmediata:** Esperar confirmación del usuario de que el scroll funciona correctamente.
 
 ---
 
 ## 📝 CAMBIOS TÉCNICOS CLAVE
 - [x] Plan aprobado por usuario
 - [x] Rama creada y pusheada
-- [ ] Fix DashboardLayout.jsx — Outlet wrapper → flex column
-- [ ] Fix employeespage.jsx — Page root + table wrapper flex chain
-- [ ] Fix hrbitacoraspage.jsx — Page root + table wrapper flex chain
-- [ ] Fix ListDesigns.jsx — ThemedListWrapper → flex-shrink-0
-- [ ] Build verification (npm run build)
-- [ ] Commit + Push
+- [x] Fix DashboardLayout.jsx — Outlet wrapper → flex column
+- [x] Fix employeespage.jsx — Page root + table wrapper flex chain
+- [x] Fix hrbitacoraspage.jsx — Page root + table wrapper flex chain
+- [x] Fix ListDesigns.jsx — ThemedListWrapper → flex-shrink-0
+- [x] Build verification (npm run build)
+- [x] Commit + Push
 
 ---
 

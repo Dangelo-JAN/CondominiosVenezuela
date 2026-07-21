@@ -18,12 +18,12 @@
 ## 📝 CAMBIOS TÉCNICOS CLAVE
 - [x] Plan aprobado por usuario
 - [x] Rama creada y pusheada
-- [ ] Fix DashboardLayout.jsx — Outlet wrapper → flex column
-- [ ] Fix employeespage.jsx — Page root + table wrapper flex chain
-- [ ] Fix hrbitacoraspage.jsx — Page root + table wrapper flex chain
-- [ ] Fix ListDesigns.jsx — ThemedListWrapper → flex-shrink-0
-- [ ] Build verification (npm run build)
-- [ ] Commit + Push
+- [x] Fix DashboardLayout.jsx — Outlet wrapper → flex column
+- [x] Fix employeespage.jsx — Page root (flex-1 min-h-0, NO overflow-y-auto) + table wrapper (flex-1 min-h-0 overflow-auto)
+- [x] Fix hrbitacoraspage.jsx — Page root (flex-1 min-h-0, NO overflow-y-auto) + table wrapper (flex-1 min-h-0 overflow-auto)
+- [x] Fix ListDesigns.jsx — ThemedListWrapper → flex-shrink-0
+- [x] Build verification (npm run build) — 0 errores
+- [x] Commit + Push (commits: 7f28a5f, 87b8b4f)
 
 ---
 
