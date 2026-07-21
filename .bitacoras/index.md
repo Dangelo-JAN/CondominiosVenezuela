@@ -43,6 +43,7 @@
 - [x] [[026-unify-dropdown-styles]] - ✅ COMPLETADO el 16/06/2026 (dev directo)
 - [x] [[027-videos-en-bitacoras]] - ✅ COMPLETADO el 10/07/2026
 - [x] [[028-actualizar-reglas-agentes]] - ✅ COMPLETADO el 16/07/2026
+- [x] [[029-correccion-reglas-agentes]] - ✅ COMPLETADO el 21/07/2026
 
 ---
 
