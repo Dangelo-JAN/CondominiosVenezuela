@@ -49,7 +49,7 @@ const CONTAINER_TOKENS = {
 export const ThemedListWrapper = ({ children, accent = "blue" }) => {
     const t = WRAPPER_TOKENS[accent] || WRAPPER_TOKENS.blue
     return (
-        <div className={`w-full rounded-xl overflow-hidden border ${t.light} ${t.dark}`}>
+        <div className={`w-full rounded-xl overflow-hidden border flex-shrink-0 ${t.light} ${t.dark}`}>
             {children}
         </div>
     )

@@ -1,4 +1,4 @@
-# 🛠️ TAREA ACTUAL
+# 🛠️ TAREA: Fix Scrolling y Cabecera de Tabla en Páginas HR
 **ID:** #030 | **Estado:** 🟡 EN CURSO | **Fecha:** 2026-07-21
 
 ---
@@ -8,10 +8,10 @@
 
 ---
 
-## 🚦 PUNTO DE CONTROL
-- **Lo último que funcionó:** Plan aprobado, rama creada, bitácora inicializada
-- **Dónde se rompió/detuvo:** Iniciando FASE 2 (DashboardLayout)
-- **Siguiente acción inmediata:** Modificar DashboardLayout.jsx línea 83
+## 🚦 PUNTO DE CONTROL (Contexto de Reanudación)
+- **Lo último que funcionó:** Plan aprobado por el usuario. Rama `fix/hr-scrolling-table-header` creada desde `dev`.
+- **Dónde se rompió/detuvo:** Iniciando implementación de FASE 2 (DashboardLayout).
+- **Siguiente acción inmediata:** Modificar `DashboardLayout.jsx` línea 83.
 
 ---
 
@@ -31,4 +31,4 @@
 - *Regla:* Responsive debe mantenerse en todos los breakpoints
 - *Regla:* Nada debe romperse en otras páginas que usan DashboardLayout
 - *Branch:* fix/hr-scrolling-table-header
-- *Commit:*
+- *Commit:* pendiente
