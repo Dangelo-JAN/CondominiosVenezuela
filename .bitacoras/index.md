@@ -7,8 +7,8 @@
 
 ## 🚩 ESTADO ACTUAL
 - **Tarea activa:** ⏸ Sin tarea activa — esperando instrucciones
-- **Última completada:** #028 — Actualizar Reglas Agénticas ✅ (5 fases, 5 commits → chore/versioning-agent-rules)
-- **Branch actual:** `dev`
+- **Última completada:** #030 — Fix Scrolling y Cabecera de Tabla en Páginas HR ✅ (21/07/2026, PR pendiente)
+- **Branch actual:** `fix/hr-scrolling-table-header`
 - **Deploy pendiente:** Vercel + Render desde `main`
 - **Archivo de referencia rápida:** `actual.md`
 
@@ -44,6 +44,7 @@
 - [x] [[027-videos-en-bitacoras]] - ✅ COMPLETADO el 10/07/2026
 - [x] [[028-actualizar-reglas-agentes]] - ✅ COMPLETADO el 16/07/2026
 - [x] [[029-correccion-reglas-agentes]] - ✅ COMPLETADO el 21/07/2026
+- [x] [[030-fix-hr-scrolling-table-header]] - ✅ COMPLETADO el 21/07/2026
 
 ---
 
@@ -117,5 +118,5 @@
 
 ---
 
-*Actualizado: 2026-06-08*
-*Tarea #025 ✅ COMPLETADA — PR #32 mergeado a dev*
+*Actualizado: 2026-07-21*
+*Tarea #030 ✅ COMPLETADA — Fix HR scrolling + Root Cause Analysis rule added*

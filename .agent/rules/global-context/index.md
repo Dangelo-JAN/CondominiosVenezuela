@@ -22,6 +22,7 @@ Este archivo indexa todas las reglas detalladas del proyecto. Consultar el archi
 1. **Fullstack Integrity**: Toda funcionalidad requiere UI + Redux (Frontend) + Modelo + Ruta + Controlador (Backend). No maquetación sin persistencia.
 2. **Soporte Temático Bidireccional**: Todo componente debe soportar Light/Dark mode.
 3. **Mobile-First + PWA**: Responsividad obligatoria, soporte manifiesto PWA.
+4. **Root Cause Analysis Obligatorio**: Antes de cualquier fix o feat, mapear la cadena completa de componentes/dependencias, diagnosticar la causa raíz, y solo entonces implementar. Prohibido parchear síntomas. Ver `development-invariants.md` sección 5.
 
 ## 🛑 Prohibiciones Estrictas
 
