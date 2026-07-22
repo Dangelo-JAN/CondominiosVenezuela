@@ -44,6 +44,31 @@ Al terminar **TODAS** las fases de implementación:
 - Si una regla existente es más estricta, prevalece la más estricta.
 - Si hay ambigüedad, preguntar al usuario antes de decidir.
 
+### ⚜️ 0.7 ROOT CAUSE ANALYSIS OBLIGATORIO — Antes de cualquier fix o feat
+> **Regla nacida del bug #030 (HR scrolling):** Parchear síntomas sin entender la causa raíz genera iteraciones infinitas.
+> **Aplica a TODO:** bugs, fixes, mejoras y features nuevas.
+
+**ANTES de escribir UNA sola línea de código, DEBES completar este proceso:**
+
+#### Para BUGS / FIXES:
+1. **MAPEO DE CADENA COMPLETA:** Identificar TODOS los nodos afectados desde el componente raíz hasta el nodo donde se manifiesta el síntoma.
+2. **DIAGNÓSTICO DE CAUSA RAÍZ:** Para cada nodo de la cadena, responder: ¿tiene `overflow`? ¿tiene `flex-1`? ¿tiene `min-h-0`? ¿tiene `flex-shrink-0`? ¿crece libremente o está constreñido?
+3. **HIPÓTESIS FUNDAMENTADA:** Proponer UNA solución que ataque la causa raíz (no el síntoma). Justificar por qué funciona con evidencia del mapeo del paso 1.
+4. **VALIDACIÓN:** El fix debe resolver el bug SIN crear regresiones en otros componentes que usen los mismos nodos.
+
+#### Para FEATURES / MEJORAS:
+1. **MAPEO DE IMPACTO:** Identificar TODOS los componentes, rutas y patrones que interactúan con la nueva implementación.
+2. **ANÁLISIS DE PATRÓN:** Verificar si el patrón ya existe en el proyecto. Si existe, reutilizarlo. Si no, documentar por qué se crea uno nuevo.
+3. **CADENA DE DEPENDENCIAS:** Mapear: UI → Redux/State → API → Modelo. Verificar integridad en cada nodo.
+4. **VALIDACIÓN:** La feature debe funcionar en todos los breakpoints y modos (light/dark) sin romper componentes existentes.
+
+#### ⛔ PROHIBICIONES DERIVADAS:
+- **PROHIBIDO** parchear un nivel sin verificar todos los niveles de la cadena.
+- **PROHIBIDO** asumir que un `overflow-hidden` o `flex-1` es "decorativo" sin analizar su impacto en el layout.
+- **PROHIBIDO** aplicar fixes iterativos sin mapear la cadena completa primero. Cada iteración fallida = violación de esta regla.
+
+> **Ejemplo (Caso Real #030):** Bug de scroll en páginas HR. Se intentó 3 veces: (1) agregar `overflow-y-auto` al page root → falló porque la página crecía libremente, (2) quitarlo de page root → falló porque `ThemedListContainer` tenía `overflow-hidden` y crecía sin límite, (3) fix correcto: `ThemedListContainer` necesitaba `flex-1 min-h-0 overflow-y-auto` para llenar el espacio restante después del header y scrollear internamente. Si se hubiera mapeado la cadena completa (DashboardLayout → Outlet → PageRoot → TableWrapper → ThemedListWrapper → ThemedListContainer) al inicio, se habría identificado `ThemedListContainer` como causa raíz en el primer intento.
+
 ---
 
 ## 🚨 PROTOCOLO DE INICIO Y GESTIÓN DE MEMORIA

@@ -48,6 +48,14 @@ Este archivo es la fuente de verdad para verificar que sigo las reglas del proye
 - [ ] Seguir naming conventions del proyecto
 - [ ] Aplicar Design System v4 (tokens, colores, opacidades)
 
+### 4.1. ROOT CAUSE ANALYSIS OBLIGATORIO (Antes de código)
+> ⚠️ OBLIGATORIO: Ejecutar SIEMPRE antes de escribir código para bugs, fixes o features.
+- [ ] **MAPEO DE CADENA:** Identificar TODOS los nodos/componentes afectados desde la raíz hasta el síntoma
+- [ ] **DIAGNÓSTICO:** Para cada nodo: verificar overflow, flex-1, min-h-0, flex-shrink-0, crecimiento libre vs constreñido
+- [ ] **HIPÓTESIS FUNDAMENTADA:** Proponer 1 solución que ataque la causa raíz (no el síntoma), justificada con evidencia del mapeo
+- [ ] **VALIDACIÓN:** Confirmar que el fix no crea regresiones en otros componentes que usen los mismos nodos
+- [ ] Ver `development-invariants.md` sección 5 para el proceso completo y caso de estudio #030
+
 ### 4.5. VERIFICACIÓN DE BUILDS ANTES DE COMMIT
 > ⚠️ OBLIGATORIO: Ejecutar SIEMPRE antes de cada commit. NO OPCIONAL.
 - [ ] **Cliente:** `npm run build` — 0 errores (production build)
