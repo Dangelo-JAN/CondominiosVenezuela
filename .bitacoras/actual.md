@@ -1,26 +1,28 @@
 # 🛠️ TAREA ACTUAL
-**ID:** #--- | **Estado:** ⏸ Sin tarea activa | **Fecha:** YYYY-MM-DD
+**ID:** — | **Estado:** ⏸ SIN TAREA | **Fecha:** —
 
 ---
 
 ## 🎯 OBJETIVO FINAL
-> Describir en una frase el éxito de la tarea
+> Esperando nueva tarea...
 
 ---
 
-## 🚦 PUNTO DE CONTROL
-- **Lo último que funcionó:** 
-- **Dónde se rompió/detuvo:** 
-- **Siguiente acción inmediata:** 
+## 🚦 PUNTO DE CONTROL (Contexto de Reanudación)
+*Usa esto para "despertar" a la IA si el chat se cierra:*
+
+- **Lo último que funcionó:** —
+- **Dónde se rompió/detuvo:** —
+- **Siguiente acción inmediata:** —
 
 ---
 
 ## 📝 CAMBIOS TÉCNICOS CLAVE
-- [ ] Pendiente
+- [ ] [Pendiente]
 
 ---
 
 ## ⚠️ NOTAS DE MEMORIA
-- *Regla:* 
-- *Branch:* 
+- *Regla:*
+- *Branch:*
 - *Commit:*

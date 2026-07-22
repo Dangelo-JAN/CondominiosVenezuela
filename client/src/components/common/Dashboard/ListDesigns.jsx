@@ -49,7 +49,7 @@ const CONTAINER_TOKENS = {
 export const ThemedListWrapper = ({ children, accent = "blue" }) => {
     const t = WRAPPER_TOKENS[accent] || WRAPPER_TOKENS.blue
     return (
-        <div className={`w-full rounded-xl overflow-hidden border ${t.light} ${t.dark}`}>
+        <div className={`w-full rounded-xl overflow-hidden border flex-shrink-0 ${t.light} ${t.dark}`}>
             {children}
         </div>
     )
@@ -77,7 +77,7 @@ export const ThemedHeadingBar = ({ table_layout, table_headings, accent = "blue"
 export const ThemedListContainer = ({ children, accent = "blue" }) => {
     const t = CONTAINER_TOKENS[accent] || CONTAINER_TOKENS.blue
     return (
-        <div className={`w-full rounded-xl overflow-hidden border ${t.light}
+        <div className={`w-full flex-1 min-h-0 overflow-y-auto rounded-xl border ${t.light}
             dark:bg-[rgba(255,255,255,0.04)] dark:border-[rgba(255,255,255,0.12)]`}>
             {children}
         </div>
@@ -123,7 +123,7 @@ export const HeadingBar = ({ table_layout, table_headings }) => {
 // ── ListContainer — contenedor de filas (blue por defecto) ────────────────
 export const ListContainer = ({ children }) => {
     return (
-        <div className="w-full rounded-xl overflow-hidden
+        <div className="w-full flex-1 min-h-0 overflow-y-auto rounded-xl
             border border-[#b9daff] bg-[#dbf4ff]
             dark:border-[rgba(255,255,255,0.12)] dark:bg-[rgba(255,255,255,0.04)]">
             {children}
