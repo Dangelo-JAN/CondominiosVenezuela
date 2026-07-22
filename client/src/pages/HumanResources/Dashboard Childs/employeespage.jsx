@@ -33,7 +33,7 @@ export const HREmployeesPage = () => {
     const employeeCount = HREmployeesState.data?.length ?? 0
 
     return (
-        <div className="w-full h-full flex flex-col gap-6 px-4 py-6 overflow-y-auto bg-white dark:bg-[#0f0f1a]">
+        <div className="w-full h-full flex flex-col gap-6 px-4 py-6 bg-white dark:bg-[#0f0f1a]">
 
             {/* Header */}
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
