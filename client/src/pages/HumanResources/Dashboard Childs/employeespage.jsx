@@ -62,7 +62,7 @@ export const HREmployeesPage = () => {
             <div className="h-px w-full transition-colors duration-300" style={{ background: isDark ? "rgba(99,102,241,0.08)" : "#f3f4f6" }} />
 
             {/* Table */}
-            <div className="flex flex-col gap-3 flex-1 min-h-0 overflow-auto">
+            <div className="flex flex-col gap-3 flex-1 min-h-0">
                 <ThemedListWrapper accent="blue">
                     <ThemedHeadingBar 
                         accent="blue"
