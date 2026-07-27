@@ -7,8 +7,8 @@
 
 ## 🚩 ESTADO ACTUAL
 - **Tarea activa:** ⏸ Sin tarea activa — esperando instrucciones
-- **Última completada:** #030 — Fix Scrolling y Cabecera de Tabla en Páginas HR ✅ (21/07/2026, PR pendiente)
-- **Branch actual:** `fix/hr-scrolling-table-header`
+- **Última completada:** #031 — HR Profile Page con Edición ✅ (27/07/2026)
+- **Branch actual:** `feat/hr-profile-page`
 - **Deploy pendiente:** Vercel + Render desde `main`
 - **Archivo de referencia rápida:** `actual.md`
 
@@ -45,6 +45,7 @@
 - [x] [[028-actualizar-reglas-agentes]] - ✅ COMPLETADO el 16/07/2026
 - [x] [[029-correccion-reglas-agentes]] - ✅ COMPLETADO el 21/07/2026
 - [x] [[030-fix-hr-scrolling-table-header]] - ✅ COMPLETADO el 21/07/2026
+- [x] [[031-hr-profile-page]] - ✅ COMPLETADO el 27/07/2026
 
 ---
 
@@ -72,7 +73,7 @@
 
 ### 🔧 Git Workflow (CUMPLIMIENTO OBLIGATORIO)
 - **.agent/workflows/git-workflow.md** - Flujo de trabajo completo
-- **Regla:** NUNCA hacer cambios directo en `main` o `dev`
+- **Regla:** NUNCA hacer cambios directos en `main` o `dev`
 - **Regla:** SIEMPRE sincronizar con main y dev antes de crear rama
 - **Regla:** Usar @git-branch-formatter para nombres de ramas
 - **Regla:** Usar @git-commit-formatter para mensajes de commit
@@ -118,5 +119,5 @@
 
 ---
 
-*Actualizado: 2026-07-21*
-*Tarea #030 ✅ COMPLETADA — Fix HR scrolling + Root Cause Analysis rule added*
+*Actualizado: 2026-07-27*
+*Tarea #031 ✅ COMPLETADA — HR Profile Page con Edición*

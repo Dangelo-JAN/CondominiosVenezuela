@@ -1,5 +1,5 @@
 # 🛠️ TAREA: HR Profile Page con Edición
-**ID:** #031 | **Estado:** 🟡 EN CURSO | **Fecha:** 2026-07-27
+**ID:** #031 | **Estado:** ✅ COMPLETADO | **Fecha:** 2026-07-27
 
 ---
 
@@ -9,25 +9,38 @@
 ---
 
 ## 🚦 PUNTO DE CONTROL (Contexto de Reanudación)
-*Usa esto para "despertar" a la IA si el chat se cierra:*
-
-- **Lo último que funcionó:** Branch `feat/hr-profile-page` creada desde `dev`.
+- **Lo último que funcionó:** Toda la tarea completada y confirmada por el usuario.
 - **Dónde se rompió/detuvo:** —
-- **Siguiente acción inmediata:** Iniciar FASE 1 — Backend (enriquecer `/me` + validar `update-HR`)
+- **Siguiente acción inmediata:** — (tarea completada)
 
 ---
 
 ## 📝 CAMBIOS TÉCNICOS CLAVE
-- [ ] [FASE 1: Enriquecer endpoint /me + validar update-HR en server]
-- [ ] [FASE 2: Thunk + Endpoint + Slice en client]
-- [ ] [FASE 3: Crear HRProfilePage.jsx]
-- [ ] [FASE 4: Router + Sidebar]
-- [ ] [Build verification + commit]
+- [x] [FASE 1: Enriquecer endpoint /me + validar update-HR en server] ✅
+- [x] [FASE 2: Thunk + Endpoint + Slice en client] ✅
+- [x] [FASE 3: Crear HRProfilePage.jsx] ✅
+- [x] [FASE 4: Router + Sidebar] ✅
+- [x] [Build verification + commit] ✅
 
 ---
 
 ## ⚠️ NOTAS DE MEMORIA
-- *Regla:* Seguir AGENTS.md al pie de la letra — sin preámbulos, sin adivinar.
-- *Regla:* `HandleUpdateHR` es genérico — agregar whitelist server-side para autoedición.
+- *Regla:* `HandleUpdateHR` es genérico — se creó `HandleUpdateMyProfile` con whitelist de campos para autoedición segura.
+- *Regla:* El endpoint `PATCH /update-me` NO requiere permisos `hrprofiles:update` — usa el JWT del usuario autenticado.
 - *Branch:* feat/hr-profile-page
-- *Commit:* —
+- *Commit:* b86eb81
+
+---
+
+## 📊 ARCHIVOS MODIFICADOS
+
+| Archivo | Cambio |
+|---|---|
+| `server/controllers/HR.controller.js` | Enriquecido `HandleHRMe` (+populate department, +campos) + nuevo `HandleUpdateMyProfile` |
+| `server/routes/HR.route.js` | Nueva ruta `PATCH /update-me` |
+| `client/src/redux/apis/APIsEndpoints.js` | Nuevo `UPDATE_ME` en `HREndPoints` |
+| `client/src/redux/Thunks/HRThunk.js` | Implementado `HandlePatchHumanResources` |
+| `client/src/redux/Slices/HRSlice.js` | ExtraReducers para `HandlePatchHumanResources` |
+| `client/src/pages/HumanResources/Dashboard Childs/HRProfilePage.jsx` | **NUEVO** — Página de perfil HR con edición |
+| `client/src/routes/HRroutes.jsx` | Nueva ruta `/HR/dashboard/hr-profile` |
+| `client/src/components/ui/HRsidebar.jsx` | Nuevo item "Mi Perfil" |

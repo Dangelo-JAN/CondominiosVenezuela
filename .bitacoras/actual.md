@@ -1,33 +1,28 @@
 # 🛠️ TAREA ACTUAL
-**ID:** #031 | **Estado:** 🟡 EN CURSO | **Fecha:** 2026-07-27
+**ID:** — | **Estado:** ⏸ SIN TAREA | **Fecha:** —
 
 ---
 
 ## 🎯 OBJETIVO FINAL
-> Que el HR pueda ver y editar su información personal desde una página "Mi Perfil" dentro del dashboard HR.
+> Esperando nueva tarea...
 
 ---
 
 ## 🚦 PUNTO DE CONTROL (Contexto de Reanudación)
 *Usa esto para "despertar" a la IA si el chat se cierra:*
 
-- **Lo último que funcionó:** Branch `feat/hr-profile-page` creada desde `dev`.
+- **Lo último que funcionó:** —
 - **Dónde se rompió/detuvo:** —
-- **Siguiente acción inmediata:** Iniciar FASE 1 — Backend (enriquecer `/me` + validar `update-HR`)
+- **Siguiente acción inmediata:** —
 
 ---
 
 ## 📝 CAMBIOS TÉCNICOS CLAVE
-- [ ] [FASE 1: Enriquecer endpoint /me + validar update-HR en server]
-- [ ] [FASE 2: Thunk + Endpoint + Slice en client]
-- [ ] [FASE 3: Crear HRProfilePage.jsx]
-- [ ] [FASE 4: Router + Sidebar]
-- [ ] [Build verification + commit]
+- [ ] [Pendiente]
 
 ---
 
 ## ⚠️ NOTAS DE MEMORIA
-- *Regla:* Seguir AGENTS.md al pie de la letra — sin preámbulos, sin adivinar.
-- *Regla:* `HandleUpdateHR` es genérico — agregar whitelist server-side para autoedición.
-- *Branch:* feat/hr-profile-page
-- *Commit:* —
+- *Regla:*
+- *Branch:*
+- *Commit:*

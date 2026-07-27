@@ -18,3 +18,4 @@ trigger: always_on
 | `/HR/dashboard/departments` | Estructura de Departamentos |
 | `/HR/dashboard/leaves` | Ausencias |
 | `/HR/dashboard/requests` | Solicitudes |
+| `/HR/dashboard/hr-profile` | Mi Perfil (autoedición) |
