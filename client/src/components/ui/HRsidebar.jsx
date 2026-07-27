@@ -5,6 +5,7 @@ import { DashboardSidebar } from "./DashboardSidebar.jsx"
 
 // ── Items del menú (se filtran según rol) ──────────────────────────────
 const HR_NAV_ITEMS_ALL = [
+    { label: "Mi Perfil", path: "/HR/dashboard/hr-profile", icon: "/assets/HR-Dashboard/employee-2.png" },
     { label: "Dashboard", path: "/HR/dashboard/dashboard-data", icon: "/assets/HR-Dashboard/dashboard.png" },
     { label: "Empleados", path: "/HR/dashboard/employees", icon: "/assets/HR-Dashboard/employee-2.png" },
     { label: "Departamentos", path: "/HR/dashboard/departments", icon: "/assets/HR-Dashboard/department.png" },

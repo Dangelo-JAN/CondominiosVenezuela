@@ -1,4 +1,4 @@
-# 🛠️ TAREA ACTUAL
+# 🛠️ TAREA: HR Profile Page con Edición
 **ID:** #031 | **Estado:** 🟡 EN CURSO | **Fecha:** 2026-07-27
 
 ---

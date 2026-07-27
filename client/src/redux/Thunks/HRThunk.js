@@ -48,5 +48,13 @@ export const HandleHRLogout = createAsyncThunk("HandleHRLogout", async (_, { dis
 })
 
 export const HandlePutHumanResources    = createAsyncThunk("HandlePutHumanResources",    async (HRData, { rejectWithValue }) => { })
-export const HandlePatchHumanResources  = createAsyncThunk("HandlePatchHumanResources",  async (HRData, { rejectWithValue }) => { })
+export const HandlePatchHumanResources  = createAsyncThunk("HandlePatchHumanResources", async (HRData, { rejectWithValue }) => {
+    try {
+        const { Updatedata } = HRData
+        const response = await hrApiService.patch(`${HREndPoints.UPDATE_ME}`, { Updatedata })
+        return { ...response.data, type: "UpdateMyProfile" }
+    } catch (error) {
+        return rejectWithValue(error.response.data)
+    }
+})
 export const HandleDeleteHumanResources = createAsyncThunk("HandleDeleteHumanResources", async (HRData, { rejectWithValue }) => { })

@@ -11,6 +11,7 @@ export const HREndPoints = {
     SIGNUP: "/api/auth/HR/signup",
     CHECKLOGIN: "/api/auth/HR/check-login",
     GET_HR_ME: "/api/v1/HR/me",
+    UPDATE_ME: "/api/v1/HR/update-me",
     LOGIN: "/api/auth/HR/login",
     LOGOUT: "/api/auth/HR/logout",
     VERIFY_EMAIL: "/api/auth/HR/verify-email",
