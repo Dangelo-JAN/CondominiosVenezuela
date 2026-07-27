@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { HRAsyncReducer } from "../AsyncReducers/asyncreducer.js";
-import { HandlePostHumanResources, HandleGetHumanResources } from "../Thunks/HRThunk.js";
+import { HandlePostHumanResources, HandleGetHumanResources, HandlePatchHumanResources } from "../Thunks/HRThunk.js";
 
 const HRSlice = createSlice({
     name: "HumanResources",
@@ -36,6 +36,27 @@ const HRSlice = createSlice({
     extraReducers: (builder) => {
         HRAsyncReducer(builder, HandlePostHumanResources)
         HRAsyncReducer(builder, HandleGetHumanResources)
+
+        // ── HandlePatchHumanResources (profile update) ──────────────────────
+        builder
+            .addCase(HandlePatchHumanResources.pending, (state) => {
+                state.isLoading = true
+                state.error.content = null
+            })
+            .addCase(HandlePatchHumanResources.fulfilled, (state, action) => {
+                state.isLoading = false
+                state.error.status = false
+                // Merge updated profile data into existing state.data
+                if (action.payload.data) {
+                    state.data = { ...state.data, ...action.payload.data }
+                }
+            })
+            .addCase(HandlePatchHumanResources.rejected, (state, action) => {
+                state.isLoading = false
+                state.error.status = true
+                state.error.message = action.payload?.message
+                state.error.content = action.payload
+            })
     }
 })
 
