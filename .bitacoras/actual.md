@@ -8,16 +8,16 @@
 
 ---
 
-## 🚦 PUNTO DE CONTROL (Contexto de Reanudación)
+## 🚦 PUNTO DE CONTROL (Contexto de Reanudacion)
 *Usa esto para "despertar" a la IA si el chat se cierra:*
 
-- **Lo último que funcionó:** —
-- **Dónde se rompió/detuvo:** —
-- **Siguiente acción inmediata:** —
+- **Lo ultimo que funciono:** —
+- **Donde se rompio/detuvo:** —
+- **Siguiente accion inmediata:** —
 
 ---
 
-## 📝 CAMBIOS TÉCNICOS CLAVE
+## 📝 CAMBIOS TECNICOS CLAVE
 - [ ] [Pendiente]
 
 ---
