@@ -11,9 +11,9 @@
 ## 🚦 PUNTO DE CONTROL (Contexto de Reanudacion)
 *Usa esto para "despertar" a la IA si el chat se cierra:*
 
-- **Lo ultimo que funciono:** F1 COMPLETADA — acentos migrados a v4 (blue/yellow), useIsDark reactivo, Footer con prop isDark. Build client OK + server 16/16 tests. Commit `310acd3` pusheado.
+- **Lo ultimo que funciono:** F2 COMPLETADA — Features (6 cards con screenshots reales) + "¿Cómo funciona?" (6 pasos). Build client OK + server 16/16 tests. Commit `1d839ce` pusheado.
 - **Donde se rompio/detuvo:** —
-- **Siguiente accion inmediata:** F2 — Secciones Features (6) + "¿Cómo funciona?" (6 pasos). ESPERAR aprobación del usuario (STOP F1).
+- **Siguiente accion inmediata:** F3 — Trust bar + Testimonios + "Sabías que…" + Seguridad. ESPERAR aprobación del usuario (STOP F2).
 
 ---
 

@@ -2,7 +2,8 @@ import { Link } from "react-router-dom"
 import {
     ArrowRight, ShieldCheck, Users, Zap, Download, Sun, Moon,
     Fingerprint, Wallet, BarChart3, Megaphone, Smartphone, UserPlus,
-    Building2, Mail, CalendarCheck2, TrendingUp, CheckCircle2
+    Building2, Mail, CalendarCheck2, TrendingUp, CheckCircle2,
+    Quote, ChevronLeft, ChevronRight, Lock, Database, KeyRound, Clock3
 } from "lucide-react"
 import { useState, useEffect } from "react"
 import { useTheme } from "../../hooks/useTheme.js"
@@ -15,6 +16,63 @@ export const EntryPage = () => {
     const isDark = useIsDark()
     const [installPrompt, setInstallPrompt] = useState(null)
     const [isInstalled, setIsInstalled] = useState(false)
+    const [testimonialIndex, setTestimonialIndex] = useState(0)
+    const [testimonialVisible, setTestimonialVisible] = useState(true)
+
+    const testimonials = [
+        {
+            quote: "Redujimos un 60% el tiempo que dedicábamos a controlar la asistencia. Ahora todo se registra desde el móvil y la nómina se calcula sola.",
+            name: "María González",
+            role: "Administradora · Res. Los Jardines, Caracas"
+        },
+        {
+            quote: "Las notificaciones push nos permitieron comunicar avisos a los 40 empleados al instante. La comunidad está más informada que nunca.",
+            name: "José Rodríguez",
+            role: "Gerente General · Torre Ávila, Maracaibo"
+        },
+        {
+            quote: "Pasamos de planillas de Excel a reportes en tiempo real. Hoy tomamos decisiones con datos, no con corazonadas.",
+            name: "Carolina Pérez",
+            role: "Administradora · Urb. El Cafetal, Valencia"
+        }
+    ]
+
+    const changeTestimonial = (next) => {
+        setTestimonialVisible(false)
+        setTimeout(() => {
+            next()
+            setTestimonialVisible(true)
+        }, 200)
+    }
+
+    const nextTestimonial = () => changeTestimonial(() => setTestimonialIndex(i => (i + 1) % testimonials.length))
+    const prevTestimonial = () => changeTestimonial(() => setTestimonialIndex(i => (i - 1 + testimonials.length) % testimonials.length))
+
+    const trustItems = ["Residencias", "Torres", "Urbanizaciones", "Conjuntos", "Edificios", "Quintas"]
+
+    const securityItems = [
+        { icon: Lock, title: "SOC-2", desc: "Controles de seguridad alineados con estándares internacionales." },
+        { icon: Database, title: "Copias de seguridad", desc: "Respaldo automático de toda la información del condominio." },
+        { icon: KeyRound, title: "Roles y permisos", desc: "Acceso por perfil: administrador, HR y empleado." },
+        { icon: ShieldCheck, title: "Cifrado de datos", desc: "Comunicación segura cifrada de extremo a extremo." }
+    ]
+
+    const facts = [
+        {
+            icon: Clock3,
+            stat: "70%",
+            title: "de los condominios aún lleva la asistencia en papel o Excel",
+            desc: "El registro manual genera errores, retrasos y pérdida de información. CondoVE digitaliza todo el proceso.",
+            cta: "Conocer la solución"
+        },
+        {
+            icon: Wallet,
+            stat: "40%",
+            title: "menos errores en la nómina al automatizar el cálculo",
+            desc: "Al conectar asistencia y nómina, los cálculos se hacen solos: sueldos, bonificaciones y deducciones exactas.",
+            cta: "Ver cómo funciona"
+        }
+    ]
 
     const features = [
         {
@@ -428,6 +486,215 @@ export const EntryPage = () => {
                                     </h3>
                                 </div>
                                 <p className="text-xs leading-relaxed max-w-[220px]"
+                                    style={{ color: isDark ? "rgba(255,255,255,0.5)" : "#6b7280" }}>
+                                    {s.desc}
+                                </p>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            </section>
+
+            {/* ============ SECCIÓN: CONFIANZA (Trust bar) ============ */}
+            <section id="confianza" className="border-t transition-colors duration-300"
+                style={{ borderColor: isDark ? "rgba(0,61,165,0.25)" : "#dde5ff" }}>
+                <div className="max-w-7xl mx-auto px-5 sm:px-8 lg:px-20 py-14 sm:py-16 text-center">
+                    <p className="text-sm sm:text-base font-semibold"
+                        style={{ color: isDark ? "rgba(255,255,255,0.5)" : "#6b7280" }}>
+                        Más de <span className="font-extrabold" style={{ color: isDark ? "#ffffff" : "#111827" }}>500 condominios</span> confían en CondoVE SGC
+                    </p>
+                    <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
+                        {trustItems.map(item => (
+                            <span key={item}
+                                className="px-4 py-2 rounded-full text-sm font-semibold border transition-colors duration-200"
+                                style={{
+                                    color: isDark ? "rgba(255,255,255,0.7)" : "#003DA5",
+                                    borderColor: isDark ? "rgba(0,61,165,0.40)" : "#c7d7f5",
+                                    background: isDark ? "rgba(0,61,165,0.18)" : "#f2f6ff"
+                                }}>
+                                {item}
+                            </span>
+                        ))}
+                    </div>
+                </div>
+            </section>
+
+            {/* ============ SECCIÓN: TESTIMONIOS ============ */}
+            <section id="testimonios" className="border-y transition-colors duration-300"
+                style={{ background: isDark ? "rgba(0,61,165,0.10)" : "#f2f6ff", borderColor: isDark ? "rgba(0,61,165,0.25)" : "#dde5ff" }}>
+                <div className="max-w-4xl mx-auto px-5 sm:px-8 lg:px-20 py-16 sm:py-24 text-center">
+
+                    <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-sm font-semibold"
+                        style={{
+                            background: isDark ? "rgba(252,227,0,0.18)" : "#fffbd9",
+                            color: isDark ? "#ffe45e" : "#8a7600"
+                        }}>
+                        <Quote className="w-4 h-4" />
+                        Testimonios
+                    </span>
+                    <h2 className="mt-5 text-3xl sm:text-4xl lg:text-5xl font-extrabold leading-tight"
+                        style={{ color: isDark ? "#ffffff" : "#111827" }}>
+                        Administradores que{" "}
+                        <span style={{ color: "#003DA5" }}>ya lo viven</span>
+                    </h2>
+
+                    {/* Carrusel */}
+                    <div className="mt-10 sm:mt-14 relative">
+                        <div className={`flex flex-col items-center gap-6 transition-opacity duration-200 ${testimonialVisible ? "opacity-100" : "opacity-0"}`}
+                            key={testimonialIndex}>
+                            <Quote className="w-10 h-10 sm:w-12 sm:h-12" style={{ color: isDark ? "#8fb2e8" : "#003DA5", opacity: 0.4 }} />
+                            <blockquote className="text-lg sm:text-2xl font-medium leading-relaxed max-w-2xl"
+                                style={{ color: isDark ? "rgba(255,255,255,0.85)" : "#1f2937" }}>
+                                "{testimonials[testimonialIndex].quote}"
+                            </blockquote>
+                            <div className="flex flex-col items-center gap-2">
+                                <div className="flex items-center justify-center w-12 h-12 rounded-full text-white font-bold text-base"
+                                    style={{ background: "linear-gradient(135deg, #003DA5, #00247D)" }}>
+                                    {testimonials[testimonialIndex].name.split(" ").map(n => n[0]).slice(0, 2).join("")}
+                                </div>
+                                <p className="text-sm font-bold" style={{ color: isDark ? "#ffffff" : "#111827" }}>
+                                    {testimonials[testimonialIndex].name}
+                                </p>
+                                <p className="text-xs" style={{ color: isDark ? "rgba(255,255,255,0.5)" : "#6b7280" }}>
+                                    {testimonials[testimonialIndex].role}
+                                </p>
+                            </div>
+                        </div>
+
+                        {/* Controles */}
+                        <button onClick={prevTestimonial} aria-label="Testimonio anterior"
+                            className="absolute -left-2 sm:left-0 top-1/2 -translate-y-1/2 flex items-center justify-center w-10 h-10 rounded-full border transition-all hover:scale-105"
+                            style={{
+                                color: isDark ? "rgba(255,255,255,0.7)" : "#003DA5",
+                                borderColor: isDark ? "rgba(0,61,165,0.40)" : "#c7d7f5",
+                                background: isDark ? "rgba(0,61,165,0.18)" : "#ffffff"
+                            }}>
+                            <ChevronLeft className="w-5 h-5" />
+                        </button>
+                        <button onClick={nextTestimonial} aria-label="Testimonio siguiente"
+                            className="absolute -right-2 sm:right-0 top-1/2 -translate-y-1/2 flex items-center justify-center w-10 h-10 rounded-full border transition-all hover:scale-105"
+                            style={{
+                                color: isDark ? "rgba(255,255,255,0.7)" : "#003DA5",
+                                borderColor: isDark ? "rgba(0,61,165,0.40)" : "#c7d7f5",
+                                background: isDark ? "rgba(0,61,165,0.18)" : "#ffffff"
+                            }}>
+                            <ChevronRight className="w-5 h-5" />
+                        </button>
+                    </div>
+
+                    {/* Dots */}
+                    <div className="mt-8 flex items-center justify-center gap-2">
+                        {testimonials.map((t, i) => (
+                            <button key={t.name} onClick={() => changeTestimonial(() => setTestimonialIndex(i))}
+                                aria-label={`Ver testimonio ${i + 1}`}
+                                className="w-2.5 h-2.5 rounded-full transition-all duration-300"
+                                style={{
+                                    background: i === testimonialIndex
+                                        ? "#003DA5"
+                                        : (isDark ? "rgba(255,255,255,0.25)" : "#c7d7f5"),
+                                    transform: i === testimonialIndex ? "scale(1.3)" : "scale(1)"
+                                }} />
+                        ))}
+                    </div>
+                </div>
+            </section>
+
+            {/* ============ SECCIÓN: SABÍAS QUE… ============ */}
+            <section id="sabias-que" className="border-t transition-colors duration-300"
+                style={{ borderColor: isDark ? "rgba(0,61,165,0.25)" : "#dde5ff" }}>
+                <div className="max-w-7xl mx-auto px-5 sm:px-8 lg:px-20 py-16 sm:py-24">
+                    <div className="max-w-3xl mx-auto text-center mb-12 sm:mb-16">
+                        <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-sm font-semibold"
+                            style={{
+                                background: isDark ? "rgba(252,227,0,0.18)" : "#fffbd9",
+                                color: isDark ? "#ffe45e" : "#8a7600"
+                            }}>
+                            <TrendingUp className="w-4 h-4" />
+                            Sabías que…
+                        </span>
+                        <h2 className="mt-5 text-3xl sm:text-4xl lg:text-5xl font-extrabold leading-tight"
+                            style={{ color: isDark ? "#ffffff" : "#111827" }}>
+                            La gestión manual tiene{" "}
+                            <span style={{ color: "#003DA5" }}>un costo oculto</span>
+                        </h2>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8">
+                        {facts.map(f => (
+                            <div key={f.title}
+                                className="flex flex-col rounded-2xl border overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-xl"
+                                style={{
+                                    background: isDark ? "#0d0d18" : "#ffffff",
+                                    borderColor: isDark ? "rgba(0,61,165,0.40)" : "#dde5ff"
+                                }}>
+                                {/* Cover con stat */}
+                                <div className="relative flex items-center justify-center gap-4 px-6 py-10 overflow-hidden"
+                                    style={{ background: "linear-gradient(135deg, #003DA5, #00247D)" }}>
+                                    <div className="absolute -top-8 -right-8 w-32 h-32 rounded-full bg-white/10 blur-2xl" />
+                                    <f.icon className="w-10 h-10 text-white/80" />
+                                    <span className="text-5xl sm:text-6xl font-extrabold text-white">{f.stat}</span>
+                                </div>
+                                <div className="flex flex-col flex-1 p-6 sm:p-8 gap-3">
+                                    <h3 className="text-lg sm:text-xl font-bold leading-snug"
+                                        style={{ color: isDark ? "#ffffff" : "#111827" }}>
+                                        {f.title}
+                                    </h3>
+                                    <p className="text-sm leading-relaxed flex-1"
+                                        style={{ color: isDark ? "rgba(255,255,255,0.55)" : "#4b5563" }}>
+                                        {f.desc}
+                                    </p>
+                                    <a href="#" className="inline-flex items-center gap-1.5 text-sm font-semibold transition-all hover:gap-2.5"
+                                        style={{ color: isDark ? "#8fb2e8" : "#003DA5" }}>
+                                        {f.cta}
+                                        <ArrowRight className="w-4 h-4" />
+                                    </a>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            </section>
+
+            {/* ============ SECCIÓN: SEGURIDAD ============ */}
+            <section id="seguridad" className="border-y transition-colors duration-300"
+                style={{ background: isDark ? "rgba(0,61,165,0.10)" : "#f2f6ff", borderColor: isDark ? "rgba(0,61,165,0.25)" : "#dde5ff" }}>
+                <div className="max-w-7xl mx-auto px-5 sm:px-8 lg:px-20 py-16 sm:py-20">
+                    <div className="max-w-3xl mx-auto text-center mb-10 sm:mb-14">
+                        <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-sm font-semibold"
+                            style={{
+                                background: isDark ? "rgba(252,227,0,0.18)" : "#fffbd9",
+                                color: isDark ? "#ffe45e" : "#8a7600"
+                            }}>
+                            <ShieldCheck className="w-4 h-4" />
+                            Seguridad y confianza
+                        </span>
+                        <h2 className="mt-5 text-3xl sm:text-4xl font-extrabold leading-tight"
+                            style={{ color: isDark ? "#ffffff" : "#111827" }}>
+                            Tu información,{" "}
+                            <span style={{ color: "#003DA5" }}>protegida</span>
+                        </h2>
+                        <p className="mt-4 text-base sm:text-lg leading-relaxed"
+                            style={{ color: isDark ? "rgba(255,255,255,0.55)" : "#4b5563" }}>
+                            La seguridad no es un extra: es parte del diseño.
+                        </p>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                        {securityItems.map(s => (
+                            <div key={s.title}
+                                className="flex flex-col items-center text-center gap-3 rounded-2xl border p-6 transition-all duration-300 hover:-translate-y-1"
+                                style={{
+                                    background: isDark ? "#0d0d18" : "#ffffff",
+                                    borderColor: isDark ? "rgba(0,61,165,0.40)" : "#dde5ff"
+                                }}>
+                                <div className="flex items-center justify-center w-12 h-12 rounded-2xl text-white shadow-lg flex-shrink-0"
+                                    style={{ background: "linear-gradient(135deg, #003DA5, #00247D)" }}>
+                                    <s.icon className="w-6 h-6" />
+                                </div>
+                                <h3 className="text-sm font-bold" style={{ color: isDark ? "#ffffff" : "#111827" }}>
+                                    {s.title}
+                                </h3>
+                                <p className="text-xs leading-relaxed"
                                     style={{ color: isDark ? "rgba(255,255,255,0.5)" : "#6b7280" }}>
                                     {s.desc}
                                 </p>
