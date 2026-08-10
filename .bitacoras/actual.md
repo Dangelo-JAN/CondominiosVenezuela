@@ -11,9 +11,9 @@
 ## 🚦 PUNTO DE CONTROL (Contexto de Reanudacion)
 *Usa esto para "despertar" a la IA si el chat se cierra:*
 
-- **Lo ultimo que funciono:** F3 COMPLETADA — Trust bar (500+ condominios) + Testimonios (carrusel fade + dots) + "Sabías que…" (2 stats) + Seguridad (4 badges). Build client OK + server 16/16 tests. Commit `0d76b58` pusheado.
+- **Lo ultimo que funciono:** F4 COMPLETADA — 4 SVGs de muestra + Recursos + CTA final (banda blue/yellow) + FAQ acordeón + Alianzas. Build client OK + server 16/16 tests. Commit `ea1704b` pusheado.
 - **Donde se rompio/detuvo:** —
-- **Siguiente accion inmediata:** F4 — Recursos (SVGs de muestra) + CTA final + FAQ acordeón + Alianzas. ESPERAR aprobación del usuario (STOP F3).
+- **Siguiente accion inmediata:** F5 — Auditoría responsive/dark + migración `ContactSalesDialog` + builds finales. ESPERAR aprobación del usuario (STOP F4).
 
 ---
 

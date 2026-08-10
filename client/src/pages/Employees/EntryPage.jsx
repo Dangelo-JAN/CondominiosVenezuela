@@ -433,7 +433,7 @@ export const EntryPage = () => {
                         <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-sm font-semibold"
                             style={{
                                 background: isDark ? "rgba(252,227,0,0.18)" : "#fffbd9",
-                                color: isDark ? "#ffe45e" : "#8a7600"
+                                color: isDark ? "#ffe45e" : "#6b5700"
                             }}>
                             <Zap className="w-4 h-4" />
                             Hecho para condominios modernos
@@ -505,7 +505,7 @@ export const EntryPage = () => {
                         <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-sm font-semibold"
                             style={{
                                 background: isDark ? "rgba(252,227,0,0.18)" : "#fffbd9",
-                                color: isDark ? "#ffe45e" : "#8a7600"
+                                color: isDark ? "#ffe45e" : "#6b5700"
                             }}>
                             <CheckCircle2 className="w-4 h-4" />
                             ¿Cómo funciona?
@@ -582,7 +582,7 @@ export const EntryPage = () => {
                     <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-sm font-semibold"
                         style={{
                             background: isDark ? "rgba(252,227,0,0.18)" : "#fffbd9",
-                            color: isDark ? "#ffe45e" : "#8a7600"
+                            color: isDark ? "#ffe45e" : "#6b5700"
                         }}>
                         <Quote className="w-4 h-4" />
                         Testimonios
@@ -662,7 +662,7 @@ export const EntryPage = () => {
                         <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-sm font-semibold"
                             style={{
                                 background: isDark ? "rgba(252,227,0,0.18)" : "#fffbd9",
-                                color: isDark ? "#ffe45e" : "#8a7600"
+                                color: isDark ? "#ffe45e" : "#6b5700"
                             }}>
                             <TrendingUp className="w-4 h-4" />
                             Sabías que…
@@ -718,7 +718,7 @@ export const EntryPage = () => {
                         <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-sm font-semibold"
                             style={{
                                 background: isDark ? "rgba(252,227,0,0.18)" : "#fffbd9",
-                                color: isDark ? "#ffe45e" : "#8a7600"
+                                color: isDark ? "#ffe45e" : "#6b5700"
                             }}>
                             <ShieldCheck className="w-4 h-4" />
                             Seguridad y confianza
@@ -767,7 +767,7 @@ export const EntryPage = () => {
                         <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-sm font-semibold"
                             style={{
                                 background: isDark ? "rgba(252,227,0,0.18)" : "#fffbd9",
-                                color: isDark ? "#ffe45e" : "#8a7600"
+                                color: isDark ? "#ffe45e" : "#6b5700"
                             }}>
                             <BookOpen className="w-4 h-4" />
                             Recursos
@@ -864,7 +864,7 @@ export const EntryPage = () => {
                         <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-sm font-semibold"
                             style={{
                                 background: isDark ? "rgba(252,227,0,0.18)" : "#fffbd9",
-                                color: isDark ? "#ffe45e" : "#8a7600"
+                                color: isDark ? "#ffe45e" : "#6b5700"
                             }}>
                             <HelpCircle className="w-4 h-4" />
                             Preguntas Frecuentes
