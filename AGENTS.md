@@ -95,6 +95,7 @@ Para **cualquier tarea** (Exenta o Trackeable):
    - [ ] Leer `.agent/rules/checklist-verify.md` (verificación de reglas)
 
 3. **INICIALIZACIÓN DE BITÁCORA (Solo para TRACKEABLE):**
+   - [ ] Usar @git-branch-formatter.md para crear el nombre de la tarea
    - [ ] Crear archivo `.bitacoras/###-nombre-tarea.md` ANTES de escribir código
    - [ ] Usar plantilla de `00-plantilla.md`
    - [ ] NO escribir ninguna línea de código hasta que la bitácora exista
@@ -118,7 +119,7 @@ Para **cualquier tarea** (Exenta o Trackeable):
 
 4.5. **AUTO-MANTENIMIENTO (Post-Flight):** Tras marcar la tarea como `✅ COMPLETADO`, ejecutar el protocolo definido en `.agent/rules/global-context/self-maintenance.md`. Si la tarea implicó cambios arquitectónicos (nuevos patrones, stack, rutas, reglas), actualizar los archivos de configuración del agente correspondientes ANTES del paso 5.
 
-5. **Workflow:** Seguir estrictamente Git Workflow y estándares de naming.
+5. **Workflow:** Seguir estrictamente @git-workflow.md y estándares de naming.
 
 ---
 
