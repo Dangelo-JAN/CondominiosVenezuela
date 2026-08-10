@@ -16,7 +16,7 @@
 ---
 
 ## 📝 CAMBIOS TÉCNICOS CLAVE
-- [ ] **F1** Migración de acentos legacy: EntryPage + Footer (prop `isDark`) + `useIsDark()` reactivo — PENDIENTE
+- [x] **F1** Migración de acentos legacy: EntryPage + Footer (prop `isDark`) + `useIsDark()` reactivo — COMPLETADO
 - [ ] **F2** Secciones Features (6) + "¿Cómo funciona?" (6 pasos) — PENDIENTE
 - [ ] **F3** Trust bar + Testimonios + "Sabías que…" + Seguridad/Certificaciones — PENDIENTE
 - [ ] **F4** Recursos/Ebooks (SVGs de muestra) + CTA final + FAQ acordeón + Alianzas — PENDIENTE

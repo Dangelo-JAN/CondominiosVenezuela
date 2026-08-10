@@ -11,9 +11,9 @@
 ## 🚦 PUNTO DE CONTROL (Contexto de Reanudacion)
 *Usa esto para "despertar" a la IA si el chat se cierra:*
 
-- **Lo ultimo que funciono:** Plan aprobado. Rama `feat/entrypage-workforce-landing-sections` creada y pusheada. Bitácora #033 creada.
+- **Lo ultimo que funciono:** F1 COMPLETADA — acentos migrados a v4 (blue/yellow), useIsDark reactivo, Footer con prop isDark. Build client OK + server 16/16 tests. Commit `310acd3` pusheado.
 - **Donde se rompio/detuvo:** —
-- **Siguiente accion inmediata:** F1 — Migrar acentos legacy en EntryPage + Footer + `useIsDark()`.
+- **Siguiente accion inmediata:** F2 — Secciones Features (6) + "¿Cómo funciona?" (6 pasos). ESPERAR aprobación del usuario (STOP F1).
 
 ---
 

@@ -1,5 +1,9 @@
 import { Link } from "react-router-dom"
-import { ArrowRight, ShieldCheck, Users, Zap, Download, Sun, Moon } from "lucide-react"
+import {
+    ArrowRight, ShieldCheck, Users, Zap, Download, Sun, Moon,
+    Fingerprint, Wallet, BarChart3, Megaphone, Smartphone, UserPlus,
+    Building2, Mail, CalendarCheck2, TrendingUp, CheckCircle2
+} from "lucide-react"
 import { useState, useEffect } from "react"
 import { useTheme } from "../../hooks/useTheme.js"
 import { useIsDark } from "../../hooks/useIsDark.js"
@@ -11,6 +15,54 @@ export const EntryPage = () => {
     const isDark = useIsDark()
     const [installPrompt, setInstallPrompt] = useState(null)
     const [isInstalled, setIsInstalled] = useState(false)
+
+    const features = [
+        {
+            icon: Fingerprint,
+            title: "Control de Asistencia",
+            img: "/assets/HR-Dashboard/attendance.png",
+            desc: "Registra entradas y salidas con foto y geolocalización. Detecta tardanzas, faltas y horas extra al instante, directo desde el móvil."
+        },
+        {
+            icon: Wallet,
+            title: "Nómina Inteligente",
+            img: "/assets/HR-Dashboard/Salary.png",
+            desc: "Calcula la nómina de tu condominio automáticamente: sueldos, bonificaciones y deducciones sin errores ni planillas complicadas."
+        },
+        {
+            icon: BarChart3,
+            title: "Reportes en Tiempo Real",
+            img: "/assets/HR-Dashboard/dashboard.png",
+            desc: "Métricas clave de asistencia, ausencias y costos laborales en pantallas en vivo, para tomar mejores decisiones más rápido."
+        },
+        {
+            icon: Megaphone,
+            title: "Comunicación y Avisos",
+            img: "/assets/HR-Dashboard/notice.png",
+            desc: "Publica avisos y notificaciones push para toda la comunidad. Nadie se pierde la información importante del condominio."
+        },
+        {
+            icon: Smartphone,
+            title: "App para Empleados",
+            img: "/assets/HR-Dashboard/request.png",
+            desc: "Solicitudes de ausencia, revisión de horarios y comunicación desde el móvil. El empleado siempre conectado con la administración."
+        },
+        {
+            icon: ShieldCheck,
+            title: "Integración y Seguridad",
+            img: "/assets/HR-Dashboard/HR-profiles.png",
+            desc: "Controles de seguridad alineados con SOC-2, cifrado de datos y perfiles con permisos por rol para proteger la información."
+        }
+    ]
+
+    const steps = [
+        { icon: UserPlus, title: "Regístrate", desc: "Crea la cuenta de tu condominio en minutos." },
+        { icon: Building2, title: "Configura", desc: "Carga edificios, departamentos y empleados." },
+        { icon: Mail, title: "Invita", desc: "Tus empleados reciben su invitación por correo." },
+        { icon: CalendarCheck2, title: "Gestiona", desc: "Asistencia, nómina y avisos en un solo lugar." },
+        { icon: Smartphone, title: "Usa la app", desc: "El equipo registra su asistencia desde el móvil." },
+        { icon: TrendingUp, title: "Mide", desc: "Reportes en tiempo real para decidir mejor." }
+    ]
 
     useEffect(() => {
         if (window.matchMedia('(display-mode: standalone)').matches) {
@@ -257,6 +309,133 @@ export const EntryPage = () => {
                     </div>
                 </div>
             </main>
+
+            {/* ============ SECCIÓN: CARACTERÍSTICAS ============ */}
+            <section id="caracteristicas" className="border-t transition-colors duration-300"
+                style={{ borderColor: isDark ? "rgba(0,61,165,0.25)" : "#dde5ff" }}>
+                <div className="max-w-7xl mx-auto px-5 sm:px-8 lg:px-20 py-16 sm:py-24">
+
+                    {/* Encabezado de sección */}
+                    <div className="max-w-3xl mx-auto text-center mb-12 sm:mb-16">
+                        <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-sm font-semibold"
+                            style={{
+                                background: isDark ? "rgba(252,227,0,0.18)" : "#fffbd9",
+                                color: isDark ? "#ffe45e" : "#8a7600"
+                            }}>
+                            <Zap className="w-4 h-4" />
+                            Hecho para condominios modernos
+                        </span>
+                        <h2 className="mt-5 text-3xl sm:text-4xl lg:text-5xl font-extrabold leading-tight"
+                            style={{ color: isDark ? "#ffffff" : "#111827" }}>
+                            Todo lo que tu comunidad necesita,{" "}
+                            <span style={{ color: "#003DA5" }}>en un solo lugar</span>
+                        </h2>
+                        <p className="mt-4 text-base sm:text-lg leading-relaxed"
+                            style={{ color: isDark ? "rgba(255,255,255,0.55)" : "#4b5563" }}>
+                            Desde el control de asistencia hasta la nómina y la comunicación interna:
+                            herramientas diseñadas para simplificar la gestión de tu condominio.
+                        </p>
+                    </div>
+
+                    {/* Grid de features */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
+                        {features.map((f, i) => (
+                            <div key={f.title}
+                                className="group relative flex flex-col rounded-2xl border overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-xl"
+                                style={{
+                                    background: isDark ? "#0d0d18" : "#ffffff",
+                                    borderColor: isDark ? "rgba(0,61,165,0.40)" : "#dde5ff",
+                                    boxShadow: isDark ? "none" : "0 1px 3px rgba(0,0,0,0.04)"
+                                }}>
+                                {/* Imagen del feature */}
+                                <div className="relative h-44 overflow-hidden flex-shrink-0"
+                                    style={{ background: isDark ? "#1a1a2e" : "#f2f6ff" }}>
+                                    <img src={f.img} alt={f.title}
+                                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
+                                    {/* Badge número */}
+                                    <div className="absolute top-3 left-3 flex items-center justify-center w-9 h-9 rounded-xl text-sm font-bold text-white shadow-lg"
+                                        style={{ background: "linear-gradient(135deg, #003DA5, #00247D)" }}>
+                                        {i + 1}
+                                    </div>
+                                </div>
+                                {/* Contenido */}
+                                <div className="flex flex-col flex-1 p-5 sm:p-6 gap-2.5">
+                                    <div className="flex items-center gap-2">
+                                        <f.icon className="w-5 h-5 flex-shrink-0" style={{ color: isDark ? "#8fb2e8" : "#003DA5" }} />
+                                        <h3 className="text-lg sm:text-xl font-bold leading-snug"
+                                            style={{ color: isDark ? "#ffffff" : "#111827" }}>
+                                            {f.title}
+                                        </h3>
+                                    </div>
+                                    <p className="text-sm leading-relaxed flex-1"
+                                        style={{ color: isDark ? "rgba(255,255,255,0.55)" : "#4b5563" }}>
+                                        {f.desc}
+                                    </p>
+                                    <a href="#" className="inline-flex items-center gap-1.5 text-sm font-semibold transition-all hover:gap-2.5"
+                                        style={{ color: isDark ? "#8fb2e8" : "#003DA5" }}>
+                                        Conocer más
+                                        <ArrowRight className="w-4 h-4" />
+                                    </a>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            </section>
+
+            {/* ============ SECCIÓN: CÓMO FUNCIONA ============ */}
+            <section id="como-funciona" className="border-y transition-colors duration-300"
+                style={{ background: isDark ? "rgba(0,61,165,0.10)" : "#f2f6ff", borderColor: isDark ? "rgba(0,61,165,0.25)" : "#dde5ff" }}>
+                <div className="max-w-7xl mx-auto px-5 sm:px-8 lg:px-20 py-16 sm:py-24">
+
+                    <div className="max-w-3xl mx-auto text-center mb-12 sm:mb-16">
+                        <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-sm font-semibold"
+                            style={{
+                                background: isDark ? "rgba(252,227,0,0.18)" : "#fffbd9",
+                                color: isDark ? "#ffe45e" : "#8a7600"
+                            }}>
+                            <CheckCircle2 className="w-4 h-4" />
+                            ¿Cómo funciona?
+                        </span>
+                        <h2 className="mt-5 text-3xl sm:text-4xl lg:text-5xl font-extrabold leading-tight"
+                            style={{ color: isDark ? "#ffffff" : "#111827" }}>
+                            En pocas semanas tu condominio{" "}
+                            <span style={{ color: "#003DA5" }}>funciona en CondoVE</span>
+                        </h2>
+                        <p className="mt-4 text-base sm:text-lg leading-relaxed"
+                            style={{ color: isDark ? "rgba(255,255,255,0.55)" : "#4b5563" }}>
+                            Un proceso simple y guiado para que administres tu comunidad sin complicaciones.
+                        </p>
+                    </div>
+
+                    {/* Pasos */}
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-8 sm:gap-6">
+                        {steps.map((s, i) => (
+                            <div key={s.title} className="relative flex flex-col items-center text-center gap-3">
+                                {/* Conector desktop */}
+                                {i < steps.length - 1 && (
+                                    <div className="hidden xl:block absolute top-6 left-[calc(50%+28px)] w-[calc(100%-56px)] h-0.5 rounded-full"
+                                        style={{ background: isDark ? "rgba(0,61,165,0.40)" : "#c7d7f5" }} />
+                                )}
+                                <div className="relative flex items-center justify-center w-12 h-12 rounded-2xl text-white font-extrabold text-lg shadow-lg flex-shrink-0"
+                                    style={{ background: "linear-gradient(135deg, #003DA5, #00247D)" }}>
+                                    {i + 1}
+                                </div>
+                                <div className="flex items-center gap-1.5">
+                                    <s.icon className="w-4 h-4 flex-shrink-0" style={{ color: isDark ? "#8fb2e8" : "#003DA5" }} />
+                                    <h3 className="text-sm font-bold" style={{ color: isDark ? "#ffffff" : "#111827" }}>
+                                        {s.title}
+                                    </h3>
+                                </div>
+                                <p className="text-xs leading-relaxed max-w-[220px]"
+                                    style={{ color: isDark ? "rgba(255,255,255,0.5)" : "#6b7280" }}>
+                                    {s.desc}
+                                </p>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            </section>
 
             {/* Footer — componente reutilizable */}
             <Footer appName="SGC" appSubtitle="Sistema de Gestión Condominial" isDark={isDark} />
