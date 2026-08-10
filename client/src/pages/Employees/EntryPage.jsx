@@ -3,7 +3,8 @@ import {
     ArrowRight, ShieldCheck, Users, Zap, Download, Sun, Moon,
     Fingerprint, Wallet, BarChart3, Megaphone, Smartphone, UserPlus,
     Building2, Mail, CalendarCheck2, TrendingUp, CheckCircle2,
-    Quote, ChevronLeft, ChevronRight, Lock, Database, KeyRound, Clock3
+    Quote, ChevronLeft, ChevronRight, Lock, Database, KeyRound, Clock3,
+    BookOpen, ChevronDown, Handshake, HelpCircle, Sparkles
 } from "lucide-react"
 import { useState, useEffect } from "react"
 import { useTheme } from "../../hooks/useTheme.js"
@@ -18,6 +19,60 @@ export const EntryPage = () => {
     const [isInstalled, setIsInstalled] = useState(false)
     const [testimonialIndex, setTestimonialIndex] = useState(0)
     const [testimonialVisible, setTestimonialVisible] = useState(true)
+    const [openFaq, setOpenFaq] = useState(0)
+
+    const resources = [
+        {
+            cover: "/assets/ebooks/guia-gestion-condominios.svg",
+            title: "Guía práctica de gestión de condominios",
+            desc: "Los fundamentos para administrar tu comunidad de forma moderna y eficiente."
+        },
+        {
+            cover: "/assets/ebooks/control-asistencia.svg",
+            title: "Control de asistencia para tu comunidad",
+            desc: "Cómo digitalizar el registro de entradas y salidas de tu equipo."
+        },
+        {
+            cover: "/assets/ebooks/nomina-sin-errores.svg",
+            title: "Nómina sin errores, paso a paso",
+            desc: "Automatiza el cálculo de sueldos, bonificaciones y deducciones."
+        },
+        {
+            cover: "/assets/ebooks/comunicacion-equipo.svg",
+            title: "Comunicación efectiva con tu equipo",
+            desc: "Avisos y notificaciones que llegan a todos, al instante."
+        }
+    ]
+
+    const faqs = [
+        {
+            q: "¿Qué es CondoVE SGC?",
+            a: "Es un sistema de gestión condominial integral que centraliza el control de asistencia, la nómina, los avisos y la comunicación interna en una sola plataforma, diseñada para el mercado venezolano."
+        },
+        {
+            q: "¿Puedo usarlo aunque nunca haya usado software de gestión?",
+            a: "Sí. El proceso de configuración es guiado: registras tu condominio, cargas los departamentos y empleados, e invitas a tu equipo por correo. En pocas semanas ya estás operando."
+        },
+        {
+            q: "¿Cómo registran la asistencia los empleados?",
+            a: "Desde la aplicación móvil con foto y geolocalización. El sistema detecta tardanzas, faltas y horas extra automáticamente y notifica en tiempo real."
+        },
+        {
+            q: "¿La información de mi condominio está segura?",
+            a: "Sí. Contamos con controles de seguridad alineados con SOC-2, cifrado de datos, copias de seguridad automáticas y acceso por roles (administrador, HR y empleado)."
+        },
+        {
+            q: "¿Puedo probar la plataforma antes de decidir?",
+            a: "Por supuesto. Agenda una demostración con nuestro equipo y pruébala con la asistencia de nuestros ingenieros, sin compromiso."
+        }
+    ]
+
+    const partners = [
+        "Colegio de Administradores",
+        "Cámara Inmobiliaria",
+        "Federación de Condominios",
+        "Asociación de Administradores"
+    ]
 
     const testimonials = [
         {
@@ -699,6 +754,183 @@ export const EntryPage = () => {
                                     {s.desc}
                                 </p>
                             </div>
+                        ))}
+                    </div>
+                </div>
+            </section>
+
+            {/* ============ SECCIÓN: RECURSOS ============ */}
+            <section id="recursos" className="border-t transition-colors duration-300"
+                style={{ borderColor: isDark ? "rgba(0,61,165,0.25)" : "#dde5ff" }}>
+                <div className="max-w-7xl mx-auto px-5 sm:px-8 lg:px-20 py-16 sm:py-24">
+                    <div className="max-w-3xl mx-auto text-center mb-12 sm:mb-16">
+                        <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-sm font-semibold"
+                            style={{
+                                background: isDark ? "rgba(252,227,0,0.18)" : "#fffbd9",
+                                color: isDark ? "#ffe45e" : "#8a7600"
+                            }}>
+                            <BookOpen className="w-4 h-4" />
+                            Recursos
+                        </span>
+                        <h2 className="mt-5 text-3xl sm:text-4xl lg:text-5xl font-extrabold leading-tight"
+                            style={{ color: isDark ? "#ffffff" : "#111827" }}>
+                            Aprende a gestionar{" "}
+                            <span style={{ color: "#003DA5" }}>mejor tu comunidad</span>
+                        </h2>
+                        <p className="mt-4 text-base sm:text-lg leading-relaxed"
+                            style={{ color: isDark ? "rgba(255,255,255,0.55)" : "#4b5563" }}>
+                            Guías prácticas creadas por nuestro equipo para administradores venezolanos.
+                        </p>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                        {resources.map(r => (
+                            <div key={r.title}
+                                className="group flex flex-col rounded-2xl border overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-xl"
+                                style={{
+                                    background: isDark ? "#0d0d18" : "#ffffff",
+                                    borderColor: isDark ? "rgba(0,61,165,0.40)" : "#dde5ff"
+                                }}>
+                                <div className="overflow-hidden flex-shrink-0">
+                                    <img src={r.cover} alt={r.title}
+                                        className="w-full aspect-[4/3] object-cover transition-transform duration-500 group-hover:scale-105" />
+                                </div>
+                                <div className="flex flex-col flex-1 p-5 gap-2.5">
+                                    <h3 className="text-sm font-bold leading-snug"
+                                        style={{ color: isDark ? "#ffffff" : "#111827" }}>
+                                        {r.title}
+                                    </h3>
+                                    <p className="text-xs leading-relaxed flex-1"
+                                        style={{ color: isDark ? "rgba(255,255,255,0.5)" : "#6b7280" }}>
+                                        {r.desc}
+                                    </p>
+                                    <a href="#" className="inline-flex items-center gap-1.5 text-sm font-semibold transition-all hover:gap-2.5"
+                                        style={{ color: isDark ? "#8fb2e8" : "#003DA5" }}>
+                                        <Download className="w-4 h-4" />
+                                        Descargar
+                                    </a>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            </section>
+
+            {/* ============ SECCIÓN: CTA FINAL ============ */}
+            <section id="pruebalo" className="px-5 sm:px-8 lg:px-20 pb-16 sm:pb-24">
+                <div className="relative max-w-7xl mx-auto rounded-2xl overflow-hidden px-6 sm:px-12 py-14 sm:py-20 text-center shadow-2xl"
+                    style={{ background: "linear-gradient(135deg, #003DA5, #00247D)" }}>
+                    <div className="absolute -top-16 -right-16 w-64 h-64 rounded-full bg-white/10 blur-3xl" />
+                    <div className="absolute -bottom-20 -left-16 w-72 h-72 rounded-full bg-[#FCE300]/20 blur-3xl" />
+                    <div className="relative z-10 max-w-2xl mx-auto flex flex-col items-center gap-6">
+                        <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-sm font-semibold text-[#003DA5]"
+                            style={{ background: "#FCE300" }}>
+                            <Sparkles className="w-4 h-4" />
+                            Pruébalo
+                        </span>
+                        <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold leading-tight text-white">
+                            Tu condominio merece una{" "}
+                            <span className="text-[#FCE300]">gestión inteligente</span>
+                        </h2>
+                        <p className="text-base sm:text-lg leading-relaxed text-white/70 max-w-xl">
+                            Agenda una demostración con nuestros ejecutivos y pruébala con la asistencia de nuestros ingenieros.
+                        </p>
+                        <div className="flex flex-col sm:flex-row items-center gap-3 sm:gap-4">
+                            <Link to="/auth/HR/signup" className="w-full sm:w-auto">
+                                <button className="w-full sm:w-auto flex items-center justify-center gap-2 px-6 sm:px-8 py-3.5 text-base font-semibold rounded-xl
+                                    transition-all duration-200 hover:scale-105"
+                                    style={{ background: "#FCE300", color: "#003DA5", boxShadow: "0 8px 25px rgba(252,227,0,0.3)" }}>
+                                    Empezar como HR-Admin
+                                    <ArrowRight className="w-5 h-5" />
+                                </button>
+                            </Link>
+                            <Link to="/auth/employee/login" className="w-full sm:w-auto">
+                                <button className="w-full sm:w-auto px-6 sm:px-8 py-3.5 text-base font-medium rounded-xl border text-white
+                                    transition-all duration-200 hover:bg-white/10"
+                                    style={{ borderColor: "rgba(255,255,255,0.4)" }}>
+                                    Acceso Empleados
+                                </button>
+                            </Link>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            {/* ============ SECCIÓN: FAQ ============ */}
+            <section id="faq" className="border-y transition-colors duration-300"
+                style={{ background: isDark ? "rgba(0,61,165,0.10)" : "#f2f6ff", borderColor: isDark ? "rgba(0,61,165,0.25)" : "#dde5ff" }}>
+                <div className="max-w-4xl mx-auto px-5 sm:px-8 lg:px-20 py-16 sm:py-24">
+                    <div className="max-w-3xl mx-auto text-center mb-10 sm:mb-14">
+                        <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-sm font-semibold"
+                            style={{
+                                background: isDark ? "rgba(252,227,0,0.18)" : "#fffbd9",
+                                color: isDark ? "#ffe45e" : "#8a7600"
+                            }}>
+                            <HelpCircle className="w-4 h-4" />
+                            Preguntas Frecuentes
+                        </span>
+                        <h2 className="mt-5 text-3xl sm:text-4xl lg:text-5xl font-extrabold leading-tight"
+                            style={{ color: isDark ? "#ffffff" : "#111827" }}>
+                            Resolvemos tus{" "}
+                            <span style={{ color: "#003DA5" }}>dudas</span>
+                        </h2>
+                    </div>
+
+                    <div className="flex flex-col gap-3">
+                        {faqs.map((f, i) => {
+                            const isOpen = openFaq === i
+                            return (
+                                <div key={f.q}
+                                    className="rounded-2xl border overflow-hidden transition-colors duration-200"
+                                    style={{
+                                        background: isDark ? "#0d0d18" : "#ffffff",
+                                        borderColor: isOpen
+                                            ? (isDark ? "rgba(252,227,0,0.38)" : "#fef499")
+                                            : (isDark ? "rgba(0,61,165,0.40)" : "#dde5ff")
+                                    }}>
+                                    <button onClick={() => setOpenFaq(isOpen ? null : i)}
+                                        aria-expanded={isOpen}
+                                        className="w-full flex items-center justify-between gap-4 px-5 sm:px-6 py-4 text-left"
+                                        style={{ color: isDark ? "#ffffff" : "#111827" }}>
+                                        <span className="text-sm sm:text-base font-semibold">{f.q}</span>
+                                        <ChevronDown className={`w-5 h-5 flex-shrink-0 transition-transform duration-300 ${isOpen ? "rotate-180" : ""}`}
+                                            style={{ color: isDark ? "#8fb2e8" : "#003DA5" }} />
+                                    </button>
+                                    {isOpen && (
+                                        <div className="px-5 sm:px-6 pb-5">
+                                            <p className="text-sm leading-relaxed"
+                                                style={{ color: isDark ? "rgba(255,255,255,0.6)" : "#4b5563" }}>
+                                                {f.a}
+                                            </p>
+                                        </div>
+                                    )}
+                                </div>
+                            )
+                        })}
+                    </div>
+                </div>
+            </section>
+
+            {/* ============ SECCIÓN: ALIANZAS ============ */}
+            <section id="alianzas" className="border-t transition-colors duration-300"
+                style={{ borderColor: isDark ? "rgba(0,61,165,0.25)" : "#dde5ff" }}>
+                <div className="max-w-7xl mx-auto px-5 sm:px-8 lg:px-20 py-14 sm:py-16 text-center">
+                    <p className="text-sm sm:text-base font-semibold flex items-center justify-center gap-2"
+                        style={{ color: isDark ? "rgba(255,255,255,0.5)" : "#6b7280" }}>
+                        <Handshake className="w-5 h-5" style={{ color: isDark ? "#8fb2e8" : "#003DA5" }} />
+                        Alianzas estratégicas del sector
+                    </p>
+                    <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
+                        {partners.map(p => (
+                            <span key={p}
+                                className="px-4 py-2 rounded-full text-sm font-semibold border transition-colors duration-200"
+                                style={{
+                                    color: isDark ? "rgba(255,255,255,0.7)" : "#003DA5",
+                                    borderColor: isDark ? "rgba(0,61,165,0.40)" : "#c7d7f5",
+                                    background: isDark ? "rgba(0,61,165,0.18)" : "#f2f6ff"
+                                }}>
+                                {p}
+                            </span>
                         ))}
                     </div>
                 </div>

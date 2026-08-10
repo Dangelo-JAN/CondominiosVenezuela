@@ -18,7 +18,7 @@
 ## 📝 CAMBIOS TÉCNICOS CLAVE
 - [x] **F1** Migración de acentos legacy: EntryPage + Footer (prop `isDark`) + `useIsDark()` reactivo — COMPLETADO
 - [x] **F2** Secciones Features (6) + "¿Cómo funciona?" (6 pasos) — COMPLETADO (commit `1d839ce`)
-- [ ] **F3** Trust bar + Testimonios + "Sabías que…" + Seguridad/Certificaciones — PENDIENTE
+- [x] **F3** Trust bar + Testimonios + "Sabías que…" + Seguridad/Certificaciones — COMPLETADO (commit `0d76b58`)
 - [ ] **F4** Recursos/Ebooks (SVGs de muestra) + CTA final + FAQ acordeón + Alianzas — PENDIENTE
 - [ ] **F5** Auditoría responsive + dark/light + migración `ContactSalesDialog` + builds finales — PENDIENTE
 - [ ] Builds obligatorios antes de cada commit (client build + server test) — PENDIENTE

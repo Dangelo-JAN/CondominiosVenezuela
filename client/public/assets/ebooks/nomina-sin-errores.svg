@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="600" viewBox="0 0 800 600" role="img" aria-label="Nómina sin errores paso a paso">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#003DA5"/>
+      <stop offset="1" stop-color="#00247D"/>
+    </linearGradient>
+  </defs>
+  <rect width="800" height="600" fill="url(#bg)"/>
+  <circle cx="680" cy="90" r="170" fill="#FCE300" opacity="0.14"/>
+  <circle cx="100" cy="520" r="160" fill="#ffffff" opacity="0.05"/>
+  <rect x="60" y="52" width="56" height="56" rx="14" fill="#ffffff"/>
+  <text x="88" y="90" font-family="Arial, sans-serif" font-size="30" font-weight="800" fill="#003DA5" text-anchor="middle">CV</text>
+  <text x="132" y="90" font-family="Arial, sans-serif" font-size="22" font-weight="700" fill="#ffffff">CondoVE SGC</text>
+  <rect x="60" y="250" width="90" height="10" rx="5" fill="#FCE300"/>
+  <text x="60" y="310" font-family="Arial, sans-serif" font-size="46" font-weight="800" fill="#ffffff">
+    <tspan x="60" dy="0">Nómina sin errores,</tspan>
+    <tspan x="60" dy="56">paso a paso</tspan>
+  </text>
+  <text x="60" y="430" font-family="Arial, sans-serif" font-size="20" font-weight="500" fill="#ffffff" opacity="0.75">Sueldos, bonificaciones y deducciones calculados solos</text>
+  <text x="60" y="540" font-family="Arial, sans-serif" font-size="16" font-weight="600" fill="#FCE300">GUÍA · CONDOVE SGC</text>
+</svg>
