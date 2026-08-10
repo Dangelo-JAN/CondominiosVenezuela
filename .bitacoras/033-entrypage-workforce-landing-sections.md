@@ -20,8 +20,8 @@
 - [x] **F2** Secciones Features (6) + "¿Cómo funciona?" (6 pasos) — COMPLETADO (commit `1d839ce`)
 - [x] **F3** Trust bar + Testimonios + "Sabías que…" + Seguridad/Certificaciones — COMPLETADO (commit `0d76b58`)
 - [x] **F4** Recursos/Ebooks (SVGs de muestra) + CTA final + FAQ acordeón + Alianzas — COMPLETADO (commit `ea1704b`)
-- [ ] **F5** Auditoría responsive + dark/light + migración `ContactSalesDialog` + builds finales — PENDIENTE
-- [ ] Builds obligatorios antes de cada commit (client build + server test) — PENDIENTE
+- [x] **F5** Auditoría responsive + dark/light + migración `ContactSalesDialog` + builds finales — COMPLETADO (commit `5e46749`)
+- [x] Builds obligatorios antes de cada commit (client build + server test) — COMPLETADO en cada fase
 
 ---
 

@@ -11,9 +11,9 @@
 ## 🚦 PUNTO DE CONTROL (Contexto de Reanudacion)
 *Usa esto para "despertar" a la IA si el chat se cierra:*
 
-- **Lo ultimo que funciono:** F4 COMPLETADA — 4 SVGs de muestra + Recursos + CTA final (banda blue/yellow) + FAQ acordeón + Alianzas. Build client OK + server 16/16 tests. Commit `ea1704b` pusheado.
+- **Lo ultimo que funciono:** F5 COMPLETADA — ContactSalesDialog migrado a v4, contraste badges yellow corregido (WCAG AA), auditoría completa sin tokens legacy. Build client OK + server 16/16 tests. Commit `5e46749` pusheado. **TODAS las fases implementadas.**
 - **Donde se rompio/detuvo:** —
-- **Siguiente accion inmediata:** F5 — Auditoría responsive/dark + migración `ContactSalesDialog` + builds finales. ESPERAR aprobación del usuario (STOP F4).
+- **Siguiente accion inmediata:** SECUENCIA FINAL — Esperar confirmación del usuario de TAREA COMPLETADA → actualizar bitácoras → auto-mantenimiento → PR a dev.
 
 ---
 
