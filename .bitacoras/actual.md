@@ -10,35 +10,9 @@
 
 ## 🚦 PUNTO DE CONTROL (Contexto de Reanudación)
 *Usa esto para "despertar" a la IA si el chat se cierra:*
-
-<<<<<<< HEAD
-<<<<<<< HEAD
 - **Lo último que funcionó:** [Último paso completado con éxito]
 - **Dónde se rompió/detuvo:** [Punto donde se detuvo el avance]
 - **Siguiente acción inmediata:** [Próximo paso a ejecutar]
-
----
-
-## 📝 CAMBIOS TÉCNICOS CLAVE
-- [ ] [Paso 1 de la tarea]
-- [ ] [Paso 2 de la tarea]
-- [ ] [Paso 3 de la tarea]
-=======
-=======
->>>>>>> 67cf746 (chore(bitacoras): update task #033 to FINALIZADO)
-<<<<<<< HEAD
-- **Lo ultimo que funciono:** —
-- **Donde se rompio/detuvo:** —
-- **Siguiente accion inmediata:** —
-
----
-
-## 📝 CAMBIOS TECNICOS CLAVE
-- [ ] [Pendiente]
-=======
-- **Lo último que funcionó:** Plan aprobado, rama creada, bitácora inicializada.
-- **Dónde se rompió/detuvo:** Inicio de Fase 1 (Backend).
-- **Siguiente acción inmediata:** Crear modelo ContactGeneral.model.js.
 
 ---
 
@@ -53,31 +27,12 @@
 - [ ] Agregar ruta pública en AppRoutes.jsx
 - [ ] Build client: npm run build (0 errores)
 - [ ] Build server: npm run test (todas pasan)
->>>>>>> 85f8a9b (feat(contact): add public contact page with general inquiry form)
-<<<<<<< HEAD
->>>>>>> 757cfcd (feat(contact): add public contact page with general inquiry form)
-=======
-=======
+
 - **Lo ultimo que funciono:** —
 - **Donde se rompio/detuvo:** —
 - **Siguiente accion inmediata:** —
 
----
-
-## 📝 CAMBIOS TECNICOS CLAVE
-- [ ] [Pendiente]
->>>>>>> 4ef690c (chore(bitacoras): update task #033 to FINALIZADO)
->>>>>>> 67cf746 (chore(bitacoras): update task #033 to FINALIZADO)
-
----
-
 ## ⚠️ NOTAS DE MEMORIA
-<<<<<<< HEAD
-<<<<<<< HEAD
-- *Regla:* [Regla importante para esta tarea]
-- *Branch:* [nombre de la rama]
-- *Commit:* [hash del commit si aplica]
-=======
 - *Regla:* NUNCA trabajar en main o dev directamente
 - *Regla:* Usar useIsDark() para dark mode, NO useTheme()
 - *Regla:* Usar CustomSelect para dropdowns (NO <select> nativo)
@@ -85,9 +40,5 @@
 - *Regla:* HUMAN IN THE LOOP — Pedir aprobación DESPUÉS de cada fase de implementación
 - *Branch:* feat/create-contact-page
 - *Commit:* Pendiente
->>>>>>> 757cfcd (feat(contact): add public contact page with general inquiry form)
-=======
-- *Regla:*
-- *Branch:*
-- *Commit:*
->>>>>>> 67cf746 (chore(bitacoras): update task #033 to FINALIZADO)
+
+
