@@ -185,7 +185,6 @@ export const EntryPage = () => {
                     <a href="#" className="hover:text-purple-500 transition-colors">Soluciones</a>
                     <a href="#" className="hover:text-purple-500 transition-colors">Precios</a>
                     <Link to="/contact" className="hover:text-purple-500 transition-colors">Contacto</Link>
-
                 </div>
 
                 {/* Acciones derecha */}
