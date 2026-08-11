@@ -16,17 +16,8 @@
 
 ---
 
-## 📝 CAMBIOS TÉCNICOS CLAVE
-- [ ] Crear ContactGeneral.model.js
-- [ ] Crear ContactGeneral.controller.js
-- [ ] Crear ContactGeneral.route.js
-- [ ] Agregar template email en emailtemplates.js
-- [ ] Montar ruta en server/index.js
-- [ ] Crear ContactPage.jsx (página pública)
-- [ ] Crear PublicRoutes.jsx
-- [ ] Agregar ruta pública en AppRoutes.jsx
-- [ ] Build client: npm run build (0 errores)
-- [ ] Build server: npm run test (todas pasan)
+## 📝 CAMBIOS TECNICOS CLAVE
+- [ ] [Pendiente]
 
 - **Lo ultimo que funciono:** —
 - **Donde se rompio/detuvo:** —
