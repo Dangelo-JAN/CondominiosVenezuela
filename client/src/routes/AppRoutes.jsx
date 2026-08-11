@@ -1,8 +1,10 @@
 import { createBrowserRouter } from "react-router-dom";
 import { EmployeeRoutes } from "./employeeroutes.jsx"
 import { HRRoutes } from "./HRroutes.jsx";
+import { PublicRoutes } from "./PublicRoutes.jsx";
 
 export const router = createBrowserRouter([
+    ...PublicRoutes,
     ...EmployeeRoutes,
     ...HRRoutes
 ],

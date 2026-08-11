@@ -9,33 +9,63 @@
 ---
 
 ## 🚦 PUNTO DE CONTROL (Contexto de Reanudación)
-- **Estado:** ✅ TAREA COMPLETADA el 2026-08-28 (aprobación explícita del CTO).
-- **Resumen final:** R1 y R2 ya funcionaban server-side; la reapertura añadió R3 completo (interactividad). Todos los cambios en `feat/weekly-reports` (PR #50 → dev). Verificación E2E en vivo exitosa; servicios apagados y Mongo detenido (`docker stop`, datos intactos).
-- **Próxima acción (futura):** Esperar merge del PR #50 hacia `dev`. Cuando el CTO lo indique, ejecutar auto-mantenimiento + secuencia de cierre formal (deploy a `main` si aplica).
+*Usa esto para "despertar" a la IA si el chat se cierra:*
+
+<<<<<<< HEAD
+- **Lo último que funcionó:** [Último paso completado con éxito]
+- **Dónde se rompió/detuvo:** [Punto donde se detuvo el avance]
+- **Siguiente acción inmediata:** [Próximo paso a ejecutar]
 
 ---
 
-## 📝 CAMBIOS TÉCNICOS CLAVE (resumen de cierre)
-- [x] **R1** — Reporte diario muestra SOLO realizado (verificado en vivo: solo `task_completed`, 0 pendientes).
-- [x] **R2** — Reporte semanal muestra TODO (verificado en vivo: `task_pending:59` + completadas + bitácoras + fotos).
-- [x] **R3** — Interactividad completa:
-  - Fase 1: backend tareas pendientes en semanal (`7179b8d`).
-  - Subtarea #038: `seed-reports.mjs` (5 snapshots W30-W34) idempotente (`f9a088d`+`a998836`).
-  - Fase 2: filtros server-side date (`9881243`).
-  - Fase 3: modales reutilizables `ReportActivityModals.jsx` + refactor 4 páginas (`3571af8`,`3667a1d`,`cf97cc6`).
-  - Fase 4: componentes interactivos `ReportComponents.jsx` (`054f231`).
-  - Fase 5: integración `HRReportPage.jsx` — chips URL-driven + modales (`9897df3`).
-  - Fase 6: filtros URL-driven en 4 páginas destino + thunks con params + contrato `startDate`/`endDate` (`e475a2c`).
-  - Fases 7-8: interactividad lado empleado (`EmployeeHomePage`, `EmployeeReportsPage`) (`2d361a0`).
-- [x] Builds finales: server `61/61 PASS` · client `0 errores`.
-- [x] Validación E2E en vivo documentada en este cierre.
+## 📝 CAMBIOS TÉCNICOS CLAVE
+- [ ] [Paso 1 de la tarea]
+- [ ] [Paso 2 de la tarea]
+- [ ] [Paso 3 de la tarea]
+=======
+<<<<<<< HEAD
+- **Lo ultimo que funciono:** —
+- **Donde se rompio/detuvo:** —
+- **Siguiente accion inmediata:** —
+
+---
+
+## 📝 CAMBIOS TECNICOS CLAVE
+- [ ] [Pendiente]
+=======
+- **Lo último que funcionó:** Plan aprobado, rama creada, bitácora inicializada.
+- **Dónde se rompió/detuvo:** Inicio de Fase 1 (Backend).
+- **Siguiente acción inmediata:** Crear modelo ContactGeneral.model.js.
+
+---
+
+## 📝 CAMBIOS TÉCNICOS CLAVE
+- [ ] Crear ContactGeneral.model.js
+- [ ] Crear ContactGeneral.controller.js
+- [ ] Crear ContactGeneral.route.js
+- [ ] Agregar template email en emailtemplates.js
+- [ ] Montar ruta en server/index.js
+- [ ] Crear ContactPage.jsx (página pública)
+- [ ] Crear PublicRoutes.jsx
+- [ ] Agregar ruta pública en AppRoutes.jsx
+- [ ] Build client: npm run build (0 errores)
+- [ ] Build server: npm run test (todas pasan)
+>>>>>>> 85f8a9b (feat(contact): add public contact page with general inquiry form)
+>>>>>>> 757cfcd (feat(contact): add public contact page with general inquiry form)
 
 ---
 
 ## ⚠️ NOTAS DE MEMORIA
-- *Regla:* Deploy local oficial -> `MASTER-INIT.md` §14. Reabrir = `docker start mongo-local` + `npm run server` + `npm run dev` (NUNCA `docker run` de nuevo; NUNCA `docker rm` = destruye datos).
-- *Regla:* Para reabrir, verificar SIEMPRE datos de la DB (§2.4) antes de decidir entre seed o reapertura.
-- *Regla:* Credenciales locales: HR `admin@test.local`/`Password123`; empleados `{nombre}.{apellido}{N}@test.local`/`Empleado123`.
-- *Hallazgo:* Los emails de empleados del seed llevan acentos literales (`maría.pérez0@test.local`) — el login funciona con el acento (copiar-pegar); la DB no normaliza. No existe empleado sin acentos con actividad en la semana actual.
-- *Branch:* `feat/weekly-reports` (PR #50 → dev)
-- *Commits de cierre:* `7179b8d` a `bc0246d`
+<<<<<<< HEAD
+- *Regla:* [Regla importante para esta tarea]
+- *Branch:* [nombre de la rama]
+- *Commit:* [hash del commit si aplica]
+=======
+- *Regla:* NUNCA trabajar en main o dev directamente
+- *Regla:* Usar useIsDark() para dark mode, NO useTheme()
+- *Regla:* Usar CustomSelect para dropdowns (NO <select> nativo)
+- *Regla:* Validar campos en server con sanitización XSS
+- *Regla:* HUMAN IN THE LOOP — Pedir aprobación DESPUÉS de cada fase de implementación
+- *Branch:* feat/create-contact-page
+- *Commit:* Pendiente
+>>>>>>> 757cfcd (feat(contact): add public contact page with general inquiry form)
