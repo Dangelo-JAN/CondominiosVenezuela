@@ -1,16 +1,14 @@
 import { Link } from "react-router-dom"
 import { ArrowRight, ShieldCheck, Users, Zap, Download, Sun, Moon } from "lucide-react"
 import { useState, useEffect } from "react"
-import { useTheme } from "../../context/ThemeContext.jsx"
+import { useIsDark } from "../../hooks/useIsDark.js"
 import { ContactSalesDialog } from "../../components/common/ContactSalesDialog.jsx"
 import { Footer } from "../../components/common/Footer.jsx"
 
 export const EntryPage = () => {
-    const isDark = useIsDark()
-    const { installPrompt, isInstalled, handleInstall } = usePWAPrompt()
-    const [testimonialIndex, setTestimonialIndex] = useState(0)
-    const [testimonialVisible, setTestimonialVisible] = useState(true)
-    const [openFaq, setOpenFaq] = useState(0)
+    const { isDark, toggleTheme } = useIsDark()
+    const [installPrompt, setInstallPrompt] = useState(null)
+    const [isInstalled, setIsInstalled] = useState(false)
 
     const resources = [
         {
