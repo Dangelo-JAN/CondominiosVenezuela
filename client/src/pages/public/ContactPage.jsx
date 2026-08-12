@@ -1,5 +1,6 @@
 import { useState } from "react"
 import { Link } from "react-router-dom"
+import { useTheme } from "../../hooks/useTheme.js"
 import { useIsDark } from "../../hooks/useIsDark.js"
 import { useToast } from "../../hooks/use-toast.js"
 import { CustomSelect } from "../../components/ui/custom-select.jsx"
@@ -69,6 +70,7 @@ const faqs = [
 ]
 
 export const ContactPage = () => {
+    const { toggleTheme } = useTheme()
     const isDark = useIsDark()
     const { toast } = useToast()
     const [isLoading, setIsLoading] = useState(false)
