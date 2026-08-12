@@ -1,6 +1,6 @@
 import { useState } from "react"
 import { Link } from "react-router-dom"
-import { useTheme } from "../../hooks/useTheme.js"
+import { useTheme } from "../../context/ThemeContext.jsx"
 import { useToast } from "../../hooks/use-toast.js"
 import { CustomSelect } from "../../components/ui/custom-select.jsx"
 import { PublicNavbar } from "../../components/common/PublicNavbar.jsx"

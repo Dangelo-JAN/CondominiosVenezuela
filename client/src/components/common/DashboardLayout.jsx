@@ -1,7 +1,7 @@
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar"
 import { Outlet } from "react-router-dom"
 import { PanelLeft, Sun, Moon } from "lucide-react"
-import { useTheme } from "../../hooks/useTheme.js"
+import { useTheme } from "../../context/ThemeContext.jsx"
 import { usePushNotifications } from "../../hooks/usePushNotifications.js"
 import { NotificationBell } from "./NotificationBell.jsx"
 

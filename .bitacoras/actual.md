@@ -17,7 +17,16 @@
 ---
 
 ## 📝 CAMBIOS TECNICOS CLAVE
-- [ ] [Pendiente]
+- [x] Crear ContactGeneral.model.js
+- [x] Crear ContactGeneral.controller.js
+- [x] Crear ContactGeneral.route.js
+- [x] Agregar template email en emailtemplates.js
+- [x] Montar ruta en server/index.js
+- [x] Crear ContactPage.jsx (página pública)
+- [x] Crear PublicRoutes.jsx
+- [x] Agregar ruta pública en AppRoutes.jsx
+- [x] Build client: npm run build (0 errores)
+- [x] Build server: npm run test (1 test preexistente falla - no relacionado)
 
 - **Lo ultimo que funciono:** —
 - **Donde se rompio/detuvo:** —

@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom"
 import { Sun, Moon } from "lucide-react"
-import { useTheme } from "../../hooks/useTheme.js"
+import { useTheme } from "../../context/ThemeContext.jsx"
 import { ContactSalesDialog } from "../common/ContactSalesDialog.jsx"
 
 export const PublicNavbar = () => {
