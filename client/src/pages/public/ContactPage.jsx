@@ -69,7 +69,7 @@ const faqs = [
 ]
 
 export const ContactPage = () => {
-    const { isDark } = useIsDark()
+    const isDark = useIsDark()
     const { toast } = useToast()
     const [isLoading, setIsLoading] = useState(false)
     const [openFaq, setOpenFaq] = useState(null)
@@ -533,7 +533,7 @@ export const ContactPage = () => {
             </section>
 
             {/* Footer */}
-            <Footer appName="SGC" appSubtitle="Sistema de Gestión Condominial" />
+            <Footer appName="SGC" appSubtitle="Sistema de Gestión Condominial" isDark={isDark} />
         </div>
     )
 }

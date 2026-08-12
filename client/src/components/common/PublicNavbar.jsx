@@ -1,10 +1,12 @@
 import { Link } from "react-router-dom"
 import { Sun, Moon } from "lucide-react"
+import { useTheme } from "../../hooks/useTheme.js"
 import { useIsDark } from "../../hooks/useIsDark.js"
 import { ContactSalesDialog } from "../common/ContactSalesDialog.jsx"
 
 export const PublicNavbar = () => {
-    const { isDark, toggleTheme } = useIsDark()
+    const { toggleTheme } = useTheme()
+    const isDark = useIsDark()
 
     return (
         <nav className="flex items-center justify-between px-5 sm:px-8 py-4 sm:py-6 border-b transition-colors duration-300"
