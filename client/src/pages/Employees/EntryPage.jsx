@@ -1,8 +1,8 @@
 import { Link } from "react-router-dom"
 import {
     ArrowRight, ShieldCheck, Users, Zap, Download, Sun, Moon,
-    Fingerprint, Wallet, BarChart3, Megaphone, Smartphone, UserPlus,
-    Building2, Mail, CalendarCheck2, TrendingUp, CheckCircle2,
+    Fingerprint, Megaphone, Smartphone, UserPlus,
+    Building2, Mail, CalendarCheck2, CalendarClock, TrendingUp, CheckCircle2,
     Quote, ChevronLeft, ChevronRight, Lock, Database, KeyRound, Clock3,
     BookOpen, ChevronDown, Handshake, HelpCircle, Sparkles
 } from "lucide-react"
@@ -33,11 +33,6 @@ export const EntryPage = () => {
             desc: "Cómo digitalizar el registro de entradas y salidas de tu equipo."
         },
         {
-            cover: "/assets/ebooks/nomina-sin-errores.svg",
-            title: "Nómina sin errores, paso a paso",
-            desc: "Automatiza el cálculo de sueldos, bonificaciones y deducciones."
-        },
-        {
             cover: "/assets/ebooks/comunicacion-equipo.svg",
             title: "Comunicación efectiva con tu equipo",
             desc: "Avisos y notificaciones que llegan a todos, al instante."
@@ -47,7 +42,7 @@ export const EntryPage = () => {
     const faqs = [
         {
             q: "¿Qué es CondoVE SGC?",
-            a: "Es un sistema de gestión condominial integral que centraliza el control de asistencia, la nómina, los avisos y la comunicación interna en una sola plataforma, diseñada para el mercado venezolano."
+            a: "Es un sistema de gestión condominial integral que centraliza el control de asistencia, los avisos y la comunicación interna en una sola plataforma, diseñada para el mercado venezolano."
         },
         {
             q: "¿Puedo usarlo aunque nunca haya usado software de gestión?",
@@ -103,8 +98,6 @@ export const EntryPage = () => {
     const nextTestimonial = () => changeTestimonial(() => setTestimonialIndex(i => (i + 1) % testimonials.length))
     const prevTestimonial = () => changeTestimonial(() => setTestimonialIndex(i => (i - 1 + testimonials.length) % testimonials.length))
 
-    const trustItems = ["Residencias", "Torres", "Urbanizaciones", "Conjuntos", "Edificios", "Quintas"]
-
     const securityItems = [
         { icon: Lock, title: "SOC-2", desc: "Controles de seguridad alineados con estándares internacionales." },
         { icon: Database, title: "Copias de seguridad", desc: "Respaldo automático de toda la información del condominio." },
@@ -121,10 +114,10 @@ export const EntryPage = () => {
             cta: "Conocer la solución"
         },
         {
-            icon: Wallet,
+            icon: CalendarClock,
             stat: "40%",
-            title: "menos errores en la nómina al automatizar el cálculo",
-            desc: "Al conectar asistencia y nómina, los cálculos se hacen solos: sueldos, bonificaciones y deducciones exactas.",
+            title: "menos errores en la gestión de horarios y tareas",
+            desc: "La planificación de turnos y las tareas se organizan desde la app: horarios claros, rotaciones automáticas y avisos a tiempo, sin planillas ni papel.",
             cta: "Ver cómo funciona"
         }
     ]
@@ -135,18 +128,6 @@ export const EntryPage = () => {
             title: "Control de Asistencia",
             img: "/assets/HR-Dashboard/attendance.png",
             desc: "Registra entradas y salidas con foto y geolocalización. Detecta tardanzas, faltas y horas extra al instante, directo desde el móvil."
-        },
-        {
-            icon: Wallet,
-            title: "Nómina Inteligente",
-            img: "/assets/HR-Dashboard/Salary.png",
-            desc: "Calcula la nómina de tu condominio automáticamente: sueldos, bonificaciones y deducciones sin errores ni planillas complicadas."
-        },
-        {
-            icon: BarChart3,
-            title: "Reportes en Tiempo Real",
-            img: "/assets/HR-Dashboard/dashboard.png",
-            desc: "Métricas clave de asistencia, ausencias y costos laborales en pantallas en vivo, para tomar mejores decisiones más rápido."
         },
         {
             icon: Megaphone,
@@ -170,9 +151,9 @@ export const EntryPage = () => {
 
     const steps = [
         { icon: UserPlus, title: "Regístrate", desc: "Crea la cuenta de tu condominio en minutos." },
-        { icon: Building2, title: "Configura", desc: "Carga edificios, departamentos y empleados." },
+        { icon: Building2, title: "Carga Departamentos, Empleados y Horarios", desc: "Estructura tu condominio con los datos de tu equipo en minutos." },
         { icon: Mail, title: "Invita", desc: "Tus empleados reciben su invitación por correo." },
-        { icon: CalendarCheck2, title: "Gestiona", desc: "Asistencia, nómina y avisos en un solo lugar." },
+        { icon: CalendarCheck2, title: "Asistencias y avisos en un solo lugar", desc: "Controla las asistencias y mantén a tu equipo al día con los avisos." },
         { icon: Smartphone, title: "Usa la app", desc: "El equipo registra su asistencia desde el móvil." },
         { icon: TrendingUp, title: "Mide", desc: "Reportes en tiempo real para decidir mejor." }
     ]
@@ -451,7 +432,7 @@ export const EntryPage = () => {
                     </div>
 
                     {/* Grid de features */}
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8">
                         {features.map((f, i) => (
                             <div key={f.title}
                                 className="group relative flex flex-col rounded-2xl border overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-xl"
@@ -550,33 +531,9 @@ export const EntryPage = () => {
                 </div>
             </section>
 
-            {/* ============ SECCIÓN: CONFIANZA (Trust bar) ============ */}
-            <section id="confianza" className="border-t transition-colors duration-300"
-                style={{ borderColor: isDark ? "rgba(0,61,165,0.25)" : "#dde5ff" }}>
-                <div className="max-w-7xl mx-auto px-5 sm:px-8 lg:px-20 py-14 sm:py-16 text-center">
-                    <p className="text-sm sm:text-base font-semibold"
-                        style={{ color: isDark ? "rgba(255,255,255,0.5)" : "#6b7280" }}>
-                        Más de <span className="font-extrabold" style={{ color: isDark ? "#ffffff" : "#111827" }}>500 condominios</span> confían en CondoVE SGC
-                    </p>
-                    <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
-                        {trustItems.map(item => (
-                            <span key={item}
-                                className="px-4 py-2 rounded-full text-sm font-semibold border transition-colors duration-200"
-                                style={{
-                                    color: isDark ? "rgba(255,255,255,0.7)" : "#003DA5",
-                                    borderColor: isDark ? "rgba(0,61,165,0.40)" : "#c7d7f5",
-                                    background: isDark ? "rgba(0,61,165,0.18)" : "#f2f6ff"
-                                }}>
-                                {item}
-                            </span>
-                        ))}
-                    </div>
-                </div>
-            </section>
-
             {/* ============ SECCIÓN: TESTIMONIOS ============ */}
-            <section id="testimonios" className="border-y transition-colors duration-300"
-                style={{ background: isDark ? "rgba(0,61,165,0.10)" : "#f2f6ff", borderColor: isDark ? "rgba(0,61,165,0.25)" : "#dde5ff" }}>
+            <section id="testimonios" className="border-t transition-colors duration-300"
+                style={{ borderColor: isDark ? "rgba(0,61,165,0.25)" : "#dde5ff" }}>
                 <div className="max-w-4xl mx-auto px-5 sm:px-8 lg:px-20 py-16 sm:py-24 text-center">
 
                     <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-sm font-semibold"
@@ -655,8 +612,8 @@ export const EntryPage = () => {
             </section>
 
             {/* ============ SECCIÓN: SABÍAS QUE… ============ */}
-            <section id="sabias-que" className="border-t transition-colors duration-300"
-                style={{ borderColor: isDark ? "rgba(0,61,165,0.25)" : "#dde5ff" }}>
+            <section id="sabias-que" className="border-y transition-colors duration-300"
+                style={{ background: isDark ? "rgba(0,61,165,0.10)" : "#f2f6ff", borderColor: isDark ? "rgba(0,61,165,0.25)" : "#dde5ff" }}>
                 <div className="max-w-7xl mx-auto px-5 sm:px-8 lg:px-20 py-16 sm:py-24">
                     <div className="max-w-3xl mx-auto text-center mb-12 sm:mb-16">
                         <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-sm font-semibold"
@@ -711,8 +668,8 @@ export const EntryPage = () => {
             </section>
 
             {/* ============ SECCIÓN: SEGURIDAD ============ */}
-            <section id="seguridad" className="border-y transition-colors duration-300"
-                style={{ background: isDark ? "rgba(0,61,165,0.10)" : "#f2f6ff", borderColor: isDark ? "rgba(0,61,165,0.25)" : "#dde5ff" }}>
+            <section id="seguridad" className="border-t transition-colors duration-300"
+                style={{ borderColor: isDark ? "rgba(0,61,165,0.25)" : "#dde5ff" }}>
                 <div className="max-w-7xl mx-auto px-5 sm:px-8 lg:px-20 py-16 sm:py-20">
                     <div className="max-w-3xl mx-auto text-center mb-10 sm:mb-14">
                         <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-sm font-semibold"
@@ -760,8 +717,8 @@ export const EntryPage = () => {
             </section>
 
             {/* ============ SECCIÓN: RECURSOS ============ */}
-            <section id="recursos" className="border-t transition-colors duration-300"
-                style={{ borderColor: isDark ? "rgba(0,61,165,0.25)" : "#dde5ff" }}>
+            <section id="recursos" className="border-y transition-colors duration-300"
+                style={{ background: isDark ? "rgba(0,61,165,0.10)" : "#f2f6ff", borderColor: isDark ? "rgba(0,61,165,0.25)" : "#dde5ff" }}>
                 <div className="max-w-7xl mx-auto px-5 sm:px-8 lg:px-20 py-16 sm:py-24">
                     <div className="max-w-3xl mx-auto text-center mb-12 sm:mb-16">
                         <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-sm font-semibold"
@@ -783,7 +740,7 @@ export const EntryPage = () => {
                         </p>
                     </div>
 
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                         {resources.map(r => (
                             <div key={r.title}
                                 className="group flex flex-col rounded-2xl border overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-xl"
@@ -857,8 +814,8 @@ export const EntryPage = () => {
             </section>
 
             {/* ============ SECCIÓN: FAQ ============ */}
-            <section id="faq" className="border-y transition-colors duration-300"
-                style={{ background: isDark ? "rgba(0,61,165,0.10)" : "#f2f6ff", borderColor: isDark ? "rgba(0,61,165,0.25)" : "#dde5ff" }}>
+            <section id="faq" className="border-t transition-colors duration-300"
+                style={{ borderColor: isDark ? "rgba(0,61,165,0.25)" : "#dde5ff" }}>
                 <div className="max-w-4xl mx-auto px-5 sm:px-8 lg:px-20 py-16 sm:py-24">
                     <div className="max-w-3xl mx-auto text-center mb-10 sm:mb-14">
                         <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-sm font-semibold"
@@ -912,8 +869,8 @@ export const EntryPage = () => {
             </section>
 
             {/* ============ SECCIÓN: ALIANZAS ============ */}
-            <section id="alianzas" className="border-t transition-colors duration-300"
-                style={{ borderColor: isDark ? "rgba(0,61,165,0.25)" : "#dde5ff" }}>
+            <section id="alianzas" className="border-y transition-colors duration-300"
+                style={{ background: isDark ? "rgba(0,61,165,0.10)" : "#f2f6ff", borderColor: isDark ? "rgba(0,61,165,0.25)" : "#dde5ff" }}>
                 <div className="max-w-7xl mx-auto px-5 sm:px-8 lg:px-20 py-14 sm:py-16 text-center">
                     <p className="text-sm sm:text-base font-semibold flex items-center justify-center gap-2"
                         style={{ color: isDark ? "rgba(255,255,255,0.5)" : "#6b7280" }}>

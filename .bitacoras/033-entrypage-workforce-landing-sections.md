@@ -1,5 +1,5 @@
 # 🛠️ TAREA: Landing EntryPage estilo Workforce.com (Design System v4)
-**ID:** #033 | **Estado:** ✅ COMPLETADO | **Fecha:** 2026-08-10 | **Cierre:** 2026-08-10
+**ID:** #033 | **Estado:** 🟡 EN CURSO (reabierta) | **Fecha:** 2026-08-10 | **Reapertura:** 2026-08-13
 
 ---
 
