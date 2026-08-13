@@ -7,7 +7,7 @@
 
 ## 🚩 ESTADO ACTUAL
 - **Tarea activa:** ⏸ Sin tarea activa — esperando instrucciones
-- **Última completada:** #033 — Landing EntryPage estilo Workforce.com (Design System v4) ✅ (10/08/2026)
+- **Última completada:** #033 — Landing EntryPage estilo Workforce.com (Design System v4) ✅ (13/08/2026, cierre reapertura: fix dark/light + ajustes contenido)
 - **Branch actual:** `feat/entrypage-workforce-landing-sections`
 - **Deploy pendiente:** Vercel + Render desde `main`
 - **Archivo de referencia rápida:** `actual.md`
@@ -47,7 +47,7 @@
 - [x] [[030-fix-hr-scrolling-table-header]] - ✅ COMPLETADO el 21/07/2026
 - [x] [[031-hr-profile-page]] - ✅ COMPLETADO el 27/07/2026
 - [x] [[032-master-agent-initialization-prompt]] - ✅ COMPLETADO el 28/07/2026
-- [x] [[033-entrypage-workforce-landing-sections]] - ✅ COMPLETADO el 10/08/2026
+- [x] [[033-entrypage-workforce-landing-sections]] - ✅ COMPLETADO el 10/08/2026 (reapertura 13/08/2026: fix dark/light + ajustes contenido, cerrado)
 
 ---
 
@@ -121,5 +121,5 @@
 
 ---
 
-*Actualizado: 2026-08-10*
-*Tarea #033 ✅ COMPLETADA — Landing EntryPage estilo Workforce.com (Design System v4)*
+*Actualizado: 2026-08-13*
+*Tarea #033 ✅ COMPLETADA (cierre reapertura) — fix persistencia dark/light (`useIsDark` init localStorage) + ajustes de contenido y espaciado en landing EntryPage*
