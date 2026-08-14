@@ -6,9 +6,15 @@
 ---
 
 ## 🚩 ESTADO ACTUAL
-- **Tarea activa:** Ninguna — sin tarea en curso
-- **Última completada:** #035 (reapertura) — Reportes: interactividad y filtros R1/R2/R3 ✅ (28/08/2026)
-- **Branch actual:** `feat/weekly-reports` (PR #50 abierto → dev) — pendiente merge
+<<<<<<< HEAD
+- **Tarea activa:** ⏸ Sin tarea activa — esperando instrucciones
+- **Última completada:** #034 — PublicNavbar Component + PWA Context ✅ (19/08/2026)
+- **Branch actual:** `feat/public-navbar-component` (PR #49 pendiente merge a dev)
+=======
+- **Tarea activa:** #034 — Reemplazar PublicNavbar por navbar común en ContactPage 🟡 EN CURSO
+- **Última completada:** #033 — Landing EntryPage estilo Workforce.com (Design System v4) ✅ (13/08/2026, cierre reapertura: fix dark/light + ajustes contenido)
+- **Branch actual:** `feat/create-contact-page`
+>>>>>>> 2843619 (feat: replace PublicNavbar with common navbar in ContactPage and update bitacoras)
 - **Deploy pendiente:** Vercel + Render desde `main`
 - **Archivo de referencia rápida:** `actual.md`
 
@@ -48,11 +54,11 @@
 - [x] [[031-hr-profile-page]] - ✅ COMPLETADO el 27/07/2026
 - [x] [[032-master-agent-initialization-prompt]] - ✅ COMPLETADO el 28/07/2026
 - [x] [[033-entrypage-workforce-landing-sections]] - ✅ COMPLETADO el 10/08/2026 (reapertura 13/08/2026: fix dark/light + ajustes contenido, cerrado)
+<<<<<<< HEAD
 - [x] [[034-public-navbar-component]] - ✅ COMPLETADO el 19/08/2026 (PR #49 → dev, pendiente merge)
-- [x] [[035-hr-employee-reports]] - ✅ COMPLETADO el 21/08/2026 → ✅ REAPERTURA CERRADA el 28/08/2026 (R1 diario-solo-realizado + R2 semanal-con-pendientes + R3 interactividad con chips URL-driven y modales de detalle; commits 7179b8d→bc0246d en feat/weekly-reports → PR #50)
-- [x] [[036-master-initi-local-setup]] - ✅ COMPLETADO el 24/08/2026 (commits 9325c2d + f8d68b5 en feat/weekly-reports → PR #50)
-- [x] [[037-master-init-reopen-section]] - ✅ COMPLETADO el 24/08/2026 (commit b287874 en feat/weekly-reports → PR #50)
-- [x] [[038-seed-reportes-semanales]] - ✅ COMPLETADO el 27/08/2026 (seed-reports.mjs + first-seed, commit f9a088d en feat/weekly-reports, subtarea de #035)
+=======
+- [ ] [[034-replace-publicnavbar-with-common-navbar]] - 🟡 EN PROGRESO (14/08/2026) — Reemplazar PublicNavbar en ContactPage por navbar común del proyecto
+>>>>>>> 2843619 (feat: replace PublicNavbar with common navbar in ContactPage and update bitacoras)
 
 ---
 
