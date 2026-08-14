@@ -12,7 +12,7 @@ const inputCls = `w-full rounded-xl px-3 py-2.5 sm:py-2 text-sm outline-none tra
     bg-gray-50 border border-gray-200 text-gray-900
     focus:border-blue-400 focus:bg-white focus:ring-2 focus:ring-blue-100
     dark:bg-[rgba(255,255,255,0.04)] dark:border-[rgba(255,255,255,0.08)] dark:text-white
-    dark:focus:border-[rgba(99,102,241,0.5)] dark:focus:bg-[rgba(99,102,241,0.06)] dark:focus:ring-0`
+    dark:focus:border-[rgba(0,61,165,0.50)] dark:focus:bg-[rgba(0,61,165,0.08)] dark:focus:ring-0`
 
 const labelCls = `text-xs font-semibold uppercase tracking-wider mb-1.5 flex items-center gap-1.5 text-gray-500 dark:text-[rgba(255,255,255,0.5)]`
 
@@ -82,13 +82,13 @@ export const ContactSalesDialog = () => {
                         <Rocket className="w-3.5 h-3.5 sm:w-4 sm:h-4 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
                         Hablemos
                     </span>
-                    <div className="absolute inset-0 rounded-full blur-md bg-gradient-to-r from-blue-500/30 to-purple-500/30 dark:from-blue-400/40 dark:to-purple-400/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                    <div className="absolute inset-0 rounded-full blur-md bg-gradient-to-r from-blue-500/30 to-yellow-400/20 dark:from-blue-400/40 dark:to-yellow-400/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                 </button>
             </DialogTrigger>
 
             <DialogContent className="max-w-[400px] sm:max-w-[550px] md:max-w-[650px] w-[calc(100%-24px)] mx-auto p-0 overflow-hidden
                 bg-white border border-gray-100 shadow-2xl rounded-3xl
-                dark:bg-[#0f0f1a] dark:border-[rgba(99,102,241,0.15)]
+                dark:bg-[#0f0f1a] dark:border-[rgba(0,61,165,0.40)]
                 [&>button]:text-gray-500 [&>button]:dark:text-white [&>button]:dark:hover:text-white
                 [&>button]:dark:bg-[rgba(255,255,255,0.08)] [&>button]:dark:hover:bg-[rgba(255,255,255,0.15)]
                 [&>button]:rounded-full [&>button]:p-1">
@@ -98,7 +98,7 @@ export const ContactSalesDialog = () => {
                     <div className="hidden md:flex flex-col justify-between w-[240px] p-8 text-white relative overflow-hidden shrink-0"
                         style={{ background: "linear-gradient(135deg, #0d0d18, #1a1a2e)" }}>
                         <div className="absolute -top-16 -left-16 w-32 h-32 rounded-full bg-blue-500/20 blur-3xl" />
-                        <div className="absolute bottom-0 right-0 w-48 h-48 rounded-full bg-purple-500/10 blur-3xl" />
+                        <div className="absolute bottom-0 right-0 w-48 h-48 rounded-full bg-yellow-400/10 blur-3xl" />
                         <div className="relative z-10 flex flex-col gap-4">
                             <span className="text-2xl font-bold tracking-tight">
                                 CondoVE<span className="text-blue-500" style={{ fontSize: "0.7em", marginLeft: "0.1em" }}>SGC</span>.
@@ -123,7 +123,7 @@ export const ContactSalesDialog = () => {
                                 Contacto Comercial
                             </p>
                             <h2 className="text-2xl sm:text-3xl font-extrabold text-gray-900 dark:text-white leading-tight">
-                                Hablemos de <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-purple-500">tu empresa</span>
+                                Hablemos de <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-blue-400">tu empresa</span>
                             </h2>
                             <p className="text-sm text-gray-500 dark:text-[rgba(255,255,255,0.4)] mt-2 md:hidden">
                                 Cuéntanos sobre tus necesidades y te contactaremos a la brevedad.
@@ -196,8 +196,8 @@ export const ContactSalesDialog = () => {
                             <div className="pt-2">
                                 <button type="submit" disabled={isLoading}
                                     className="w-full flex items-center justify-center gap-2 px-6 py-3.5 sm:py-3 rounded-xl text-base sm:text-sm font-bold text-white transition-all duration-300
-                                        bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700
-                                        disabled:opacity-50 disabled:cursor-not-allowed shadow-[0_8px_20px_rgba(99,102,241,0.25)] hover:shadow-[0_8px_25px_rgba(99,102,241,0.4)]">
+                                        bg-gradient-to-r from-blue-600 to-blue-900 hover:from-blue-700 hover:to-blue-950
+                                        disabled:opacity-50 disabled:cursor-not-allowed shadow-[0_8px_20px_rgba(0,61,165,0.25)] hover:shadow-[0_8px_25px_rgba(0,61,165,0.4)]">
                                     {isLoading ? (
                                         <>
                                             <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
