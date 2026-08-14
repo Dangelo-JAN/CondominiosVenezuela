@@ -6,15 +6,9 @@
 ---
 
 ## 🚩 ESTADO ACTUAL
-<<<<<<< HEAD
-- **Tarea activa:** ⏸ Sin tarea activa — esperando instrucciones
-- **Última completada:** #034 — PublicNavbar Component + PWA Context ✅ (19/08/2026)
-- **Branch actual:** `feat/public-navbar-component` (PR #49 pendiente merge a dev)
-=======
 - **Tarea activa:** #034 — Reemplazar PublicNavbar por navbar común en ContactPage 🟡 EN CURSO
 - **Última completada:** #033 — Landing EntryPage estilo Workforce.com (Design System v4) ✅ (13/08/2026, cierre reapertura: fix dark/light + ajustes contenido)
 - **Branch actual:** `feat/create-contact-page`
->>>>>>> 2843619 (feat: replace PublicNavbar with common navbar in ContactPage and update bitacoras)
 - **Deploy pendiente:** Vercel + Render desde `main`
 - **Archivo de referencia rápida:** `actual.md`
 
@@ -54,11 +48,10 @@
 - [x] [[031-hr-profile-page]] - ✅ COMPLETADO el 27/07/2026
 - [x] [[032-master-agent-initialization-prompt]] - ✅ COMPLETADO el 28/07/2026
 - [x] [[033-entrypage-workforce-landing-sections]] - ✅ COMPLETADO el 10/08/2026 (reapertura 13/08/2026: fix dark/light + ajustes contenido, cerrado)
-<<<<<<< HEAD
+
 - [x] [[034-public-navbar-component]] - ✅ COMPLETADO el 19/08/2026 (PR #49 → dev, pendiente merge)
-=======
-- [ ] [[034-replace-publicnavbar-with-common-navbar]] - 🟡 EN PROGRESO (14/08/2026) — Reemplazar PublicNavbar en ContactPage por navbar común del proyecto
->>>>>>> 2843619 (feat: replace PublicNavbar with common navbar in ContactPage and update bitacoras)
+
+- [x] [[034-replace-publicnavbar-with-common-navbar]] - ✅ COMPLETADO (14/08/2026) — Reemplazar PublicNavbar en ContactPage por navbar común del proyecto
 
 ---
 
