@@ -171,11 +171,17 @@ export const EntryPage = () => {
                 {/* Links — ocultos en móvil */}
                 <div className="hidden md:flex gap-8 text-sm font-medium"
                     style={{ color: isDark ? "rgba(255,255,255,0.5)" : "#4b5563" }}>
+                    <a href="#" className="hover:text-blue-600 transition-colors">Plataforma</a>
+                    <a href="#" className="hover:text-blue-600 transition-colors">Soluciones</a>
+                    <a href="#" className="hover:text-blue-600 transition-colors">Precios</a>
+                    <Link to="/contact" className="hover:text-blue-600 transition-colors">Contacto</Link>
+                </div>
 
-                    <a href="#" className="hover:text-purple-500 transition-colors">Plataforma</a>
-                    <a href="#" className="hover:text-purple-500 transition-colors">Soluciones</a>
-                    <a href="#" className="hover:text-purple-500 transition-colors">Precios</a>
-                    <Link to="/contact" className="hover:text-purple-500 transition-colors">Contacto</Link>
+                {/* Acciones derecha */}
+                <div className="flex items-center gap-2 sm:gap-3">
+
+                    {/* Contact Sales Modal */}
+                    <ContactSalesDialog />
                 </div>
 
                 {/* Acciones derecha */}
