@@ -4,7 +4,7 @@ import { useTheme } from "../../hooks/useTheme.js"
 import { useIsDark } from "../../hooks/useIsDark.js"
 import { useToast } from "../../hooks/use-toast.js"
 import { CustomSelect } from "../../components/ui/custom-select.jsx"
-import { PublicNavbar } from "../../components/common/PublicNavbar.jsx"
+import { ContactSalesDialog } from "../../components/common/ContactSalesDialog.jsx"
 import { Footer } from "../../components/common/Footer.jsx"
 import { 
     Building2, 
@@ -17,7 +17,9 @@ import {
     Phone,
     Clock,
     ChevronDown,
-    ChevronUp
+    ChevronUp,
+    Sun,
+    Moon
 } from "lucide-react"
 import axios from "axios"
 
