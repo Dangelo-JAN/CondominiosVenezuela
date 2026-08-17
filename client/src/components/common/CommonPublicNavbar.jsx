@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import { Sun, Moon, Download } from "lucide-react";
 import { useState, useEffect } from "react";
 import { useIsDark } from "../../hooks/useIsDark.js";
-import { ContactSalesDialog } from "../common/ContactSalesDialog.jsx";
+import { ContactSalesDialog } from "./ContactSalesDialog.jsx";
 
 export const CommonPublicNavbar = ({ 
     showDemoButton = true, 

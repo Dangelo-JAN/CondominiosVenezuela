@@ -6,6 +6,7 @@ import { useToast } from "../../hooks/use-toast.js"
 import { CustomSelect } from "../../components/ui/custom-select.jsx"
 import { ContactSalesDialog } from "../../components/common/ContactSalesDialog.jsx"
 import { Footer } from "../../components/common/Footer.jsx"
+import { CommonPublicNavbar } from "../../components/common/CommonPublicNavbar.jsx"
 import { 
     Building2, 
     Users, 
