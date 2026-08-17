@@ -16,7 +16,7 @@ export const CommonPublicNavbar = ({
     const { isDark: initialIsDark, toggleTheme: originalToggleTheme } = useIsDark();
     const [isDark, setIsDark] = useState(initialIsDark);
 
-    // Escuchar cambios en localStorage para mantener sincronizado el estado
+    // Escuchar cambios en localStorage y eventos personalizados para mantener sincronizado el estado
     useEffect(() => {
         const handleStorageChange = () => {
             const stored = localStorage.getItem("ems-theme");
@@ -24,12 +24,19 @@ export const CommonPublicNavbar = ({
             setIsDark(newIsDark);
         };
 
+        const handleThemeChange = (e) => {
+            setIsDark(e.detail.isDark);
+        };
+
         // Escuchar cambios en localStorage
         window.addEventListener('storage', handleStorageChange);
+        // Escuchar eventos personalizados de cambio de tema
+        window.addEventListener('themeChange', handleThemeChange);
         
         // Cleanup
         return () => {
             window.removeEventListener('storage', handleStorageChange);
+            window.removeEventListener('themeChange', handleThemeChange);
         };
     }, []);
 
@@ -40,6 +47,10 @@ export const CommonPublicNavbar = ({
 
     const toggleTheme = () => {
         originalToggleTheme();
+        // Disparar evento personalizado para notificar a otros componentes sobre el cambio de tema
+        setTimeout(() => {
+            window.dispatchEvent(new CustomEvent('themeChange', { detail: { isDark: !isDark } }));
+        }, 0);
     };
     
     // Manejar el estado del PWA si no se proporciona externamente
