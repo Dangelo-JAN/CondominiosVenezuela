@@ -13,7 +13,34 @@ export const CommonPublicNavbar = ({
     onInstall: propOnInstall = null
 }) => {
     const location = useLocation();
-    const { isDark, toggleTheme } = useIsDark();
+    const { isDark: initialIsDark, toggleTheme: originalToggleTheme } = useIsDark();
+    const [isDark, setIsDark] = useState(initialIsDark);
+
+    // Escuchar cambios en localStorage para mantener sincronizado el estado
+    useEffect(() => {
+        const handleStorageChange = () => {
+            const stored = localStorage.getItem("ems-theme");
+            const newIsDark = stored ? stored === "dark" : window.matchMedia("(prefers-color-scheme: dark)").matches;
+            setIsDark(newIsDark);
+        };
+
+        // Escuchar cambios en localStorage
+        window.addEventListener('storage', handleStorageChange);
+        
+        // Cleanup
+        return () => {
+            window.removeEventListener('storage', handleStorageChange);
+        };
+    }, []);
+
+    // Actualizar el estado local cuando cambia el valor inicial
+    useEffect(() => {
+        setIsDark(initialIsDark);
+    }, [initialIsDark]);
+
+    const toggleTheme = () => {
+        originalToggleTheme();
+    };
     
     // Manejar el estado del PWA si no se proporciona externamente
     const [internalInstallPrompt, setInternalInstallPrompt] = useState(null);
