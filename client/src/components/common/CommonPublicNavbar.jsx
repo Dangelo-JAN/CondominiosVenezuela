@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { Sun, Moon, Download } from "lucide-react";
 import { useState, useEffect } from "react";
 import { useIsDark } from "../../hooks/useIsDark.js";
@@ -12,6 +12,7 @@ export const CommonPublicNavbar = ({
     isInstalled: propIsInstalled = false,
     onInstall: propOnInstall = null
 }) => {
+    const location = useLocation();
     const { isDark, toggleTheme } = useIsDark();
     
     // Manejar el estado del PWA si no se proporciona externamente
@@ -53,7 +54,7 @@ export const CommonPublicNavbar = ({
             style={{ borderColor: isDark ? "rgba(0,61,165,0.25)" : "#dde5ff" }}>
 
             {/* Logo - texto debajo en móvil */}
-            <div className="flex flex-col sm:flex-row items-center gap-1 sm:gap-2">
+            <Link to="/" className="flex flex-col sm:flex-row items-center gap-1 sm:gap-2">
                 <img
                     src="/icons/IsotipoMarca-CondoVe-64x64-solo.png"
                     alt="Logo CondoVe SGC"
@@ -63,7 +64,7 @@ export const CommonPublicNavbar = ({
                     style={{ color: isDark ? "#ffffff" : "#111827" }}>
                     CondoVE<span style={{ color: "#003DA5", fontSize: "0.65em", marginLeft: "0.15em" }}>SGC</span><span style={{ color: "#FCE300" }}>.</span>
                 </span>
-            </div>
+            </Link>
 
             {/* Links — ocultos en móvil */}
             {showLinks && (
@@ -72,7 +73,16 @@ export const CommonPublicNavbar = ({
                     <a href="#" className="hover:text-blue-600 transition-colors">Plataforma</a>
                     <a href="#" className="hover:text-blue-600 transition-colors">Soluciones</a>
                     <a href="#" className="hover:text-blue-600 transition-colors">Precios</a>
-                    <Link to="/contact" className="hover:text-blue-600 transition-colors">Contacto</Link>
+                    <Link 
+                      to="/contact" 
+                      className={`transition-colors ${
+                          location.pathname === '/contact' 
+                              ? 'text-blue-600 font-semibold' 
+                              : 'hover:text-blue-600'
+                      }`}
+                    >
+                      Contacto
+                    </Link>
                 </div>
             )}
 
