@@ -10,13 +10,19 @@ import { useState, useEffect } from "react"
  * el hook inicializaba en false porque la clase "dark" se agrega al DOM
  * DESPUÉS del mount (useEffect de useTheme), y el MutationObserver se registra
  * después de esa mutación → el tema guardado se perdía en cada refresco.
+ *
+ * FIX deploy: en el primer deploy (sin localStorage), se agrega matchMedia como
+ * fallback para que useIsDark y useTheme initén el mismo valor desde el inicio,
+ * evitando el race condition donde Tailwind dark: classes están activas pero
+ * los estilos inline isDark están en light.
  */
 export const useIsDark = () => {
     const [isDark, setIsDark] = useState(() => {
         if (typeof document === "undefined") return false
         const stored = localStorage.getItem("ems-theme")
         if (stored) return stored === "dark"
-        return document.documentElement.classList.contains("dark")
+        if (document.documentElement.classList.contains("dark")) return true
+        return window.matchMedia("(prefers-color-scheme: dark)").matches
     })
 
     useEffect(() => {

@@ -11,9 +11,9 @@
 ## 🚦 PUNTO DE CONTROL (Contexto de Reanudación)
 *Usa esto para "despertar" a la IA si el chat se cierra:*
 
-- **Lo último que funcionó:** EntryPage.jsx actualizado — PWAContext + stat +10K eliminado. Fase 3 completada.
-- **Dónde se rompió/detuvo:** Fase 3 completada — commit + push realizado.
-- **Siguiente acción inmediata:** Fase 4 — wire-up PWAProvider en App.jsx.
+- **Lo último que funcionó:** PWAProvider wire-up en App.jsx. Fase 4 completada.
+- **Dónde se rompió/detuvo:** Fase 4 completada — commit + push realizado. Error de deploy corregido.
+- **Siguiente acción inmediata:** Fase 5 — verificación final + git status limpio.
 
 ---
 
@@ -21,7 +21,7 @@
 - [x] Crear `client/src/contexts/PWAContext.jsx` — Fase 1
 - [x] Modificar `client/src/components/common/PublicNavbar.jsx` — Fase 2
 - [x] Modificar `client/src/pages/Employees/EntryPage.jsx` — Fase 3
-- [ ] Wire-up `PWAProvider` en `client/src/App.jsx` — Fase 4
+- [x] Wire-up `PWAProvider` en `client/src/App.jsx` — Fase 4
 - [ ] Build verification final — Fase 5
 
 ---
@@ -32,4 +32,4 @@
 - *Regla:* Solo eliminar "+10K Usuarios activos". Mantener Uptime y Soporte 24/7.
 - *Regla:* PWAContext se comparte entre PublicNavbar y hero banner de EntryPage.
 - *Branch:* feat/public-navbar-component
-- *Commit:* `4c38b43` (Fase 3 — EntryPage PWAContext + remove +10K)
+- *Commit:* `30391bc` (Fase 4 — PWAProvider wire-up fix)
