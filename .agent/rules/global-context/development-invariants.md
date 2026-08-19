@@ -9,6 +9,22 @@ Reglas que TODO desarrollo debe cumplir sin excepción.
 ## 1. Soporte Temático Bidireccional
 Todo componente DEBE soportar Light y Dark mode, siguiendo el Design System v4.
 
+### 1.1. Inicialización de useIsDark (Regla #034)
+**Regla obligatoria:**
+El hook `useIsDark()` DEBE usar `window.matchMedia("(prefers-color-scheme: dark)")` como fallback final en su inicialización.
+
+**Cadena de resolución:**
+1. Si hay `localStorage("ems-theme")` → usar ese valor
+2. Si `<html>` tiene clase `"dark"` → retornar `true`
+3. **Fallback:** `matchMedia("(prefers-color-scheme: dark)")` → respetar preferencia del OS
+
+**¿Por qué?**
+`useTheme()` lee `matchMedia` en su init y agrega la clase `"dark"` al `<html>` en un `useEffect` (post-render). Si `useIsDark()` solo verifica `classList`, el `MutationObserver` se registra DESPUÉS de que la clase fue agregada → el observer nunca detecta el estado inicial → race condition donde Tailwind `dark:` classes están activas pero los estilos inline `isDark` están en `false`.
+
+**Prohibido:**
+- ❌ Inicializar `useIsDark` solo con `classList.contains("dark")` sin fallback a `matchMedia`
+- ❌ Usar `useTheme().isDark` para estilos inline (violación de separación de hooks)
+
 ## 2. Responsividad Absoluta & PWA
 - Enfoque **Mobile-first** en toda implementación.
 - Soporte para manifiesto PWA.
