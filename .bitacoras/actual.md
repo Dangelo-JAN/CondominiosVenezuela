@@ -11,9 +11,9 @@
 ## 🚦 PUNTO DE CONTROL (Contexto de Reanudación)
 *Usa esto para "despertar" a la IA si el chat se cierra:*
 
-- **Lo último que funcionó:** Fix race condition useIsDark (matchMedia fallback). Deploy corregido.
-- **Dónde se rompió/detuvo:** Fix de theme completado — commit + push realizado.
-- **Siguiente acción inmediata:** Fase 5 — verificación final + git status limpio.
+- **Lo último que funcionó:** Fase 5 completada — verificación final exitosa. Git status limpio.
+- **Dónde se rompió/detuvo:** Todas las fases completadas. Pendiente confirmación de tarea.
+- **Siguiente acción inmediata:** Esperar confirmación del usuario de TAREA COMPLETADA.
 
 ---
 
@@ -22,7 +22,7 @@
 - [x] Modificar `client/src/components/common/PublicNavbar.jsx` — Fase 2
 - [x] Modificar `client/src/pages/Employees/EntryPage.jsx` — Fase 3
 - [x] Wire-up `PWAProvider` en `client/src/App.jsx` — Fase 4
-- [ ] Build verification final — Fase 5
+- [x] Build verification final — Fase 5
 
 ---
 
@@ -32,4 +32,4 @@
 - *Regla:* Solo eliminar "+10K Usuarios activos". Mantener Uptime y Soporte 24/7.
 - *Regla:* PWAContext se comparte entre PublicNavbar y hero banner de EntryPage.
 - *Branch:* feat/public-navbar-component
-- *Commit:* `8fc18fc` (FIX — useIsDark matchMedia fallback)
+- *Commit:* `7bd6d12` (Fase 5 — bitácora update)
