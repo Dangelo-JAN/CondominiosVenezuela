@@ -32,4 +32,4 @@
 - *Regla:* Solo eliminar "+10K Usuarios activos". Mantener Uptime y Soporte 24/7.
 - *Regla:* PWAContext se comparte entre PublicNavbar y hero banner de EntryPage.
 - *Branch:* feat/public-navbar-component
-- *Commit:* pendiente
+- *Commit:* `1d43344` (Fase 1 — PWAContext)
