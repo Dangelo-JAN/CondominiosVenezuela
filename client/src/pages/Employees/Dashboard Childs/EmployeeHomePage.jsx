@@ -1,8 +1,13 @@
 import { useEffect, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { HandleEmployeeDashboard } from "../../../redux/Thunks/EmployeeDashboardThunk.js"
+import { HandleGetMyReport } from "../../../redux/Thunks/ReportThunk.js"
+import {
+    ReportModeBadge, ReportTotalsBar, EmployeeActivityGroup,
+    ReportEmptyState, PreliminaryBanner, YELLOW
+} from "../../../components/common/Dashboard/ReportComponents.jsx"
 import { Loading } from "../../../components/common/loading.jsx"
-import { LogIn, LogOut, Clock, CheckCircle2, Circle, CalendarDays, AlertCircle, Building2 } from "lucide-react"
+import { LogIn, LogOut, Clock, CheckCircle2, Circle, CalendarDays, AlertCircle, Building2, ClipboardList } from "lucide-react"
 import { useToast } from "@/hooks/use-toast"
 import { useIsDark } from "../../../hooks/useIsDark.js"
 
@@ -49,8 +54,10 @@ export const EmployeeHomePage = () => {
     const { toast } = useToast()
     const { attendance, schedules, isLoading } = useSelector(s => s.employeedashboardreducer)
     const employeeData = useSelector(s => s.employeereducer.data?.employee)
+    const reportState = useSelector(s => s.reportreducer)
     const [actionLoading, setActionLoading] = useState(false)
     const isDark = useIsDark()
+    const y = YELLOW(isDark)
 
     // Datos del empleado actual
     const empName = employeeData?.firstname && employeeData?.lastname 
@@ -66,6 +73,8 @@ export const EmployeeHomePage = () => {
     useEffect(() => {
         dispatch(HandleEmployeeDashboard({ type: "MyAttendance" }))
         dispatch(HandleEmployeeDashboard({ type: "MySchedules" }))
+        // Reporte de actividades de MI departamento (filtro aplicado en el server — req #4)
+        dispatch(HandleGetMyReport())
     }, [])
 
     const todayLog = attendance?.attendancelog?.find(
@@ -351,6 +360,71 @@ export const EmployeeHomePage = () => {
                         )}
                     </div>
                 </div>
+            </div>
+
+            {/* ── Reporte de actividades de mi departamento (tarea #035) ── */}
+            <div className="rounded-2xl p-5 flex flex-col gap-4"
+                style={{
+                    background: isDark ? "rgba(252,227,0,0.04)" : "linear-gradient(135deg, #fefce8 0%, #ffffff 70%)",
+                    border: `1px solid ${isDark ? "rgba(252,227,0,0.22)" : "#fef08a"}`
+                }}>
+
+                <div className="flex items-center justify-between gap-3 flex-wrap">
+                    <div className="flex items-center gap-2">
+                        <div className="w-8 h-8 rounded-xl flex items-center justify-center" style={{ background: y.bg }}>
+                            <ClipboardList className="w-4 h-4" style={{ color: y.text }} />
+                        </div>
+                        <div>
+                            <p className="text-[10px] font-semibold uppercase tracking-[0.18em]" style={{ color: y.text }}>
+                                Actividades · {empDepartment ?? "Mi departamento"}
+                            </p>
+                            <h2 className="text-base font-bold text-gray-900 dark:text-white">
+                                {reportState.currentReport?.mode === "WEEK_START"
+                                    ? "Nueva semana laboral"
+                                    : reportState.currentReport?.mode === "WEEKLY_LIVE"
+                                        ? "Resumen semanal del equipo"
+                                        : `Actividades${reportState.currentReport?.dailyWindow?.label ? ` del ${reportState.currentReport.dailyWindow.label}` : ""}`}
+                            </h2>
+                        </div>
+                    </div>
+                    {reportState.currentReport && <ReportModeBadge mode={reportState.currentReport.mode} />}
+                </div>
+
+                {reportState.currentReport?.banner && (
+                    <PreliminaryBanner banner={reportState.currentReport.banner} />
+                )}
+
+                {!reportState.currentReport || reportState.currentReport.mode === "WEEK_START" ? (
+                    <ReportEmptyState
+                        title="La semana está iniciando"
+                        message="Las actividades de tu equipo aparecerán aquí a partir del primer día registrado."
+                    />
+                ) : (
+                    <>
+                        {(() => {
+                            const daily = reportState.currentReport.daily
+                            const hasData = daily && (daily.totals.bitacoras + daily.totals.tasksCompleted +
+                                daily.totals.workPhotos + daily.totals.checkIns) > 0
+                            return (
+                                <>
+                                    <ReportTotalsBar totals={hasData ? daily.totals : reportState.currentReport.weekly?.totals} />
+                                    {hasData ? (
+                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                                            {daily.employees.map(emp => (
+                                                <EmployeeActivityGroup key={String(emp.employee)} employee={emp} maxActivities={4} />
+                                            ))}
+                                        </div>
+                                    ) : (
+                                        <ReportEmptyState
+                                            title="Sin actividades registradas ayer"
+                                            message="Cuando tu equipo registre bitácoras, complete tareas o marque entrada, aparecerán aquí."
+                                        />
+                                    )}
+                                </>
+                            )
+                        })()}
+                    </>
+                )}
             </div>
 
             {/* Sin horario activo */}

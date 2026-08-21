@@ -11,9 +11,9 @@
 ## 🚦 PUNTO DE CONTROL (Contexto de Reanudación)
 *Usa esto para "despertar" a la IA si el chat se cierra:*
 
-- **Lo último que funcionó:** Fase 3 COMPLETADA — commit `05efa03`; build client 0 errores.
-- **Dónde se rompió/detuvo:** N/A — STOP de fase 3, esperando aprobación para Fase 4.
-- **Siguiente acción inmediata:** Fase 4: UI HR — card en dashboardpage + HRReportPage + ruta `/HR/dashboard/reports` + entrada sidebar.
+- **Lo último que funcionó:** Fase 4 COMPLETADA — commit `9d28f77`; build client 0 errores.
+- **Dónde se rompió/detuvo:** N/A — STOP de fase 4, esperando aprobación para Fase 5.
+- **Siguiente acción inmediata:** Fase 5: sección de reporte en `EmployeeHomePage.jsx` con `HandleGetMyReport` (depto-scoped).
 
 ---
 
@@ -38,9 +38,12 @@
 - [x] `ReportAsyncReducer` en `asyncreducer.js` + `ReportSlice.js`
 - [x] Registro `reportreducer` en `store.js` → **build client 0 errores**
 
-### Fase 4 — Client HR
-- [ ] Card reporte en `dashboardpage.jsx`
-- [ ] Página `HRReportPage.jsx` + ruta `/HR/dashboard/reports` + entrada sidebar
+### Fase 4 — Client HR ✅
+- [x] `ReportComponents.jsx` — badge de modo, filas de actividad, grupos por empleado, totales, estados vacíos, banner preliminar, `ReportCompactCard`
+- [x] Card insertada en `dashboardpage.jsx` (bajo KPIs, antes de Analíticas)
+- [x] Página `HRReportPage.jsx` (semana actual daily+weekly + histórico snapshots con modal detalle)
+- [x] Ruta `/HR/dashboard/reports` en `HRroutes.jsx`
+- [x] Entrada "Reportes" en `HRsidebar.jsx` → **build client 0 errores**
 
 ### Fase 5 — Client Empleado
 - [ ] Sección reporte en `EmployeeHomePage.jsx` (filtro por departamento)
