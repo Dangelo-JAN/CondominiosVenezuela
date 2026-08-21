@@ -58,3 +58,16 @@ export const HandleGetMyReport = createAsyncThunk(
         }
     }
 )
+
+// Histórico de SUS reportes semanales cerrados (aislado por token — req.EMPID)
+export const HandleGetMyReportHistory = createAsyncThunk(
+    'HandleGetMyReportHistory',
+    async (_, { rejectWithValue }) => {
+        try {
+            const response = await employeeApiService.get(ReportEndPoints.GET_MY_HISTORY)
+            return response.data
+        } catch (error) {
+            return rejectWithValue(error.response?.data || error.message)
+        }
+    }
+)

@@ -602,6 +602,10 @@ export const ReportAsyncReducer = (builder, thunk, thunkName) => {
         else if (thunkName === "HandleGetSnapshotByWeek") {
             state.selectedSnapshot = payload?.data || null;
         }
+        // Histórico de MIS semanas cerradas (empleado)
+        else if (thunkName === "HandleGetMyReportHistory") {
+            state.myHistory = payload?.data || [];
+        }
     })
     builder.addCase(thunk.rejected, (state, action) => {
         state.isLoading = false;

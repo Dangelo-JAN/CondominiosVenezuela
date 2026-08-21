@@ -14,6 +14,7 @@ const EMPLOYEE_NAV_ITEMS = [
     { label: "Ausencias", path: "/auth/employee/employee-dashboard/absences", icon: "/assets/HR-Dashboard/leave.png" },
     { label: "Solicitudes", path: "/auth/employee/employee-dashboard/requests", icon: "/assets/HR-Dashboard/request.png" },
     { label: "Bitácoras", path: "/auth/employee/employee-dashboard/bitacoras", icon: "/assets/HR-Dashboard/notice.png" },
+    { label: "Mis Reportes", path: "/auth/employee/employee-dashboard/reports", icon: "/assets/HR-Dashboard/dashboard.png" },
 ]
 
 export function EmployeeDashboardSidebar() {

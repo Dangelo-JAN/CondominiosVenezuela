@@ -86,7 +86,9 @@ export const ReportEndPoints = {
     GET_BY_WEEK: (isoYear, weekNumber) => `/api/v1/report/history/${isoYear}/${weekNumber}`,
 
     // Empleado (filtrado a su departamento en el server)
-    GET_MY_REPORT: "/api/v1/report/my-report"
+    GET_MY_REPORT: "/api/v1/report/my-report",
+    // Empleado (histórico de SUS semanas cerradas — aislado por token)
+    GET_MY_HISTORY: "/api/v1/report/my-history"
 }
 
 // ── Notificaciones In-App ──────────────────────────────────────────────────
