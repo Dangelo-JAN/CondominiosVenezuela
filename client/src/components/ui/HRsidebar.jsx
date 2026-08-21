@@ -19,6 +19,7 @@ const HR_NAV_ITEMS_ALL = [
     { label: "Entrevistas", path: null, icon: "/assets/HR-Dashboard/interview-insights.png" },
     { label: "Solicitudes", path: "/HR/dashboard/requests", icon: "/assets/HR-Dashboard/request.png" },
     { label: "Bitácoras", path: "/HR/dashboard/bitacoras", icon: "/assets/HR-Dashboard/notice.png" },
+    { label: "Reportes", path: "/HR/dashboard/reports", icon: "/assets/HR-Dashboard/dashboard.png" },
     { label: "Perfiles HR", path: "/HR/dashboard/hr-profiles", icon: "/assets/HR-Dashboard/HR-profiles.png" },
 ]
 

@@ -11,9 +11,9 @@
 ## 🚦 PUNTO DE CONTROL (Contexto de Reanudación)
 *Usa esto para "despertar" a la IA si el chat se cierra:*
 
-- **Lo último que funcionó:** Fase 2 COMPLETADA — commit `865efc7`; 51/51 tests (4 suites).
-- **Dónde se rompió/detuvo:** N/A — STOP de fase 2, esperando aprobación para Fase 3.
-- **Siguiente acción inmediata:** Fase 3: client data layer — ReportEndPoints + ReportThunk + ReportSlice + store.
+- **Lo último que funcionó:** Fase 3 COMPLETADA — commit `05efa03`; build client 0 errores.
+- **Dónde se rompió/detuvo:** N/A — STOP de fase 3, esperando aprobación para Fase 4.
+- **Siguiente acción inmediata:** Fase 4: UI HR — card en dashboardpage + HRReportPage + ruta `/HR/dashboard/reports` + entrada sidebar.
 
 ---
 
@@ -32,9 +32,11 @@
 - [x] Actualizar `server/docs/cron-setup.md` (Job 3: lunes 07:00 UTC = 03:00 Caracas)
 - [x] Tests integración `reportController.test.js` → **51/51 suites OK**
 
-### Fase 3 — Client data
-- [ ] `APIsEndpoints.js`: `ReportEndPoints`
-- [ ] `ReportThunk.js` + `ReportSlice.js` + registro en `store.js`
+### Fase 3 — Client data ✅
+- [x] `APIsEndpoints.js`: `ReportEndPoints`
+- [x] `ReportThunk.js` (4 thunks: current/my-report/history/by-week)
+- [x] `ReportAsyncReducer` en `asyncreducer.js` + `ReportSlice.js`
+- [x] Registro `reportreducer` en `store.js` → **build client 0 errores**
 
 ### Fase 4 — Client HR
 - [ ] Card reporte en `dashboardpage.jsx`
