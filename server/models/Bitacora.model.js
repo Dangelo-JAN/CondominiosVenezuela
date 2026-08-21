@@ -52,4 +52,7 @@ const BitacoraSchema = new Schema({
   }
 }, { timestamps: true });
 
+// Índice para reportes: consulta por organización + rango de fechas
+BitacoraSchema.index({ organizationID: 1, createdAt: -1 })
+
 export const Bitacora = mongoose.model("Bitacora", BitacoraSchema)

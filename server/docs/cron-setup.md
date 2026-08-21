@@ -17,6 +17,10 @@ cron-job.org                     Servidor Express                    MongoDB
     │  cron/register-absences ─────────►│                              │
     │  [diario 02:00 UTC]               │  └ Absence.create(...) ────►│
     │                                   │                              │
+    │  GET /api/v1/report/              │                              │
+    │  cron/close-week ────────────────►│                              │
+    │  [lunes 07:00 UTC]                │  └ WeeklyReportSnapshot ───►│
+    │                                   │     upsert (idempotente)     │
 ```
 
 ## Endpoints CRON
@@ -25,6 +29,7 @@ cron-job.org                     Servidor Express                    MongoDB
 |----------|--------|-----------|---------------------|
 | `/api/v1/schedule/cron/close-expired` | GET | Cierra horarios cuya fecha de fin ya venció (status → `closed`) | Diario 00:00 UTC |
 | `/api/v1/schedule/cron/register-absences` | GET | Registra ausencias para empleados con tareas del día anterior sin completar | Diario 02:00 UTC |
+| `/api/v1/report/cron/close-week` | GET | Genera el snapshot inmutable del reporte semanal anterior para TODAS las organizaciones | Lunes 07:00 UTC (= 03:00 AM Caracas) |
 
 ### Detalle de cada endpoint
 
@@ -40,6 +45,14 @@ cron-job.org                     Servidor Express                    MongoDB
 - Si hay tareas incompletas, crea un registro en la colección `Absence` con `leavetype: "Tarea No Realizada"`.
 - **No duplica ausencias**: verifica que no exista ya una ausencia con el mismo `employee` + `scheduleId` + fecha + tipo.
 - Retorna `{ absencesRegistered }` con la cantidad de ausencias nuevas creadas.
+
+#### `close-week` (reportes semanales)
+- Cierra la **última semana completada** (Lunes 00:00 → Domingo 23:59:59.999 UTC) para cada organización con empleados.
+- Genera un documento inmutable en `WeeklyReportSnapshot` con: totales globales, desglose por departamento y resumen serializado por empleado (bitácoras, tareas completadas, fotos, asistencia).
+- **Idempotente**: índice único `{organizationID, isoYear, weekNumber}` + upsert — re-ejecutar no duplica.
+- Multi-tenant: procesa todas las organizaciones; un error en una no detiene a las demás.
+- La semana en curso se calcula SIEMPRE en vivo (`GET /api/v1/report/current`); los snapshots solo alimentan el histórico de semanas cerradas.
+- Ventana de gracia: actividades registradas sábado/domingo quedan incluidas porque el cierre ocurre el lunes siguiente.
 
 ## Configuración en cron-job.org
 
@@ -64,8 +77,18 @@ cron-job.org                     Servidor Express                    MongoDB
 | Frequency | `Daily` a las `02:00` UTC |
 | Timeout | 60 segundos (puede procesar varios schedules) |
 
+### Job 3: Cierre semanal de reportes
+
+| Campo | Valor |
+|-------|-------|
+| URL | `https://[tu-servidor]/api/v1/report/cron/close-week` |
+| Method | `GET` |
+| Frequency | `Weekly` — lunes a las `07:00` UTC (= 03:00 AM hora Venezuela) |
+| Timeout | 120 segundos (procesa todas las organizaciones) |
+
 > **Nota:** La frecuencia debe respetar el orden — primero cerrar horarios vencidos
-> (00:00) y luego registrar ausencias (02:00).
+> (00:00) y luego registrar ausencias (02:00). El cierre semanal de reportes es
+> independiente y corre los lunes.
 
 ## Seguridad
 
@@ -112,3 +135,7 @@ GET /api/health
 - El modelo `Schedule` está en `server/models/Schedule.model.js`.
 - El modelo `Absence` está en `server/models/Absence.model.js`.
 - Tests en `server/tests/cron.test.js` (10 tests).
+- Handler del cierre semanal: `HandleCronCloseAllWeeks` en `server/controllers/Report.controller.js`.
+- Ruta: `server/routes/Report.route.js`. Modelo snapshot: `server/models/WeeklyReportSnapshot.model.js`.
+- Lógica de ventanas temporales (UTC): `server/utils/reportWindow.util.js`.
+- Tests del reporte: `server/tests/report.test.js` y `server/tests/reportController.test.js`.

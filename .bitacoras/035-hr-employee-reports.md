@@ -11,18 +11,18 @@
 ## 🚦 PUNTO DE CONTROL (Contexto de Reanudación)
 *Usa esto para "despertar" a la IA si el chat se cierra:*
 
-- **Lo último que funcionó:** Plan aprobado por el usuario; rama `feat/weekly-reports` creada desde `dev`; bitácora inicializada.
-- **Dónde se rompió/detuvo:** N/A — inicio de Fase 1.
-- **Siguiente acción inmediata:** Fase 1: agregar `completedAt` a TaskSchema + update `HandleCompleteTask` + crear `server/utils/reportWindow.util.js` + tests Jest.
+- **Lo último que funcionó:** Fase 1 COMPLETADA — commit `6d9f17b` pusheado; 42/42 tests pasan.
+- **Dónde se rompió/detuvo:** N/A — STOP de fase 1, esperando aprobación para Fase 2.
+- **Siguiente acción inmediata:** Fase 2: modelo `WeeklyReportSnapshot.model.js` + `Report.controller.js` + routes + registro + docs cron.
 
 ---
 
 ## 📝 CAMBIOS TÉCNICOS CLAVE
-### Fase 1 — Server base
-- [ ] `Schedule.model.js`: campo `completedAt: { type: Date, default: null }` en TaskSchema
-- [ ] `Schedule.controller.js`: `HandleCompleteTask` setea/borra `completedAt`
-- [ ] Crear `server/utils/reportWindow.util.js` (función pura `getReportWindow`, UTC)
-- [ ] Crear `server/tests/report.test.js` (matriz 7 días, fronteras semana, ISO week)
+### Fase 1 — Server base ✅
+- [x] `Schedule.model.js`: campo `completedAt: { type: Date, default: null }` en TaskSchema
+- [x] `Schedule.controller.js`: `HandleCompleteTask` setea/borra `completedAt`
+- [x] Crear `server/utils/reportWindow.util.js` (función pura `getReportWindow`, UTC)
+- [x] Crear `server/tests/report.test.js` — 20 tests, matriz 7 días + ISO week → **42/42 suites OK**
 
 ### Fase 2 — Server API
 - [ ] Modelo `WeeklyReportSnapshot.model.js` (índice único org+year+weekNumber, upsert idempotente)
