@@ -11,9 +11,9 @@
 ## 🚦 PUNTO DE CONTROL (Contexto de Reanudación)
 *Usa esto para "despertar" a la IA si el chat se cierra:*
 
-- **Lo último que funcionó:** Fase 4 COMPLETADA — commit `9d28f77`; build client 0 errores.
-- **Dónde se rompió/detuvo:** N/A — STOP de fase 4, esperando aprobación para Fase 5.
-- **Siguiente acción inmediata:** Fase 5: sección de reporte en `EmployeeHomePage.jsx` con `HandleGetMyReport` (depto-scoped).
+- **Lo último que funcionó:** Fase 5 COMPLETADA — commit `8765f02`; build client 0 errores. Todas las fases de implementación terminadas.
+- **Dónde se rompió/detuvo:** N/A — STOP de fase 5, esperando confirmación del usuario de TAREA COMPLETADA.
+- **Siguiente acción inmediata:** Secuencia final (regla 0.5): 1) confirmación usuario → 2) bitácoras → 3) auto-mantenimiento → 4) PR hacia `dev`.
 
 ---
 
@@ -45,8 +45,11 @@
 - [x] Ruta `/HR/dashboard/reports` en `HRroutes.jsx`
 - [x] Entrada "Reportes" en `HRsidebar.jsx` → **build client 0 errores**
 
-### Fase 5 — Client Empleado
-- [ ] Sección reporte en `EmployeeHomePage.jsx` (filtro por departamento)
+### Fase 5 — Client Empleado ✅
+- [x] Sección de reporte departamental en `EmployeeHomePage.jsx` (usa `HandleGetMyReport`)
+- [x] Reutiliza `ReportComponents.jsx`: badge de modo, totales, grupos por empleado, estados vacíos, banner preliminar
+- [x] Lunes → estado explícito "La semana está iniciando"; Mar–Jue → día anterior; Vie–Dom → resumen semanal preliminar
+- [x] Filtro por departamento aplicado server-side (req #4) → **build client 0 errores** (filtro por departamento)
 
 ### Fase 6 — Cierre
 - [ ] Builds (client build + server test) + revisión + PR → dev

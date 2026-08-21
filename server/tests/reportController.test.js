@@ -15,7 +15,8 @@ import { WeeklyReportSnapshot } from '../models/WeeklyReportSnapshot.model.js'
 import {
     buildCurrentReportPayload,
     closePreviousWeekSnapshot,
-    buildLiveReport
+    buildLiveReport,
+    buildMyWeeklyHistory
 } from '../controllers/Report.controller.js'
 
 // ── Semana ancla: lun 17 – dom 23 ago 2026 (UTC) ───────────────────────
@@ -239,5 +240,69 @@ describe('closePreviousWeekSnapshot — cierre idempotente', () => {
 
         const total = await WeeklyReportSnapshot.countDocuments({})
         expect(total).toBe(2)
+    })
+})
+
+describe('buildMyWeeklyHistory — Mis Reportes (aislamiento por empleado)', () => {
+    it('devuelve SOLO las actividades propias (Ana no ve tarea de Beto ni items de Carla)', async () => {
+        await closePreviousWeekSnapshot({ orgID: ORG, now: NEXT_MON_CRON })
+        const history = await buildMyWeeklyHistory({ orgID: ORG, employeeID: empA._id })
+
+        expect(history).toHaveLength(1)
+        const week = history[0]
+        expect(week.status).toBe('closed')
+        expect(week.isoYear).toBe(2026)
+        expect(new Date(week.weekStart).toISOString()).toBe('2026-08-17T00:00:00.000Z')
+
+        // Solo bitácora de Ana + sus 2 checkins; NADA de Beto (task) ni Carla
+        const types = week.myActivities.map(a => a.type).sort()
+        expect(types).toEqual(['attendance', 'attendance', 'bitacora'])
+        expect(week.myTotals.bitacoras).toBe(1)
+        expect(week.myTotals.checkIns).toBe(2)
+        expect(week.myTotals.tasksCompleted).toBe(0)   // la tarea era de Beto
+        expect(week.myTotals.workPhotos).toBe(0)       // la foto era de Carla
+        // El payload NUNCA incluye el resumen completo del snapshot
+        expect(week.employeesResumen).toBeUndefined()
+        expect(week.byDepartment).toBeUndefined()
+    })
+
+    it('empleado sin actividades en la semana → totales 0 y activities []', async () => {
+        await closePreviousWeekSnapshot({ orgID: ORG, now: NEXT_MON_CRON })
+        const ghostID = new mongoose.Types.ObjectId()   // empleado sin registro en snapshot
+        const history = await buildMyWeeklyHistory({ orgID: ORG, employeeID: ghostID })
+
+        expect(history).toHaveLength(1)
+        expect(history[0].myTotals.bitacoras).toBe(0)
+        expect(history[0].myTotals.checkIns).toBe(0)
+        expect(history[0].myActivities).toEqual([])
+    })
+
+    it('orden descendente y multi-semana (cada semana solo lo propio)', async () => {
+        // Cierra semana 17–23 ago y luego semana 24–30 ago
+        await closePreviousWeekSnapshot({ orgID: ORG, now: NEXT_MON_CRON })
+        // Bitácora de Beto en la segunda semana, luego cierra
+        await Bitacora.create({
+            title: 'Segunda semana', content: 'Beto',
+            employee: empB._id, organizationID: ORG,
+            createdAt: new Date('2026-08-25T10:00:00.000Z'), updatedAt: new Date('2026-08-25T10:00:00.000Z')
+        })
+        await closePreviousWeekSnapshot({ orgID: ORG, now: new Date('2026-08-31T07:00:00.000Z') })
+
+        const beto = await buildMyWeeklyHistory({ orgID: ORG, employeeID: empB._id })
+        expect(beto.map(w => w.weekNumber)).toEqual([35, 34])   // desc: 24-30ago=W35, 17-23ago=W34
+
+        const w35 = beto[0]
+        expect(w35.myActivities).toHaveLength(1)
+        expect(w35.myActivities[0].title).toBe('Segunda semana')
+        const w34 = beto[1]
+        expect(w34.myTotals.tasksCompleted).toBe(1)   // su tarea de filtro A/C
+        expect(w34.myTotals.bitacoras).toBe(0)
+    })
+
+    it('multi-tenant: no mezcla snapshots de otras organizaciones', async () => {
+        await closePreviousWeekSnapshot({ orgID: ORG, now: NEXT_MON_CRON })
+        const otherOrg = new mongoose.Types.ObjectId()
+        const other = await buildMyWeeklyHistory({ orgID: otherOrg, employeeID: empA._id })
+        expect(other).toEqual([])
     })
 })

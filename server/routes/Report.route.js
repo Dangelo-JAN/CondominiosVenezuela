@@ -4,6 +4,7 @@ import {
     HandleGetMyReport,
     HandleGetReportHistory,
     HandleGetReportByWeek,
+    HandleGetMyReportHistory,
     HandleCronCloseAllWeeks
 } from '../controllers/Report.controller.js'
 import { VerifyEmployeeToken, VerifyhHRToken } from '../middlewares/Auth.middleware.js'
@@ -22,6 +23,8 @@ router.get("/history/:isoYear/:weekNumber", VerifyhHRToken, PermissionCheck("bit
 // ============ RUTAS EMPLEADO ============
 // Reporte vigente filtrado al departamento del empleado autenticado
 router.get("/my-report", VerifyEmployeeToken, HandleGetMyReport)
+// Histórico de SUS reportes semanales cerrados (aislado por token — req.EMPID)
+router.get("/my-history", VerifyEmployeeToken, HandleGetMyReportHistory)
 
 // ============ RUTAS CRON (sin auth — patrón cron-job.org existente) ============
 // Cierra la semana anterior para todas las organizaciones. Lunes 07:00 UTC (03:00 AM Caracas).

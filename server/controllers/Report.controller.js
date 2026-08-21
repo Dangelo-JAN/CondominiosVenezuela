@@ -464,6 +464,59 @@ export const HandleGetReportByWeek = async (req, res) => {
     }
 }
 
+// ════════════════════════════════════════════════════════════════════════
+// MIS REPORTES (EMPLEADO) — histórico semanal AISLADO al empleado autenticado
+// ════════════════════════════════════════════════════════════════════════
+
+/**
+ * Extrae de cada snapshot cerrado ÚNICAMENTE la entrada del empleado indicado.
+ * PRIVACIDAD: nunca retorna employeesResumen ni byDepartment completos —
+ * el empleado jamás recibe datos de otros empleados.
+ * @param {Object} p
+ * @param {string|ObjectId} p.orgID
+ * @param {string|ObjectId} p.employeeID
+ * @param {number} [p.limit=52]
+ * @returns {Promise<Array<{isoYear, weekNumber, weekStart, weekEnd, closedAt,
+ *   status, myTotals, myActivities}>>} ordenado semana más reciente primero
+ */
+export async function buildMyWeeklyHistory({ orgID, employeeID, limit = 52 }) {
+    const snapshots = await WeeklyReportSnapshot.find({ organizationID: orgID })
+        .sort({ isoYear: -1, weekNumber: -1 })
+        .limit(limit)
+        .lean()
+
+    return snapshots.map(snap => {
+        const mine = (snap.employeesResumen ?? [])
+            .find(e => String(e.employee) === String(employeeID))
+        return {
+            isoYear: snap.isoYear,
+            weekNumber: snap.weekNumber,
+            weekStart: snap.weekStart,
+            weekEnd: snap.weekEnd,
+            closedAt: snap.closedAt,
+            status: snap.status,
+            myTotals: mine?.totals ?? emptyTotals(),
+            myActivities: mine?.activities ?? []
+        }
+    })
+}
+
+// GET /api/v1/report/my-history — Empleado: SUS reportes semanales cerrados.
+// Solo el empleado autenticado puede consultar; el scope se resuelve con el
+// token (req.EMPID), nunca con parámetros del cliente.
+export const HandleGetMyReportHistory = async (req, res) => {
+    try {
+        const data = await buildMyWeeklyHistory({
+            orgID: req.ORGID,
+            employeeID: req.EMPID
+        })
+        return res.status(200).json({ success: true, message: "Histórico recuperado exitosamente", data })
+    } catch (error) {
+        console.error("[ERROR] HandleGetMyReportHistory:", error.message)
+        return res.status(500).json({ success: false, message: error.message })
+    }
+}
+
 // GET /api/v1/report/cron/close-week — SIN AUTH (patrón cron-job.org existente).
 // Cierra la semana anterior para TODAS las organizaciones (multi-tenant).
 export const HandleCronCloseAllWeeks = async (req, res) => {
