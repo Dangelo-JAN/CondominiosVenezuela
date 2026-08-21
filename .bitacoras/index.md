@@ -7,8 +7,8 @@
 
 ## 🚩 ESTADO ACTUAL
 - **Tarea activa:** ⏸ Sin tarea activa — esperando instrucciones
-- **Última completada:** #034 — PublicNavbar Component + PWA Context ✅ (19/08/2026)
-- **Branch actual:** `feat/public-navbar-component` (PR #49 pendiente merge a dev)
+- **Última completada:** #035 — Reportes Diarios/Semanales HR/Empleados ✅ (21/08/2026)
+- **Branch actual:** `feat/weekly-reports` (PR pendiente merge a dev)
 - **Deploy pendiente:** Vercel + Render desde `main`
 - **Archivo de referencia rápida:** `actual.md`
 
@@ -122,5 +122,5 @@
 
 ---
 
-*Actualizado: 2026-08-19*
-*Tarea #034 ✅ COMPLETADA — PublicNavbar Component + PWA Context + fix race condition theme*
+*Actualizado: 2026-08-21*
+*Tarea #035 ✅ COMPLETADA — Reportes Diarios/Semanales HR/Empleados (snapshots inmutables + cron)*

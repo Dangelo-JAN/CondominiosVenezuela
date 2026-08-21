@@ -14,8 +14,9 @@ Este archivo indexa todas las reglas detalladas del proyecto. Consultar el archi
 4. **[Reglas Técnicas](./technical-rules.md)**: Validación, modularidad, integridad fullstack.
 5. **[Accesibilidad y Contraste](./accessibility.md)**: WCAG, reglas de contraste modo oscuro/claro.
 6. **[Push Notifications](./push-notifications.md)**: FCM + Web Push, reglas invariantes.
-7. **[Diseño Visual →](../design-system/index.md)**: Design System v4 (colores, componentes, tokens).
-8. **[Self-Maintenance](./self-maintenance.md)**: Reglas de actualización post-flight de la configuración del agente.
+7. **[Sistema de Reportes](./reports-system.md)**: Matriz temporal UTC, snapshots inmutables, aislamiento por token (#035).
+8. **[Diseño Visual →](../design-system/index.md)**: Design System v4 (colores, componentes, tokens).
+9. **[Self-Maintenance](./self-maintenance.md)**: Reglas de actualización post-flight de la configuración del agente.
 
 ## 🥇 Reglas de Oro (Cross-cutting)
 

@@ -1,5 +1,5 @@
 # 🛠️ TAREA: Reportes Diarios y Semanales HR/Empleados
-**ID:** #035 | **Estado:** 🟡 EN CURSO | **Fecha:** 2026-08-21
+**ID:** #035 | **Estado:** ✅ COMPLETADO | **Fecha:** 2026-08-21
 
 ---
 
@@ -11,9 +11,9 @@
 ## 🚦 PUNTO DE CONTROL (Contexto de Reanudación)
 *Usa esto para "despertar" a la IA si el chat se cierra:*
 
-- **Lo último que funcionó:** Fase 5 COMPLETADA — commit `8765f02`; build client 0 errores. Todas las fases de implementación terminadas.
-- **Dónde se rompió/detuvo:** N/A — STOP de fase 5, esperando confirmación del usuario de TAREA COMPLETADA.
-- **Siguiente acción inmediata:** Secuencia final (regla 0.5): 1) confirmación usuario → 2) bitácoras → 3) auto-mantenimiento → 4) PR hacia `dev`.
+- **Lo último que funcionó:** Tarea COMPLETADA por el usuario. Commits: `6d9f17b` (F1), `865efc7` (F2), `05efa03` (F3), `9d28f77` (F4), `8765f02` (F5), `a2f2575` (F5.5 server), `a563ce3` (F5.5 client). 55/55 tests server + build client 0 errores.
+- **Dónde se rompió/detuvo:** N/A — tarea finalizada; bitácoras actualizadas.
+- **Siguiente acción inmediata:** PR hacia `dev` (NUNCA main).
 
 ---
 
@@ -51,6 +51,14 @@
 - [x] Lunes → estado explícito "La semana está iniciando"; Mar–Jue → día anterior; Vie–Dom → resumen semanal preliminar
 - [x] Filtro por departamento aplicado server-side (req #4) → **build client 0 errores** (filtro por departamento)
 
+### Fase 5.5 — Mis Reportes (Empleado) ✅
+- [x] `buildMyWeeklyHistory` — extrae SOLO la entrada del empleado autenticado de cada snapshot (privacidad: nunca retorna `employeesResumen` ni `byDepartment`)
+- [x] Ruta `GET /api/v1/report/my-history` con `VerifyEmployeeToken` (scope por `req.EMPID`, sin params de cliente)
+- [x] 4 tests de aislamiento: solo actividades propias, semanas vacías, orden desc, multi-tenant → **55/55 server ✅**
+- [x] Thunk `HandleGetMyReportHistory` + estado `myHistory` en `reportreducer`
+- [x] Página `EmployeeReportsPage.jsx` (lista de semanas cerradas + modal detalle propio, datos ya en listado)
+- [x] Ruta `/auth/employee/employee-dashboard/reports` + sidebar "Mis Reportes" → **build client 0 errores**
+
 ### Fase 6 — Cierre
 - [ ] Builds (client build + server test) + revisión + PR → dev
 
@@ -61,6 +69,7 @@
 - *Regla:* Cron snapshot: lunes 07:00 UTC (= 03:00 AM Caracas). Endpoint GET sin auth siguiendo patrón `/api/v1/schedule/cron/*`.
 - *Regla:* Lunes → modo `WEEK_START` (sección diaria vacía explícita). Vie–Dom → `WEEKLY_LIVE` con banner preliminar. Semanas pasadas → leer SOLO snapshots 🔒.
 - *Regla:* Empleados: filtro por `employee.department`. HR: toda la organización.
+- *Regla:* "Mis Reportes" (empleado): aislamiento server-side — `buildMyWeeklyHistory` extrae solo `employeesResumen.find(e => e.employee == req.EMPID)`; el empleado jamás recibe datos de otros.
 - *Hallazgo:* TaskSchema NO tenía `completedAt` — tareas históricas sin fecha se excluyen de ventanas.
 - *Permisos:* HR usa `PermissionCheck("bitacoras", "read")` (decisión: no crear módulo nuevo).
 - *Branch:* `feat/weekly-reports`
