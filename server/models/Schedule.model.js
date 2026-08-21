@@ -21,6 +21,13 @@ const TaskSchema = new Schema({
     completed: {
         type: Boolean,
         default: false
+    },
+    // Fecha UTC en que se marcó como completada (null si está pendiente).
+    // Requerido para atribuir completaciones a ventanas de reportes diarios/semanales.
+    // Tareas históricas anteriores a este campo quedan con null y se excluyen de ventanas.
+    completedAt: {
+        type: Date,
+        default: null
     }
 }, { _id: true })
 
