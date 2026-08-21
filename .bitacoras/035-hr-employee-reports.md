@@ -11,9 +11,9 @@
 ## 🚦 PUNTO DE CONTROL (Contexto de Reanudación)
 *Usa esto para "despertar" a la IA si el chat se cierra:*
 
-- **Lo último que funcionó:** Fase 1 COMPLETADA — commit `6d9f17b` pusheado; 42/42 tests pasan.
-- **Dónde se rompió/detuvo:** N/A — STOP de fase 1, esperando aprobación para Fase 2.
-- **Siguiente acción inmediata:** Fase 2: modelo `WeeklyReportSnapshot.model.js` + `Report.controller.js` + routes + registro + docs cron.
+- **Lo último que funcionó:** Fase 2 COMPLETADA — commit `865efc7`; 51/51 tests (4 suites).
+- **Dónde se rompió/detuvo:** N/A — STOP de fase 2, esperando aprobación para Fase 3.
+- **Siguiente acción inmediata:** Fase 3: client data layer — ReportEndPoints + ReportThunk + ReportSlice + store.
 
 ---
 
@@ -24,11 +24,13 @@
 - [x] Crear `server/utils/reportWindow.util.js` (función pura `getReportWindow`, UTC)
 - [x] Crear `server/tests/report.test.js` — 20 tests, matriz 7 días + ISO week → **42/42 suites OK**
 
-### Fase 2 — Server API
-- [ ] Modelo `WeeklyReportSnapshot.model.js` (índice único org+year+weekNumber, upsert idempotente)
-- [ ] Controller `Report.controller.js` (current HR / my-report empleado / history / cron close-week)
-- [ ] Routes `Report.route.js` + registro en `server/index.js`
-- [ ] Actualizar `server/docs/cron-setup.md` (job lunes 07:00 UTC = 03:00 Caracas)
+### Fase 2 — Server API ✅
+- [x] Modelo `WeeklyReportSnapshot.model.js` (índice único org+isoYear+weekNumber, upsert idempotente)
+- [x] Controller `Report.controller.js` — funciones puras (`buildLiveReport`, `buildCurrentReportPayload`, `closePreviousWeekSnapshot`) + handlers HTTP (current/my-report/history/by-week/cron)
+- [x] Routes `Report.route.js` + registro en `server/index.js` (`/api/v1/report`)
+- [x] Índices de rendimiento: Bitacora(org+createdAt), WorkPhoto(org+workdate), Attendance(org+employee)
+- [x] Actualizar `server/docs/cron-setup.md` (Job 3: lunes 07:00 UTC = 03:00 Caracas)
+- [x] Tests integración `reportController.test.js` → **51/51 suites OK**
 
 ### Fase 3 — Client data
 - [ ] `APIsEndpoints.js`: `ReportEndPoints`
