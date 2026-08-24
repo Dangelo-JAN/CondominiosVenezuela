@@ -7,8 +7,8 @@
 
 ## 🚩 ESTADO ACTUAL
 - **Tarea activa:** ⏸ Sin tarea activa — esperando instrucciones
-- **Última completada:** #035 — Reportes Diarios/Semanales HR/Empleados ✅ (21/08/2026)
-- **Branch actual:** `feat/weekly-reports` (PR pendiente merge a dev)
+- **Última completada:** #036 — Master-Init: Guía Oficial Deploy Local ✅ (24/08/2026)
+- **Branch actual:** `feat/weekly-reports` (PR #50 abierto → dev, incluye docs de #035 y #036)
 - **Deploy pendiente:** Vercel + Render desde `main`
 - **Archivo de referencia rápida:** `actual.md`
 
@@ -49,6 +49,8 @@
 - [x] [[032-master-agent-initialization-prompt]] - ✅ COMPLETADO el 28/07/2026
 - [x] [[033-entrypage-workforce-landing-sections]] - ✅ COMPLETADO el 10/08/2026 (reapertura 13/08/2026: fix dark/light + ajustes contenido, cerrado)
 - [x] [[034-public-navbar-component]] - ✅ COMPLETADO el 19/08/2026 (PR #49 → dev, pendiente merge)
+- [x] [[035-hr-employee-reports]] - ✅ COMPLETADO el 21/08/2026
+- [x] [[036-master-initi-local-setup]] - ✅ COMPLETADO el 24/08/2026 (commits 9325c2d + f8d68b5 en feat/weekly-reports → PR #50)
 
 ---
 
@@ -122,5 +124,5 @@
 
 ---
 
-*Actualizado: 2026-08-21*
-*Tarea #035 ✅ COMPLETADA — Reportes Diarios/Semanales HR/Empleados (snapshots inmutables + cron)*
+*Actualizado: 2026-08-24*
+*Tarea #036 ✅ COMPLETADA — MASTER-INIT.md: guía oficial de deploy local (Opción A nativa + Mongo Docker)*
