@@ -11,18 +11,18 @@
 ## 🚦 PUNTO DE CONTROL (Contexto de Reanudación)
 *Usa esto para "despertar" a la IA si el chat se cierra:*
 
-- **Lo último que funcionó:** Fases 1 y 2 completadas — bitácora + `MASTER-INITI.md` creados en `feat/weekly-reports`.
-- **Dónde se rompió/detuvo:** STOP de Fase 2 — esperando aprobación del CTO sobre el contenido del archivo.
-- **Siguiente acción inmediata:** Tras aprobación → Fase 3 (builds: client build 0 errores + server test suites verdes) → Fase 4 (commit+push).
+- **Lo último que funcionó:** Commit `9325c2d` pusheado en `feat/weekly-reports` — builds verdes (client ✓ built 12.6s / server 55 tests PASS). Fases 1–4 completadas.
+- **Dónde se rompió/detuvo:** STOP final — esperando confirmación del CTO de tarea COMPLETADA.
+- **Siguiente acción inmediata:** Tras confirmación → cierre de bitácora + auto-mantenimiento + verificar PR a dev (los commits viajan en el PR ya abierto de esta rama).
 
 ---
 
 ## 📝 CAMBIOS TÉCNICOS CLAVE
 - [x] Plan presentado y aprobado (excepción Fase 0 documentada)
 - [x] Bitácora creada ANTES de escribir cualquier archivo
-- [ ] `MASTER-INITI.md` creado en raíz (solo para humanos, sin referencias agénticas)
-- [ ] Builds verificados: `client npm run build` (0 errores) + `server npm run test` (suites verdes)
-- [ ] Commit + push en `feat/weekly-reports`
+- [x] `MASTER-INITI.md` creado en raíz (solo para humanos, sin referencias agénticas)
+- [x] Builds verificados: client `✓ built` 0 errores + server `55/55 tests PASS`
+- [x] Commit `9325c2d` + push en `feat/weekly-reports`
 
 ---
 
@@ -32,4 +32,4 @@
 - *Regla:* Fuente de verdad del contenido = código real verificado (puertos 4000/5173, scripts existentes, nombres de env vars).
 - *Excepción Git:* Rama `feat/weekly-reports` autorizada por el CTO para esta tarea docs (no nace de dev).
 - *Branch:* `feat/weekly-reports`
-- *Commit:* (pendiente)
+- *Commit:* `9325c2d` — docs(master-initi): add junior-proof local environment setup guide
