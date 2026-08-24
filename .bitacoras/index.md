@@ -7,8 +7,8 @@
 
 ## 🚩 ESTADO ACTUAL
 - **Tarea activa:** ⏸ Sin tarea activa — esperando instrucciones
-- **Última completada:** #036 — Master-Init: Guía Oficial Deploy Local ✅ (24/08/2026)
-- **Branch actual:** `feat/weekly-reports` (PR #50 abierto → dev, incluye docs de #035 y #036)
+- **Última completada:** #037 — Master-Init v3: Sección Reapertura de Servicios ✅ (24/08/2026)
+- **Branch actual:** `feat/weekly-reports` (PR #50 abierto → dev, incluye docs de #035, #036 y #037)
 - **Deploy pendiente:** Vercel + Render desde `main`
 - **Archivo de referencia rápida:** `actual.md`
 
@@ -51,6 +51,7 @@
 - [x] [[034-public-navbar-component]] - ✅ COMPLETADO el 19/08/2026 (PR #49 → dev, pendiente merge)
 - [x] [[035-hr-employee-reports]] - ✅ COMPLETADO el 21/08/2026
 - [x] [[036-master-initi-local-setup]] - ✅ COMPLETADO el 24/08/2026 (commits 9325c2d + f8d68b5 en feat/weekly-reports → PR #50)
+- [x] [[037-master-init-reopen-section]] - ✅ COMPLETADO el 24/08/2026 (commit b287874 en feat/weekly-reports → PR #50)
 
 ---
 
@@ -125,4 +126,4 @@
 ---
 
 *Actualizado: 2026-08-24*
-*Tarea #036 ✅ COMPLETADA — MASTER-INIT.md: guía oficial de deploy local (Opción A nativa + Mongo Docker)*
+*Tarea #037 ✅ COMPLETADA — MASTER-INIT.md §14: reapertura diaria de servicios + protocolo no interactivo para agentes IA*

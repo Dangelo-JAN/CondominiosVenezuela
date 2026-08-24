@@ -1,5 +1,5 @@
 # 🛠️ TAREA: Master-Init v3 — Sección Reapertura de Servicios
-**ID:** #037 | **Estado:** 🟡 EN CURSO | **Fecha:** 2026-08-24
+**ID:** #037 | **Estado:** ✅ COMPLETADO | **Fecha:** 2026-08-24
 
 ---
 
@@ -11,9 +11,9 @@
 ## 🚦 PUNTO DE CONTROL (Contexto de Reanudación)
 *Usa esto para "despertar" a la IA si el chat se cierra:*
 
-- **Lo último que funcionó:** Deploy local operativo con seed completa (24 empleados). Usuario solicitó documentar flujo de reapertura.
-- **Dónde se rompió/detuvo:** N/A — ejecución directa ordenada por el CTO.
-- **Siguiente acción inmediata:** Ediciones a MASTER-INIT.md → STOP para aprobación de commit.
+- **Lo último que funcionó:** Tarea COMPLETADA — commit `b287874` en `feat/weekly-reports` → PR #50.
+- **Dónde se rompió/detuvo:** N/A.
+- **Siguiente acción inmediata:** Ninguna — tarea cerrada. Pendiente futuro: fix trackeable del bug nodemon en server/package.json (candidato #038, requiere aprobación del CTO).
 
 ---
 
@@ -24,7 +24,7 @@
 - [x] §2.7 nueva verificación nodemon (bug encontrado en deploy real)
 - [x] §12.10 ajuste de expectativa SW (warning ≠ error bloqueante)
 - [x] Apéndice: bloque REAPERTURA diaria con docker start
-- [ ] Builds pre-commit + commit (pendiente aprobación CTO)
+- [x] Builds pre-commit + commit → **client build ✓ 14.08s (0 errores)** · **server test 55/55 PASS** · commit `b287874` pusheado a `feat/weekly-reports` (PR #50)
 
 **Verificación estructural (2026-08-24):** 739 líneas (+130) · 14 secciones numeradas coherentes · ancla `#14-reapertura-de-servicios-uso-diario-y-agentes-ia` consistente en quick-nav, índice y heading · 9 menciones de `docker start mongo-local` reforzando la regla anti-`run`.
 
@@ -34,4 +34,10 @@
 - *Lección capturada:* nodemon no declarado en package.json → requiere global (documentado como requisito §2.7 hasta que exista fix trackeable)
 - *Protocolo agente:* setsid+nohup+disown con logs en /tmp/opencode/logs/ (patrón validado hoy)
 - *Branch:* `feat/weekly-reports` (continuidad autorizada por CTO)
-- *Commit:* (pendiente)
+- *Commit:* `b287874 docs(master-init): add daily service reopen section with ai agent protocol`
+
+---
+
+## ✅ CIERRE
+- **Aprobación CTO:** "sí" (contenido + flujo de commit)
+- **Nota ambiental:** git reporta hooks `.git-hooks/pre-commit` y `pre-push` ignorados por no ser ejecutables — condición preexistente del repo, sin impacto en este cambio.
