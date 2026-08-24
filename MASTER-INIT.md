@@ -6,6 +6,11 @@
 >
 > Si algún comando falla o algo cambió respecto a lo documentado, repórtalo al líder técnico para actualizar este archivo.
 
+> ⚡ **¿Ya configuraste todo antes y solo quieres VOLVER A LEVANTAR los servicios?**
+> **Ve directo a la [Sección 14 — Reapertura de servicios](#14-reapertura-de-servicios-uso-diario-y-agentes-ia).** NO repitas las secciones 4–7: tu contenedor Docker y tus datos siguen existiendo.
+>
+> 🤖 **Agentes de IA:** la sección 14 incluye el protocolo no interactivo OBLIGATORIO para levantar servicios en segundo plano cuando te pidan "correr los servicios para probar".
+
 ---
 
 ## 📑 Índice
@@ -23,6 +28,7 @@
 11. [Correr los tests automatizados](#11-correr-los-tests-automatizados)
 12. [Errores comunes y soluciones](#12-errores-comunes-y-soluciones)
 13. [Checklist final](#13-checklist-final)
+14. [Reapertura de servicios (uso diario y agentes IA)](#14-reapertura-de-servicios-uso-diario-y-agentes-ia)
 
 ---
 
@@ -96,10 +102,24 @@ curl --version
 
 | Servicio | ¿Necesario para levantar? | Quién te da acceso |
 |---|---|---|
-| Firebase (push notifications) | ✅ Sí — el client no arranca sin sus variables | Líder técnico |
+| Firebase (push notifications) | ⚠️ Recomendado — la app arranca igual sin ellas, pero el push queda inoperativo (ver §12.10) | Líder técnico |
 | Cloudinary (fotos/videos) | Solo al probar subidas de archivos | Líder técnico |
 | SendGrid (correos) | ❌ No bloquea nada en local (ver §7) | Líder técnico |
 | MongoDB Atlas | ❌ **NO se usa en esta guía** (tenemos Mongo local) | — |
+
+### 2.7 nodemon (usado por el script del backend)
+
+```bash
+nodemon --version
+```
+
+**Salida esperada:** algo como `3.x.x`. Si obtienes *command not found*:
+
+```bash
+npm install -g nodemon
+```
+
+> ℹ️ El script `npm run server` invoca `nodemon`, que hoy no está declarado en las dependencias del proyecto. Sin la instalación global, el backend falla al arrancar con `sh: 1: nodemon: not found`. Este defecto ya fue reportado al líder técnico para corregirlo de raíz en el repositorio.
 
 ---
 
@@ -509,12 +529,12 @@ npm run preview     # sirve el dist → http://localhost:4173
 | **Causa** | El puerto 5173 estaba ocupado y Vite saltó al siguiente automáticamente |
 | **Solución** | Libera el 5173 (mismo comando del punto 12.6, con `:5173`) o actualiza `CLIENT_URL` del server al puerto nuevo. Lo simple: siempre trabajar sobre `5173` |
 
-### 12.10 Error al generar `firebase-messaging-sw.js` antes de arrancar el client
+### 12.10 Warning sobre `firebase-messaging-sw.js` al arrancar el client
 
 | | |
 |---|---|
-| **Causa** | Faltan las variables `VITE_FIREBASE_*` en `client/.env` (un script pre-arranque las necesita) |
-| **Solución** | Completa las 4 variables Firebase + `VITE_FIREBASE_VAPID_KEY` en `client/.env` |
+| **Causa** | Faltan las variables `VITE_FIREBASE_*` en `client/.env` (el script pre-arranque avisa que no puede inyectarlas en el Service Worker) |
+| **Solución** | **No bloquea nada**: el client levanta igual y funciona completo, solo con ese warning en consola. Complétalas únicamente si vas a probar notificaciones push |
 
 ### 12.11 El signup dice error de envío de correo / los correos llegan a usuarios reales
 
@@ -580,6 +600,114 @@ LISTO ✅ — Entorno local completo y verificado.
 
 ---
 
+## 14. Reapertura de servicios (uso diario y agentes IA)
+
+> **Esta es la sección del 95% de los días.** El setup completo (§2–§9) se hace UNA sola vez por máquina. A partir de ahí, "abrir el proyecto" = revivir 3 procesos que YA existen. Nada se recrea, nada se borra, los datos persisten entre sesiones.
+
+### 14.0 La regla de platino
+
+🚫 **NUNCA vuelvas a ejecutar `docker run` si el contenedor `mongo-local` ya existe.** Recrear el contenedor destruye TODOS tus datos de prueba (usuarios, empleados, asistencia, nóminas). Para revivirlo existe `docker start mongo-local`.
+
+### 14.1 Paso 0 — Diagnóstico: ¿qué está vivo y qué no?
+
+Ejecuta estos tres chequeos (~5 segundos):
+
+```bash
+docker ps -a --filter name=mongo-local --format "{{.Names}}: {{.Status}}"
+curl -s -m 2 http://localhost:4000/api/health || echo "SERVER CAÍDO"
+curl -s -m 2 -o /dev/null -w "%{http_code}\n" http://localhost:5173 || echo "CLIENT CAÍDO"
+```
+
+Interpreta el resultado:
+
+| Resultado | Estado | Acción |
+|---|---|---|
+| Contenedor `Up` + `{"status":"ok"}` + código `200` | ✅ Todo corriendo | No hagas nada — ya puedes desarrollar/probar |
+| Contenedor `Exited` (o no aparece en `docker ps`) | 🟡 BD parada | `docker start mongo-local` |
+| `SERVER CAÍDO` | 🟡 Backend parado | Paso 2 de §14.2 |
+| `CLIENT CAÍDO` (código ≠ 200) | 🟡 Frontend parado | Paso 3 de §14.2 |
+| `docker ps -a` NO muestra `mongo-local` | 🔴 Nunca creado o fue borrado | Setup completo desde §4 |
+
+> 💡 Tras reiniciar la PC es NORMAL que todo esté parado: los contenedores sin política de restart permanecen apagados y los procesos npm murieron con tu sesión. Es el escenario típico del día a día → sigue §14.2 completa.
+
+### 14.2 Secuencia estándar de reapertura (humanos, 2 terminales)
+
+```bash
+# PASO 1 — Revivir la base de datos (conserva TODOS los datos)
+docker start mongo-local
+
+# PASO 2 — Backend (Terminal 1)
+cd server && npm run server
+# Espera a ver: "MongoDB connected..." + "Server running on http://localhost:4000"
+
+# PASO 3 — Frontend (Terminal 2)
+cd client && npm run dev
+# Espera a ver: "ready in ..." + "Local: http://localhost:5173/"
+```
+
+Verificación final (~10 segundos):
+
+```bash
+curl http://localhost:4000/api/health     # → {"status":"ok"}
+```
+
+Abre **`http://localhost:5173`** (jamás `127.0.0.1`, ver §12.3), loguéate con tu cuenta → sesión persiste tras F5 → **LISTO** ✅.
+
+### 14.3 Protocolo para agentes de IA (arranque no interactivo)
+
+Cuando un agente reciba una instrucción tipo *"levanta/corré/reescribe los servicios para probar una implementación"*, DEBE seguir EXACTAMENTE este protocolo:
+
+```bash
+# 0) PRECHECK obligatorio — ¿ya están corriendo?
+#    Si health responde ok Y el client devuelve 200 → NO dupliques procesos: reporta y termina.
+curl -s -m 2 http://localhost:4000/api/health
+curl -s -m 2 -o /dev/null -w "%{http_code}\n" http://localhost:5173
+
+# 1) BASE DE DATOS — start si está Exited (NUNCA run si existe; NUNCA rm)
+docker ps -a --filter name=mongo-local --format "{{.Names}} {{.Status}}"
+docker start mongo-local        # solo si el estado es Exited
+
+# 2) BACKEND en background (desacoplado de la sesión del shell)
+mkdir -p /tmp/opencode/logs
+cd server && setsid nohup npm run server > /tmp/opencode/logs/server.log 2>&1 < /dev/null & disown
+
+# 3) FRONTEND en background
+cd client && setsid nohup npm run dev > /tmp/opencode/logs/client.log 2>&1 < /dev/null & disown
+
+# 4) POLL de readiness (hasta ~30s) ANTES de declarar éxito
+grep -q "Server running" /tmp/opencode/logs/server.log && echo BACKEND_OK
+
+# 5) SMOKE TESTS finales
+curl -s http://localhost:4000/api/health
+curl -s -X POST http://localhost:4000/api/auth/HR/login \
+  -H "Content-Type: application/json" \
+  -d '{"email":"admin@test.local","password":"Password123"}'   # → success:true + token
+```
+
+**Reglas inviolables del agente:**
+
+| # | Regla |
+|---|---|
+| 1 | Prohibido `docker rm` (borra todos los datos). Prohibido editar archivos `.env`. Prohibido recrear (`run`) un contenedor que ya existe |
+| 2 | Si un puerto ya responde, existe una instancia previa VÁLIDA: úsala e infórmalo. No mates procesos ni lances duplicados (provocarías `EADDRINUSE`, §12.6 / §12.9) |
+| 3 | Verifica readiness LEYENDO LOS LOGS antes de afirmar que algo "está levantado". Nunca des por bueno un comando solo por haberlo ejecutado |
+| 4 | Reporte final al humano: URL del frontend, credenciales vigentes (§14.4), qué quedó corriendo y cómo detenerlo |
+| 5 | Los logs viven en `/tmp/opencode/logs/{server,client}.log` — úsalos para diagnosticar cualquier fallo post-arranque |
+
+### 14.4 Datos de prueba disponibles tras reabrir
+
+Tu base local ya viene poblada con un dataset semilla (creado una sola vez; persiste entre sesiones):
+
+| Activo | Valor |
+|---|---|
+| Cuenta HR-Admin | `admin@test.local` / `Password123` (Org Demo) |
+| Empleados | `{nombre}.{apellido}{N}@test.local` / `Empleado123` — ej.: `maria.perez0@test.local` |
+| Dataset | 6 departamentos · 24 empleados · asistencia de 14 días · 15 permisos · 24 nóminas · 8 avisos · 12 postulantes |
+
+> 💾 **Si algún día borras el contenedor sin querer** (`docker rm -f mongo-local`): recrea con §4.1, crea tu HR otra vez (§7) y repuebla. Pregunta al líder técnico por el script semillero (`seed-condove.mjs`) o genera datos desde la UI (§7.4). Detener servicios o apagar la PC **NO borra nada**: solo `docker rm` lo hace.
+
+---
+
 ## 📎 Apéndice rápido — Comandos de un vistazo
 
 ```bash
@@ -590,9 +718,11 @@ docker stop mongo-local                                    # pausar (conserva da
 docker exec -it mongo-local mongosh condove_local          # consola de BD
 docker rm -f mongo-local                                   # ⚠️ borra contenedor + datos
 
-# ─── ARRANQUE DIARIO ──────────────────────────────
-cd server && npm run server     # Terminal 1 → backend en :4000
-cd client && npm run dev        # Terminal 2 → frontend en :5173
+# ─── REAPERTURA DIARIA (flujo completo en §14) ────
+docker ps -a --filter name=mongo-local    # diagnosticar estado de la BD
+docker start mongo-local                  # BD con datos intactos (NUNCA run de nuevo)
+cd server && npm run server               # Terminal 1 → backend en :4000
+cd client && npm run dev                  # Terminal 2 → frontend en :5173
 
 # ─── VERIFICACIÓN ─────────────────────────────────
 curl http://localhost:4000/api/health
