@@ -48,6 +48,9 @@ Al terminar **TODAS** las fases de implementación:
 > **Regla nacida del bug #030 (HR scrolling):** Parchear síntomas sin entender la causa raíz genera iteraciones infinitas.
 > **Aplica a TODO:** bugs, fixes, mejoras y features nuevas.
 
+### ⚜️ 0.8 REGLA DE DEPLOY LOCAL — NO NEGOCIABLE
+Cualquier operación de levantamiento del entorno de desarrollo o testing local **DEBE** seguir estrictamente el protocolo definido en el archivo **[.agent/rules/global-context/local-deploy.md](.agent/rules/global-context/local-deploy.md)**. Esta directriz es de cumplimiento obligatorio para preservar la integridad del dataset y la configuración del stack local.
+
 **ANTES de escribir UNA sola línea de código, DEBES completar este proceso:**
 
 #### Para BUGS / FIXES:
