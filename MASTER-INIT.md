@@ -610,25 +610,39 @@ LISTO ✅ — Entorno local completo y verificado.
 
 ### 14.1 Paso 0 — Diagnóstico: ¿qué está vivo y qué no?
 
-Ejecuta estos tres chequeos (~5 segundos):
+Ejecuta estos chequeos (~5 segundos):
 
 ```bash
+# 1. Estado del contenedor
 docker ps -a --filter name=mongo-local --format "{{.Names}}: {{.Status}}"
+
+# 2. Backend
 curl -s -m 2 http://localhost:4000/api/health || echo "SERVER CAÍDO"
+
+# 3. Frontend
 curl -s -m 2 -o /dev/null -w "%{http_code}\n" http://localhost:5173 || echo "CLIENT CAÍDO"
+
+# 4. ⛔ DATOS EN LA DB (OBLIGATORIO — ver §2.4 de local-deploy.md)
+mongosh mongodb://localhost:27017/condove_local --quiet --eval \
+  "const c = db.getSiblingDB('condove_local'); \
+   print('ORGS:' + c.organizations.countDocuments()); \
+   print('HR:' + c.humanresources.countDocuments()); \
+   print('EMPS:' + c.employees.countDocuments())"
 ```
 
 Interpreta el resultado:
 
 | Resultado | Estado | Acción |
 |---|---|---|
-| Contenedor `Up` + `{"status":"ok"}` + código `200` | ✅ Todo corriendo | No hagas nada — ya puedes desarrollar/probar |
-| Contenedor `Exited` (o no aparece en `docker ps`) | 🟡 BD parada | `docker start mongo-local` |
+| Contenedor `Up` + `{"status":"ok"}` + código `200` + ORGS≥1 | ✅ Todo corriendo y poblado | No hagas nada — ya puedes desarrollar/probar |
+| Contenedor `Up` + ORGS=0 | ⚠️ Contenedor vivo pero DB vacía | Re-crea la DB: §4.1 + §7 + `node server/first-seed.mjs` |
+| Contenedor `Exited` (o no aparece en `docker ps`) | 🟡 BD parada | `docker start mongo-local` → luego re-ejecuta diagnóstico |
 | `SERVER CAÍDO` | 🟡 Backend parado | Paso 2 de §14.2 |
 | `CLIENT CAÍDO` (código ≠ 200) | 🟡 Frontend parado | Paso 3 de §14.2 |
 | `docker ps -a` NO muestra `mongo-local` | 🔴 Nunca creado o fue borrado | Setup completo desde §4 |
 
 > 💡 Tras reiniciar la PC es NORMAL que todo esté parado: los contenedores sin política de restart permanecen apagados y los procesos npm murieron con tu sesión. Es el escenario típico del día a día → sigue §14.2 completa.
+> ⛔ **NUNCA** asumas que la DB tiene datos. Verifícalo SIEMPRE con el paso 4 del diagnóstico.
 
 ### 14.2 Secuencia estándar de reapertura (humanos, 2 terminales)
 
@@ -667,6 +681,17 @@ curl -s -m 2 -o /dev/null -w "%{http_code}\n" http://localhost:5173
 docker ps -a --filter name=mongo-local --format "{{.Names}} {{.Status}}"
 docker start mongo-local        # solo si el estado es Exited
 
+# 1.5) ⛔ VERIFICACIÓN DE DATOS (OBLIGATORIO — ver §2.4 de local-deploy.md)
+#      ANTES de declarar DB lista, verifica que tiene datos.
+#      Si la DB está VACÍA, necesitas §4-§7 + first-seed.mjs (NO §14).
+mongosh mongodb://localhost:27017/condove_local --quiet --eval \
+  "const c = db.getSiblingDB('condove_local'); \
+   print('ORGS:' + c.organizations.countDocuments()); \
+   print('HR:' + c.humanresources.countDocuments()); \
+   print('EMPS:' + c.employees.countDocuments())"
+# Si ORGS=0 y HR=0 → La DB fue borrada. Ejecuta init completo (§4-§7 + first-seed.mjs).
+# Si ORGS≥1 y HR≥1 → La DB tiene datos. Continúa con el levantamiento normal.
+
 # 2) BACKEND en background (desacoplado de la sesión del shell)
 mkdir -p /tmp/opencode/logs
 cd server && setsid nohup npm run server > /tmp/opencode/logs/server.log 2>&1 < /dev/null & disown
@@ -691,8 +716,9 @@ curl -s -X POST http://localhost:4000/api/auth/HR/login \
 | 1 | Prohibido `docker rm` (borra todos los datos). Prohibido editar archivos `.env`. Prohibido recrear (`run`) un contenedor que ya existe |
 | 2 | Si un puerto ya responde, existe una instancia previa VÁLIDA: úsala e infórmalo. No mates procesos ni lances duplicados (provocarías `EADDRINUSE`, §12.6 / §12.9) |
 | 3 | Verifica readiness LEYENDO LOS LOGS antes de afirmar que algo "está levantado". Nunca des por bueno un comando solo por haberlo ejecutado |
-| 4 | Reporte final al humano: URL del frontend, credenciales vigentes (§14.4), qué quedó corriendo y cómo detenerlo |
-| 5 | Los logs viven en `/tmp/opencode/logs/{server,client}.log` — úsalos para diagnosticar cualquier fallo post-arranque |
+| 4 | **⛔ Verifica SIEMPRE los datos de la DB antes de decidir si sembrar o reabrir.** Ejecutar `first-seed.mjs` sobre DB poblada DUPLICA datos. Ejecutar `docker rm` sobre DB poblada DESTRUYE todo. Usa el paso 1.5. |
+| 5 | Reporte final al humano: URL del frontend, credenciales vigentes (§14.4), qué quedó corriendo y cómo detenerlo |
+| 6 | Los logs viven en `/tmp/opencode/logs/{server,client}.log` — úsalos para diagnosticar cualquier fallo post-arranque |
 
 ### 14.4 Datos de prueba disponibles tras reabrir
 
@@ -704,7 +730,7 @@ Tu base local ya viene poblada con un dataset semilla (creado una sola vez; pers
 | Empleados | `{nombre}.{apellido}{N}@test.local` / `Empleado123` — ej.: `maria.perez0@test.local` |
 | Dataset | 6 departamentos · 24 empleados · asistencia de 14 días · 15 permisos · 24 nóminas · 8 avisos · 12 postulantes |
 
-> 💾 **Si algún día borras el contenedor sin querer** (`docker rm -f mongo-local`): recrea con §4.1, crea tu HR otra vez (§7) y repuebla. Pregunta al líder técnico por el script semillero (`seed-condove.mjs`) o genera datos desde la UI (§7.4). Detener servicios o apagar la PC **NO borra nada**: solo `docker rm` lo hace.
+> 💾 **Si algún día borras el contenedor sin querer** (`docker rm -f mongo-local`): recrea con §4.1, crea tu HR otra vez (§7) y ejecuta `node server/first-seed.mjs` para repoblar con el dataset completo (162 registros: 6 deptos, 24 empleados, horarios, bitácoras, fotos, permisos, nóminas, asistencia, avisos, postulantes). Detener servicios o apagar la PC **NO borra nada**: solo `docker rm` lo hace. Verifica siempre el estado de la DB con el diagnóstico de §14.1 antes de decidir.
 
 ---
 

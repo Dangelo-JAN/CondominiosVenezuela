@@ -51,6 +51,12 @@ Al terminar **TODAS** las fases de implementación:
 ### ⚜️ 0.8 REGLA DE DEPLOY LOCAL — NO NEGOCIABLE
 Cualquier operación de levantamiento del entorno de desarrollo o testing local **DEBE** seguir estrictamente el protocolo definido en el archivo **[.agent/rules/global-context/local-deploy.md](.agent/rules/global-context/local-deploy.md)**. Esta directriz es de cumplimiento obligatorio para preservar la integridad del dataset y la configuración del stack local.
 
+> ⛔ **PASO 0 OBLIGATORIO ANTES DE CUALQUIER DECISIÓN DE DEPLOY:**
+> DEBES verificar si la DB ya tiene datos usando el diagnóstico de §2.4 de `local-deploy.md`.
+> Ejecutar `first-seed.mjs` sobre una DB poblada **DUPLICA** datos.
+> Ejecutar `docker rm -f` sobre una DB poblada **DESTRUYE** todo.
+> Si no verificas, estás adivinando — y adivinar = romper.
+
 **ANTES de escribir UNA sola línea de código, DEBES completar este proceso:**
 
 #### Para BUGS / FIXES:

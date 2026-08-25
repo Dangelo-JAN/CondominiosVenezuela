@@ -30,6 +30,32 @@ Los agentes que operen sobre este repositorio deben seguir el protocolo de levan
 
 > ⚠️ **IMPORTANTE:** El uso de `nodemon` actualmente requiere instalación global (`npm install -g nodemon`) o el manejo del script de forma nativa según lo indicado en §2.7 de la guía maestra.
 
+### 2.4 Diagnóstico de Estado de la DB (OBLIGATORIO — ANTES de qualquer decisión)
+
+> ⛔ **REGLA NO NEGOCIABLE:** ANTES de decidir si ejecutas un seed, reabres servicios o haces un init completo, DEBES verificar si la DB ya tiene datos. Este paso es OBLIGATORIO para todo agente. No se puede omitir, asumir ni "adivinar".
+
+**Comando de verificación (ejecutar después de `docker start mongo-local`):**
+
+```bash
+mongosh mongodb://localhost:27017/condove_local --quiet --eval \
+  "const c = db.getSiblingDB('condove_local'); \
+   print('ORGS:' + c.organizations.countDocuments()); \
+   print('HR:' + c.humanresources.countDocuments()); \
+   print('EMPS:' + c.employees.countDocuments()); \
+   print('DEPTS:' + c.departments.countDocuments())"
+```
+
+**Árbol de decisión (seguir EXACTAMENTE):**
+
+| Resultado | DB Estado | Acción |
+|:---|:---|:---|
+| ORGS ≥ 1, HR ≥ 1, EMPS ≥ 1 | ✅ **Poblada** | **§14 (Reapertura).** NO ejecutes seed. NO borres nada. Solo levanta servicios. |
+| ORGS = 0, HR = 0, EMPS = 0 | 🔴 **Vacía** | **§4-§7 (Init completo)** → Signup HR → Verify → `node server/first-seed.mjs` |
+| ORGS = 0, HR ≥ 1, EMPS = 0 | 🟡 **Parcial (sin empleados)** | La DB fue recreada parcialmente. Ejecuta §4-§7 completo + `node server/first-seed.mjs` |
+| Cualquier otro caso | ⚠️ **Inconsistente** | **PREGUNTA al humano** antes de proceder. No asumas, no destruyas. |
+
+> 💡 **¿Por qué importa?** Ejecutar `first-seed.mjs` sobre una DB ya poblada **DUPLICA** datos. Ejecutar `docker rm -f` sobre una DB poblada **DESTRUYE** todo. Ambos errores son evitables con este único chequeo de 5 segundos.
+
 ## 3. Resumen de Comandos Esenciales
 
 | Acción | Comando | Notas |
