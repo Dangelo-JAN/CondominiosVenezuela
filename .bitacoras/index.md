@@ -52,7 +52,7 @@
 - [x] [[035-hr-employee-reports]] - ✅ COMPLETADO el 21/08/2026 → 🟡 REAPERTA 24/08/2026 (interactividad + filtros, plan en actual.md)
 - [x] [[036-master-initi-local-setup]] - ✅ COMPLETADO el 24/08/2026 (commits 9325c2d + f8d68b5 en feat/weekly-reports → PR #50)
 - [x] [[037-master-init-reopen-section]] - ✅ COMPLETADO el 24/08/2026 (commit b287874 en feat/weekly-reports → PR #50)
-- [ ] [[038-seed-reportes-semanales]] - 🟡 EN CURSO el 27/08/2026 (seed reportes semanales + verificación snapshots, subtarea de #035)
+- [x] [[038-seed-reportes-semanales]] - ✅ COMPLETADO el 27/08/2026 (seed-reports.mjs + first-seed, commit f9a088d en feat/weekly-reports, subtarea de #035)
 
 ---
 
