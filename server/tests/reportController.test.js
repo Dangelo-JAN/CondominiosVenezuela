@@ -163,11 +163,17 @@ describe('buildCurrentReportPayload — matriz temporal con datos reales', () =>
         expect(satCheckins).toHaveLength(1)
         expect(new Date(satCheckins[0].date).toISOString()).toBe(SAT_MORNING.toISOString())
 
-        // Semanal = Lun→ahora: contiene TODO (bitácoras lun+jue, tarea, foto vie, 2 checkins)
+        // Semanal = Lun→ahora: contiene TODO (bitácoras lun+jue, tarea completada, foto vie, 2 checkins)
         expect(payload.weekly.totals.bitacoras).toBe(2)
         expect(payload.weekly.totals.tasksCompleted).toBe(1)
+        expect(payload.weekly.totals.tasksPending).toBe(1)   // 'Revisar luces pasillo' pendiente del lunes
         expect(payload.weekly.totals.workPhotos).toBe(1)
         expect(payload.weekly.totals.checkIns).toBe(2)
+
+        // La tarea pendiente aparece como type task_pending dentro del semanal
+        const weeklyPending = payload.weekly.employees.flatMap(e => e.activities.filter(a => a.type === 'task_pending'))
+        expect(weeklyPending).toHaveLength(1)
+        expect(weeklyPending[0].title).toBe('Revisar luces pasillo')
 
         // La actividad del sábado está dentro de la ventana semanal
         const weeklyAtt = payload.weekly.employees.flatMap(e => e.activities.filter(a => a.type === 'attendance'))
@@ -181,6 +187,7 @@ describe('buildCurrentReportPayload — matriz temporal con datos reales', () =>
 
         expect(depts['Mantenimiento'].totals.bitacoras).toBe(1)   // Ana (lunes)
         expect(depts['Mantenimiento'].totals.tasksCompleted).toBe(1) // Beto
+        expect(depts['Mantenimiento'].totals.tasksPending).toBe(1)   // Beto (luces pendiente)
         expect(depts['Limpieza'].totals.bitacoras).toBe(1)        // Carla (jueves)
         expect(depts['Limpieza'].totals.workPhotos).toBe(1)       // Carla (viernes)
     })
@@ -193,6 +200,7 @@ describe('buildCurrentReportPayload — matriz temporal con datos reales', () =>
         expect(names).not.toEqual(expect.arrayContaining(['Ana Perez', 'Beto Rossi']))
         expect(payload.weekly.totals.bitacoras).toBe(1)           // solo Carla
         expect(payload.weekly.totals.tasksCompleted).toBe(0)      // tarea era de Beto
+        expect(payload.weekly.totals.tasksPending).toBe(0)        // tarea pendiente era de Beto (fuera de scope)
     })
 
     it('empleado sin departamento (scope null vía departmentID=null) ve toda la org', async () => {
@@ -214,6 +222,7 @@ describe('closePreviousWeekSnapshot — cierre idempotente', () => {
         // Totales completos de la semana 17–23 ago
         expect(snapshot.totals.bitacoras).toBe(2)
         expect(snapshot.totals.tasksCompleted).toBe(1)
+        expect(snapshot.totals.tasksPending).toBe(1)   // 'Revisar luces pasillo' pendiente
         expect(snapshot.totals.workPhotos).toBe(1)
         expect(snapshot.totals.checkIns).toBe(2)
         expect(snapshot.totals.totalMinutes).toBe(480)
@@ -260,6 +269,7 @@ describe('buildMyWeeklyHistory — Mis Reportes (aislamiento por empleado)', () 
         expect(week.myTotals.bitacoras).toBe(1)
         expect(week.myTotals.checkIns).toBe(2)
         expect(week.myTotals.tasksCompleted).toBe(0)   // la tarea era de Beto
+        expect(week.myTotals.tasksPending).toBe(0)     // la tarea pendiente era de Beto
         expect(week.myTotals.workPhotos).toBe(0)       // la foto era de Carla
         // El payload NUNCA incluye el resumen completo del snapshot
         expect(week.employeesResumen).toBeUndefined()
@@ -296,6 +306,7 @@ describe('buildMyWeeklyHistory — Mis Reportes (aislamiento por empleado)', () 
         expect(w35.myActivities[0].title).toBe('Segunda semana')
         const w34 = beto[1]
         expect(w34.myTotals.tasksCompleted).toBe(1)   // su tarea de filtro A/C
+        expect(w34.myTotals.tasksPending).toBe(1)     // su tarea de luces pendiente
         expect(w34.myTotals.bitacoras).toBe(0)
     })
 

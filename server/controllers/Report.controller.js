@@ -18,6 +18,19 @@ import {
 
 const DAYS_ES = ["Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"]
 
+// Mapea el nombre del día (es-ES, indexado por getUTCDay: Dom=0..Sáb=6) a la
+// fecha real dentro de una semana cuyo lunes es `mondayOfWeek` (00:00 UTC).
+// Se usa para atribuir las tareas PENDIENTES (sin completedAt) a la ventana
+// semanal: una tarea del 'Lunes' pertenece al lunes de esa misma semana.
+const DAY_INDEX = Day => DAYS_ES.indexOf(Day)
+function dayNameToDateInWeek(dayName, mondayOfWeek) {
+    const idx = DAYS_ES.indexOf(dayName)          // Dom=0, Lun=1, ..., Sáb=6
+    if (idx === -1) return null
+    // mondayOfWeek = Lunes (idx 1). offset desde lunes al día objetivo.
+    const offset = (idx - 1 + 7) % 7
+    return addUTCDays(mondayOfWeek, offset)
+}
+
 // ════════════════════════════════════════════════════════════════════════
 // LÓGICA PURA (exportada para testing — `now` inyectable, sin HTTP)
 // ════════════════════════════════════════════════════════════════════════
@@ -44,8 +57,9 @@ async function resolveScopedEmployees(orgID, departmentID) {
  * @param {Date} p.start inicio ventana (inclusive)
  * @param {Date} p.end   fin ventana (inclusive)
  */
-async function collectRawActivities({ orgID, empIds, start, end }) {
+async function collectRawActivities({ orgID, empIds, start, end, includePendingTasks = false }) {
     const orgObjID = new mongoose.Types.ObjectId(String(orgID))
+    const monday = mondayOfUTCWeek(start)
 
     // ── 1. Bitácoras (novedades) por fecha de creación ────────────────────
     const bitacoras = await Bitacora.find({
@@ -82,7 +96,44 @@ async function collectRawActivities({ orgID, empIds, start, end }) {
         }
     ])
 
-    // ── 3. Fotos de trabajo por workdate (se guarda a mediodía del día declarado) ──
+    // ── 3. Tareas PENDIENTES de la ventana (solo cuando includePendingTasks) ──
+    //    El reporte SEMANAL muestra "todo": incluye las tareas del horario activo
+    //    que siguen SIN completar (completed=false) cuyo día programado cae
+    //    dentro de la semana. El reporte DIARIO (includePendingTasks=false) las
+    //    mantiene EXCLUIDAS (R1: solo lo realizado).
+    //    Atribución de fecha: la tarea pendiente no tiene completedAt; su fecha es
+    //    el día programado del horario dentro de la semana (mondayOfWeek + offset).
+    const tasksPending = includePendingTasks
+        ? await Schedule.aggregate([
+            { $match: { organizationID: orgObjID, employee: { $in: empIds }, status: "active" } },
+            { $unwind: "$schedule" },
+            { $unwind: "$schedule.tasks" },
+            {
+                $match: {
+                    "schedule.tasks.completed": false,
+                    // El horario debe cubrir la ventana consultada
+                    startdate: { $lte: end },
+                    enddate: { $gte: start }
+                }
+            },
+            {
+                $project: {
+                    _id: 0,
+                    employee: "$employee",
+                    taskId: "$schedule.tasks._id",
+                    title: "$schedule.tasks.title",
+                    dayName: "$schedule.day",
+                    starttime: "$schedule.tasks.starttime",
+                    endtime: "$schedule.tasks.endtime",
+                    // Fecha inicial del horario: sirve para anclar el día programado
+                    // de la tarea pendiente (fecha fija, no derivada de la ventana).
+                    startdate: 1
+                }
+            }
+        ])
+        : []
+
+    // ── 4. Fotos de trabajo por workdate (se guarda a mediodía del día declarado) ──
     const workPhotos = await WorkPhoto.find({
         organizationID: orgID,
         employee: { $in: empIds },
@@ -117,7 +168,7 @@ async function collectRawActivities({ orgID, empIds, start, end }) {
         { $replaceWith: { employee: "$employee", log: "$logs" } }
     ])
 
-    return { bitacoras, tasksCompleted, workPhotos, attendanceLogs }
+    return { bitacoras, tasksCompleted, tasksPending, workPhotos, attendanceLogs }
 }
 
 /**
@@ -130,9 +181,10 @@ async function collectRawActivities({ orgID, empIds, start, end }) {
  * @param {string|ObjectId|null} p.departmentID  null = toda la organización (vista HR)
  * @param {Date} p.start
  * @param {Date} p.end
+ * @param {boolean} [p.includePendingTasks=false] true = incluir tareas no completadas de la ventana
  * @returns {Promise<Object>} { employees, totals, byDepartment }
  */
-export async function buildLiveReport({ orgID, departmentID = null, start, end }) {
+export async function buildLiveReport({ orgID, departmentID = null, start, end, includePendingTasks = false }) {
     const employees = await resolveScopedEmployees(orgID, departmentID)
     const empMap = new Map(employees.map(e => [String(e._id), e]))
     const empIds = employees.map(e => e._id)
@@ -140,7 +192,11 @@ export async function buildLiveReport({ orgID, departmentID = null, start, end }
     const emptyResult = { employees: [], totals: emptyTotals(), byDepartment: [] }
     if (empIds.length === 0) return emptyResult
 
-    const raw = await collectRawActivities({ orgID, empIds, start, end })
+    // Lunes 00:00 UTC de la ventana consultada — usado para atribuir la fecha de
+    // las tareas PENDIENTES (que no tienen completedAt) según su día programado.
+    const monday = mondayOfUTCWeek(start)
+
+    const raw = await collectRawActivities({ orgID, empIds, start, end, includePendingTasks })
 
     // ── Normalizar a lista unificada de actividades por empleado ──────────
     const perEmployee = new Map()   // empId -> { info, activities[], totals }
@@ -181,7 +237,24 @@ export async function buildLiveReport({ orgID, departmentID = null, start, end }
             title: t.title,
             description: null,
             date: t.completedAt,
-            meta: { dayName: t.dayName, starttime: t.starttime, endtime: t.endtime }
+            meta: { dayName: t.dayName, starttime: t.starttime, endtime: t.endtime, pending: false }
+        })
+    }
+
+    // Tareas pendientes (semanal): fecha = día programado anclado al INICIO del horario
+    // (fecha fija e inmutable — no se mueve según la semana de la ventana consultada)
+    for (const t of raw.tasksPending) {
+        const weekMonday = t.startdate ? mondayOfUTCWeek(t.startdate) : monday
+        const scheduledDate = dayNameToDateInWeek(t.dayName, weekMonday)
+        // Solo si el día programado cae dentro de la ventana consultada
+        if (!scheduledDate || scheduledDate < start || scheduledDate > end) continue
+        pushActivity(t.employee, {
+            type: "task_pending",
+            refId: t.taskId,
+            title: t.title,
+            description: null,
+            date: scheduledDate,
+            meta: { dayName: t.dayName, starttime: t.starttime, endtime: t.endtime, pending: true }
         })
     }
 
@@ -220,6 +293,7 @@ export async function buildLiveReport({ orgID, departmentID = null, start, end }
         for (const act of entry.activities) {
             if (act.type === "bitacora") entry.totals.bitacoras += 1
             else if (act.type === "task_completed") entry.totals.tasksCompleted += 1
+            else if (act.type === "task_pending") entry.totals.tasksPending += 1
             else if (act.type === "work_photo") entry.totals.workPhotos += 1
             else if (act.type === "attendance") {
                 entry.totals.checkIns += 1
@@ -231,6 +305,7 @@ export async function buildLiveReport({ orgID, departmentID = null, start, end }
 
         grandTotals.bitacoras += entry.totals.bitacoras
         grandTotals.tasksCompleted += entry.totals.tasksCompleted
+        grandTotals.tasksPending += entry.totals.tasksPending
         grandTotals.workPhotos += entry.totals.workPhotos
         grandTotals.checkIns += entry.totals.checkIns
         grandTotals.totalMinutes += entry.totals.totalMinutes
@@ -246,6 +321,7 @@ export async function buildLiveReport({ orgID, departmentID = null, start, end }
         const dept = byDepartment.get(deptKey)
         dept.totals.bitacoras += entry.totals.bitacoras
         dept.totals.tasksCompleted += entry.totals.tasksCompleted
+        dept.totals.tasksPending += entry.totals.tasksPending
         dept.totals.workPhotos += entry.totals.workPhotos
         dept.totals.checkIns += entry.totals.checkIns
         dept.totals.totalMinutes += entry.totals.totalMinutes
@@ -259,7 +335,7 @@ export async function buildLiveReport({ orgID, departmentID = null, start, end }
 }
 
 function emptyTotals() {
-    return { bitacoras: 0, tasksCompleted: 0, workPhotos: 0, checkIns: 0, totalMinutes: 0 }
+    return { bitacoras: 0, tasksCompleted: 0, tasksPending: 0, workPhotos: 0, checkIns: 0, totalMinutes: 0 }
 }
 
 function sortActivities(activities) {
@@ -279,11 +355,13 @@ export async function buildCurrentReportPayload({ orgID, departmentID = null, no
     const w = getReportWindow(now)
 
     const daily = w.dailyWindow
-        ? await buildLiveReport({ orgID, departmentID, start: w.dailyWindow.start, end: w.dailyWindow.end })
+        // R1: el diario muestra SOLO lo realizado (sin tareas pendientes)
+        ? await buildLiveReport({ orgID, departmentID, start: w.dailyWindow.start, end: w.dailyWindow.end, includePendingTasks: false })
         : null
 
     const weekly = w.weeklyWindow
-        ? await buildLiveReport({ orgID, departmentID, start: w.weeklyWindow.start, end: w.weeklyWindow.end })
+        // R2: el semanal muestra TODO (incluye tareas pendientes de la semana)
+        ? await buildLiveReport({ orgID, departmentID, start: w.weeklyWindow.start, end: w.weeklyWindow.end, includePendingTasks: true })
         : null
 
     return {
@@ -334,7 +412,7 @@ export async function closePreviousWeekSnapshot({ orgID, now = new Date(), close
         weekNumber: week
     })
 
-    const report = await buildLiveReport({ orgID, departmentID: null, start, end })
+    const report = await buildLiveReport({ orgID, departmentID: null, start, end, includePendingTasks: true })
 
     const snapshot = await WeeklyReportSnapshot.findOneAndUpdate(
         { organizationID: orgID, isoYear, weekNumber: week },

@@ -9,7 +9,7 @@ const SnapshotActivitySchema = new Schema({
     type: {
         type: String,
         required: true,
-        enum: ["bitacora", "task_completed", "work_photo", "attendance"]
+        enum: ["bitacora", "task_completed", "task_pending", "work_photo", "attendance"]
     },
     refId: { type: Schema.Types.ObjectId, default: null },   // referencia original (informativa)
     title: { type: String, default: "" },
@@ -21,6 +21,7 @@ const SnapshotActivitySchema = new Schema({
 const SnapshotTotalsSchema = new Schema({
     bitacoras: { type: Number, default: 0 },
     tasksCompleted: { type: Number, default: 0 },
+    tasksPending: { type: Number, default: 0 },              // tareas no completadas del horario de la semana
     workPhotos: { type: Number, default: 0 },
     checkIns: { type: Number, default: 0 },
     totalMinutes: { type: Number, default: 0 }               // minutos trabajados (asistencia)
