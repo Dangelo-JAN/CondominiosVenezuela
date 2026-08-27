@@ -1,5 +1,5 @@
 # 🛠️ TAREA ACTUAL
-**ID:** #035 (reapertura) | **Estado:** 🟡 EN CURSO — Fase 1 completada ✅; STOP 1 aprobado; subtarea #038 (seed reportes) en curso | **Fecha:** 2026-08-27
+**ID:** #035 (reapertura) | **Estado:** 🟡 EN CURSO — Fase 1 ✅, subtarea #038 ✅, FASE 2 completada ✅; STOP para aprobación | **Fecha:** 2026-08-27
 
 ---
 
@@ -15,10 +15,11 @@
 *Usa esto para "despertar" a la IA si el chat se cierra:*
 
 - **Lo último que funcionó:**
-  - **FASE 1 #035 COMPLETADA ✅** (commit `7179b8d`): backend de tareas pendientes en semanal (R2). `WeeklyReportSnapshot` enum `task_pending` + `tasksPending` en totals; `collectRawActivities` agrega tareas incompletas ancladas al `startdate` del horario; `includePendingTasks` false en diario (R1) / true en semanal (R2) y snapshot. 55 tests PASS + client build 0 errores. **STOP 1 aprobado por CTO.**
-  - **SUBTAREA #038:** DB de dev poblada, `SNAPSHOTS=0` confirmado. Creado `server/seed-reports.mjs` (idempotente) que inserta data semilla histórica en 5 semanas (W30-W34) y dispara `closePreviousWeekSnapshot` real. Ejecutado: **5 snapshots creados con contenido** (incluyen `tasksPending:1` cada uno; W33/W34 con data real). Re-ejecución idempotente (no duplica). Integrado en `first-seed.mjs` al final.
-- **Dónde se rompió/detuvo:** N/A. Fase 2 de #035 (filtros server-side) pendiente. Subtarea #038 lista para commit.
-- **Siguiente acción inmediata:** Commit + push de la subtarea #038 (seed-reports.mjs + first-seed.mjs) → STOP para aprobación del CTO → luego continuar **Fase 2** de #035 (filtros server-side por fecha en `HandleGetAllWorkPhotos`/`HandleGetMyWorkPhotos`/`HandleGetMyBitacoras`).
+  - **FASE 1 #035 COMPLETADA ✅** (commit `7179b8d`): backend de tareas pendientes en semanal (R2). 55 tests PASS + client build 0 errores. **STOP 1 aprobado.**
+  - **SUBTAREA #038 COMPLETADA ✅** (commits `f9a088d` + `a998836`): `server/seed-reports.mjs` idempotente genera 5 snapshots (W30-W34) con contenido; integrado en `first-seed.mjs`. Servicios levantados y Fase 1 verificada end-to-end (snapshot W34 muestra task_completed + task_pending; diario solo realizado). Servicios detenidos.
+  - **FASE 2 #035 COMPLETADA ✅** (servidor): filtros server-side por fecha (startDate/endDate) en `HandleGetAllWorkPhotos`, `HandleGetMyWorkPhotos` y `HandleGetMyBitacoras`. Nuevo helper `server/utils/dateFilter.util.js` (convención UTC). 61 tests server PASS (6 nuevos de dateFilter) + client build 0 errores.
+- **Dónde se rompió/detuvo:** N/A. Fase 2 lista para commit.
+- **Siguiente acción inmediata:** Commit + push de la Fase 2 → STOP aprobación del CTO → luego **Fase 3** de #035 (extraer modales inline a `ReportActivityModals.jsx`).
 
 ---
 
