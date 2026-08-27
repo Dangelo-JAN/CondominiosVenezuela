@@ -1,5 +1,5 @@
 # 🛠️ TAREA ACTUAL
-**ID:** #035 (reapertura) | **Estado:** 🟡 EN CURSO — Análisis completado, pendiente implementación | **Fecha:** 2026-08-24
+**ID:** #035 (reapertura) | **Estado:** 🟡 EN CURSO — Fase 1 completada ✅; STOP 1 aprobado; subtarea #038 (seed reportes) en curso | **Fecha:** 2026-08-27
 
 ---
 
@@ -14,9 +14,11 @@
 ## 🚦 PUNTO DE CONTROL (Contexto de Reanudación)
 *Usa esto para "despertar" a la IA si el chat se cierra:*
 
-- **Lo último que funcionó:** Análisis completo del sistema de reportes. Plan de 9 fases documentado con 4 recomendaciones del agente pendientes de decisión final del CTO.
-- **Dónde se rompió/detuvo:** N/A — el análisis encontró que R1 y R2 YA FUNCIONAN server-side. Todo el trabajo es FASE de implementación (R3).
-- **Siguiente acción inmediata:** CTO decide las 4 preguntas del plan (P1-P4 abajo) → luego pasar a implementación Fase 2 (modales). Si el CTO no responde, asumir recomendaciones del agente y arrancar.
+- **Lo último que funcionó:**
+  - **FASE 1 #035 COMPLETADA ✅** (commit `7179b8d`): backend de tareas pendientes en semanal (R2). `WeeklyReportSnapshot` enum `task_pending` + `tasksPending` en totals; `collectRawActivities` agrega tareas incompletas ancladas al `startdate` del horario; `includePendingTasks` false en diario (R1) / true en semanal (R2) y snapshot. 55 tests PASS + client build 0 errores. **STOP 1 aprobado por CTO.**
+  - **SUBTAREA #038:** DB de dev poblada, `SNAPSHOTS=0` confirmado. Creado `server/seed-reports.mjs` (idempotente) que inserta data semilla histórica en 5 semanas (W30-W34) y dispara `closePreviousWeekSnapshot` real. Ejecutado: **5 snapshots creados con contenido** (incluyen `tasksPending:1` cada uno; W33/W34 con data real). Re-ejecución idempotente (no duplica). Integrado en `first-seed.mjs` al final.
+- **Dónde se rompió/detuvo:** N/A. Fase 2 de #035 (filtros server-side) pendiente. Subtarea #038 lista para commit.
+- **Siguiente acción inmediata:** Commit + push de la subtarea #038 (seed-reports.mjs + first-seed.mjs) → STOP para aprobación del CTO → luego continuar **Fase 2** de #035 (filtros server-side por fecha en `HandleGetAllWorkPhotos`/`HandleGetMyWorkPhotos`/`HandleGetMyBitacoras`).
 
 ---
 

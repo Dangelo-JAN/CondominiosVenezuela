@@ -360,3 +360,20 @@ async function main() {
 }
 
 main()
+  .then(async () => {
+    // ── Generar reportes semanales (data semilla histórica + snapshots) ──
+    // Reutiliza la lógica real de cierre semanal (closePreviousWeekSnapshot)
+    // para que el equipo disponga de reportes "viejos" reproducibles.
+    console.log("\n🔄 [first-seed] Generando reportes semanales...")
+    try {
+      const { seedReports } = await import("./seed-reports.mjs")
+      await seedReports({ count: 5 })
+      console.log("\n🔄 [first-seed] Reportes semanales generados ✅")
+    } catch (seedErr) {
+      console.warn("\n⚠️ [first-seed] No se pudieron generar reportes semanales:", seedErr.message)
+    }
+  })
+  .catch((err) => {
+    console.error("❌ first-seed Error:", err.message)
+    process.exit(1)
+  })
