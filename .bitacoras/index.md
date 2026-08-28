@@ -6,9 +6,9 @@
 ---
 
 ## 🚩 ESTADO ACTUAL
-- **Tarea activa:** 🟡 #035 (reapertura) — Reportes: interactividad y filtros
-- **Última completada:** #037 — Master-Init v3: Sección Reapertura de Servicios ✅ (24/08/2026)
-- **Branch actual:** `feat/weekly-reports` (PR #50 abierto → dev)
+- **Tarea activa:** Ninguna — sin tarea en curso
+- **Última completada:** #035 (reapertura) — Reportes: interactividad y filtros R1/R2/R3 ✅ (28/08/2026)
+- **Branch actual:** `feat/weekly-reports` (PR #50 abierto → dev) — pendiente merge
 - **Deploy pendiente:** Vercel + Render desde `main`
 - **Archivo de referencia rápida:** `actual.md`
 
@@ -49,7 +49,7 @@
 - [x] [[032-master-agent-initialization-prompt]] - ✅ COMPLETADO el 28/07/2026
 - [x] [[033-entrypage-workforce-landing-sections]] - ✅ COMPLETADO el 10/08/2026 (reapertura 13/08/2026: fix dark/light + ajustes contenido, cerrado)
 - [x] [[034-public-navbar-component]] - ✅ COMPLETADO el 19/08/2026 (PR #49 → dev, pendiente merge)
-- [x] [[035-hr-employee-reports]] - ✅ COMPLETADO el 21/08/2026 → 🟡 REAPERTA 24/08/2026 (interactividad + filtros, plan en actual.md)
+- [x] [[035-hr-employee-reports]] - ✅ COMPLETADO el 21/08/2026 → ✅ REAPERTURA CERRADA el 28/08/2026 (R1 diario-solo-realizado + R2 semanal-con-pendientes + R3 interactividad con chips URL-driven y modales de detalle; commits 7179b8d→bc0246d en feat/weekly-reports → PR #50)
 - [x] [[036-master-initi-local-setup]] - ✅ COMPLETADO el 24/08/2026 (commits 9325c2d + f8d68b5 en feat/weekly-reports → PR #50)
 - [x] [[037-master-init-reopen-section]] - ✅ COMPLETADO el 24/08/2026 (commit b287874 en feat/weekly-reports → PR #50)
 - [x] [[038-seed-reportes-semanales]] - ✅ COMPLETADO el 27/08/2026 (seed-reports.mjs + first-seed, commit f9a088d en feat/weekly-reports, subtarea de #035)
@@ -126,5 +126,5 @@
 
 ---
 
-*Actualizado: 2026-08-24*
-*Tarea #037 ✅ COMPLETADA — MASTER-INIT.md §14: reapertura diaria de servicios + protocolo no interactivo para agentes IA*
+*Actualizado: 2026-08-28*
+*Tarea #035 ✅ REAPERTURA CERRADA — Reportes R1/R2/R3 (interactividad + filtros URL-driven + modales de detalle) — PR #50 → dev pendiente merge*
