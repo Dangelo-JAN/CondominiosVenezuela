@@ -7,10 +7,11 @@ import { Loading } from "../../../components/common/loading.jsx"
 import { useToast } from "@/hooks/use-toast"
 import { useIsDark } from "../../../hooks/useIsDark.js"
 import {
-    ImageIcon, Trash2, Eye, CheckCircle2, X,
+    ImageIcon, Trash2, Eye, CheckCircle2,
     Filter, Users, Building2, CalendarDays, RotateCcw
 } from "lucide-react"
 import { CustomSelect } from "../../../components/ui/custom-select.jsx"
+import { WorkPhotoModal } from "../../../components/common/Dashboard/ReportActivityModals.jsx"
 
 // ── Helper: Formatear fecha usando timezone del browser (fix timezone) ──
 const formatDate = (d) => {
@@ -36,85 +37,7 @@ const formatTime = (d) => {
     })
 }
 
-// ── Modal de vista previa ─────────────────────────────────────────────────
-const PhotoModal = ({ photo, onClose, onDelete, onReview }) => {
-    if (!photo) return null
-    return (
-        <div
-            className="fixed inset-0 z-50 flex items-center justify-center p-4"
-            style={{ background: "rgba(0,0,0,0.85)" }}
-            onClick={onClose}
-        >
-            <div
-                className="relative max-w-3xl w-full rounded-2xl overflow-hidden"
-                onClick={e => e.stopPropagation()}
-            >
-                <img
-                    src={photo.photourl}
-                    alt={photo.description || "Foto de trabajo"}
-                    className="w-full object-contain max-h-[65vh]"
-                />
-
-                {/* Info bar */}
-                <div className="px-5 py-4 flex items-center justify-between gap-4"
-                    style={{ background: "rgba(0,0,0,0.7)", backdropFilter: "blur(8px)" }}>
-                    <div className="flex flex-col gap-0.5 min-w-0">
-                        <p className="text-sm font-semibold text-white truncate">
-                            {photo.employee?.firstname} {photo.employee?.lastname}
-                        </p>
-                        <p className="text-xs text-white/50">
-                            {photo.description || "Sin descripción"}
-                        </p>
-                        <p className="text-lg font-bold text-white mt-1">
-                            {formatDate(photo.workdate)}
-                        </p>
-                        {photo.captureDate && (
-                            <p className="text-xs text-white/60">
-                                Capturada: {formatDate(photo.captureDate)}
-                            </p>
-                        )}
-                        {photo.reviewedby && (
-                            <p className="text-xs text-emerald-400 flex items-center gap-1 mt-0.5">
-                                <CheckCircle2 className="w-3 h-3" />
-                                Revisado el {formatDate(photo.reviewedat)}
-                            </p>
-                        )}
-                    </div>
-                    <div className="flex items-center gap-2 flex-shrink-0">
-                        {!photo.reviewedby && (
-                            <button
-                                onClick={() => onReview(photo._id)}
-                                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold
-                                    bg-emerald-500/80 hover:bg-emerald-500 text-white transition-colors"
-                            >
-                                <CheckCircle2 className="w-3.5 h-3.5" />
-                                Marcar revisada
-                            </button>
-                        )}
-                        <button
-                            onClick={() => onDelete(photo._id)}
-                            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold
-                                bg-red-500/80 hover:bg-red-500 text-white transition-colors"
-                        >
-                            <Trash2 className="w-3.5 h-3.5" />
-                            Eliminar
-                        </button>
-                    </div>
-                </div>
-
-                <button
-                    onClick={onClose}
-                    className="absolute top-3 right-3 flex items-center justify-center w-8 h-8 rounded-full
-                        bg-black/50 hover:bg-black/70 transition-colors"
-                >
-                    <X className="w-4 h-4 text-white" />
-                </button>
-            </div>
-        </div>
-    )
-}
-
-// ── Card de foto ───────────────────────────────────────────────��──────────
+// ── Card de foto ───────────────────────────────────────────────────────────
 const PhotoCard = ({ photo, onPreview, onDelete, onReview }) => {
     const isDark = useIsDark()
 
@@ -428,12 +351,33 @@ export const HRWorkPhotosPage = () => {
                 </div>
             )}
 
-            {/* Modal */}
-            <PhotoModal
-                photo={previewPhoto}
+            {/* Modal (reutilizado) */}
+            <WorkPhotoModal
+                open={!!previewPhoto}
+                data={previewPhoto}
                 onClose={() => setPreviewPhoto(null)}
-                onDelete={handleDelete}
-                onReview={handleReview}
+                renderActions={() => (
+                    <>
+                        {!previewPhoto?.reviewedby && (
+                            <button
+                                onClick={() => handleReview(previewPhoto._id)}
+                                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold
+                                    bg-emerald-500/80 hover:bg-emerald-500 text-white transition-colors"
+                            >
+                                <CheckCircle2 className="w-3.5 h-3.5" />
+                                Marcar revisada
+                            </button>
+                        )}
+                        <button
+                            onClick={() => handleDelete(previewPhoto._id)}
+                            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold
+                                bg-red-500/80 hover:bg-red-500 text-white transition-colors"
+                        >
+                            <Trash2 className="w-3.5 h-3.5" />
+                            Eliminar
+                        </button>
+                    </>
+                )}
             />
         </div>
     )

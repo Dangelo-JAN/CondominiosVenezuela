@@ -4,8 +4,9 @@ import { useDispatch, useSelector } from "react-redux"
 import { HandleGetAllBitacoras, HandleDeleteBitacoraByHR } from "../../../redux/Thunks/HRBitacorasThunk.js"
 import { Loading } from "../../../components/common/loading.jsx"
 import { useIsDark } from "../../../hooks/useIsDark.js"
-import { Calendar, Filter, Search, Trash2, Eye, X, ChevronDown, FileText, Image as ImageIcon, Video, Clock, User } from "lucide-react"
+import { Calendar, Filter, Search, Trash2, Eye, ChevronDown, FileText, Clock, User } from "lucide-react"
 import { CustomSelect } from "../../../components/ui/custom-select.jsx"
+import { BitacoraDetailModal } from "../../../components/common/Dashboard/ReportActivityModals.jsx"
 
 export const HRBitacorasPage = () => {
     const isDark = useIsDark()
@@ -302,99 +303,12 @@ export const HRBitacorasPage = () => {
                 </ThemedListContainer>
             </div>
 
-            {/* ── Detail Modal ── */}
-            {selectedBitacora && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50"
-                    onClick={() => setSelectedBitacora(null)}>
-                    <div className="w-full max-w-2xl rounded-2xl overflow-hidden shadow-2xl
-                        bg-white dark:bg-[#1a1a2e] border
-                        border-gray-200 dark:border-[rgba(252,227,0,0.15)]"
-                        onClick={(e) => e.stopPropagation()}>
-                        {/* Modal Header */}
-                        <div className="flex items-center justify-between px-6 py-4 border-b
-                            border-gray-100 dark:border-[rgba(252,227,0,0.1)]">
-                            <div className="flex items-center gap-3">
-                                <div className="w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold"
-                                    style={{
-                                        background: isDark ? "rgba(252,227,0,0.15)" : "#fef9c3",
-                                        color: isDark ? "#facc15" : "#ca8a04"
-                                    }}>
-                                    {getInitials(selectedBitacora.employee)}
-                                </div>
-                                <div>
-                                    <p className="text-sm font-semibold text-gray-900 dark:text-white">
-                                        {selectedBitacora.employee?.firstname} {selectedBitacora.employee?.lastname}
-                                    </p>
-                                    <p className="text-xs" style={{ color: isDark ? "rgba(255,255,255,0.4)" : "#6b7280" }}>
-                                        {formatDate(selectedBitacora.createdAt)}
-                                    </p>
-                                </div>
-                            </div>
-                            <button
-                                onClick={() => setSelectedBitacora(null)}
-                                className="p-2 rounded-xl hover:bg-gray-100 dark:hover:bg-[rgba(255,255,255,0.05)] transition-colors"
-                            >
-                                <X className="w-5 h-5 text-gray-500 dark:text-gray-400" />
-                            </button>
-                        </div>
-
-                        {/* Modal Body */}
-                        <div className="px-6 py-4 space-y-4 max-h-[60vh] overflow-y-auto">
-                            <h2 className="text-xl font-bold text-gray-900 dark:text-white">
-                                {selectedBitacora.title}
-                            </h2>
-                            <div className="text-sm leading-relaxed whitespace-pre-wrap text-gray-700 dark:text-[rgba(255,255,255,0.8)]">
-                                {selectedBitacora.content}
-                            </div>
-
-                            {/* Images */}
-                            {selectedBitacora.images?.length > 0 && (
-                                <div className="space-y-2">
-                                    <div className="flex items-center gap-2">
-                                        <ImageIcon className="w-4 h-4"
-                                            style={{ color: isDark ? "#facc15" : "#ca8a04" }} />
-                                        <p className="text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-[rgba(255,255,255,0.4)]">
-                                            {selectedBitacora.images.length} imagen(es)
-                                        </p>
-                                    </div>
-                                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
-                                        {selectedBitacora.images.map((url, i) => (
-                                            <a key={i} href={url} target="_blank" rel="noopener noreferrer"
-                                                className="block rounded-xl overflow-hidden border border-gray-200 dark:border-[rgba(255,255,255,0.1)]
-                                                    hover:opacity-90 transition-opacity">
-                                                <img
-                                                    src={url}
-                                                    alt={`Imagen ${i + 1}`}
-                                                    className="w-full h-32 object-cover"
-                                                />
-                                            </a>
-                                        ))}
-                                    </div>
-                                </div>
-                            )}
-
-                            {/* Videos */}
-                            {selectedBitacora.videos?.length > 0 && (
-                                <div className="space-y-2">
-                                    <div className="flex items-center gap-2">
-                                        <Video className="w-4 h-4"
-                                            style={{ color: isDark ? "#facc15" : "#ca8a04" }} />
-                                        <p className="text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-[rgba(255,255,255,0.4)]">
-                                            {selectedBitacora.videos.length} video(s)
-                                        </p>
-                                    </div>
-                                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
-                                        {selectedBitacora.videos.map((url, i) => (
-                                            <video key={i} src={url} controls playsInline preload="metadata"
-                                                className="w-full h-32 object-cover rounded-xl border border-gray-200 dark:border-[rgba(255,255,255,0.1)] bg-black" />
-                                        ))}
-                                    </div>
-                                </div>
-                            )}
-                        </div>
-                    </div>
-                </div>
-            )}
+            {/* ── Detail Modal (reutilizado) ── */}
+            <BitacoraDetailModal
+                open={!!selectedBitacora}
+                data={selectedBitacora}
+                onClose={() => setSelectedBitacora(null)}
+            />
 
             {/* ── Delete Confirmation ── */}
             {deleteConfirm && (

@@ -1,5 +1,5 @@
 # 🛠️ TAREA ACTUAL
-**ID:** #035 (reapertura) | **Estado:** 🟡 EN CURSO — Fase 1 ✅, subtarea #038 ✅, FASE 2 completada ✅; STOP para aprobación | **Fecha:** 2026-08-27
+**ID:** #035 (reapertura) | **Estado:** 🟡 EN CURSO — Fase 1 ✅, subtarea #038 ✅, FASE 2 ✅, FASE 3 ✅; STOP para aprobación | **Fecha:** 2026-08-27
 
 ---
 
@@ -18,8 +18,9 @@
   - **FASE 1 #035 COMPLETADA ✅** (commit `7179b8d`): backend de tareas pendientes en semanal (R2). 55 tests PASS + client build 0 errores. **STOP 1 aprobado.**
   - **SUBTAREA #038 COMPLETADA ✅** (commits `f9a088d` + `a998836`): `server/seed-reports.mjs` idempotente genera 5 snapshots (W30-W34) con contenido; integrado en `first-seed.mjs`. Servicios levantados y Fase 1 verificada end-to-end (snapshot W34 muestra task_completed + task_pending; diario solo realizado). Servicios detenidos.
   - **FASE 2 #035 COMPLETADA ✅** (servidor): filtros server-side por fecha (startDate/endDate) en `HandleGetAllWorkPhotos`, `HandleGetMyWorkPhotos` y `HandleGetMyBitacoras`. Nuevo helper `server/utils/dateFilter.util.js` (convención UTC). 61 tests server PASS (6 nuevos de dateFilter) + client build 0 errores.
-- **Dónde se rompió/detuvo:** N/A. Fase 2 lista para commit.
-- **Siguiente acción inmediata:** Commit + push de la Fase 2 → STOP aprobación del CTO → luego **Fase 3** de #035 (extraer modales inline a `ReportActivityModals.jsx`).
+  - **FASE 3 #035 COMPLETADA ✅** (cliente): extracción de modales inline a `client/src/components/common/Dashboard/ReportActivityModals.jsx` como presentacionales reutilizables `{open,data,onClose}`. `BitacoraDetailModal` (con `renderFooter` opcional y modo autor/sin-autor) y `WorkPhotoModal` (con `renderActions` opcional, `showEmployee`, info de revisión). Refactorizadas las 4 páginas: `hrbitacoraspage.jsx`, `HRWorkPhotosPage.jsx` (actions review/delete), `bitacoraspage.jsx` (empleado, footer Editar), `EmployeeWorkPhotosPage.jsx` (showEmployee=false). −325 líneas de duplicación. Client build 0 errores + 61/61 tests server.
+- **Dónde se rompió/detuvo:** N/A. Fase 3 lista para commit.
+- **Siguiente acción inmediata:** Commit + push de la Fase 3 → STOP aprobación del CTO → luego **Fase 4** de #035 (interactividad: TotalChip clickeable + ActivityRow clickeable + ReportTotalsBar onChipClick + EmployeeActivityGroup onActivityClick en `ReportComponents.jsx`).
 
 ---
 
