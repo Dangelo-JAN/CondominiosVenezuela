@@ -70,7 +70,7 @@ const ACTIVITY_ICONS = {
     attendance: { Icon: LogIn, key: "Jornada" }
 }
 
-export const ActivityRow = ({ activity }) => {
+export const ActivityRow = ({ activity, onClick }) => {
     const isDark = useIsDark()
     const y = YELLOW(isDark)
     const { Icon, key } = ACTIVITY_ICONS[activity.type] || { Icon: ClipboardList, key: "Actividad" }
@@ -83,13 +83,20 @@ export const ActivityRow = ({ activity }) => {
     }
 
     return (
-        <div className="flex items-start gap-2.5 py-1.5">
+        <div
+            className={`flex items-start gap-2.5 py-1.5 ${onClick ? "cursor-pointer rounded-lg px-1.5 -mx-1.5 hover:bg-black/[0.03] dark:hover:bg-white/[0.05] transition-colors" : ""}`}
+            onClick={() => onClick?.(activity)}
+            role={onClick ? "button" : undefined}
+            tabIndex={onClick ? 0 : undefined}
+            onKeyDown={onClick ? (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); onClick(activity) } } : undefined}
+            title={onClick ? `${activity.title} — ver detalle` : activity.title}
+        >
             <div className="w-6 h-6 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5"
                 style={{ background: y.bg }}>
                 <Icon className="w-3 h-3" style={{ color: y.text }} />
             </div>
             <div className="flex-1 min-w-0">
-                <p className="text-xs font-medium truncate text-gray-800 dark:text-white/90" title={activity.title}>
+                <p className="text-xs font-medium truncate text-gray-800 dark:text-white/90">
                     {activity.title}
                 </p>
                 {(metaParts.length > 0 || activity.date) && (
@@ -103,29 +110,39 @@ export const ActivityRow = ({ activity }) => {
 }
 
 // ── Barra de totales ───────────────────────────────────────────────────────
-export const ReportTotalsBar = ({ totals }) => {
+// `onChipClick(key)`: key es "bitacoras"|"tasks"|"photos"|"checkIns"|"horas".
+// "horas" no es navegable (no tiene página destino).
+export const ReportTotalsBar = ({ totals, onChipClick }) => {
     if (!totals) return null
     const chips = [
-        { label: "Bitácoras", value: totals.bitacoras },
-        { label: "Tareas", value: totals.tasksCompleted },
-        { label: "Fotos", value: totals.workPhotos },
-        { label: "Entradas", value: totals.checkIns },
-        { label: "Horas", value: formatMinutes(totals.totalMinutes) ?? "0m" }
+        { label: "Bitácoras", value: totals.bitacoras, key: "bitacoras" },
+        { label: "Tareas", value: totals.tasksCompleted, key: "tasks" },
+        { label: "Fotos", value: totals.workPhotos, key: "photos" },
+        { label: "Entradas", value: totals.checkIns, key: "checkIns" },
+        { label: "Horas", value: formatMinutes(totals.totalMinutes) ?? "0m", key: "horas" }
     ]
     return (
         <div className="flex flex-wrap gap-2">
             {chips.map(c => (
-                <TotalChip key={c.label} label={c.label} value={c.value} />
+                <TotalChip key={c.key} label={c.label} value={c.value}
+                    onClick={onChipClick ? () => onChipClick(c.key) : undefined} />
             ))}
         </div>
     )
 }
 
-const TotalChip = ({ label, value }) => {
+const TotalChip = ({ label, value, onClick }) => {
     const isDark = useIsDark()
     const y = YELLOW(isDark)
     return (
-        <div className="px-3 py-1.5 rounded-xl flex items-center gap-2"
+        <div
+            role={onClick ? "button" : undefined}
+            tabIndex={onClick ? 0 : undefined}
+            onClick={onClick}
+            onKeyDown={onClick ? (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); onClick() } } : undefined}
+            className={`px-3 py-1.5 rounded-xl flex items-center gap-2 transition-all duration-200 ${
+                onClick ? "cursor-pointer hover:-translate-y-0.5 hover:shadow-md focus:outline-none" : ""
+            }`}
             style={{ background: y.bgSoft, border: `1px solid ${isDark ? "rgba(252,227,0,0.15)" : "#fef08a"}` }}>
             <span className="text-sm font-bold" style={{ color: y.text }}>{value}</span>
             <span className="text-[10px] font-medium uppercase tracking-wider"
@@ -137,7 +154,8 @@ const TotalChip = ({ label, value }) => {
 }
 
 // ── Grupo de actividades por empleado ──────────────────────────────────────
-export const EmployeeActivityGroup = ({ employee, maxActivities = null }) => {
+// `onActivityClick(activity)`: se pasa a cada ActivityRow (interactividad R3).
+export const EmployeeActivityGroup = ({ employee, maxActivities = null, onActivityClick }) => {
     const isDark = useIsDark()
     const y = YELLOW(isDark)
     const activities = maxActivities ? employee.activities.slice(0, maxActivities) : employee.activities
@@ -168,7 +186,8 @@ export const EmployeeActivityGroup = ({ employee, maxActivities = null }) => {
             </div>
             <div className="divide-y" style={{ borderColor: isDark ? "rgba(255,255,255,0.06)" : "#fef9c3" }}>
                 {activities.map((act, i) => (
-                    <ActivityRow key={`${act.refId ?? i}-${act.type}`} activity={act} />
+                    <ActivityRow key={`${act.refId ?? i}-${act.type}`} activity={act}
+                        onClick={onActivityClick} />
                 ))}
             </div>
         </div>
