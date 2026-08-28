@@ -1,5 +1,6 @@
 import { useEffect, useState, useMemo, useCallback } from "react"
 import { useDispatch, useSelector } from "react-redux"
+import { useSearchParams } from "react-router-dom"
 import { useIsDark } from "../../../hooks/useIsDark.js"
 import { Loading } from "../../../components/common/loading.jsx"
 import {
@@ -16,6 +17,7 @@ const MAX_VIDEOS = 3
 export const EmployeeBitacorasPage = () => {
     const isDark = useIsDark()
     const dispatch = useDispatch()
+    const [searchParams] = useSearchParams()
     const { data: bitacoras, isLoading, success, message } = useSelector((state) => state.HRBitacorasReducer)
 
     const [showForm, setShowForm] = useState(false)
@@ -33,8 +35,11 @@ export const EmployeeBitacorasPage = () => {
     const [viewingBitacora, setViewingBitacora] = useState(null)
 
     useEffect(() => {
-        dispatch(HandleGetMyBitacoras())
-    }, [dispatch])
+        // (→ Fases 7-8) Filtro URL-driven opcional: ?startDate=&endDate=
+        const from = searchParams.get("startDate")
+        const to = searchParams.get("endDate")
+        dispatch(HandleGetMyBitacoras(from || to ? { startDate: from || undefined, endDate: to || undefined } : {}))
+    }, [dispatch, searchParams])
 
     // Reset success message after timeout
     useEffect(() => {

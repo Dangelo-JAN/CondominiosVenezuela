@@ -1,5 +1,6 @@
 import { useEffect, useState, useMemo } from "react"
 import { useDispatch, useSelector } from "react-redux"
+import { useSearchParams } from "react-router-dom"
 import { HandleHRWorkPhoto } from "../../../redux/Thunks/HRWorkPhotoThunk.js"
 import { HandleGetHREmployees } from "../../../redux/Thunks/HREmployeesThunk.js"
 import { HandleGetHRDepartments } from "../../../redux/Thunks/HRDepartmentPageThunk.js"
@@ -127,22 +128,30 @@ export const HRWorkPhotosPage = () => {
     const isDark = useIsDark()
     const dispatch = useDispatch()
     const { toast } = useToast()
+    const [searchParams] = useSearchParams()
     const { photos, isLoading } = useSelector(s => s.HRWorkPhotoReducer)
     const employees = useSelector(s => s.HREmployeesPageReducer.data) || []
     const departments = useSelector(s => s.HRDepartmentPageReducer.data) || []
 
     const [previewPhoto, setPreviewPhoto] = useState(null)
-    const [filters, setFilters] = useState({
-        department: "all",
-        employee: "all",
-        date: ""
+    const [filters, setFilters] = useState(() => {
+        // Fase 6 (R3): query params ?startDate=&endDate= desde los chips del reporte.
+        // El filtro UI es por día (date); usamos startDate como día inicial.
+        const start = searchParams.get("startDate")
+        const day = start ? String(start).slice(0, 10) : ""
+        return { department: "all", employee: "all", date: day }
     })
 
     useEffect(() => {
-        dispatch(HandleHRWorkPhoto({ type: "GetAll" }))
+        // Fase 6 (R3): fetch server-side filtrado por rango (contrato Fase 2:
+        // startDate/endDate en WorkPhoto.controller.js getAll).
+        const from = searchParams.get("startDate")
+        const to = searchParams.get("endDate")
+        const params = from || to ? { startDate: from || undefined, endDate: to || undefined } : {}
+        dispatch(HandleHRWorkPhoto({ type: "GetAll", data: { params } }))
         dispatch(HandleGetHREmployees({ apiroute: "GETALL" }))
         dispatch(HandleGetHRDepartments({ apiroute: "GETALL" }))
-    }, [])
+    }, [dispatch, searchParams])
 
     const handleDelete = async (photoID) => {
         const res = await dispatch(HandleHRWorkPhoto({ type: "Delete", data: { photoID } }))

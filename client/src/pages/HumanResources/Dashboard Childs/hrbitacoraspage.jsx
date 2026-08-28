@@ -1,6 +1,7 @@
 import { ThemedListWrapper, ThemedHeadingBar, ThemedListContainer } from "../../../components/common/Dashboard/ListDesigns"
 import { useEffect, useState, useMemo, useCallback } from "react"
 import { useDispatch, useSelector } from "react-redux"
+import { useSearchParams } from "react-router-dom"
 import { HandleGetAllBitacoras, HandleDeleteBitacoraByHR } from "../../../redux/Thunks/HRBitacorasThunk.js"
 import { Loading } from "../../../components/common/loading.jsx"
 import { useIsDark } from "../../../hooks/useIsDark.js"
@@ -11,19 +12,32 @@ import { BitacoraDetailModal } from "../../../components/common/Dashboard/Report
 export const HRBitacorasPage = () => {
     const isDark = useIsDark()
     const dispatch = useDispatch()
+    const [searchParams] = useSearchParams()
     const { data: bitacoras, isLoading } = useSelector((state) => state.HRBitacorasReducer)
 
     const [employeeFilter, setEmployeeFilter] = useState("all")
     const [searchTerm, setSearchTerm] = useState("")
-    const [dateRange, setDateRange] = useState({ start: "", end: "" })
+    // Fase 6 (R3): inicializa el rango desde los query params ?startDate=&endDate=
+    // que provienen de los chips del reporte. Se convierten de ISO a YYYY-MM-DD
+    // para el UI (el fetch server-side usa los valores ISO originales).
+    const [dateRange, setDateRange] = useState(() => {
+        const from = searchParams.get("startDate")
+        const to = searchParams.get("endDate")
+        const norm = (v) => (v ? String(v).slice(0, 10) : "")
+        return { start: norm(from), end: norm(to) }
+    })
     const [selectedBitacora, setSelectedBitacora] = useState(null)
     const [deleteConfirm, setDeleteConfirm] = useState(null)
 
     const table_headings = ["Empleado", "Título", "Fecha", "Acciones"]
 
     useEffect(() => {
-        dispatch(HandleGetAllBitacoras())
-    }, [dispatch])
+        // Fase 6 (R3): pasa los query params del reporte al fetch server-side
+        // (contrato de la Fase 2: startDate/endDate en Bitacora.controller.js).
+        const from = searchParams.get("startDate")
+        const to = searchParams.get("endDate")
+        dispatch(HandleGetAllBitacoras(from || to ? { startDate: from || undefined, endDate: to || undefined } : {}))
+    }, [dispatch, searchParams])
 
     // Obtener lista única de empleados para el filtro
     const employees = useMemo(() => {

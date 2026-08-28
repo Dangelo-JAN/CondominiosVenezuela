@@ -38,9 +38,9 @@ export const HandleUpdateBitacora = createAsyncThunk(
 // Obtener mis bitácoras (empleado)
 export const HandleGetMyBitacoras = createAsyncThunk(
     'HandleGetMyBitacoras',
-    async (_, { rejectWithValue }) => {
+    async (params = {}, { rejectWithValue }) => {
         try {
-            const response = await employeeApiService.get(HRBitacorasEndPoints.GET_MY)
+            const response = await employeeApiService.get(HRBitacorasEndPoints.GET_MY, { params })
             return response.data
         } catch (error) {
             return rejectWithValue(error.response?.data || error.message)

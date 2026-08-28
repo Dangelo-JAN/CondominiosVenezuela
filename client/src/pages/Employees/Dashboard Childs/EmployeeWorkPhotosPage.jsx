@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
+import { useSearchParams } from "react-router-dom"
 import { HandleEmployeeDashboard } from "../../../redux/Thunks/EmployeeDashboardThunk.js"
 import { Loading } from "../../../components/common/loading.jsx"
 import { useToast } from "@/hooks/use-toast"
@@ -115,6 +116,7 @@ export const EmployeeWorkPhotosPage = () => {
     const isDark = useIsDark()
     const dispatch = useDispatch()
     const { toast } = useToast()
+    const [searchParams] = useSearchParams()
     const { photos, isLoading } = useSelector(s => s.employeedashboardreducer)
 
     const fileInputRef = useRef(null)
@@ -124,8 +126,12 @@ export const EmployeeWorkPhotosPage = () => {
     const [showUploadPanel, setShowUploadPanel] = useState(false)
 
     useEffect(() => {
-        dispatch(HandleEmployeeDashboard({ type: "MyPhotos" }))
-    }, [])
+        // (→ Fases 7-8) Filtro URL-driven opcional: ?startDate=&endDate=
+        const from = searchParams.get("startDate")
+        const to = searchParams.get("endDate")
+        const params = from || to ? { startDate: from || undefined, endDate: to || undefined } : {}
+        dispatch(HandleEmployeeDashboard({ type: "MyPhotos", data: { params } }))
+    }, [dispatch, searchParams])
 
     // Convertir archivo a base64
     const toBase64 = (file) => new Promise((resolve, reject) => {

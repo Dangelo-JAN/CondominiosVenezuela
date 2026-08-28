@@ -59,11 +59,12 @@ export const HRReportPage = () => {
     if (isLoading && !currentReport) return <Loading />
 
     // ── Navegación a páginas destino con filtros URL-driven (R3) ──
-    // Los query params (?from=&to=) los leen las páginas destino (Fase 6).
+    // Los query params (?startDate=&endDate=) los leen las páginas destino
+    // (Fase 6) y coinciden con el contrato server-side de la Fase 2.
     const navigateChip = (key, windowInfo) => {
         const from = windowInfo?.start
         const to = windowInfo?.end
-        const qs = from ? `?from=${encodeURIComponent(from)}&to=${encodeURIComponent(to)}` : ""
+        const qs = from ? `?startDate=${encodeURIComponent(from)}&endDate=${to ? encodeURIComponent(to) : ""}` : ""
         switch (key) {
             case "bitacoras":
                 navigate(`/HR/dashboard/bitacoras${qs}`)
