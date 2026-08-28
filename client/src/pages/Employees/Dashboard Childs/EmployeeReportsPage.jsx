@@ -9,6 +9,9 @@ import {
     ReportTotalsBar, EmployeeActivityGroup,
     ReportEmptyState, YELLOW
 } from "../../../components/common/Dashboard/ReportComponents.jsx"
+import {
+    BitacoraDetailModal, WorkPhotoModal
+} from "../../../components/common/Dashboard/ReportActivityModals.jsx"
 
 const formatDateLong = (dateStr) => {
     if (!dateStr) return "--"
@@ -27,10 +30,16 @@ export const EmployeeReportsPage = () => {
 
     const { myHistory, isLoading } = useSelector(s => s.reportreducer)
     const [selectedWeek, setSelectedWeek] = useState(null)
+    // R3: modal de detalle de actividad
+    const [activeActivity, setActiveActivity] = useState(null)
 
     useEffect(() => {
         dispatch(HandleGetMyReportHistory())
     }, [dispatch])
+
+    const handleActivityClick = (activity) => {
+        setActiveActivity({ type: activity.type, data: activity })
+    }
 
     if (isLoading && myHistory.length === 0) return <Loading />
 
@@ -117,6 +126,35 @@ export const EmployeeReportsPage = () => {
                 <MyWeekDetailModal
                     week={selectedWeek}
                     onClose={() => setSelectedWeek(null)}
+                    onActivityClick={handleActivityClick}
+                />
+            )}
+
+            {/* ══ MODAL DETALLE DE ACTIVIDAD (R3) ══ */}
+            {activeActivity?.type === "bitacora" && (
+                <BitacoraDetailModal
+                    open
+                    data={{
+                        title: activeActivity.data.title ?? "Bitácora",
+                        content: activeActivity.data.description || "Sin contenido adicional en el resumen.",
+                        createdAt: activeActivity.data.date,
+                        images: [],
+                        videos: []
+                    }}
+                    showAuthor={false}
+                    onClose={() => setActiveActivity(null)}
+                />
+            )}
+            {activeActivity?.type === "work_photo" && (
+                <WorkPhotoModal
+                    open
+                    data={{
+                        photourl: activeActivity.data.meta?.photourl,
+                        description: activeActivity.data.title,
+                        workdate: activeActivity.data.date
+                    }}
+                    showEmployee={false}
+                    onClose={() => setActiveActivity(null)}
                 />
             )}
         </div>
@@ -131,7 +169,7 @@ const MiniStat = ({ value, label, isDark, y }) => (
 )
 
 // ── Modal: detalle inmutable de UNA semana propia (datos ya cargados en la lista) ──
-const MyWeekDetailModal = ({ week, onClose }) => {
+const MyWeekDetailModal = ({ week, onClose, onActivityClick }) => {
     const isDark = useIsDark()
     const y = YELLOW(isDark)
     const hasActivities = (week.myActivities?.length ?? 0) > 0
@@ -176,7 +214,7 @@ const MyWeekDetailModal = ({ week, onClose }) => {
                             departmentName: null,
                             totals: week.myTotals,
                             activities: week.myActivities
-                        }} maxActivities={99} />
+                        }} maxActivities={99} onActivityClick={onActivityClick} />
                     ) : (
                         <div className="flex flex-col items-center justify-center py-8 gap-3">
                             <FileText className="w-8 h-8" style={{ color: isDark ? "rgba(255,255,255,0.2)" : "#d1d5db" }} />

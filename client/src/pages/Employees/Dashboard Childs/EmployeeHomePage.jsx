@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
+import { useNavigate } from "react-router-dom"
 import { HandleEmployeeDashboard } from "../../../redux/Thunks/EmployeeDashboardThunk.js"
 import { HandleGetMyReport } from "../../../redux/Thunks/ReportThunk.js"
 import {
@@ -10,6 +11,9 @@ import { Loading } from "../../../components/common/loading.jsx"
 import { LogIn, LogOut, Clock, CheckCircle2, Circle, CalendarDays, AlertCircle, Building2, ClipboardList } from "lucide-react"
 import { useToast } from "@/hooks/use-toast"
 import { useIsDark } from "../../../hooks/useIsDark.js"
+import {
+    BitacoraDetailModal, WorkPhotoModal
+} from "../../../components/common/Dashboard/ReportActivityModals.jsx"
 
 const DAYS_ES = ["Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"]
 
@@ -51,13 +55,49 @@ const SUBCARD = {
 
 export const EmployeeHomePage = () => {
     const dispatch = useDispatch()
+    const navigate = useNavigate()
     const { toast } = useToast()
     const { attendance, schedules, isLoading } = useSelector(s => s.employeedashboardreducer)
     const employeeData = useSelector(s => s.employeereducer.data?.employee)
     const reportState = useSelector(s => s.reportreducer)
     const [actionLoading, setActionLoading] = useState(false)
+    // Fases 7-8 (R3): modal de detalle de actividad
+    const [activeActivity, setActiveActivity] = useState(null)
     const isDark = useIsDark()
     const y = YELLOW(isDark)
+
+    // ── Navegación a páginas de empleado con filtros URL-driven (R3) ──
+    // Los query params (?startDate=&endDate=) coinciden con el contrato
+    // server-side de la Fase 2; las páginas destino ya los leen (Fase 6).
+    const navigateChip = (key, windowInfo) => {
+        const base = "/auth/employee/employee-dashboard"
+        const from = windowInfo?.start
+        const to = windowInfo?.end
+        const qs = from ? `?startDate=${encodeURIComponent(from)}&endDate=${to ? encodeURIComponent(to) : ""}` : ""
+        switch (key) {
+            case "bitacoras":
+                navigate(`${base}/bitacoras${qs}`)
+                break
+            case "photos":
+                navigate(`${base}/photos${qs}`)
+                break
+            case "tasks":
+                // Horarios: filtra por día de la ventana
+                navigate(`${base}/schedule?day=${encodeURIComponent(windowInfo?.label ?? "")}`)
+                break
+            case "checkIns":
+            case "horas":
+                // Sin página destino o no navegable — sin acción
+                break
+            default:
+                break
+        }
+    }
+
+    // Apertura del modal de detalle según el tipo de actividad
+    const handleActivityClick = (activity) => {
+        setActiveActivity({ type: activity.type, data: activity })
+    }
 
     // Datos del empleado actual
     const empName = employeeData?.firstname && employeeData?.lastname 
@@ -407,11 +447,11 @@ export const EmployeeHomePage = () => {
                                 daily.totals.workPhotos + daily.totals.checkIns) > 0
                             return (
                                 <>
-                                    <ReportTotalsBar totals={hasData ? daily.totals : reportState.currentReport.weekly?.totals} />
+                                    <ReportTotalsBar totals={hasData ? daily.totals : reportState.currentReport.weekly?.totals} onChipClick={key => navigateChip(key, reportState.currentReport.dailyWindow || reportState.currentReport.weeklyWindow)} />
                                     {hasData ? (
                                         <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                                             {daily.employees.map(emp => (
-                                                <EmployeeActivityGroup key={String(emp.employee)} employee={emp} maxActivities={4} />
+                                                <EmployeeActivityGroup key={String(emp.employee)} employee={emp} maxActivities={4} onActivityClick={handleActivityClick} />
                                             ))}
                                         </div>
                                     ) : (
@@ -485,6 +525,34 @@ export const EmployeeHomePage = () => {
                         </div>
                     )}
                 </>
+            )}
+
+            {/* ══ MODAL DETALLE DE ACTIVIDAD (R3) ══ */}
+            {activeActivity?.type === "bitacora" && (
+                <BitacoraDetailModal
+                    open
+                    data={{
+                        title: activeActivity.data.title ?? "Bitácora",
+                        content: activeActivity.data.description || "Sin contenido adicional en el resumen.",
+                        createdAt: activeActivity.data.date,
+                        images: [],
+                        videos: []
+                    }}
+                    showAuthor={false}
+                    onClose={() => setActiveActivity(null)}
+                />
+            )}
+            {activeActivity?.type === "work_photo" && (
+                <WorkPhotoModal
+                    open
+                    data={{
+                        photourl: activeActivity.data.meta?.photourl,
+                        description: activeActivity.data.title,
+                        workdate: activeActivity.data.date
+                    }}
+                    showEmployee={false}
+                    onClose={() => setActiveActivity(null)}
+                />
             )}
         </div>
     )
