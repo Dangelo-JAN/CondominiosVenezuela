@@ -1,6 +1,7 @@
 import { ThemedListWrapper, ThemedHeadingBar, ThemedListContainer } from "../../../components/common/Dashboard/ListDesigns"
 import { useEffect, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
+import { useNavigate } from "react-router-dom"
 import {
     HandleGetCurrentReport,
     HandleGetReportHistory,
@@ -16,6 +17,9 @@ import {
     ReportModeBadge, ReportTotalsBar, EmployeeActivityGroup,
     ReportEmptyState, PreliminaryBanner, YELLOW
 } from "../../../components/common/Dashboard/ReportComponents.jsx"
+import {
+    BitacoraDetailModal, WorkPhotoModal
+} from "../../../components/common/Dashboard/ReportActivityModals.jsx"
 
 const formatDateLong = (dateStr) => {
     if (!dateStr) return "--"
@@ -26,6 +30,7 @@ const formatDateLong = (dateStr) => {
 
 export const HRReportPage = () => {
     const dispatch = useDispatch()
+    const navigate = useNavigate()
     const isDark = useIsDark()
     const y = YELLOW(isDark)
 
@@ -33,6 +38,8 @@ export const HRReportPage = () => {
 
     const [detailLoading, setDetailLoading] = useState(false)
     const [showDetail, setShowDetail] = useState(false)
+    // Modal de detalle de actividad (R3): { type, activity } | null
+    const [activeActivity, setActiveActivity] = useState(null)
 
     useEffect(() => {
         dispatch(HandleGetCurrentReport())
@@ -50,6 +57,37 @@ export const HRReportPage = () => {
     const weekly = currentReport?.weekly
 
     if (isLoading && !currentReport) return <Loading />
+
+    // ── Navegación a páginas destino con filtros URL-driven (R3) ──
+    // Los query params (?from=&to=) los leen las páginas destino (Fase 6).
+    const navigateChip = (key, windowInfo) => {
+        const from = windowInfo?.start
+        const to = windowInfo?.end
+        const qs = from ? `?from=${encodeURIComponent(from)}&to=${encodeURIComponent(to)}` : ""
+        switch (key) {
+            case "bitacoras":
+                navigate(`/HR/dashboard/bitacoras${qs}`)
+                break
+            case "photos":
+                navigate(`/HR/dashboard/work-photos${qs}`)
+                break
+            case "tasks":
+                // Página de horarios: filtra por día de la ventana
+                navigate(`/HR/dashboard/schedules?day=${encodeURIComponent(windowInfo?.label ?? "")}`)
+                break
+            case "checkIns":
+            case "horas":
+                // Sin página destino o no navegable — sin acción
+                break
+            default:
+                break
+        }
+    }
+
+    // Apertura del modal de detalle según el tipo de actividad
+    const handleActivityClick = (activity) => {
+        setActiveActivity({ type: activity.type, data: activity })
+    }
 
     return (
         <div className="w-full h-full flex flex-col gap-6 px-4 py-6 overflow-y-auto bg-white dark:bg-[#0f0f1a]">
@@ -113,10 +151,10 @@ export const HRReportPage = () => {
                         />
                     ) : (
                         <>
-                            <ReportTotalsBar totals={daily.totals} />
+                            <ReportTotalsBar totals={daily.totals} onChipClick={key => navigateChip(key, currentReport.dailyWindow)} />
                             <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3">
                                 {daily.employees.map(emp => (
-                                    <EmployeeActivityGroup key={String(emp.employee)} employee={emp} />
+                                    <EmployeeActivityGroup key={String(emp.employee)} employee={emp} onActivityClick={handleActivityClick} />
                                 ))}
                             </div>
                         </>
@@ -144,11 +182,11 @@ export const HRReportPage = () => {
                                 </span>
                             )}
                         </div>
-                        <ReportTotalsBar totals={weekly.totals} />
+                        <ReportTotalsBar totals={weekly.totals} onChipClick={key => navigateChip(key, currentReport.weeklyWindow)} />
                         {weekly.employees.length > 0 ? (
                             <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3">
                                 {weekly.employees.map(emp => (
-                                    <EmployeeActivityGroup key={String(emp.employee)} employee={emp} maxActivities={6} />
+                                    <EmployeeActivityGroup key={String(emp.employee)} employee={emp} maxActivities={6} onActivityClick={handleActivityClick} />
                                 ))}
                             </div>
                         ) : (
@@ -237,6 +275,34 @@ export const HRReportPage = () => {
                     loading={detailLoading}
                     snapshot={selectedSnapshot}
                     onClose={() => setShowDetail(false)}
+                    onActivityClick={handleActivityClick}
+                />
+            )}
+
+            {/* ══ MODAL DETALLE DE ACTIVIDAD (R3) ══ */}
+            {activeActivity?.type === "bitacora" && (
+                <BitacoraDetailModal
+                    open
+                    data={{
+                        title: activeActivity.data.title ?? "Bitácora",
+                        content: activeActivity.data.description || "Sin contenido adicional en el resumen.",
+                        createdAt: activeActivity.data.date,
+                        images: [],
+                        videos: []
+                    }}
+                    onClose={() => setActiveActivity(null)}
+                />
+            )}
+            {activeActivity?.type === "work_photo" && (
+                <WorkPhotoModal
+                    open
+                    data={{
+                        photourl: activeActivity.data.meta?.photourl,
+                        description: activeActivity.data.title,
+                        workdate: activeActivity.data.date
+                    }}
+                    showEmployee={false}
+                    onClose={() => setActiveActivity(null)}
                 />
             )}
         </div>
@@ -251,7 +317,7 @@ const MiniStat = ({ value, label, isDark, y }) => (
 )
 
 // ── Modal: detalle completo e inmutable de una semana cerrada ──────────────
-const SnapshotDetailModal = ({ loading, snapshot, onClose }) => {
+const SnapshotDetailModal = ({ loading, snapshot, onClose, onActivityClick }) => {
     const isDark = useIsDark()
     const y = YELLOW(isDark)
 
@@ -332,7 +398,7 @@ const SnapshotDetailModal = ({ loading, snapshot, onClose }) => {
                                             departmentName: emp.departmentName,
                                             totals: emp.totals,
                                             activities: emp.activities ?? []
-                                        }} />
+                                        }} onActivityClick={onActivityClick} />
                                     ))}
                                 </div>
                             )}
