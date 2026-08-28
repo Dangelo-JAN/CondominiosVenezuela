@@ -20,6 +20,8 @@ trigger: always_on
 | `/HR/dashboard/requests` | Solicitudes |
 | `/HR/dashboard/hr-profile` | Mi Perfil (autoedición) |
 | `/HR/dashboard/bitacoras` | Novedades / Bitácoras |
+| `/HR/dashboard/work-photos` | Fotos de Trabajo (destino chip `photos`) |
+| `/HR/dashboard/schedules` | Horarios |
 | `/HR/dashboard/reports` | Reportes de Actividad (semana actual + histórico snapshots 🔒) |
 
 ## Portal Empleado (Protegido)
@@ -33,6 +35,8 @@ trigger: always_on
 | `/auth/employee/employee-dashboard/absences` | Ausencias |
 | `/auth/employee/employee-dashboard/bitacoras` | Mis Bitácoras |
 | `/auth/employee/employee-dashboard/reports` | Mis Reportes Semanales (aislado por token 🔒) |
+
+> **Convención de navegación (chips de reportes):** las rutas destino aceptan `?startDate=&endDate=` (fechas ISO de la ventana del reporte) y `schedule...?day=` para filtrar al montar. Aplicar en cualquier página que sea destino de un chip de `ReportTotalsBar`.
 
 ## API Reportes (`/api/v1/report`)
 | Endpoint | Auth | Descripción |

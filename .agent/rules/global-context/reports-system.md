@@ -35,3 +35,10 @@ Fuente única de verdad: `getReportWindow(now)` — función pura con `now` inye
 ## 5. Arquitectura
 - Lógica pura exportada para testing (`buildLiveReport`, `buildCurrentReportPayload`, `closePreviousWeekSnapshot`, `buildMyWeeklyHistory`) con HTTP handlers como wrappers finos.
 - Tareas completadas requieren `completedAt` en TaskSchema (agregación sobre array anidado `schedule.tasks`).
+
+## 6. Interactividad R3 (reportes → páginas destino)
+- **Componentes reutilizables** en `client/src/components/common/Dashboard/ReportActivityModals.jsx` (`BitacoraDetailModal`, `WorkPhotoModal`), patrón presentacional `{open, data, onClose}` + props opcionales (`showAuthor`, `showEmployee`, `renderFooter`, `renderActions`). Usados por HR y Empleado (reportes + páginas de listado).
+- **Convención URL-driven:** los chips de `ReportTotalsBar` navegan a páginas destino con `?startDate=&endDate=` (ventana `dailyWindow`/`weeklyWindow` del reporte, fechas ISO). Se usa `tasks` → `?day=`.
+- **Contrato server-side:** las páginas destino y sus thunks consumen `startDate`/`endDate` (filtro por fecha en Bitacora/WorkPhoto). NO usar `from`/`to`.
+- **Datos del reporte:** cada `activity` expone `{type, refId, title, description, date, meta}` (photo → `meta.photourl`, datetime en rango). Los modales de foto se alimentan sin fetch; el detalle completo de bitácora requiere `GET /api/v1/bitacora/:id`.
+- **No navegables:** chips `checkIns`/`horas` (sin página destino).
