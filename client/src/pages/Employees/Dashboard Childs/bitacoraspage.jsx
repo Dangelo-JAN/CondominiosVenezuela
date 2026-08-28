@@ -544,6 +544,7 @@ export const EmployeeBitacorasPage = () => {
             <BitacoraDetailModal
                 open={!!viewingBitacora}
                 data={viewingBitacora}
+                showAuthor={false}
                 onClose={() => setViewingBitacora(null)}
                 renderFooter={() => (
                     <button

@@ -26,15 +26,17 @@ const formatDate = (dateStr) => {
 // ── Detalle de una Bitácora ────────────────────────────────────────────────
 // Uso: <BitacoraDetailModal open={!!data} data={data} onClose={close} />
 // `data`: { title, content, createdAt, updatedAt, employee:{firstname,lastname}, images:[], videos:[] }
+// `showAuthor`: (opcional, default true) muestra el header con avatar+autor (vista HR).
+//               Pásalo false en vistas "mis propias bitácoras" (empleado) para mostrar solo título+fecha.
 // `renderFooter`: (opcional) función que devuelve el JSX del footer (p.ej. acciones de edición).
-export const BitacoraDetailModal = ({ open, data, onClose, renderFooter }) => {
+export const BitacoraDetailModal = ({ open, data, onClose, showAuthor = true, renderFooter }) => {
     const isDark = useIsDark()
     const y = YELLOW(isDark)
     if (!open || !data) return null
 
     const emp = data.employee || {}
     const authorName = [emp.firstname, emp.lastname].filter(Boolean).join(" ")
-    const hasAuthor = !!authorName
+    const hasAuthor = showAuthor && !!authorName
     const initials = `${(emp.firstname || "")[0] || ""}${(emp.lastname || "")[0] || ""}`.toUpperCase() || "?"
     const isEdited = data.updatedAt && data.updatedAt !== data.createdAt
 
