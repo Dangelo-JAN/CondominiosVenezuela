@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 
-<<<<<<< HEAD
 /**
  * Hook reactivo para detectar el tema oscuro.
  * Observa cambios en el classList del <html> en tiempo real,
@@ -25,15 +24,6 @@ export const useIsDark = () => {
         if (document.documentElement.classList.contains("dark")) return true
         return window.matchMedia("(prefers-color-scheme: dark)").matches
     })
-=======
-export const useIsDark = () => {
-    const [isDark, setIsDark] = useState(() => {
-        // Check localStorage first, then system preference
-        const stored = localStorage.getItem("ems-theme");
-        if (stored) return stored === "dark";
-        return window.matchMedia("(prefers-color-scheme: dark)").matches;
-    });
->>>>>>> 9721314 (feat:  update again contact pega)
 
     useEffect(() => {
         const root = document.documentElement;

@@ -1,15 +1,13 @@
 import { Link } from "react-router-dom"
-import { ArrowRight, ShieldCheck, Users, Zap, Download, Sun, Moon } from "lucide-react"
-import { useState, useEffect } from "react"
+import { ArrowRight, ShieldCheck, Users, Zap, Download } from "lucide-react"
 import { useIsDark } from "../../hooks/useIsDark.js"
-import { ContactSalesDialog } from "../../components/common/ContactSalesDialog.jsx"
 import { Footer } from "../../components/common/Footer.jsx"
-import { CommonPublicNavbar } from "../../components/common/CommonPublicNavbar.jsx"
+import { PublicNavbar } from "../../components/common/PublicNavbar.jsx"
+import { usePWAPrompt } from "../../contexts/PWAContext.jsx"
 
 export const EntryPage = () => {
-    const { isDark, toggleTheme } = useIsDark()
-    const [installPrompt, setInstallPrompt] = useState(null)
-    const [isInstalled, setIsInstalled] = useState(false)
+    const { isDark } = useIsDark()
+    const { installPrompt, isInstalled, handleInstall } = usePWAPrompt()
 
     const resources = [
         {
@@ -153,13 +151,7 @@ export const EntryPage = () => {
             style={{ background: isDark ? "#0f0f1a" : "#ffffff" }}>
 
             {/* Navbar */}
-            <CommonPublicNavbar 
-                showDemoButton={true} 
-                showInstallButton={true}
-                installPrompt={installPrompt}
-                isInstalled={isInstalled}
-                onInstall={handleInstall}
-            />
+            <PublicNavbar />
 
             {/* Hero */}
             <main className="flex-1 flex flex-col lg:flex-row items-center justify-between

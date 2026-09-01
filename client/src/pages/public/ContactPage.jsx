@@ -1,12 +1,10 @@
 import { useState } from "react"
 import { Link } from "react-router-dom"
-import { useTheme } from "../../hooks/useTheme.js"
 import { useIsDark } from "../../hooks/useIsDark.js"
 import { useToast } from "../../hooks/use-toast.js"
 import { CustomSelect } from "../../components/ui/custom-select.jsx"
-import { ContactSalesDialog } from "../../components/common/ContactSalesDialog.jsx"
 import { Footer } from "../../components/common/Footer.jsx"
-import { CommonPublicNavbar } from "../../components/common/CommonPublicNavbar.jsx"
+import { PublicNavbar } from "../../components/common/PublicNavbar.jsx"
 import { 
     Building2, 
     Users, 
@@ -18,9 +16,7 @@ import {
     Phone,
     Clock,
     ChevronDown,
-    ChevronUp,
-    Sun,
-    Moon
+    ChevronUp
 } from "lucide-react"
 import axios from "axios"
 
@@ -73,7 +69,6 @@ const faqs = [
 ]
 
 export const ContactPage = () => {
-    const { toggleTheme } = useTheme()
     const isDark = useIsDark()
     const { toast } = useToast()
     const [isLoading, setIsLoading] = useState(false)
@@ -165,7 +160,7 @@ export const ContactPage = () => {
             style={{ background: isDark ? "#0f0f1a" : "#ffffff" }}>
 
             {/* Navbar */}
-            <CommonPublicNavbar showLinks={true} />
+            <PublicNavbar />
 
             {/* Hero Section */}
             <section className="relative overflow-hidden px-5 sm:px-8 lg:px-20 py-16 sm:py-24">
