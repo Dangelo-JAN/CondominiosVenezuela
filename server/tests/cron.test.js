@@ -216,8 +216,9 @@ describe('GET /api/v1/schedule/cron/register-absences', () => {
     })
 
     it('debe saltar schedules que no tienen el día de ayer en su schedule array', async () => {
-        // Crear schedule con un día que NO es ayer
-        const otherDay = 'Lunes' // día fijo que casi nunca será "ayer"
+        const { yesterdayDayName } = getControllerDates()
+        // Crear schedule con un día garantizado distinto de ayer
+        const otherDay = DAYS_ORDER.find(d => d !== yesterdayDayName)
         await Schedule.create(buildActiveSchedule({
             schedule: [{
                 day: otherDay,
