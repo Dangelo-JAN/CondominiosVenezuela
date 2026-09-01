@@ -31,8 +31,6 @@ export const HandleHRMe = async (req, res) => {
                 isverified: HR.isverified,
                 lastlogin: HR.lastlogin,
                 createdAt: HR.createdAt
-                organizationID: HR.organizationID,
-                permissions: HR.permissions ? HR.permissions.toObject() : {}
             }
         })
     } catch (error) {
