@@ -1,7 +1,5 @@
 import { Link, useLocation } from "react-router-dom"
 import { Sun, Moon, Download } from "lucide-react"
-import { useState, useEffect } from "react"
-import { useTheme } from "../../hooks/useTheme.js"
 import { useIsDark } from "../../hooks/useIsDark.js"
 import { usePWAPrompt } from "../../contexts/PWAContext.jsx"
 import { ContactSalesDialog } from "./ContactSalesDialog.jsx"
@@ -10,60 +8,18 @@ import { ContactSalesDialog } from "./ContactSalesDialog.jsx"
  * Navbar público self-contained.
  *
  * Reglas arquitectónicas (technical-rules.md):
- *  - useIsDark  → detección de tema oscuro
- *  - useTheme   → toggle de tema
+ *  - useIsDark   → detección Y toggle de tema (fuente de verdad única:
+ *                  la clase "dark" del <html>, observada con MutationObserver).
  *  - usePWAPrompt → lógica PWA (install prompt)
  *
- * NO recibe props del padre. Toda la lógica es interna.
+ * NO recibe props del padre. Toda la lógica es interna y se sincroniza con
+ * el resto de la aplicación a través del DOM/<html>.
  */
 export const PublicNavbar = () => {
-    /* ── Hooks ─────────────────────────────────────────────── */
-    const { toggleTheme: toggleThemeOriginal } = useTheme()
-    const { isDark: initialIsDark } = useIsDark()
+    /* ── Hooks (una sola fuente de verdad para el tema) ────── */
+    const { isDark, toggleTheme } = useIsDark()
     const { installPrompt, isInstalled, handleInstall } = usePWAPrompt()
     const location = useLocation()
-
-    /* ── Estado local (sincronizado con useIsDark + eventos cross-component) ── */
-    const [isDark, setIsDark] = useState(initialIsDark)
-
-    // Sincronizar cuando useIsDark cambia su valor (ej. en otro mounted component)
-    useEffect(() => {
-        setIsDark(initialIsDark)
-    }, [initialIsDark])
-
-    // Escuchar cambios de tema desde otros componentes / storage
-    useEffect(() => {
-        const handleStorage = () => {
-            const stored = localStorage.getItem("ems-theme")
-            const next = stored
-                ? stored === "dark"
-                : window.matchMedia("(prefers-color-scheme: dark)").matches
-            setIsDark(next)
-        }
-
-        const handleThemeChange = (e) => {
-            setIsDark(e.detail.isDark)
-        }
-
-        window.addEventListener("storage", handleStorage)
-        window.addEventListener("themeChange", handleThemeChange)
-        return () => {
-            window.removeEventListener("storage", handleStorage)
-            window.removeEventListener("themeChange", handleThemeChange)
-        }
-    }, [])
-
-    const toggleTheme = () => {
-        const nextIsDark = !isDark
-        toggleThemeOriginal()
-        setIsDark(nextIsDark)
-        // Notificar a otros componentes (Hero banner, etc.)
-        setTimeout(() => {
-            window.dispatchEvent(
-                new CustomEvent("themeChange", { detail: { isDark: nextIsDark } })
-            )
-        }, 0)
-    }
 
     /* ── JSX ───────────────────────────────────────────────── */
     return (
