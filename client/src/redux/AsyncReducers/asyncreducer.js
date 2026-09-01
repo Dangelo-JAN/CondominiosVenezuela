@@ -573,3 +573,45 @@ export const HRNotificationsAsyncReducer = (builder, thunk, thunkName) => {
         state.error.content = action.payload;
     })
 }
+
+// ── Reportes Diarios/Semanales ─────────────────────────────────────────────
+export const ReportAsyncReducer = (builder, thunk, thunkName) => {
+    builder.addCase(thunk.pending, (state) => {
+        state.isLoading = true;
+        state.error.content = null;
+    })
+    builder.addCase(thunk.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.error.status = false;
+        state.error.message = null;
+        state.error.content = null;
+
+        const payload = action.payload;
+
+        // Reporte vigente (HR o empleado)
+        if (thunkName === "HandleGetCurrentReport" || thunkName === "HandleGetMyReport") {
+            state.currentReport = payload?.data || null;
+            state.success = payload?.success ?? false;
+            state.message = payload?.message || null;
+        }
+        // Histórico de snapshots (listado liviano)
+        else if (thunkName === "HandleGetReportHistory") {
+            state.history = payload?.data || [];
+        }
+        // Snapshot completo de una semana
+        else if (thunkName === "HandleGetSnapshotByWeek") {
+            state.selectedSnapshot = payload?.data || null;
+        }
+        // Histórico de MIS semanas cerradas (empleado)
+        else if (thunkName === "HandleGetMyReportHistory") {
+            state.myHistory = payload?.data || [];
+        }
+    })
+    builder.addCase(thunk.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error.status = true;
+        state.error.message = action.payload?.message;
+        state.success = false;
+        state.error.content = action.payload;
+    })
+}

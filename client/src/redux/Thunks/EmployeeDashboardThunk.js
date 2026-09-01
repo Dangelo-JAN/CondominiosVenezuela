@@ -51,7 +51,9 @@ export const HandleEmployeeDashboard = createAsyncThunk(
             }
 
             if (type === "MyPhotos") {
-                const res = await employeeApiService.get(EmployeeEndPoints.MY_PHOTOS)
+                // (→ Fases 7-8) Filtro URL-driven: data.params → startDate/endDate
+                const params = data?.params || {}
+                const res = await employeeApiService.get(EmployeeEndPoints.MY_PHOTOS, { params })
                 return { ...res.data, type: "MyPhotos" }
             }
 

@@ -216,6 +216,8 @@ export const HandleCompleteTask = async (req, res) => {
         }
 
         task.completed = !task.completed
+        // Registrar fecha de completado (UTC) para atribución en reportes diarios/semanales
+        task.completedAt = task.completed ? new Date() : null
         await schedule.save()
 
         return res.status(200).json({

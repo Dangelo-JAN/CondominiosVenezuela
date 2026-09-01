@@ -46,4 +46,7 @@ const AttendanceSchema = new Schema({
     }
 }, { timestamps: true })
 
+// Índice para reportes: asistencia por organización + empleado
+AttendanceSchema.index({ organizationID: 1, employee: 1 })
+
 export const Attendance = mongoose.model("Attendance", AttendanceSchema)

@@ -1,0 +1,327 @@
+{
+  "org": {
+    "_id": "6a8c8f8b701901f25c39c269",
+    "name": "Org Demo",
+    "createdAt": "2026-08-24T18:38:03.672Z"
+  },
+  "hr": {
+    "_id": "6a8c8f8b701901f25c39c26b",
+    "firstname": "Test",
+    "lastname": "Admin",
+    "email": "admin@test.local",
+    "password": "$2b$10$fQSCTtGxKcVmrEwLWpn1P.IQriirTcUTMIbXFUDVb/rSvO5WiqIgO",
+    "role": "HR-Admin",
+    "organizationID": "6a8c8f8b701901f25c39c269",
+    "createdAt": "2026-08-24T18:38:03.744Z"
+  },
+  "departments": [
+    {
+      "_id": "6a8c9410117e294ad8bbb142",
+      "name": "Administración",
+      "description": "Gestión financiera y administrativa",
+      "organizationID": "6a8c8f8b701901f25c39c269",
+      "createdAt": "2026-08-24T18:57:20.725Z"
+    },
+    {
+      "_id": "6a8c9410117e294ad8bbb144",
+      "name": "Recursos Humanos",
+      "description": "Talento y bienestar del personal",
+      "organizationID": "6a8c8f8b701901f25c39c269",
+      "createdAt": "2026-08-24T18:57:20.736Z"
+    },
+    {
+      "_id": "6a8c9410117e294ad8bbb146",
+      "name": "Operaciones",
+      "description": "Operación de condominios e instalaciones",
+      "organizationID": "6a8c8f8b701901f25c39c269",
+      "createdAt": "2026-08-24T18:57:20.744Z"
+    },
+    {
+      "_id": "6a8c9410117e294ad8bbb149",
+      "name": "Ventas",
+      "description": "Comercialización y atención a clientes",
+      "organizationID": "6a8c8f8b701901f25c39c269",
+      "createdAt": "2026-08-24T18:57:20.748Z"
+    },
+    {
+      "_id": "6a8c9410117e294ad8bbb14c",
+      "name": "Tecnología",
+      "description": "Desarrollo y soporte de sistemas",
+      "organizationID": "6a8c8f8b701901f25c39c269",
+      "createdAt": "2026-08-24T18:57:20.750Z"
+    },
+    {
+      "_id": "6a8c9410117e294ad8bbb14e",
+      "name": "Mantenimiento",
+      "description": "Mantenimiento preventivo y correctivo",
+      "organizationID": "6a8c8f8b701901f25c39c269",
+      "createdAt": "2026-08-24T18:57:20.753Z"
+    }
+  ],
+  "employees": [
+    {
+      "_id": "6a8c9410117e294ad8bbb150",
+      "firstname": "María",
+      "lastname": "Pérez",
+      "email": "maría.pérez0@test.local",
+      "password": "$2b$10$iFeWkaZb4hICQa8A.yItreRvr17hs9cQ4lj89J4teazL4ABaseyDy",
+      "role": "Employee",
+      "departmentID": null,
+      "organizationID": "6a8c8f8b701901f25c39c269",
+      "createdAt": "2026-08-24T18:57:20.815Z"
+    },
+    {
+      "_id": "6a8c9410117e294ad8bbb153",
+      "firstname": "Carlos",
+      "lastname": "Gómez",
+      "email": "carlos.gómez1@test.local",
+      "password": "$2b$10$iFeWkaZb4hICQa8A.yItreRvr17hs9cQ4lj89J4teazL4ABaseyDy",
+      "role": "Employee",
+      "departmentID": null,
+      "organizationID": "6a8c8f8b701901f25c39c269",
+      "createdAt": "2026-08-24T18:57:20.825Z"
+    },
+    {
+      "_id": "6a8c9410117e294ad8bbb156",
+      "firstname": "Ana",
+      "lastname": "Rodríguez",
+      "email": "ana.rodríguez2@test.local",
+      "password": "$2b$10$iFeWkaZb4hICQa8A.yItreRvr17hs9cQ4lj89J4teazL4ABaseyDy",
+      "role": "Employee",
+      "departmentID": null,
+      "organizationID": "6a8c8f8b701901f25c39c269",
+      "createdAt": "2026-08-24T18:57:20.832Z"
+    },
+    {
+      "_id": "6a8c9410117e294ad8bbb159",
+      "firstname": "José",
+      "lastname": "Fernández",
+      "email": "josé.fernández3@test.local",
+      "password": "$2b$10$iFeWkaZb4hICQa8A.yItreRvr17hs9cQ4lj89J4teazL4ABaseyDy",
+      "role": "Employee",
+      "departmentID": null,
+      "organizationID": "6a8c8f8b701901f25c39c269",
+      "createdAt": "2026-08-24T18:57:20.838Z"
+    },
+    {
+      "_id": "6a8c9410117e294ad8bbb15c",
+      "firstname": "Luisa",
+      "lastname": "López",
+      "email": "luisa.lópez4@test.local",
+      "password": "$2b$10$iFeWkaZb4hICQa8A.yItreRvr17hs9cQ4lj89J4teazL4ABaseyDy",
+      "role": "Employee",
+      "departmentID": null,
+      "organizationID": "6a8c8f8b701901f25c39c269",
+      "createdAt": "2026-08-24T18:57:20.843Z"
+    },
+    {
+      "_id": "6a8c9410117e294ad8bbb15f",
+      "firstname": "Pedro",
+      "lastname": "Martínez",
+      "email": "pedro.martínez5@test.local",
+      "password": "$2b$10$iFeWkaZb4hICQa8A.yItreRvr17hs9cQ4lj89J4teazL4ABaseyDy",
+      "role": "Employee",
+      "departmentID": null,
+      "organizationID": "6a8c8f8b701901f25c39c269",
+      "createdAt": "2026-08-24T18:57:20.849Z"
+    },
+    {
+      "_id": "6a8c9410117e294ad8bbb162",
+      "firstname": "Carmen",
+      "lastname": "García",
+      "email": "carmen.garcía6@test.local",
+      "password": "$2b$10$iFeWkaZb4hICQa8A.yItreRvr17hs9cQ4lj89J4teazL4ABaseyDy",
+      "role": "Employee",
+      "departmentID": null,
+      "organizationID": "6a8c8f8b701901f25c39c269",
+      "createdAt": "2026-08-24T18:57:20.854Z"
+    },
+    {
+      "_id": "6a8c9410117e294ad8bbb165",
+      "firstname": "Miguel",
+      "lastname": "Sánchez",
+      "email": "miguel.sánchez7@test.local",
+      "password": "$2b$10$iFeWkaZb4hICQa8A.yItreRvr17hs9cQ4lj89J4teazL4ABaseyDy",
+      "role": "Employee",
+      "departmentID": null,
+      "organizationID": "6a8c8f8b701901f25c39c269",
+      "createdAt": "2026-08-24T18:57:20.859Z"
+    },
+    {
+      "_id": "6a8c9410117e294ad8bbb168",
+      "firstname": "Rosa",
+      "lastname": "Romero",
+      "email": "rosa.romero8@test.local",
+      "password": "$2b$10$iFeWkaZb4hICQa8A.yItreRvr17hs9cQ4lj89J4teazL4ABaseyDy",
+      "role": "Employee",
+      "departmentID": null,
+      "organizationID": "6a8c8f8b701901f25c39c269",
+      "createdAt": "2026-08-24T18:57:20.862Z"
+    },
+    {
+      "_id": "6a8c9410117e294ad8bbb16b",
+      "firstname": "Andrés",
+      "lastname": "Díaz",
+      "email": "andrés.díaz9@test.local",
+      "password": "$2b$10$iFeWkaZb4hICQa8A.yItreRvr17hs9cQ4lj89J4teazL4ABaseyDy",
+      "role": "Employee",
+      "departmentID": null,
+      "organizationID": "6a8c8f8b701901f25c39c269",
+      "createdAt": "2026-08-24T18:57:20.868Z"
+    },
+    {
+      "_id": "6a8c9410117e294ad8bbb16e",
+      "firstname": "Elena",
+      "lastname": "Pérez",
+      "email": "elena.pérez10@test.local",
+      "password": "$2b$10$iFeWkaZb4hICQa8A.yItreRvr17hs9cQ4lj89J4teazL4ABaseyDy",
+      "role": "Employee",
+      "departmentID": null,
+      "organizationID": "6a8c8f8b701901f25c39c269",
+      "createdAt": "2026-08-24T18:57:20.873Z"
+    },
+    {
+      "_id": "6a8c9410117e294ad8bbb171",
+      "firstname": "Jorge",
+      "lastname": "Gómez",
+      "email": "jorge.gómez11@test.local",
+      "password": "$2b$10$iFeWkaZb4hICQa8A.yItreRvr17hs9cQ4lj89J4teazL4ABaseyDy",
+      "role": "Employee",
+      "departmentID": null,
+      "organizationID": "6a8c8f8b701901f25c39c269",
+      "createdAt": "2026-08-24T18:57:20.879Z"
+    },
+    {
+      "_id": "6a8c9410117e294ad8bbb174",
+      "firstname": "Paula",
+      "lastname": "Rodríguez",
+      "email": "paula.rodríguez12@test.local",
+      "password": "$2b$10$iFeWkaZb4hICQa8A.yItreRvr17hs9cQ4lj89J4teazL4ABaseyDy",
+      "role": "Employee",
+      "departmentID": null,
+      "organizationID": "6a8c8f8b701901f25c39c269",
+      "createdAt": "2026-08-24T18:57:20.884Z"
+    },
+    {
+      "_id": "6a8c9410117e294ad8bbb177",
+      "firstname": "Raúl",
+      "lastname": "Fernández",
+      "email": "raúl.fernández13@test.local",
+      "password": "$2b$10$iFeWkaZb4hICQa8A.yItreRvr17hs9cQ4lj89J4teazL4ABaseyDy",
+      "role": "Employee",
+      "departmentID": null,
+      "organizationID": "6a8c8f8b701901f25c39c269",
+      "createdAt": "2026-08-24T18:57:20.888Z"
+    },
+    {
+      "_id": "6a8c9410117e294ad8bbb17a",
+      "firstname": "Sofía",
+      "lastname": "López",
+      "email": "sofía.lópez14@test.local",
+      "password": "$2b$10$iFeWkaZb4hICQa8A.yItreRvr17hs9cQ4lj89J4teazL4ABaseyDy",
+      "role": "Employee",
+      "departmentID": null,
+      "organizationID": "6a8c8f8b701901f25c39c269",
+      "createdAt": "2026-08-24T18:57:20.894Z"
+    },
+    {
+      "_id": "6a8c9410117e294ad8bbb17d",
+      "firstname": "Diego",
+      "lastname": "Martínez",
+      "email": "diego.martínez15@test.local",
+      "password": "$2b$10$iFeWkaZb4hICQa8A.yItreRvr17hs9cQ4lj89J4teazL4ABaseyDy",
+      "role": "Employee",
+      "departmentID": null,
+      "organizationID": "6a8c8f8b701901f25c39c269",
+      "createdAt": "2026-08-24T18:57:20.899Z"
+    },
+    {
+      "_id": "6a8c9410117e294ad8bbb180",
+      "firstname": "Valeria",
+      "lastname": "García",
+      "email": "valeria.garcía16@test.local",
+      "password": "$2b$10$iFeWkaZb4hICQa8A.yItreRvr17hs9cQ4lj89J4teazL4ABaseyDy",
+      "role": "Employee",
+      "departmentID": null,
+      "organizationID": "6a8c8f8b701901f25c39c269",
+      "createdAt": "2026-08-24T18:57:20.904Z"
+    },
+    {
+      "_id": "6a8c9410117e294ad8bbb183",
+      "firstname": "Oscar",
+      "lastname": "Sánchez",
+      "email": "oscar.sánchez17@test.local",
+      "password": "$2b$10$iFeWkaZb4hICQa8A.yItreRvr17hs9cQ4lj89J4teazL4ABaseyDy",
+      "role": "Employee",
+      "departmentID": null,
+      "organizationID": "6a8c8f8b701901f25c39c269",
+      "createdAt": "2026-08-24T18:57:20.908Z"
+    },
+    {
+      "_id": "6a8c9410117e294ad8bbb186",
+      "firstname": "Gabriela",
+      "lastname": "Romero",
+      "email": "gabriela.romero18@test.local",
+      "password": "$2b$10$iFeWkaZb4hICQa8A.yItreRvr17hs9cQ4lj89J4teazL4ABaseyDy",
+      "role": "Employee",
+      "departmentID": null,
+      "organizationID": "6a8c8f8b701901f25c39c269",
+      "createdAt": "2026-08-24T18:57:20.912Z"
+    },
+    {
+      "_id": "6a8c9410117e294ad8bbb189",
+      "firstname": "Félix",
+      "lastname": "Díaz",
+      "email": "félix.díaz19@test.local",
+      "password": "$2b$10$iFeWkaZb4hICQa8A.yItreRvr17hs9cQ4lj89J4teazL4ABaseyDy",
+      "role": "Employee",
+      "departmentID": null,
+      "organizationID": "6a8c8f8b701901f25c39c269",
+      "createdAt": "2026-08-24T18:57:20.917Z"
+    },
+    {
+      "_id": "6a8c9410117e294ad8bbb18c",
+      "firstname": "Irene",
+      "lastname": "Pérez",
+      "email": "irene.pérez20@test.local",
+      "password": "$2b$10$iFeWkaZb4hICQa8A.yItreRvr17hs9cQ4lj89J4teazL4ABaseyDy",
+      "role": "Employee",
+      "departmentID": null,
+      "organizationID": "6a8c8f8b701901f25c39c269",
+      "createdAt": "2026-08-24T18:57:20.921Z"
+    },
+    {
+      "_id": "6a8c9410117e294ad8bbb18f",
+      "firstname": "Tomás",
+      "lastname": "Gómez",
+      "email": "tomás.gómez21@test.local",
+      "password": "$2b$10$iFeWkaZb4hICQa8A.yItreRvr17hs9cQ4lj89J4teazL4ABaseyDy",
+      "role": "Employee",
+      "departmentID": null,
+      "organizationID": "6a8c8f8b701901f25c39c269",
+      "createdAt": "2026-08-24T18:57:20.925Z"
+    },
+    {
+      "_id": "6a8c9410117e294ad8bbb192",
+      "firstname": "Lucía",
+      "lastname": "Rodríguez",
+      "email": "lucía.rodríguez22@test.local",
+      "password": "$2b$10$iFeWkaZb4hICQa8A.yItreRvr17hs9cQ4lj89J4teazL4ABaseyDy",
+      "role": "Employee",
+      "departmentID": null,
+      "organizationID": "6a8c8f8b701901f25c39c269",
+      "createdAt": "2026-08-24T18:57:20.929Z"
+    },
+    {
+      "_id": "6a8c9410117e294ad8bbb195",
+      "firstname": "Víctor",
+      "lastname": "Fernández",
+      "email": "víctor.fernández23@test.local",
+      "password": "$2b$10$iFeWkaZb4hICQa8A.yItreRvr17hs9cQ4lj89J4teazL4ABaseyDy",
+      "role": "Employee",
+      "departmentID": null,
+      "organizationID": "6a8c8f8b701901f25c39c269",
+      "createdAt": "2026-08-24T18:57:20.934Z"
+    }
+  ]
+}

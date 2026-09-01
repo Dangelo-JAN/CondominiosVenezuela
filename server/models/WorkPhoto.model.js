@@ -53,4 +53,7 @@ const WorkPhotoSchema = new Schema({
     }
 }, { timestamps: true })
 
+// Índice para reportes: fotos por organización + fecha laboral
+WorkPhotoSchema.index({ organizationID: 1, workdate: -1 })
+
 export const WorkPhoto = mongoose.model("WorkPhoto", WorkPhotoSchema)

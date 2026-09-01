@@ -15,7 +15,9 @@ export const HandleHRWorkPhoto = createAsyncThunk(
             const { type, data } = payload
 
             if (type === "GetAll") {
-                const res = await hrApiService.get(WorkPhotoEndPoints.GET_ALL)
+                // Fase 6 (R3): data.params (opcional) → startDate/endDate
+                const params = data?.params || {}
+                const res = await hrApiService.get(WorkPhotoEndPoints.GET_ALL, { params })
                 return { ...res.data, type: "GetAll" }
             }
 

@@ -2,6 +2,7 @@ import { WorkPhoto } from "../models/WorkPhoto.model.js"
 import { Employee } from "../models/Employee.model.js"
 import { v2 as cloudinary } from "cloudinary"
 import dayjs from "dayjs"
+import { buildDateRangeFilter } from "../utils/dateFilter.util.js"
 
 // Configurar Cloudinary (requiere CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET en .env)
 cloudinary.config({
@@ -230,10 +231,17 @@ export const HandleUploadWorkPhoto = async (req, res) => {
 // ── Employee: Obtener mis fotos ───────────────────────────────────────────
 export const HandleGetMyWorkPhotos = async (req, res) => {
     try {
-        const photos = await WorkPhoto.find({
+        const { startDate, endDate } = req.query
+        const filter = {
             employee: req.EMPID,
             organizationID: req.ORGID
-        }).sort({ workdate: -1 })
+        }
+
+        // Filtro por rango de fechas (workdate, convención UTC)
+        const dateRange = buildDateRangeFilter(startDate, endDate)
+        if (dateRange) filter.workdate = dateRange
+
+        const photos = await WorkPhoto.find(filter).sort({ workdate: -1 })
 
         return res.status(200).json({
             success: true,
@@ -279,7 +287,14 @@ export const HandleDeleteMyWorkPhoto = async (req, res) => {
 // ── HR: Ver todas las fotos de la organización ────────────────────────────
 export const HandleGetAllWorkPhotos = async (req, res) => {
     try {
-        const photos = await WorkPhoto.find({ organizationID: req.ORGID })
+        const { startDate, endDate } = req.query
+        const filter = { organizationID: req.ORGID }
+
+        // Filtro por rango de fechas (workdate, convención UTC)
+        const dateRange = buildDateRangeFilter(startDate, endDate)
+        if (dateRange) filter.workdate = dateRange
+
+        const photos = await WorkPhoto.find(filter)
             .populate("employee", "firstname lastname department")
             .populate("reviewedby", "firstname lastname")
             .sort({ workdate: -1 })

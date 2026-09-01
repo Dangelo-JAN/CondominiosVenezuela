@@ -78,6 +78,19 @@ export const HRBitacorasEndPoints = {
     DELETE: (id) => `/api/v1/bitacora/delete/${id}`
 }
 
+// ── Reportes Diarios/Semanales ─────────────────────────────────────────────
+export const ReportEndPoints = {
+    // HR
+    GET_CURRENT: "/api/v1/report/current",
+    GET_HISTORY: "/api/v1/report/history",
+    GET_BY_WEEK: (isoYear, weekNumber) => `/api/v1/report/history/${isoYear}/${weekNumber}`,
+
+    // Empleado (filtrado a su departamento en el server)
+    GET_MY_REPORT: "/api/v1/report/my-report",
+    // Empleado (histórico de SUS semanas cerradas — aislado por token)
+    GET_MY_HISTORY: "/api/v1/report/my-history"
+}
+
 // ── Notificaciones In-App ──────────────────────────────────────────────────
 export const HRNotificationsEndPoints = {
     GET_MY: "/api/v1/notification/my-notifications",

@@ -12,6 +12,7 @@ import HRProfilesReducer from '../Slices/HRProfilesSlice.js'
 import HRLeavesReducer from '../Slices/HRLeavesSlice.js'
 import HRBitacorasReducer from '../Slices/HRBitacorasSlice.js'
 import HRNotificationsReducer from '../Slices/HRNotificationsSlice.js'
+import ReportReducer from '../Slices/ReportSlice.js'
 
 export const store = configureStore({
     reducer: {
@@ -28,5 +29,6 @@ export const store = configureStore({
         HRLeavesReducer: HRLeavesReducer,
         HRBitacorasReducer: HRBitacorasReducer,
         HRNotificationsReducer: HRNotificationsReducer,
+        reportreducer: ReportReducer,
     }
 })

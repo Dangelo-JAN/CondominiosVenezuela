@@ -4,6 +4,7 @@ import { HumanResources } from "../models/HR.model.js"
 import { Notification } from "../models/Notification.model.js"
 import { sendPushToAll } from "../services/fcm.service.js"
 import { v2 as cloudinary } from "cloudinary"
+import { buildDateRangeFilter } from "../utils/dateFilter.util.js"
 
 // Configurar Cloudinary
 cloudinary.config({
@@ -289,11 +290,18 @@ export const HandleUpdateBitacora = async (req, res) => {
 // Obtener mis bitácoras (empleado)
 export const HandleGetMyBitacoras = async (req, res) => {
     try {
-        const bitacoras = await Bitacora.find({
+        const { startDate, endDate } = req.query
+        const filter = {
             employee: req.EMPID,
             organizationID: req.ORGID,
             isDeleted: false
-        })
+        }
+
+        // Filtro por rango de fechas (createdAt, convención UTC)
+        const dateRange = buildDateRangeFilter(startDate, endDate)
+        if (dateRange) filter.createdAt = dateRange
+
+        const bitacoras = await Bitacora.find(filter)
             .populate("employee", "firstname lastname department")
             .sort({ createdAt: -1 })
 

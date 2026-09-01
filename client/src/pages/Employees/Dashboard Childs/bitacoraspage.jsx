@@ -1,5 +1,6 @@
 import { useEffect, useState, useMemo, useCallback } from "react"
 import { useDispatch, useSelector } from "react-redux"
+import { useSearchParams } from "react-router-dom"
 import { useIsDark } from "../../../hooks/useIsDark.js"
 import { Loading } from "../../../components/common/loading.jsx"
 import {
@@ -7,7 +8,8 @@ import {
     HandleUpdateBitacora,
     HandleGetMyBitacoras
 } from "../../../redux/Thunks/HRBitacorasThunk.js"
-import { FileText, Plus, Edit, Image as ImageIcon, Video, X, Clock, ExternalLink } from "lucide-react"
+import { FileText, Plus, Edit, Image as ImageIcon, Video, X, Clock } from "lucide-react"
+import { BitacoraDetailModal } from "../../../components/common/Dashboard/ReportActivityModals.jsx"
 
 const MAX_IMAGES = 5
 const MAX_VIDEOS = 3
@@ -15,6 +17,7 @@ const MAX_VIDEOS = 3
 export const EmployeeBitacorasPage = () => {
     const isDark = useIsDark()
     const dispatch = useDispatch()
+    const [searchParams] = useSearchParams()
     const { data: bitacoras, isLoading, success, message } = useSelector((state) => state.HRBitacorasReducer)
 
     const [showForm, setShowForm] = useState(false)
@@ -32,8 +35,11 @@ export const EmployeeBitacorasPage = () => {
     const [viewingBitacora, setViewingBitacora] = useState(null)
 
     useEffect(() => {
-        dispatch(HandleGetMyBitacoras())
-    }, [dispatch])
+        // (→ Fases 7-8) Filtro URL-driven opcional: ?startDate=&endDate=
+        const from = searchParams.get("startDate")
+        const to = searchParams.get("endDate")
+        dispatch(HandleGetMyBitacoras(from || to ? { startDate: from || undefined, endDate: to || undefined } : {}))
+    }, [dispatch, searchParams])
 
     // Reset success message after timeout
     useEffect(() => {
@@ -539,102 +545,25 @@ export const EmployeeBitacorasPage = () => {
                 </div>
             )}
 
-            {/* ── View Detail Modal ── */}
-            {viewingBitacora && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50"
-                    onClick={() => setViewingBitacora(null)}>
-                    <div className="w-full max-w-2xl rounded-2xl overflow-hidden shadow-2xl max-h-[90vh] flex flex-col
-                        bg-white dark:bg-[#1a1a2e] border border-gray-200 dark:border-[rgba(252,227,0,0.15)]"
-                        onClick={(e) => e.stopPropagation()}>
-                        {/* Header */}
-                        <div className="flex items-center justify-between px-6 py-4 border-b
-                            border-gray-100 dark:border-[rgba(252,227,0,0.1)]">
-                            <h2 className="text-lg font-bold text-gray-900 dark:text-white">
-                                {viewingBitacora.title}
-                            </h2>
-                            <button onClick={() => setViewingBitacora(null)}
-                                className="p-2 rounded-xl hover:bg-gray-100 dark:hover:bg-[rgba(255,255,255,0.05)] transition-colors">
-                                <X className="w-5 h-5 text-gray-500 dark:text-gray-400" />
-                            </button>
-                        </div>
-
-                        {/* Body */}
-                        <div className="px-6 py-4 space-y-4 overflow-y-auto flex-1">
-                            <div className="flex items-center gap-2">
-                                <Clock className="w-3.5 h-3.5"
-                                    style={{ color: isDark ? "rgba(255,255,255,0.4)" : "#9ca3af" }} />
-                                <p className="text-xs" style={{ color: isDark ? "rgba(255,255,255,0.4)" : "#6b7280" }}>
-                                    {formatDate(viewingBitacora.createdAt)}
-                                    {viewingBitacora.updatedAt !== viewingBitacora.createdAt && " (editado)"}
-                                </p>
-                            </div>
-
-                            <div className="text-sm leading-relaxed whitespace-pre-wrap text-gray-700 dark:text-[rgba(255,255,255,0.8)]">
-                                {viewingBitacora.content}
-                            </div>
-
-                            {/* Images */}
-                            {viewingBitacora.images?.length > 0 && (
-                                <div className="space-y-2">
-                                    <div className="flex items-center gap-2">
-                                        <ImageIcon className="w-4 h-4"
-                                            style={{ color: isDark ? "#facc15" : "#ca8a04" }} />
-                                        <p className="text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-[rgba(255,255,255,0.4)]">
-                                            {viewingBitacora.images.length} imagen(es)
-                                        </p>
-                                    </div>
-                                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
-                                        {viewingBitacora.images.map((url, i) => (
-                                            <a key={i} href={url} target="_blank" rel="noopener noreferrer"
-                                                className="block rounded-xl overflow-hidden border border-gray-200 dark:border-[rgba(255,255,255,0.1)]
-                                                    hover:opacity-90 transition-opacity group relative">
-                                                <img src={url} alt={`Imagen ${i + 1}`}
-                                                    className="w-full h-32 object-cover" />
-                                                <div className="absolute inset-0 flex items-center justify-center bg-black/0 group-hover:bg-black/20 transition-all">
-                                                    <ExternalLink className="w-5 h-5 text-white opacity-0 group-hover:opacity-100 transition-opacity" />
-                                                </div>
-                                            </a>
-                                        ))}
-                                    </div>
-                                </div>
-                            )}
-
-                            {/* Videos */}
-                            {viewingBitacora.videos?.length > 0 && (
-                                <div className="space-y-2">
-                                    <div className="flex items-center gap-2">
-                                        <Video className="w-4 h-4"
-                                            style={{ color: isDark ? "#facc15" : "#ca8a04" }} />
-                                        <p className="text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-[rgba(255,255,255,0.4)]">
-                                            {viewingBitacora.videos.length} video(s)
-                                        </p>
-                                    </div>
-                                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
-                                        {viewingBitacora.videos.map((url, i) => (
-                                            <video key={i} src={url} controls playsInline preload="metadata"
-                                                className="w-full h-32 object-cover rounded-xl border border-gray-200 dark:border-[rgba(255,255,255,0.1)] bg-black" />
-                                        ))}
-                                    </div>
-                                </div>
-                            )}
-                        </div>
-
-                        {/* Footer */}
-                        <div className="flex items-center justify-end gap-3 px-6 py-4 border-t
-                            border-gray-100 dark:border-[rgba(252,227,0,0.1)]">
-                            <button onClick={() => { setViewingBitacora(null); openEditForm(viewingBitacora) }}
-                                className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold transition-all duration-200 hover:-translate-y-0.5"
-                                style={{
-                                    background: isDark ? "rgba(252,227,0,0.12)" : "#fef9c3",
-                                    color: isDark ? "#facc15" : "#ca8a04"
-                                }}>
-                                <Edit className="w-4 h-4" />
-                                Editar
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            )}
+            {/* ── View Detail Modal (reutilizado) ── */}
+            <BitacoraDetailModal
+                open={!!viewingBitacora}
+                data={viewingBitacora}
+                showAuthor={false}
+                onClose={() => setViewingBitacora(null)}
+                renderFooter={() => (
+                    <button
+                        onClick={() => openEditForm(viewingBitacora)}
+                        className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold transition-all duration-200 hover:-translate-y-0.5"
+                        style={{
+                            background: isDark ? "rgba(252,227,0,0.12)" : "#fef9c3",
+                            color: isDark ? "#facc15" : "#ca8a04"
+                        }}>
+                        <Edit className="w-4 h-4" />
+                        Editar
+                    </button>
+                )}
+            />
         </div>
     )
 }

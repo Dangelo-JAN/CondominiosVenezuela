@@ -1,6 +1,7 @@
 import { KeyDetailBoxContentWrapper } from "../../../components/common/Dashboard/contentwrappers.jsx"
 import { SalaryChart } from "../../../components/common/Dashboard/salarychart.jsx"
 import { DataTable } from "../../../components/common/Dashboard/datatable.jsx"
+import { ReportCompactCard } from "../../../components/common/Dashboard/ReportComponents.jsx"
 import { useEffect } from "react"
 import { HandleGetDashboard } from "../../../redux/Thunks/DashboardThunk.js"
 import { useDispatch, useSelector } from "react-redux"
@@ -73,6 +74,9 @@ export const HRDashboardPage = () => {
             </div>
 
             <KeyDetailBoxContentWrapper imagedataarray={DataArray} data={DashboardState.data} />
+
+            {/* Reporte diario/semanal de actividades (tarea #035) */}
+            <ReportCompactCard />
 
             <div className="flex items-center gap-3">
                 <div className="h-px flex-1 transition-colors duration-300" style={{ background: isDark ? "rgba(99,102,241,0.15)" : "#f3f4f6" }} />

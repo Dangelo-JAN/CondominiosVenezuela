@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
+import { useSearchParams } from "react-router-dom"
 import { HandleEmployeeDashboard } from "../../../redux/Thunks/EmployeeDashboardThunk.js"
 import { Loading } from "../../../components/common/loading.jsx"
 import { useToast } from "@/hooks/use-toast"
@@ -8,6 +9,7 @@ import {
     CalendarDays, AlertCircle, Eye, CheckCircle2
 } from "lucide-react"
 import { useIsDark } from "../../../hooks/useIsDark.js"
+import { WorkPhotoModal } from "../../../components/common/Dashboard/ReportActivityModals.jsx"
 
 // ── Helper: Formatear fecha usando timezone del browser (fix timezone) ──
 const formatDate = (dateStr, options = {}) => {
@@ -33,54 +35,6 @@ const formatTime = (dateStr) => {
         hour: "2-digit",
         minute: "2-digit"
     })
-}
-
-// ── Modal de vista previa ─────────────────────────────────────────────────
-const PhotoModal = ({ photo, onClose }) => {
-    if (!photo) return null
-    return (
-        <div
-            className="fixed inset-0 z-50 flex items-center justify-center p-4"
-            style={{ background: "rgba(0,0,0,0.85)" }}
-            onClick={onClose}
-        >
-            <div
-                className="relative max-w-3xl w-full rounded-2xl overflow-hidden"
-                onClick={e => e.stopPropagation()}
-            >
-                <img
-                    src={photo.photourl}
-                    alt={photo.description || "Foto de trabajo"}
-                    className="w-full object-contain max-h-[75vh]"
-                />
-                <div className="absolute top-3 right-3">
-                    <button
-                        onClick={onClose}
-                        className="flex items-center justify-center w-8 h-8 rounded-full
-                            bg-black/50 hover:bg-black/70 transition-colors duration-150"
-                    >
-                        <X className="w-4 h-4 text-white" />
-                    </button>
-                </div>
-                {(photo.description || photo.workdate) && (
-                    <div className="absolute bottom-0 left-0 right-0 px-4 py-3"
-                        style={{ background: "linear-gradient(0deg, rgba(0,0,0,0.7) 0%, transparent 100%)" }}>
-                        {photo.description && (
-                            <p className="text-sm text-white font-medium">{photo.description}</p>
-                        )}
-                        {photo.workdate && (
-                            <div className="flex flex-col gap-0.5 mt-1">
-                                <p className="text-lg font-bold text-white">{formatDate(photo.workdate)}</p>
-                                {photo.captureDate && (
-                                    <p className="text-xs text-white/60">Capturada: {formatDate(photo.captureDate)}</p>
-                                )}
-                            </div>
-                        )}
-                    </div>
-                )}
-            </div>
-        </div>
-    )
 }
 
 // ── Card de foto ──────────────────────────────────────────────────────────
@@ -162,6 +116,7 @@ export const EmployeeWorkPhotosPage = () => {
     const isDark = useIsDark()
     const dispatch = useDispatch()
     const { toast } = useToast()
+    const [searchParams] = useSearchParams()
     const { photos, isLoading } = useSelector(s => s.employeedashboardreducer)
 
     const fileInputRef = useRef(null)
@@ -171,8 +126,12 @@ export const EmployeeWorkPhotosPage = () => {
     const [showUploadPanel, setShowUploadPanel] = useState(false)
 
     useEffect(() => {
-        dispatch(HandleEmployeeDashboard({ type: "MyPhotos" }))
-    }, [])
+        // (→ Fases 7-8) Filtro URL-driven opcional: ?startDate=&endDate=
+        const from = searchParams.get("startDate")
+        const to = searchParams.get("endDate")
+        const params = from || to ? { startDate: from || undefined, endDate: to || undefined } : {}
+        dispatch(HandleEmployeeDashboard({ type: "MyPhotos", data: { params } }))
+    }, [dispatch, searchParams])
 
     // Convertir archivo a base64
     const toBase64 = (file) => new Promise((resolve, reject) => {
@@ -407,7 +366,7 @@ export const EmployeeWorkPhotosPage = () => {
             )}
 
             {/* Modal de preview */}
-            <PhotoModal photo={previewPhoto} onClose={() => setPreviewPhoto(null)} />
+            <WorkPhotoModal open={!!previewPhoto} data={previewPhoto} onClose={() => setPreviewPhoto(null)} showEmployee={false} />
         </div>
     )
 }

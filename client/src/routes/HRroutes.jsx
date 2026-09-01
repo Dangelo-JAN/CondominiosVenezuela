@@ -19,6 +19,7 @@ import { HRLeavesPage } from "../pages/HumanResources/Dashboard Childs/leavespag
 import { HRRequestspage } from "../pages/HumanResources/Dashboard Childs/HRRequestspage.jsx"
 import { HRBitacorasPage } from "../pages/HumanResources/Dashboard Childs/hrbitacoraspage.jsx"
 import { HRProfilePage } from "../pages/HumanResources/Dashboard Childs/HRProfilePage.jsx"
+import { HRReportPage } from "../pages/HumanResources/Dashboard Childs/HRReportPage.jsx"
 
 export const HRRoutes = [
     {
@@ -84,6 +85,10 @@ export const HRRoutes = [
             {
                 path: "/HR/dashboard/bitacoras",
                 element: <HRBitacorasPage />
+            },
+            {
+                path: "/HR/dashboard/reports",
+                element: <HRReportPage />
             }
         ]
     },

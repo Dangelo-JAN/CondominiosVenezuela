@@ -30,6 +30,10 @@ Las reglas detalladas de rutas, desarrollo, naming, técnicas, accesibilidad y f
 |----------|---------|
 | Reglas detalladas (rutas, invariantes, naming, técnicas, accesibilidad, push) | `.agent/rules/global-context/index.md` |
 | Diseño visual (colores, componentes, tokens) | `.agent/rules/design-system/index.md` |
+| **Deploy Local y Testing de Desarrollo** | `.agent/rules/global-context/local-deploy.md` |
+
+### ⛔ REGLA DE DEPLOY LOCAL — NO NEGOCIABLE
+Si se requiere ejecutar el entorno de desarrollo o testing local, **DEBES** seguir el protocolo estrictamente documentado en **[.agent/rules/global-context/local-deploy.md](.agent/rules/global-context/local-deploy.md)**. Esta regla garantiza la integridad del dataset semilla y la correcta inicialización del stack (Docker, Backend y Frontend).
 
 ## 6. Flujo de Git (NO NEGOCIABLE)
 Seguir estrictamente `.agent/workflows/git-workflow.md`. Prohibido commit directo a `main` o `dev`.
