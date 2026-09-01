@@ -75,6 +75,10 @@ export const HRRoutes = [
                 element: <HRProfilesPage />
             },
             {
+                path: "/HR/dashboard/hr-profile",
+                element: <HRProfilePage />
+            },
+            {
                 path: "/HR/dashboard/bitacoras",
                 element: <HRBitacorasPage />
             },
