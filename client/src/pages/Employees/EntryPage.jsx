@@ -17,6 +17,7 @@ export const EntryPage = () => {
     const { installPrompt, isInstalled, handleInstall } = usePWAPrompt()
     const [testimonialIndex, setTestimonialIndex] = useState(0)
     const [testimonialVisible, setTestimonialVisible] = useState(true)
+    const [openFaq, setOpenFaq] = useState(0)
 
     const resources = [
         {
