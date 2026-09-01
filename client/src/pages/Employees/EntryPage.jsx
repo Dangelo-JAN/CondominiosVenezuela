@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom"
+import { useState } from "react"
 import {
     ArrowRight, BookOpen, Building2, CalendarCheck2, CalendarClock,
     CheckCircle2, ChevronDown, ChevronLeft, ChevronRight, Clock3,
@@ -14,6 +15,8 @@ import { usePWAPrompt } from "../../contexts/PWAContext.jsx"
 export const EntryPage = () => {
     const { isDark } = useIsDark()
     const { installPrompt, isInstalled, handleInstall } = usePWAPrompt()
+    const [testimonialIndex, setTestimonialIndex] = useState(0)
+    const [testimonialVisible, setTestimonialVisible] = useState(true)
 
     const resources = [
         {
