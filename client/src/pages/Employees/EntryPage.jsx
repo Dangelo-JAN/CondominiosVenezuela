@@ -1,5 +1,11 @@
 import { Link } from "react-router-dom"
-import { ArrowRight, ShieldCheck, Users, Zap, Download } from "lucide-react"
+import {
+    ArrowRight, BookOpen, Building2, CalendarCheck2, CalendarClock,
+    CheckCircle2, ChevronDown, ChevronLeft, ChevronRight, Clock3,
+    Database, Download, Fingerprint, Handshake, HelpCircle, KeyRound,
+    Lock, Mail, Megaphone, Quote, ShieldCheck, Smartphone,
+    Sparkles, TrendingUp, UserPlus, Users, Zap
+} from "lucide-react"
 import { useIsDark } from "../../hooks/useIsDark.js"
 import { Footer } from "../../components/common/Footer.jsx"
 import { PublicNavbar } from "../../components/common/PublicNavbar.jsx"
