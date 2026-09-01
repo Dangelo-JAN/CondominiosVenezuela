@@ -24,11 +24,11 @@ const API_URL = import.meta.env.VITE_BACKEND_API
 
 const inputCls = `w-full rounded-xl px-4 py-3 text-sm outline-none transition-all duration-200
     bg-gray-50 border border-gray-200 text-gray-900
-    focus:border-purple-400 focus:bg-white focus:ring-2 focus:ring-purple-100
-    dark:bg-[rgba(255,255,255,0.04)] dark:border-[rgba(255,255,255,0.08)] dark:text-white
-    dark:focus:border-[rgba(124,58,237,0.5)] dark:focus:bg-[rgba(124,58,237,0.06)] dark:focus:ring-0`
+    focus:border-blue-400 focus:bg-white focus:ring-2 focus:ring-blue-100
+    dark:bg-[rgba(255,255,255,0.04)] dark:border-[rgba(255,255,255,0.12)] dark:text-white
+    dark:focus:border-[rgba(142,178,232,0.6)] dark:focus:bg-[rgba(0,61,165,0.08)] dark:focus:ring-0`
 
-const labelCls = `text-xs font-semibold uppercase tracking-wider mb-1.5 flex items-center gap-1.5 text-gray-500 dark:text-[rgba(255,255,255,0.5)]`
+const labelCls = `text-xs font-semibold uppercase tracking-wider mb-1.5 flex items-center gap-1.5 text-gray-500 dark:text-[rgba(255,255,255,0.65)]`
 
 // Categorías de contacto
 const contactCategories = [
@@ -166,16 +166,16 @@ export const ContactPage = () => {
             <section className="relative overflow-hidden px-5 sm:px-8 lg:px-20 py-16 sm:py-24">
                 {/* Decorative blobs */}
                 <div className="absolute top-0 left-1/4 w-64 h-64 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-pulse"
-                    style={{ background: isDark ? "#7c3aed" : "#ddd6fe" }} />
+                    style={{ background: isDark ? "#8fb2e8" : "#d9e2f2" }} />
                 <div className="absolute bottom-0 right-1/4 w-64 h-64 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-pulse"
-                    style={{ background: isDark ? "#003DA5" : "#bfdbfe", animationDelay: "700ms" }} />
+                    style={{ background: isDark ? "#8fb2e8" : "#bfdbfe", animationDelay: "700ms" }} />
 
                 <div className="relative max-w-4xl mx-auto text-center">
                     {/* Badge */}
                     <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-sm font-medium mb-6"
                         style={{ 
-                            background: isDark ? "rgba(124,58,237,0.12)" : "#f3e8ff", 
-                            color: "#7c3aed" 
+                            background: isDark ? "rgba(0,61,165,0.25)" : "#d9e2f2", 
+                            color: isDark ? "#8fb2e8" : "#003DA5" 
                         }}>
                         <Mail className="w-4 h-4" />
                         Contáctanos
@@ -184,7 +184,7 @@ export const ContactPage = () => {
                     <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold leading-tight mb-6"
                         style={{ color: isDark ? "#ffffff" : "#111827" }}>
                         ¿Cómo podemos{" "}
-                        <span style={{ color: "#003DA5" }} className="italic">ayudarte</span>?
+                        <span style={{ color: isDark ? "#8fb2e8" : "#003DA5" }} className="italic">ayudarte</span>?
                     </h1>
                     <p className="text-lg sm:text-xl leading-relaxed max-w-2xl mx-auto"
                         style={{ color: isDark ? "rgba(255,255,255,0.55)" : "#4b5563" }}>
@@ -203,7 +203,7 @@ export const ContactPage = () => {
                             className="group p-6 rounded-2xl border transition-all duration-300 hover:-translate-y-1 cursor-pointer"
                             style={{
                                 background: isDark ? "#1a1a2e" : "#ffffff",
-                                borderColor: isDark ? "rgba(99,102,241,0.12)" : "#f3f4f6"
+                                borderColor: isDark ? "rgba(0,61,165,0.25)" : "#d9e2f2"
                             }}
                             onClick={() => {
                                 setFormData(prev => ({ ...prev, inquiryType: cat.title }))
@@ -212,9 +212,9 @@ export const ContactPage = () => {
                         >
                             <div className="w-12 h-12 rounded-xl flex items-center justify-center mb-4 transition-colors"
                                 style={{ 
-                                    background: isDark ? "rgba(124,58,237,0.1)" : "#f3e8ff"
+                                    background: isDark ? "rgba(0,61,165,0.18)" : "#d9e2f2"
                                 }}>
-                                <cat.icon className="w-6 h-6" style={{ color: "#7c3aed" }} />
+                                <cat.icon className="w-6 h-6" style={{ color: isDark ? "#8fb2e8" : "#003DA5" }} />
                             </div>
                             <h3 className="text-lg font-bold mb-2"
                                 style={{ color: isDark ? "#ffffff" : "#111827" }}>
@@ -234,11 +234,11 @@ export const ContactPage = () => {
                 <div className="max-w-4xl mx-auto rounded-3xl p-6 sm:p-10 border"
                     style={{
                         background: isDark ? "#1a1a2e" : "#ffffff",
-                        borderColor: isDark ? "rgba(99,102,241,0.12)" : "#f3f4f6"
+                        borderColor: isDark ? "rgba(0,61,165,0.25)" : "#d9e2f2"
                     }}>
                     <div className="mb-8">
                         <p className="text-xs font-bold uppercase tracking-[0.2em] mb-2"
-                            style={{ color: "#7c3aed" }}>
+                            style={{ color: isDark ? "#8fb2e8" : "#003DA5" }}>
                             Formulario de contacto
                         </p>
                         <h2 className="text-2xl sm:text-3xl font-bold"
@@ -397,7 +397,7 @@ export const ContactPage = () => {
                                 name="privacyAccepted"
                                 checked={formData.privacyAccepted}
                                 onChange={handleChange}
-                                className="mt-1 w-4 h-4 rounded border-gray-300 text-purple-600 focus:ring-purple-500 dark:border-[rgba(255,255,255,0.2)] dark:bg-[rgba(255,255,255,0.04)]"
+                                className="mt-1 w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500 dark:border-[rgba(142,178,232,0.4)] dark:bg-[rgba(0,61,165,0.18)]"
                                 disabled={isLoading}
                             />
                             <label 
@@ -406,7 +406,7 @@ export const ContactPage = () => {
                                 style={{ color: isDark ? "rgba(255,255,255,0.6)" : "#4b5563" }}
                             >
                                 Acepto la{" "}
-                                <a href="#" className="underline hover:opacity-80" style={{ color: "#7c3aed" }}>
+                                <a href="#" className="underline hover:opacity-80" style={{ color: isDark ? "#8fb2e8" : "#003DA5" }}>
                                     Política de Privacidad
                                 </a>{" "}
                                 y el tratamiento de mis datos personales. *
@@ -419,8 +419,8 @@ export const ContactPage = () => {
                             disabled={isLoading}
                             className="w-full flex items-center justify-center gap-2 px-6 py-4 rounded-xl text-base font-semibold text-white transition-all duration-200 hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed"
                             style={{
-                                background: "linear-gradient(135deg, #7c3aed, #003DA5)",
-                                boxShadow: "0 8px 25px rgba(124,58,237,0.3)"
+                                background: "linear-gradient(135deg, #003DA5, #00247D)",
+                                boxShadow: "0 8px 25px rgba(0,61,165,0.3)"
                             }}
                         >
                             {isLoading ? (
@@ -448,9 +448,9 @@ export const ContactPage = () => {
                         <div className="text-center p-6 rounded-2xl border"
                             style={{
                                 background: isDark ? "#0f0f1a" : "#ffffff",
-                                borderColor: isDark ? "rgba(99,102,241,0.12)" : "#f3f4f6"
+                                borderColor: isDark ? "rgba(0,61,165,0.25)" : "#d9e2f2"
                             }}>
-                            <Mail className="w-8 h-8 mx-auto mb-3" style={{ color: "#7c3aed" }} />
+                            <Mail className="w-8 h-8 mx-auto mb-3" style={{ color: isDark ? "#8fb2e8" : "#003DA5" }} />
                             <h3 className="font-semibold mb-1"
                                 style={{ color: isDark ? "#ffffff" : "#111827" }}>Email</h3>
                             <p className="text-sm"
@@ -459,9 +459,9 @@ export const ContactPage = () => {
                         <div className="text-center p-6 rounded-2xl border"
                             style={{
                                 background: isDark ? "#0f0f1a" : "#ffffff",
-                                borderColor: isDark ? "rgba(99,102,241,0.12)" : "#f3f4f6"
+                                borderColor: isDark ? "rgba(0,61,165,0.25)" : "#d9e2f2"
                             }}>
-                            <Phone className="w-8 h-8 mx-auto mb-3" style={{ color: "#7c3aed" }} />
+                            <Phone className="w-8 h-8 mx-auto mb-3" style={{ color: isDark ? "#8fb2e8" : "#003DA5" }} />
                             <h3 className="font-semibold mb-1"
                                 style={{ color: isDark ? "#ffffff" : "#111827" }}>Teléfono</h3>
                             <p className="text-sm"
@@ -470,9 +470,9 @@ export const ContactPage = () => {
                         <div className="text-center p-6 rounded-2xl border"
                             style={{
                                 background: isDark ? "#0f0f1a" : "#ffffff",
-                                borderColor: isDark ? "rgba(99,102,241,0.12)" : "#f3f4f6"
+                                borderColor: isDark ? "rgba(0,61,165,0.25)" : "#d9e2f2"
                             }}>
-                            <Clock className="w-8 h-8 mx-auto mb-3" style={{ color: "#7c3aed" }} />
+                            <Clock className="w-8 h-8 mx-auto mb-3" style={{ color: isDark ? "#8fb2e8" : "#003DA5" }} />
                             <h3 className="font-semibold mb-1"
                                 style={{ color: isDark ? "#ffffff" : "#111827" }}>Horario</h3>
                             <p className="text-sm"
@@ -498,7 +498,7 @@ export const ContactPage = () => {
                                 className="rounded-2xl border overflow-hidden transition-all duration-300"
                                 style={{
                                     background: isDark ? "#1a1a2e" : "#ffffff",
-                                    borderColor: isDark ? "rgba(99,102,241,0.12)" : "#f3f4f6"
+                                    borderColor: isDark ? "rgba(0,61,165,0.25)" : "#d9e2f2"
                                 }}
                             >
                                 <button
@@ -506,8 +506,8 @@ export const ContactPage = () => {
                                     className="w-full flex items-center justify-between p-5 text-left transition-colors"
                                     style={{ 
                                         background: isDark 
-                                            ? (openFaq === idx ? "rgba(124,58,237,0.05)" : "transparent") 
-                                            : (openFaq === idx ? "#f9fafb" : "transparent")
+                                            ? (openFaq === idx ? "rgba(0,61,165,0.08)" : "transparent") 
+                                            : (openFaq === idx ? "#d9e2f2" : "transparent")
                                     }}
                                 >
                                     <span className="font-semibold pr-4"
@@ -515,9 +515,9 @@ export const ContactPage = () => {
                                         {faq.q}
                                     </span>
                                     {openFaq === idx ? (
-                                        <ChevronUp className="w-5 h-5 flex-shrink-0" style={{ color: "#7c3aed" }} />
+                                        <ChevronUp className="w-5 h-5 flex-shrink-0" style={{ color: isDark ? "#8fb2e8" : "#003DA5" }} />
                                     ) : (
-                                        <ChevronDown className="w-5 h-5 flex-shrink-0" style={{ color: "#7c3aed" }} />
+                                        <ChevronDown className="w-5 h-5 flex-shrink-0" style={{ color: isDark ? "#8fb2e8" : "#003DA5" }} />
                                     )}
                                 </button>
                                 {openFaq === idx && (
