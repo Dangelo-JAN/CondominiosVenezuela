@@ -11,7 +11,7 @@ Este directorio contiene las reglas canónicas de UI/UX para `condo.ve` (abril 2
 2. **[Colores y Tokens](./colors.md)**: Definición de la Paleta 🇻🇪, `ACCENT_MAP` y tintes de Tailwind.
 3. **[Listas y Tablas](./lists-tables.md)**: Implementación de `ThemedList*` y reglas de deprecación de `ListItemCard`.
 4. **[Componentes UI](./ui-elements.md)**: Especificaciones para Cards KPI, Botones de acción, Badges y Avatares.
-5. **[Lógica y Specs](./specs.md)**: Uso de `SelectField`, hook `useIsDark`, tipografía y border-radius.
+5. **[Lógica y Specs](./specs.md)**: Uso de `SelectField`, hooks de tema (`useTheme`/`useIsDark`), tipografía y border-radius.
 
 ## 📏 Regla de Oro de Contraste
 - **Borde > Fondo**: El borde siempre debe ser más oscuro o perceptible que el fondo.
@@ -31,5 +31,5 @@ Este directorio contiene las reglas canónicas de UI/UX para `condo.ve` (abril 2
 ## 🛑 Prohibiciones Estrictas (Zero Tolerance)
 1. **No usar acentos antiguos**: El agente no debe sugerir ni mantener nombres como `indigo`, `amber` o `purple`.
 2. **No usar `<select>` nativo**: Es obligatorio el uso de `SelectField` para evitar errores de renderizado en Windows.
-3. **No usar `document.documentElement`**: Toda lógica de tema debe ser reactiva mediante el hook `useIsDark()`.
+3. **Hooks de tema independientes**: `useTheme()` = objeto para el toggle; `useIsDark()` = boolean reactivo para lectura. NO fusionarlos ni intercambiar sus contratos (ver `specs.md` §3). No usar `document.documentElement`.
 4. **No a los separadores invisibles**: Cualquier borde de separación en listas debe seguir los tintes definidos en `lists-tables.md`.

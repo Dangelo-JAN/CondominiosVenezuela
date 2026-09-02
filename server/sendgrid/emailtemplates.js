@@ -378,3 +378,78 @@ export const INVITATION_EMPLOYEE_TEMPLATE = `
 </body>
 </html>
 `
+
+// ── Contacto General (Página pública /contact) ─────────────────────────────────
+export const CONTACT_GENERAL_TEMPLATE = `
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nuevo contacto general — CondoVE SGC</title>
+</head>
+<body style="${BASE_STYLE}">
+  <div style="${CARD_STYLE}">
+    ${HEADER("Nuevo contacto desde la página pública")}
+    <p style="margin: 0 0 12px; color: #4b5563; font-size: 15px;">
+        Un visitante ha enviado un mensaje desde la página de contacto.
+    </p>
+    <div style="
+        background: linear-gradient(135deg, rgba(99,102,241,0.06), rgba(139,92,246,0.06));
+        border: 1px solid rgba(99,102,241,0.15);
+        border-radius: 12px;
+        padding: 20px 24px;
+        margin: 24px 0;
+    ">
+        <p style="margin: 0 0 8px; font-size: 14px; font-weight: 600; color: #6366f1;">Detalles del contacto:</p>
+        <table style="width: 100%; border-collapse: collapse; margin-top: 12px;">
+            <tr>
+                <td style="padding: 8px 0; border-bottom: 1px solid rgba(99,102,241,0.1); font-weight: 600; width: 35%; color: #4b5563;">Tipo de consulta:</td>
+                <td style="padding: 8px 0; border-bottom: 1px solid rgba(99,102,241,0.1); color: #1a1a2e;">{inquiryType}</td>
+            </tr>
+            <tr>
+                <td style="padding: 8px 0; border-bottom: 1px solid rgba(99,102,241,0.1); font-weight: 600; color: #4b5563;">Nombre:</td>
+                <td style="padding: 8px 0; border-bottom: 1px solid rgba(99,102,241,0.1); color: #1a1a2e;">{firstName} {lastName}</td>
+            </tr>
+            <tr>
+                <td style="padding: 8px 0; border-bottom: 1px solid rgba(99,102,241,0.1); font-weight: 600; color: #4b5563;">Email:</td>
+                <td style="padding: 8px 0; border-bottom: 1px solid rgba(99,102,241,0.1);">
+                    <a href="mailto:{email}" style="color: #6366f1; text-decoration: none;">{email}</a>
+                </td>
+            </tr>
+            <tr>
+                <td style="padding: 8px 0; border-bottom: 1px solid rgba(99,102,241,0.1); font-weight: 600; color: #4b5563;">Teléfono:</td>
+                <td style="padding: 8px 0; border-bottom: 1px solid rgba(99,102,241,0.1); color: #1a1a2e;">{phone}</td>
+            </tr>
+            <tr>
+                <td style="padding: 8px 0; border-bottom: 1px solid rgba(99,102,241,0.1); font-weight: 600; color: #4b5563;">Condominio/Empresa:</td>
+                <td style="padding: 8px 0; border-bottom: 1px solid rgba(99,102,241,0.1); color: #1a1a2e;">{companyName}</td>
+            </tr>
+            <tr>
+                <td style="padding: 8px 0; border-bottom: 1px solid rgba(99,102,241,0.1); font-weight: 600; color: #4b5563;">Website:</td>
+                <td style="padding: 8px 0; border-bottom: 1px solid rgba(99,102,241,0.1); color: #1a1a2e;">{website}</td>
+            </tr>
+            <tr>
+                <td style="padding: 8px 0; font-weight: 600; color: #4b5563;">País:</td>
+                <td style="padding: 8px 0; color: #1a1a2e;">{country}</td>
+            </tr>
+        </table>
+    </div>
+    <div style="
+        margin-top: 20px;
+        padding: 15px;
+        background: #f9fafb;
+        border-left: 4px solid #6366f1;
+        border-radius: 4px;
+    ">
+        <h4 style="margin: 0 0 8px; color: #111827; font-size: 14px;">Mensaje:</h4>
+        <p style="white-space: pre-wrap; margin: 0; color: #4b5563; font-size: 14px; line-height: 1.6;">{message}</p>
+    </div>
+    <p style="margin-top: 30px; font-size: 12px; color: #9ca3af;">
+        Generado automáticamente por CondoVE SGC — Página de contacto público.
+    </p>
+    ${FOOTER}
+  </div>
+</body>
+</html>
+`

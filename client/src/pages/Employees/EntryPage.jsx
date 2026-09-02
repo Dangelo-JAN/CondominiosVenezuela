@@ -1,16 +1,16 @@
 import { Link } from "react-router-dom"
-import {
-    ArrowRight, ShieldCheck, Users, Zap, Download,
-    Fingerprint, Megaphone, Smartphone, UserPlus,
-    Building2, Mail, CalendarCheck2, CalendarClock, TrendingUp, CheckCircle2,
-    Quote, ChevronLeft, ChevronRight, Lock, Database, KeyRound, Clock3,
-    BookOpen, ChevronDown, Handshake, HelpCircle, Sparkles
-} from "lucide-react"
 import { useState } from "react"
+import {
+    ArrowRight, BookOpen, Building2, CalendarCheck2, CalendarClock,
+    CheckCircle2, ChevronDown, ChevronLeft, ChevronRight, Clock3,
+    Database, Download, Fingerprint, Handshake, HelpCircle, KeyRound,
+    Lock, Mail, Megaphone, Quote, ShieldCheck, Smartphone,
+    Sparkles, TrendingUp, UserPlus, Users, Zap
+} from "lucide-react"
 import { useIsDark } from "../../hooks/useIsDark.js"
-import { usePWAPrompt } from "../../contexts/PWAContext.jsx"
-import { PublicNavbar } from "../../components/common/PublicNavbar.jsx"
 import { Footer } from "../../components/common/Footer.jsx"
+import { PublicNavbar } from "../../components/common/PublicNavbar.jsx"
+import { usePWAPrompt } from "../../contexts/PWAContext.jsx"
 
 export const EntryPage = () => {
     const isDark = useIsDark()
