@@ -9,7 +9,7 @@ import { Users } from "lucide-react"
 import { ThemedListWrapper, ThemedHeadingBar, ThemedListContainer, ListItems } from "../../../components/common/Dashboard/ListDesigns"
 
 export const HREmployeesPage = () => {
-    const isDark = useIsDark()
+    const { isDark } = useIsDark()
     const dispatch = useDispatch()
     const { isViewer: isHRViewer } = useHRAuth()
     const HREmployeesState = useSelector((state) => state.HREmployeesPageReducer)

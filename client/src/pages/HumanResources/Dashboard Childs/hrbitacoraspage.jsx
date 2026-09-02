@@ -10,7 +10,7 @@ import { CustomSelect } from "../../../components/ui/custom-select.jsx"
 import { BitacoraDetailModal } from "../../../components/common/Dashboard/ReportActivityModals.jsx"
 
 export const HRBitacorasPage = () => {
-    const isDark = useIsDark()
+    const { isDark } = useIsDark()
     const dispatch = useDispatch()
     const [searchParams] = useSearchParams()
     const { data: bitacoras, isLoading } = useSelector((state) => state.HRBitacorasReducer)

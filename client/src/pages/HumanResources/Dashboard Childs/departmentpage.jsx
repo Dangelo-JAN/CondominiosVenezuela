@@ -5,7 +5,7 @@ import { useIsDark } from "../../../hooks/useIsDark"
 import { useHRAuth } from "../../../hooks/useHRAuth"
 
 export const HRDepartmentPage = () => {
-    const isDark = useIsDark();
+    const { isDark } = useIsDark();
     const { isViewer: isHRViewer } = useHRAuth();
 
     return (

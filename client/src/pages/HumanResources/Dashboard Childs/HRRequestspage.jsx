@@ -87,7 +87,7 @@ const inputCls = `w-full rounded-xl px-3 py-2.5 text-sm outline-none transition-
 
 // ── Formulario de solicitud ───────────────────────────────────────────────
 const RequestForm = ({ initialData, employees, onSubmit, onClose, isLoading }) => {
-    const isDark = useIsDark()
+    const { isDark } = useIsDark()
     const { formData, handleChange, setFormData } = useForm({
         employeeID:  initialData?.employee?._id || "",
         leavetype:   initialData?.leavetype     || "Personal",
@@ -178,7 +178,7 @@ const RequestForm = ({ initialData, employees, onSubmit, onClose, isLoading }) =
 
 // ── Modal detalle solicitud ───────────────────────────────────────────────
 const RequestDetailsDialog = ({ request, onClose, onApprove, onReject, onEdit, onDelete, isLoading, isViewer = false }) => {
-    const isDark = useIsDark()
+    const { isDark } = useIsDark()
     if (!request) return null
 
     return (
@@ -293,7 +293,7 @@ const RequestDetailsDialog = ({ request, onClose, onApprove, onReject, onEdit, o
 
 // ── Página principal ──────────────────────────────────────────────────────
 export const HRRequestspage = () => {
-    const isDark = useIsDark()
+    const { isDark } = useIsDark()
     const dispatch = useDispatch()
     const { isViewer: isHRViewer } = useHRAuth()
     const HRLeavesState    = useSelector(s => s.HRLeavesReducer)

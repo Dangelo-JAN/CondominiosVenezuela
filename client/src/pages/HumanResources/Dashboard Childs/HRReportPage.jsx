@@ -31,7 +31,7 @@ const formatDateLong = (dateStr) => {
 export const HRReportPage = () => {
     const dispatch = useDispatch()
     const navigate = useNavigate()
-    const isDark = useIsDark()
+    const { isDark } = useIsDark()
     const y = YELLOW(isDark)
 
     const { currentReport, history, selectedSnapshot, isLoading } = useSelector(s => s.reportreducer)
@@ -319,7 +319,7 @@ const MiniStat = ({ value, label, isDark, y }) => (
 
 // ── Modal: detalle completo e inmutable de una semana cerrada ──────────────
 const SnapshotDetailModal = ({ loading, snapshot, onClose, onActivityClick }) => {
-    const isDark = useIsDark()
+    const { isDark } = useIsDark()
     const y = YELLOW(isDark)
 
     return (

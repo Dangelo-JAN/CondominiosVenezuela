@@ -9,7 +9,7 @@ import { Loading } from "../../../components/common/loading.jsx"
 import { useIsDark } from "../../../hooks/useIsDark.js"
 
 export const HRDashboardPage = () => {
-    const isDark = useIsDark()
+    const { isDark } = useIsDark()
     const DashboardState = useSelector((state) => state.dashboardreducer)
     const HRState = useSelector((state) => state.HRReducer)
     const dispatch = useDispatch()

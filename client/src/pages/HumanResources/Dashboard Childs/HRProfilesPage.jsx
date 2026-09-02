@@ -68,7 +68,7 @@ const HRCard = ({ hr, isCurrentUser, onUpdatePermissions, onUpdateRole, onToggle
     const [localPerms, setLocalPerms] = useState(hr.permissions || {})
     const [saving, setSaving] = useState(false)
     const { toast } = useToast()
-    const isDark = useIsDark()
+    const { isDark } = useIsDark()
 
     const isAdmin = hr.role === "HR-Admin"
     const roleStyle = ROLE_STYLES[hr.role] || ROLE_STYLES["HR-Viewer"]
@@ -289,7 +289,7 @@ const InviteModal = ({ onClose, onInvite, currentCargo }) => {
     const [form, setForm] = useState({ firstname: "", lastname: "", email: "", cargo: defaultCargo })
     const [sending, setSending] = useState(false)
     const { toast } = useToast()
-    const isDark = useIsDark()
+    const { isDark } = useIsDark()
 
     const cargoOptions = getCargoOptions(currentCargo)
 

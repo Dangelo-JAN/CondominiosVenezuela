@@ -9,7 +9,7 @@ import { LeaveActionsDialogBox } from "../../../components/common/Dashboard/dial
 import { Calendar, Filter, ChevronDown, CheckCircle, XCircle, Clock } from "lucide-react"
 
 export const HRLeavesPage = () => {
-    const isDark = useIsDark()
+    const { isDark } = useIsDark()
     const dispatch = useDispatch()
     const HRLeavesState = useSelector((state) => state.HRLeavesReducer)
     const HREmployeesState = useSelector((state) => state.HREmployeesPageReducer)
