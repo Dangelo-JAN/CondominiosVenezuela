@@ -5,8 +5,8 @@ import { Loading } from "../../../components/common/loading.jsx"
 import { useIsDark } from "../../../hooks/useIsDark.js"
 import {
     User, Mail, Phone, Building2, ShieldCheck,
-    ShieldAlert, Clock, CalendarDays, Briefcase,
-    Save, X, Pencil
+    ShieldAlert, Clock, CalendarDays, FileText,
+    DollarSign, Briefcase, ClipboardList, Save, X, Pencil
 } from "lucide-react"
 
 const formatDate = (d) => d ? new Date(d).toLocaleDateString("es-ES", {
@@ -18,11 +18,13 @@ const formatTime = (d) => d ? new Date(d).toLocaleTimeString("es-ES", {
 }) : "—"
 
 // Mapa de colores de acento → valores concretos para claro y oscuro
-// (Design System v4: paleta Venezuela 🇻🇪 — blue/cyan/emerald aprobados)
 const ACCENT_MAP = {
-    "#003DA5": { lightBg: "#d9e2f2", lightBorder: "#99b1db", darkBg: "rgba(0,61,165,0.20)", darkBorder: "rgba(0,61,165,0.40)" },
-    "#06b6d4": { lightBg: "#cffafe", lightBorder: "#67e8f9", darkBg: "rgba(6,182,212,0.20)", darkBorder: "rgba(6,182,212,0.40)" },
-    "#10b981": { lightBg: "#d1fae5", lightBorder: "#6ee7b7", darkBg: "rgba(16,185,129,0.20)", darkBorder: "rgba(16,185,129,0.40)" },
+    "#003DA5": { lightBg: "#e0e7ff", lightBorder: "#a5b4fc", darkBg: "rgba(99,102,241,0.2)", darkBorder: "rgba(99,102,241,0.4)" },
+    "#8b5cf6": { lightBg: "#ede9fe", lightBorder: "#c4b5fd", darkBg: "rgba(139,92,246,0.2)", darkBorder: "rgba(139,92,246,0.4)" },
+    "#06b6d4": { lightBg: "#cffafe", lightBorder: "#67e8f9", darkBg: "rgba(6,182,212,0.2)", darkBorder: "rgba(6,182,212,0.4)" },
+    "#f59e0b": { lightBg: "#fef3c7", lightBorder: "#fcd34d", darkBg: "rgba(245,158,11,0.2)", darkBorder: "rgba(245,158,11,0.4)" },
+    "#10b981": { lightBg: "#d1fae5", lightBorder: "#6ee7b7", darkBg: "rgba(16,185,129,0.2)", darkBorder: "rgba(16,185,129,0.4)" },
+    "#ef4444": { lightBg: "#fee2e2", lightBorder: "#fca5a5", darkBg: "rgba(239,68,68,0.2)", darkBorder: "rgba(239,68,68,0.4)" },
 }
 
 // ── Tarjeta de información (solo lectura) ──────────────────────────────────
@@ -90,6 +92,41 @@ const EditableField = ({ icon: Icon, label, value, field, accent, isDark, onChan
                     }}
                 />
             </div>
+        </div>
+    )
+}
+
+// ── Tarjeta de estadística ────────────────────────────────────────────────
+const StatCard = ({ icon: Icon, label, value, accent, isDark }) => {
+    const colors = ACCENT_MAP[accent] || ACCENT_MAP["#003DA5"]
+    return (
+        <div className="flex flex-col gap-2 p-4 rounded-2xl transition-all duration-200"
+            style={{
+                background: isDark
+                    ? `linear-gradient(135deg, ${colors.darkBg} 0%, rgba(255,255,255,0.02) 100%)`
+                    : `linear-gradient(135deg, ${colors.lightBg} 0%, #ffffff 70%)`,
+                border: `1px solid ${isDark ? colors.darkBorder : colors.lightBorder}`,
+                boxShadow: isDark
+                    ? `0 4px 16px ${colors.darkBg}`
+                    : `0 2px 12px rgba(0,0,0,0.05)`,
+            }}>
+            <div className="flex items-center justify-between">
+                <p className="text-[10px] font-semibold uppercase tracking-wider"
+                    style={{ color: accent }}>
+                    {label}
+                </p>
+                <div className="w-8 h-8 rounded-lg flex items-center justify-center"
+                    style={{
+                        background: isDark ? colors.darkBg : colors.lightBg,
+                        border: `1px solid ${isDark ? colors.darkBorder : colors.lightBorder}`,
+                    }}>
+                    <Icon className="w-4 h-4" style={{ color: accent }} />
+                </div>
+            </div>
+            <p className="text-2xl font-bold"
+                style={{ color: isDark ? "#ffffff" : "#111827" }}>
+                {value ?? "—"}
+            </p>
         </div>
     )
 }
@@ -181,7 +218,7 @@ export const HRProfilePage = () => {
     const heroStyle = {
         background: isDark ? "rgba(255,255,255,0.05)" : "#f0f2ff",
         border: `1px solid ${isDark ? "rgba(255,255,255,0.12)" : "#c7d2fe"}`,
-        boxShadow: isDark ? "0 4px 24px rgba(0,0,0,0.2)" : "0 2px 16px rgba(0,61,165,0.08)",
+        boxShadow: isDark ? "0 4px 24px rgba(0,0,0,0.2)" : "0 2px 16px rgba(99,102,241,0.08)",
     }
 
     // Nombre display (modo edición o vista)
@@ -230,7 +267,7 @@ export const HRProfilePage = () => {
                                 disabled={isSaving}
                                 className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-sm font-semibold text-white transition-all duration-200"
                                 style={{
-                                    background: "linear-gradient(135deg, #003DA5, #00247D)",
+                                    background: "linear-gradient(135deg, #003DA5, #8b5cf6)",
                                     opacity: isSaving ? 0.7 : 1,
                                 }}>
                                 <Save className="w-4 h-4" />
@@ -242,7 +279,7 @@ export const HRProfilePage = () => {
                             onClick={() => setIsEditing(true)}
                             className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-sm font-semibold text-white transition-all duration-200 hover:opacity-90"
                             style={{
-                                background: "linear-gradient(135deg, #003DA5, #00247D)",
+                                background: "linear-gradient(135deg, #003DA5, #8b5cf6)",
                             }}>
                             <Pencil className="w-4 h-4" />
                             Editar perfil
@@ -273,7 +310,7 @@ export const HRProfilePage = () => {
             )}
 
             <div className="h-px w-full"
-                style={{ background: isDark ? "rgba(0,61,165,0.15)" : "#d9e2f2" }} />
+                style={{ background: isDark ? "rgba(99,102,241,0.1)" : "#e0e7ff" }} />
 
             {/* Avatar + nombre */}
             <div className="flex flex-col sm:flex-row items-center sm:items-start gap-5 p-5 rounded-2xl"
@@ -281,7 +318,7 @@ export const HRProfilePage = () => {
 
                 <div className="w-20 h-20 rounded-2xl flex items-center justify-center flex-shrink-0
                     text-white text-2xl font-bold"
-                    style={{ background: "linear-gradient(135deg, #003DA5, #00247D)" }}>
+                    style={{ background: "linear-gradient(135deg, #003DA5, #8b5cf6)" }}>
                     {emp?.firstname?.[0]?.toUpperCase()}{emp?.lastname?.[0]?.toUpperCase()}
                 </div>
 
@@ -302,13 +339,13 @@ export const HRProfilePage = () => {
                         </span>
                         <span className="flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-semibold border
                             bg-blue-50 text-blue-700 border-blue-200
-                            dark:bg-[rgba(0,61,165,0.15)] dark:text-blue-300 dark:border-[rgba(0,61,165,0.3)]">
+                            dark:bg-[rgba(99,102,241,0.12)] dark:text-blue-400 dark:border-[rgba(99,102,241,0.3)]">
                             <Briefcase className="w-3 h-3" /> {emp?.role || "HR"}
                         </span>
                         {emp?.cargo && (
                             <span className="flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-semibold border
-                                bg-blue-50 text-blue-700 border-blue-200
-                                dark:bg-[rgba(0,61,165,0.15)] dark:text-blue-300 dark:border-[rgba(0,61,165,0.3)]">
+                                bg-purple-50 text-purple-700 border-purple-200
+                                dark:bg-[rgba(139,92,246,0.12)] dark:text-purple-400 dark:border-[rgba(139,92,246,0.3)]">
                                 {emp?.cargo}
                             </span>
                         )}
@@ -341,14 +378,14 @@ export const HRProfilePage = () => {
                             <EditableField icon={User} label="Nombre" value={editData.firstname}
                                 field="firstname" accent="#003DA5" isDark={isDark} onChange={handleEditChange} />
                             <EditableField icon={User} label="Apellido" value={editData.lastname}
-                                field="lastname" accent="#003DA5" isDark={isDark} onChange={handleEditChange} />
+                                field="lastname" accent="#8b5cf6" isDark={isDark} onChange={handleEditChange} />
                             <EditableField icon={Phone} label="Teléfono" value={editData.contactnumber}
                                 field="contactnumber" accent="#06b6d4" isDark={isDark} onChange={handleEditChange} />
                         </>
                     ) : (
                         <>
                             <InfoCard icon={User} label="Nombre" value={`${emp?.firstname} ${emp?.lastname}`} accent="#003DA5" isDark={isDark} />
-                            <InfoCard icon={Mail} label="Correo" value={emp?.email} accent="#003DA5" isDark={isDark} />
+                            <InfoCard icon={Mail} label="Correo" value={emp?.email} accent="#8b5cf6" isDark={isDark} />
                             <InfoCard icon={Phone} label="Teléfono" value={emp?.contactnumber} accent="#06b6d4" isDark={isDark} />
                         </>
                     )}
@@ -363,7 +400,7 @@ export const HRProfilePage = () => {
                 </p>
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
                     <InfoCard icon={Briefcase} label="Rol" value={emp?.role} accent="#003DA5" isDark={isDark} />
-                    <InfoCard icon={ShieldCheck} label="Cargo" value={emp?.cargo} accent="#003DA5" isDark={isDark} />
+                    <InfoCard icon={ShieldCheck} label="Cargo" value={emp?.cargo} accent="#f59e0b" isDark={isDark} />
                     <InfoCard icon={Building2} label="Departamento" value={emp?.department?.name || "Sin asignar"} accent="#10b981" isDark={isDark} />
                     <InfoCard icon={CalendarDays} label="Miembro desde" value={formatDate(emp?.createdAt)} accent="#06b6d4" isDark={isDark} />
                     <InfoCard icon={Clock} label="Último acceso" value={`${formatDate(emp?.lastlogin)} · ${formatTime(emp?.lastlogin)}`} accent="#003DA5" isDark={isDark} />
