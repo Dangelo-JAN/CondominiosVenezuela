@@ -15,7 +15,7 @@ Sistema de Gestión Empresarial Integral enfocado en el mercado venezolano (`con
 ## 3. Arquitectura y Principios
 - **Arquitectura MERN:** Separación orgánica en `client/` y `server/`.
 - **Estado Global:** Redux Toolkit para centralización de datos asíncronos.
-- **Gestión Visual (Theme Toggle):** Uso obligatorio del hook reactivo `useIsDark()`. Prohibido `useTheme()` o detección directa en el DOM.
+- **Gestión Visual (Theme Toggle):** `useIsDark()` (boolean reactivo) para LECTURA de `isDark`; `useTheme()` SOLO para el `toggleTheme`. Prohibido tocar el DOM directamente ni fusionar los contratos (ver `design-system/specs.md` §3).
 - **Separación de Responsabilidades:** Componentes UI en `components/common/`, Layouts en `pages/`, Fetchers en `redux/thunks`.
 
 ## 4. The Source of Truth
