@@ -21,7 +21,7 @@ const CYAN = {
 }
 
 export const EmployeeAbsencesPage = () => {
-    const isDark = useIsDark()
+    const { isDark } = useIsDark()
     const dispatch = useDispatch()
     const HRLeavesState = useSelector((state) => state.HRLeavesReducer)
     

@@ -25,7 +25,7 @@ const STATUS_OPTIONS = [
 ]
 
 const LeaveRequestForm = ({ initialData, onSubmit, onClose, isLoading }) => {
-    const isDark = useIsDark()
+    const { isDark } = useIsDark()
     const { formData, handleChange, setFormData } = useForm({
         leavetype: initialData?.leavetype || "Personal",
         startdate: initialData?.startdate?.split("T")[0] || "",
@@ -116,7 +116,7 @@ const LeaveRequestForm = ({ initialData, onSubmit, onClose, isLoading }) => {
 }
 
 const RequestDetailsDialog = ({ request, onClose, onEdit, onDelete, isLoading }) => {
-    const isDark = useIsDark()
+    const { isDark } = useIsDark()
 
     if (!request) return null
 
@@ -238,7 +238,7 @@ const RequestDetailsDialog = ({ request, onClose, onEdit, onDelete, isLoading })
 }
 
 export const EmployeeRequestspage = () => {
-    const isDark = useIsDark()
+    const { isDark } = useIsDark()
     const dispatch = useDispatch()
     const HRLeavesState = useSelector((state) => state.HRLeavesReducer)
     

@@ -97,7 +97,7 @@ const StatCard = ({ icon: Icon, label, value, accent, isDark }) => {
 // ── Página principal ──────────────────────────────────────────────────────
 export const EmployeeProfilePage = () => {
     const dispatch = useDispatch()
-    const isDark = useIsDark()
+    const { isDark } = useIsDark()
     const { attendance } = useSelector(s => s.employeedashboardreducer)
     const employeeState = useSelector(s => s.employeereducer)
     const [profile, setProfile] = useState(null)
