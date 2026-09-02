@@ -1,6 +1,7 @@
 import { Link, useLocation } from "react-router-dom"
 import { Sun, Moon, Download } from "lucide-react"
 import { useTheme } from "../../hooks/useTheme.js"
+import { useIsDark } from "../../hooks/useIsDark.js"
 import { usePWAPrompt } from "../../contexts/PWAContext.jsx"
 import { ContactSalesDialog } from "./ContactSalesDialog.jsx"
 
@@ -8,15 +9,18 @@ import { ContactSalesDialog } from "./ContactSalesDialog.jsx"
  * Navbar público self-contained.
  *
  * Reglas arquitectónicas (technical-rules.md):
- *  - useTheme    → detección Y toggle de tema (objeto { isDark, toggleTheme }).
+ *  - useTheme → solo el toggle (objeto { toggleTheme }), escribe la clase dark.
+ *  - useIsDark → lectura reactiva de isDark (boolean) sincronizada con el `<html>`
+ *                vía MutationObserver, independiente de useTheme.
  *  - usePWAPrompt → lógica PWA (install prompt)
  *
  * NO recibe props del padre. Toda la lógica es interna y se sincroniza con
  * el resto de la aplicación a través del DOM/<html>.
  */
 export const PublicNavbar = () => {
-    /* ── Hooks (una sola fuente de verdad para el tema) ────── */
-    const { isDark, toggleTheme } = useTheme()
+    /* ── Hooks: toggle de useTheme, lectura reactiva de useIsDark ── */
+    const { toggleTheme } = useTheme()
+    const isDark = useIsDark()
     const { installPrompt, isInstalled, handleInstall } = usePWAPrompt()
     const location = useLocation()
 

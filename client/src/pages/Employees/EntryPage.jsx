@@ -7,13 +7,13 @@ import {
     Lock, Mail, Megaphone, Quote, ShieldCheck, Smartphone,
     Sparkles, TrendingUp, UserPlus, Users, Zap
 } from "lucide-react"
-import { useTheme } from "../../hooks/useTheme.js"
+import { useIsDark } from "../../hooks/useIsDark.js"
 import { Footer } from "../../components/common/Footer.jsx"
 import { PublicNavbar } from "../../components/common/PublicNavbar.jsx"
 import { usePWAPrompt } from "../../contexts/PWAContext.jsx"
 
 export const EntryPage = () => {
-    const { isDark } = useTheme()
+    const isDark = useIsDark()
     const { installPrompt, isInstalled, handleInstall } = usePWAPrompt()
     const [testimonialIndex, setTestimonialIndex] = useState(0)
     const [testimonialVisible, setTestimonialVisible] = useState(true)
