@@ -97,7 +97,7 @@ const EditableField = ({ icon: Icon, label, value, field, accent, isDark, onChan
 // ── Página principal ──────────────────────────────────────────────────────
 export const HRProfilePage = () => {
     const dispatch = useDispatch()
-    const { isDark } = useIsDark()
+    const isDark = useIsDark()
     const { data: hrData, isLoading: hrLoading } = useSelector(s => s.HRReducer)
 
     const [isEditing, setIsEditing] = useState(false)

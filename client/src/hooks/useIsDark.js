@@ -1,20 +1,20 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect } from "react"
 
 /**
  * Hook reactivo para detectar el tema oscuro.
+ * Observa cambios en el classList del <html> en tiempo real,
+ * por lo que re-renderiza el componente cuando el usuario cambia el tema.
  *
- * FUENTE DE VERDAD ÚNICA: la clase "dark" en el <html>.
+ * FIX #033 (causa raíz): el estado inicial debe respetar el tema persistido en
+ * localStorage ("ems-theme"), NO solo el DOM. Sin esto, al refrescar la página
+ * el hook inicializaba en false porque la clase "dark" se agrega al DOM
+ * DESPUÉS del mount (useEffect de useTheme), y el MutationObserver se registra
+ * después de esa mutación → el tema guardado se perdía en cada refresco.
  *
- * - Lee el tema inicial respetando esta prioridad: localStorage ("ems-theme")
- *   → clase "dark" del <html> → preferencia del sistema (matchMedia).
- * - Observa en tiempo real los cambios de la clase "dark" del <html> mediante
- *   MutationObserver, por lo que re-renderiza el componente cuando cualquier
- *   otra fuente (p.ej. useTheme) cambia el tema en el DOM.
- * - Al cambiar, escribe la clase "dark" y persiste en localStorage para que el
- *   resto de la aplicación quede sincronizado.
- *
- * Esto evita el bug de desincronización donde Tailwind dark: classes cambian
- * pero los estilos inline isDark se quedan stale (causa raíz del bug #034).
+ * FIX deploy: en el primer deploy (sin localStorage), se agrega matchMedia como
+ * fallback para que useIsDark y useTheme initén el mismo valor desde el inicio,
+ * evitando el race condition donde Tailwind dark: classes están activas pero
+ * los estilos inline isDark están en light.
  */
 export const useIsDark = () => {
     const [isDark, setIsDark] = useState(() => {
@@ -25,48 +25,18 @@ export const useIsDark = () => {
         return window.matchMedia("(prefers-color-scheme: dark)").matches
     })
 
-    // Observar el classList del <html> en tiempo real para mantenerse
-    // sincronizado con cualquier cambio externo (incluido useTheme).
     useEffect(() => {
-        if (typeof document === "undefined") return
-
-        const root = document.documentElement
-
-        // Estado de sincronización para evitar reintradas cuando nosotros
-        // mismos escribimos la clase (el observer setearía el mismo valor).
-        let isApplying = false
-
         const observer = new MutationObserver(() => {
-            if (isApplying) return
-            const hasDarkClass = root.classList.contains("dark")
-            setIsDark(hasDarkClass)
+            setIsDark(document.documentElement.classList.contains("dark"))
         })
 
-        observer.observe(root, { attributes: true, attributeFilter: ["class"] })
+        observer.observe(document.documentElement, {
+            attributes: true,
+            attributeFilter: ["class"]
+        })
 
-        return () => {
-            isApplying = true
-            observer.disconnect()
-        }
+        return () => observer.disconnect()
     }, [])
 
-    // Aplicar el tema al DOM y persistirlo. Se guarda en una variable para que
-    // el observer no se dispare a sí mismo en bucle infinito.
-    useEffect(() => {
-        if (typeof document === "undefined") return
-        const root = document.documentElement
-        const isDarkClassPresent = root.classList.contains("dark")
-
-        // Solo tocar el DOM si realmente cambió para evitar reintradas.
-        if (isDark && !isDarkClassPresent) {
-            root.classList.add("dark")
-        } else if (!isDark && isDarkClassPresent) {
-            root.classList.remove("dark")
-        }
-        localStorage.setItem("ems-theme", isDark ? "dark" : "light")
-    }, [isDark])
-
-    const toggleTheme = () => setIsDark(prev => !prev)
-
-    return { isDark, toggleTheme }
+    return isDark
 }

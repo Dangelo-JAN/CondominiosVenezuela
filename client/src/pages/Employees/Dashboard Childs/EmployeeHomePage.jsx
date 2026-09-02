@@ -63,7 +63,7 @@ export const EmployeeHomePage = () => {
     const [actionLoading, setActionLoading] = useState(false)
     // Fases 7-8 (R3): modal de detalle de actividad
     const [activeActivity, setActiveActivity] = useState(null)
-    const { isDark } = useIsDark()
+    const isDark = useIsDark()
     const y = YELLOW(isDark)
 
     // ── Navegación a páginas de empleado con filtros URL-driven (R3) ──

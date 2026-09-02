@@ -40,7 +40,7 @@ const formatTime = (d) => {
 
 // ── Card de foto ───────────────────────────────────────────────────────────
 const PhotoCard = ({ photo, onPreview, onDelete, onReview }) => {
-    const { isDark } = useIsDark()
+    const isDark = useIsDark()
 
     return (
     <div className="group relative rounded-2xl overflow-hidden transition-all duration-300"
@@ -125,7 +125,7 @@ const PhotoCard = ({ photo, onPreview, onDelete, onReview }) => {
 
 // ── Página principal ──────────────────────────────────────────────────────
 export const HRWorkPhotosPage = () => {
-    const { isDark } = useIsDark()
+    const isDark = useIsDark()
     const dispatch = useDispatch()
     const { toast } = useToast()
     const [searchParams] = useSearchParams()

@@ -314,7 +314,7 @@ const ScheduleCard = ({ schedule, onCompleteTask, isDark, isCurrentSchedule }) =
 // ── Página principal ──────────────────────────────────────────────────────
 export const EmployeeSchedulePage = () => {
     const dispatch = useDispatch()
-    const { isDark } = useIsDark()
+    const isDark = useIsDark()
     const { schedules, isLoading } = useSelector(s => s.employeedashboardreducer)
 
     useEffect(() => {

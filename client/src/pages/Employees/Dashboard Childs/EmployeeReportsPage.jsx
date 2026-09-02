@@ -25,7 +25,7 @@ const formatDateLong = (dateStr) => {
 // los datos de otros empleados nunca salen de la API (aislamiento por token).
 export const EmployeeReportsPage = () => {
     const dispatch = useDispatch()
-    const { isDark } = useIsDark()
+    const isDark = useIsDark()
     const y = YELLOW(isDark)
 
     const { myHistory, isLoading } = useSelector(s => s.reportreducer)
@@ -170,7 +170,7 @@ const MiniStat = ({ value, label, isDark, y }) => (
 
 // ── Modal: detalle inmutable de UNA semana propia (datos ya cargados en la lista) ──
 const MyWeekDetailModal = ({ week, onClose, onActivityClick }) => {
-    const { isDark } = useIsDark()
+    const isDark = useIsDark()
     const y = YELLOW(isDark)
     const hasActivities = (week.myActivities?.length ?? 0) > 0
 

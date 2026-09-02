@@ -15,7 +15,7 @@ const MAX_IMAGES = 5
 const MAX_VIDEOS = 3
 
 export const EmployeeBitacorasPage = () => {
-    const { isDark } = useIsDark()
+    const isDark = useIsDark()
     const dispatch = useDispatch()
     const [searchParams] = useSearchParams()
     const { data: bitacoras, isLoading, success, message } = useSelector((state) => state.HRBitacorasReducer)
