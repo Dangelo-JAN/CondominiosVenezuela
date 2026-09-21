@@ -6,10 +6,10 @@
 ---
 
 ## 🚩 ESTADO ACTUAL
-- **Tarea activa:** #034 — Reemplazar PublicNavbar por navbar común en ContactPage 🟡 EN CURSO
-- **Última completada:** #033 — Landing EntryPage estilo Workforce.com (Design System v4) ✅ (13/08/2026, cierre reapertura: fix dark/light + ajustes contenido)
-- **Branch actual:** `feat/create-contact-page`
-- **Deploy pendiente:** Vercel + Render desde `main`
+- **Tarea activa:** Ninguna — todas las fases completadas
+- **Última completada:** #036-dynamic-seed ✅ (21/09/2026 — seed dinámica reescrita, validada en deploy local, commit `4e15744`)
+- **Branch actual:** 035-dynamic-seed (PR hacia dev pendiente)
+- **Deploy pendiente:** Vercel + Render desde `main` (después de PR merge)
 - **Archivo de referencia rápida:** `actual.md`
 
 ---
@@ -47,12 +47,10 @@
 - [x] [[030-fix-hr-scrolling-table-header]] - ✅ COMPLETADO el 21/07/2026
 - [x] [[031-hr-profile-page]] - ✅ COMPLETADO el 27/07/2026
 - [x] [[032-master-agent-initialization-prompt]] - ✅ COMPLETADO el 28/07/2026
-- [x] [[033-entrypage-workforce-landing-sections]] - ✅ COMPLETADO el 10/08/2026 (reapertura 13/08/2026: fix dark/light + ajustes contenido, cerrado)
-
-- [x] [[034-public-navbar-component]] - ✅ COMPLETADO el 19/08/2026 (PR #49 → dev, pendiente merge)
-
-- [x] [[034-replace-publicnavbar-with-common-navbar]] - ✅ COMPLETADO (14/08/2026) — Reemplazar PublicNavbar en ContactPage por navbar común del proyecto
-
+- [x] [[033-entrypage-workforce-landing-sections]] - ✅ COMPLETADO el 10/08/2026
+- [x] [[034-public-navbar-component]] - ✅ COMPLETADO el 19/08/2026
+- [x] [[035-hr-employee-reports]] - ✅ COMPLETADO el 21/08/2026
+- [x] [[036-dynamic-seed]] - ✅ COMPLETADO el 21/09/2026 (commit `4e15744`, PR hacia dev)
 ---
 
 ## 🛠️ REGLAS DE ORO (DE CUMPLIMIENTO OBLIGATORIO)
@@ -123,7 +121,8 @@
     *   Actualizar `.bitacoras/actual.md` y crear/actualizar la bitácora correspondiente según `00-plantilla.md`.
 ```
 
+*Actualizado: 2026-09-21* *Tarea #036-dynamic-seed ✅ COMPLETADO — first-seed.mjs dinámico (fechas relativas a hoy, modo --force), elimina JSONs, integra seed-reports (snapshots W34-W38), fixes back-ref attendance + _id subdocs schedules; validado en deploy local; 61 tests + build 0 errores; commit `4e15744`*
+
 ---
 
-*Actualizado: 2026-08-28*
-*Tarea #035 ✅ REAPERTURA CERRADA — Reportes R1/R2/R3 (interactividad + filtros URL-driven + modales de detalle) — PR #50 → dev pendiente merge*
+**Nota:** Tarea #034 (public navbar) también está ✅ COMPLETADA (19/08/2026) y se encuentra en el historial arriba.

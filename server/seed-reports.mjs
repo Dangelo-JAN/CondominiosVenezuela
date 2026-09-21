@@ -22,7 +22,7 @@
  * También es invocado por first-seed.mjs al final de la siembra.
  */
 import mongoose from "mongoose"
-import { MongoClient } from "mongodb"
+import { MongoClient, ObjectId } from "mongodb"
 import { fileURLToPath } from "url"
 import { dirname } from "path"
 
@@ -166,8 +166,10 @@ async function seedWeekData(db, { orgId, hrId, emps, monday }) {
             organizationID: orgId,
             schedule: [
                 {
+                    _id: new ObjectId(), // 🔑 día con _id real (HandleCompleteTask busca por subdoc _id)
                     day: "Lunes",
                     tasks: [{
+                        _id: new ObjectId(), // 🔑 tarea con _id real
                         title: `Tarea pendiente W${getISOWeek(monday).week}`,
                         description: "Tarea sin completar de la semana.",
                         starttime: "09:00",
@@ -177,8 +179,10 @@ async function seedWeekData(db, { orgId, hrId, emps, monday }) {
                     }]
                 },
                 {
+                    _id: new ObjectId(), // 🔑 día con _id real
                     day: "Jueves",
                     tasks: [{
+                        _id: new ObjectId(), // 🔑 tarea con _id real
                         title: `Tarea completada W${getISOWeek(monday).week}`,
                         description: "Tarea finalizada durante la semana.",
                         starttime: "14:00",
