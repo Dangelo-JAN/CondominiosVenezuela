@@ -14,7 +14,7 @@
 
 - **Lo último que funcionó:** Seed dinámico completado + validado en deploy local (2026-09-21): datos frescos W39 (2026-09-21→27), 24 logs asistencia HOY, 24 schedules activos, snapshots W34-W38, login HR/empleado OK, reportes OK. 2 bugs corregidos durante validación (back-reference `employee.attendance` + `_id` de subdocs en schedules)
 - **Dónde se rompió/detuvo:** —
-- **Siguiente acción inmediata:** Commit de la tarea (#036) + PR hacia dev pendiente (base dev, NUNCA main)
+- **Siguiente acción inmediata:** — (tarea cerrada). Commit `4e15744` pusheado a `035-dynamic-seed`; PR hacia dev + merge pendientes
 
 ---
 
