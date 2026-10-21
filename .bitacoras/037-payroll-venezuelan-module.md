@@ -11,15 +11,15 @@
 ## 🚦 PUNTO DE CONTROL (Contexto de Reanudación)
 *Usa esto para "despertar" a la IA si el chat se cierra:*
 
-- **Lo último que funcionó:** Análisis completo de arquitectura existente y referencia Nominix (237 tablas, 50+ fórmulas). Plan técnico presentado y aprobado.
-- **Dónde se rompió/detuvo:** Inicio de Fase 1 - Esquemas de BD (Modelos Mongoose)
-- **Siguiente acción inmediata:** Crear rama git y comenzar Fase 1: 12+ nuevos modelos + extensiones a Employee/Organization + seed inicial
+- **Lo último que funcionó:** Fase 2 completada - Motor de cálculo completo implementado (11 servicios en server/services/payroll/), modelos contables agregados, tests pasando (61/61), client build OK. Commit pendiente.
+- **Dónde se rompió/detuvo:** Fin de Fase 2 - esperando aprobación para Fase 3
+- **Siguiente acción inmediata:** Commit de Fase 2 e iniciar Fase 3 - Controladores y Rutas
 
 ---
 
 ## 📝 CAMBIOS TÉCNICOS CLAVE
-- [x] **Fase 1**: Modelos Mongoose (PayrollConcept, PayrollPolicy, PayrollPeriod, PayrollReceipt, PayrollReceiptLine, PayrollEmployerCost, PayrollNovelty, VacationBalance, VacationRequest, SocialBenefitsLedger, SocialBenefitsSettlement, UtilidadesPeriod, UtilidadesPayment, PayrollCompany, PayrollImportBatch, ReceiptType, Loan, LoanPayment, AdvanceRequest, Holiday + extensiones Employee/Organization) - COMPLETADO
-- [ ] **Fase 2**: Motor de cálculo (formula-evaluator, formula-context, accumulator-engine, payroll-engine, concept-rules, vacation-calculator, settlement-calculator, utilidades-calculator, islr-calculator, journal-generator)
+- [x] **Fase 1**: Modelos Mongoose (PayrollConcept, PayrollPolicy, PayrollPeriod, PayrollReceipt, PayrollReceiptLine, PayrollEmployerCost, PayrollNovelty, VacationBalance, VacationRequest, SocialBenefitsLedger, SocialBenefitsSettlement, UtilidadesPeriod, UtilidadesPayment, PayrollCompany, PayrollImportBatch, ReceiptType, Loan, LoanPayment, AdvanceRequest, Holiday, ISLRRetention, ISLRRetentionTable + extensiones Employee/Organization) - COMPLETADO
+- [x] **Fase 2**: Motor de cálculo (formula-evaluator, formula-context, accumulator-engine, payroll-engine, concept-rules, employer-costs, vacation-calculator, settlement-calculator, utilidades-calculator, islr-calculator, journal-generator) - COMPLETADO
 - [ ] **Fase 3**: Controladores y Rutas (PayrollPeriod, PayrollReceipt, PayrollConcept, PayrollPolicy, PayrollNovelty, Vacation, SocialBenefits, Utilidades)
 - [ ] **Fase 4**: Frontend Redux + Páginas HR (Payroll, Vacaciones, Prestaciones, Utilidades)
 - [ ] **Fase 5**: Seed inicial (PayrollPolicy por defecto + catálogo 40+ conceptos)

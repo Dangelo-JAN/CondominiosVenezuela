@@ -41,3 +41,7 @@ export { AdvanceRequest } from './AdvanceRequest.model.js'
 
 // Feriados
 export { Holiday } from './Holiday.model.js'
+
+// ISLR
+export { ISLRRetention } from './ISLRRetention.model.js'
+export { ISLRRetentionTable } from './ISLRRetentionTable.model.js'
