@@ -38,7 +38,9 @@ export class VacationCalculator {
         const perYear = this.policy?.vacation_days_per_year || 1
         const maxDays = this.policy?.vacation_days_max || 30
 
-        const days = baseDays + Math.min(fullYears, maxDays - baseDays) * perYear
+        // Primer año (fullYears >= 1) = baseDays, +1 por cada año adicional
+        const additionalYears = Math.max(0, fullYears - 1)
+        const days = baseDays + Math.min(additionalYears, maxDays - baseDays) * perYear
         return Math.min(days, maxDays)
     }
 
@@ -64,7 +66,9 @@ export class VacationCalculator {
         const perYear = this.policy?.vacation_bonus_days_per_year || 1
         const maxDays = this.policy?.vacation_bonus_days_max || 30
 
-        const days = baseDays + Math.min(fullYears, maxDays - baseDays) * perYear
+        // Primer año (fullYears >= 1) = baseDays, +1 por cada año adicional
+        const additionalYears = Math.max(0, fullYears - 1)
+        const days = baseDays + Math.min(additionalYears, maxDays - baseDays) * perYear
         return Math.min(days, maxDays)
     }
 

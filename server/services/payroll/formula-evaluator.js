@@ -1,4 +1,5 @@
 import { Decimal } from 'decimal.js'
+import * as acorn from 'acorn'
 
 /**
  * Evaluador Seguro de Fórmulas - AST-based
@@ -32,11 +33,21 @@ export class SafeFormulaEvaluator {
         abs: (a) => a.abs(),
         round: (a, precision = 0) => {
             const factor = new Decimal(10).pow(precision)
-            return a.times(factor).toFixed(0).div(factor)
+            return a.times(factor).toDecimalPlaces(0).div(factor)
         },
         floor: (a) => new Decimal(Math.floor(a.toNumber())),
         ceil: (a) => new Decimal(Math.ceil(a.toNumber())),
-        Decimal: (a) => new Decimal(a)
+        Decimal: (a) => new Decimal(a),
+        // Uppercase aliases for compatibility
+        MIN: (...args) => new Decimal(Math.min(...args.map(a => a.toNumber()))),
+        MAX: (...args) => new Decimal(Math.max(...args.map(a => a.toNumber()))),
+        ABS: (a) => a.abs(),
+        ROUND: (a, precision = 0) => {
+            const factor = new Decimal(10).pow(precision)
+            return a.times(factor).toDecimalPlaces(0).div(factor)
+        },
+        FLOOR: (a) => new Decimal(Math.floor(a.toNumber())),
+        CEIL: (a) => new Decimal(Math.ceil(a.toNumber()))
     }
 
     constructor(allowedNames = {}) {
@@ -44,34 +55,31 @@ export class SafeFormulaEvaluator {
     }
 
     /**
-     * Evalúa una fórmula string y retorna Decimal
-     */
-    evaluate(formula) {
-        if (!formula || typeof formula !== 'string') {
-            return new Decimal(0)
-        }
+         * Evalúa una fórmula string y retorna Decimal
+         */
+        evaluate(formula) {
+            if (!formula || typeof formula !== 'string') {
+                return new Decimal(0)
+            }
 
-        try {
-            const tree = this.parseFormula(formula)
-            return this._evalNode(tree.body)
-        } catch (error) {
-            throw new Error(`Error evaluando fórmula "${formula}": ${error.message}`)
+            try {
+                const tree = this.parseFormula(formula)
+                // tree.body is an array of statements, we need the first expression
+                const body = tree.body[0]
+                if (body.type === 'ExpressionStatement') {
+                    return this._evalNode(body.expression)
+                }
+                return this._evalNode(body)
+            } catch (error) {
+                throw new Error(`Error evaluando fórmula "${formula}": ${error.message}`)
+            }
         }
-    }
 
     parseFormula(formula) {
-        const acorn = this.getAcorn()
         return acorn.parse(formula, {
             ecmaVersion: 2020,
             sourceType: 'script'
         })
-    }
-
-    getAcorn() {
-        if (!SafeFormulaEvaluator._acorn) {
-            SafeFormulaEvaluator._acorn = require('acorn')
-        }
-        return SafeFormulaEvaluator._acorn
     }
 
     _evalNode(node) {
@@ -248,6 +256,9 @@ export function safeEval(formula, allowedNames = {}) {
  * Valida una fórmula sin evaluarla (para validación en modelo)
  */
 export function validateFormula(formula, allowedNames = {}) {
+    if (!formula || typeof formula !== 'string' || formula.trim() === '') {
+        return { valid: false, error: 'Fórmula vacía' }
+    }
     try {
         const evaluator = new SafeFormulaEvaluator(allowedNames)
         const testValues = {}
@@ -256,7 +267,7 @@ export function validateFormula(formula, allowedNames = {}) {
         }
         evaluator.allowedNames = testValues
         evaluator.evaluate(formula)
-        return { valid: true }
+        return { valid: true, error: null }
     } catch (error) {
         return { valid: false, error: error.message }
     }
