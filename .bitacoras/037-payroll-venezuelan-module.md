@@ -11,9 +11,9 @@
 ## 🚦 PUNTO DE CONTROL (Contexto de Reanudación)
 *Usa esto para "despertar" a la IA si el chat se cierra:*
 
-- **Lo último que funcionó:** Fase 4 completada - Frontend Redux + Páginas HR implementados (PayrollSlice, PayrollThunk, APIsEndpoints, HRPayrollPage, PayrollPeriodFormModal, ConfirmDialog), tests pasando (61/61), client build OK. Commit pendiente.
-- **Dónde se rompió/detuvo:** Fin de Fase 4 - esperando aprobación para Fase 5
-- **Siguiente acción inmediata:** Commit de Fase 4 e iniciar Fase 5 - Seed inicial (PayrollPolicy por defecto + catálogo 40+ conceptos)
+- **Lo último que funcionó:** Fase 5 completada - Seeds iniciales implementados (PayrollPolicy, PayrollCompany, ReceiptTypes, 45+ PayrollConcepts, Holidays 2024-2025, script npm run seed:payroll), tests pasando (61/61), client build OK. Commit pendiente.
+- **Dónde se rompió/detuvo:** Fin de Fase 5 - esperando aprobación para Fase 6
+- **Siguiente acción inmediata:** Commit de Fase 5 e iniciar Fase 6 - Tests unitarios
 
 ---
 
@@ -22,7 +22,7 @@
 - [x] **Fase 2**: Motor de cálculo (formula-evaluator, formula-context, accumulator-engine, payroll-engine, concept-rules, employer-costs, vacation-calculator, settlement-calculator, utilidades-calculator, islr-calculator, journal-generator) - COMPLETADO
 - [x] **Fase 3**: Controladores y Rutas (PayrollPeriod, PayrollReceipt, PayrollConcept, PayrollPolicy, PayrollNovelty, Vacation, SocialBenefits, Utilidades) - COMPLETADO
 - [x] **Fase 4**: Frontend Redux + Páginas HR (PayrollSlice, PayrollThunk, APIsEndpoints, HRPayrollPage, PayrollPeriodFormModal, ConfirmDialog) - COMPLETADO
-- [ ] **Fase 5**: Seed inicial (PayrollPolicy por defecto + catálogo 40+ conceptos)
+- [x] **Fase 5**: Seed inicial (PayrollPolicy, PayrollCompany, ReceiptTypes, PayrollConcepts 45+, Holidays 2024-2025, script npm run seed:payroll) - COMPLETADO
 - [ ] **Fase 6**: Tests unitarios (fórmulas, acumuladores, vacaciones, liquidaciones, utilidades, ISLR)
 - [ ] Builds: client `npm run build` 0 errores + server `npm run test` todas pasan
 - [ ] Bitácoras actualizadas

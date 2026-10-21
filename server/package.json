@@ -6,7 +6,8 @@
   "main": "index.js",
   "scripts": {
     "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js --config jest.config.json",
-    "server": "nodemon index.js"
+    "server": "nodemon index.js",
+    "seed:payroll": "node --experimental-vm-modules server/seeds/payroll.seed.js"
   },
   "author": "Darsh Jogi",
   "license": "ISC",
