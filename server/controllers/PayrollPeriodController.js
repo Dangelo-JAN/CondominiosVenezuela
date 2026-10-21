@@ -3,7 +3,6 @@ import { PayrollReceipt } from '../models/payroll/PayrollReceipt.model.js'
 import { PayrollPolicy } from '../models/payroll/PayrollPolicy.model.js'
 import { Employee } from '../models/Employee.model.js'
 import { Department } from '../models/Department.model.js'
-import { Branch } from '../models/Branch.model.js'
 import { calculatePayrollPeriod, calculateEmployeeReceipt } from '../services/payroll/payroll-engine.js'
 import { JournalGenerator } from '../services/payroll/journal-generator.js'
 
