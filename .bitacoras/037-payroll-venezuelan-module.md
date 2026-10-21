@@ -11,16 +11,16 @@
 ## 🚦 PUNTO DE CONTROL (Contexto de Reanudación)
 *Usa esto para "despertar" a la IA si el chat se cierra:*
 
-- **Lo último que funcionó:** Fase 2 completada - Motor de cálculo completo implementado (11 servicios en server/services/payroll/), modelos contables agregados, tests pasando (61/61), client build OK. Commit pendiente.
-- **Dónde se rompió/detuvo:** Fin de Fase 2 - esperando aprobación para Fase 3
-- **Siguiente acción inmediata:** Commit de Fase 2 e iniciar Fase 3 - Controladores y Rutas
+- **Lo último que funcionó:** Fase 3 completada - Controladores y Rutas implementados (8 controladores + 8 routes), tests pasando (61/61), client build OK. Commit pendiente.
+- **Dónde se rompió/detuvo:** Fin de Fase 3 - esperando aprobación para Fase 4
+- **Siguiente acción inmediata:** Commit de Fase 3 e iniciar Fase 4 - Frontend Redux + Páginas HR
 
 ---
 
 ## 📝 CAMBIOS TÉCNICOS CLAVE
 - [x] **Fase 1**: Modelos Mongoose (PayrollConcept, PayrollPolicy, PayrollPeriod, PayrollReceipt, PayrollReceiptLine, PayrollEmployerCost, PayrollNovelty, VacationBalance, VacationRequest, SocialBenefitsLedger, SocialBenefitsSettlement, UtilidadesPeriod, UtilidadesPayment, PayrollCompany, PayrollImportBatch, ReceiptType, Loan, LoanPayment, AdvanceRequest, Holiday, ISLRRetention, ISLRRetentionTable + extensiones Employee/Organization) - COMPLETADO
 - [x] **Fase 2**: Motor de cálculo (formula-evaluator, formula-context, accumulator-engine, payroll-engine, concept-rules, employer-costs, vacation-calculator, settlement-calculator, utilidades-calculator, islr-calculator, journal-generator) - COMPLETADO
-- [ ] **Fase 3**: Controladores y Rutas (PayrollPeriod, PayrollReceipt, PayrollConcept, PayrollPolicy, PayrollNovelty, Vacation, SocialBenefits, Utilidades)
+- [x] **Fase 3**: Controladores y Rutas (PayrollPeriod, PayrollReceipt, PayrollConcept, PayrollPolicy, PayrollNovelty, Vacation, SocialBenefits, Utilidades) - COMPLETADO
 - [ ] **Fase 4**: Frontend Redux + Páginas HR (Payroll, Vacaciones, Prestaciones, Utilidades)
 - [ ] **Fase 5**: Seed inicial (PayrollPolicy por defecto + catálogo 40+ conceptos)
 - [ ] **Fase 6**: Tests unitarios (fórmulas, acumuladores, vacaciones, liquidaciones, utilidades, ISLR)
