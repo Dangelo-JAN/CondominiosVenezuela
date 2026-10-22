@@ -143,7 +143,7 @@
 
 ### 7.4 Refactor + Code Splitting
 - [x] 7.4.1 Split HRPayrollPage (8 tabs) → PayrollTabsContainer + 8 lazy-loaded tabs
-- [ ] 7.4.2 Split PayrollPeriodFormModal
+- [x] 7.4.2 Split PayrollPeriodFormModal → FormFields + useFormState + useFormValidation hooks
 - [ ] 7.4.3 Lazy loading rutas
 - [ ] 7.4.4 manualChunks vite
 - [ ] 7.4.5 Bundle < 500KB verificado
