@@ -1,77 +1,29 @@
-import { useState, useEffect } from "react"
-import { X, Calendar, CreditCard, DollarSign, Hash, HelpCircle } from "lucide-react"
+import { X } from "lucide-react"
 import { useIsDark } from "../../hooks/useIsDark.js"
+import { PayrollPeriodFormFields } from "./form/PayrollPeriodFormFields.jsx"
+import { usePayrollPeriodFormState } from "./form/usePayrollPeriodFormState.js"
+import { usePayrollPeriodFormValidation } from "./form/usePayrollPeriodFormValidation.js"
 
 export const PayrollPeriodFormModal = ({ open, onClose, initialData, onSubmit }) => {
     const isDark = useIsDark()
-    const [formData, setFormData] = useState({
-        name: "",
-        start_date: "",
-        end_date: "",
-        payment_date: "",
-        period_type: "NORMAL",
-        period_frequency: "QUINCENAL",
-        days_count: 15,
-        pinned_rate: "",
-        pinned_rate_note: "",
+
+    // Separated concerns
+    const { formData, isSubmitting, handleChange, handleSubmit, resetForm } = usePayrollPeriodFormState({
+        initialData,
+        onSubmit,
     })
-    const [errors, setErrors] = useState({})
-    const [isSubmitting, setIsSubmitting] = useState(false)
+    const { errors, validate, clearError } = usePayrollPeriodFormValidation()
 
-    useEffect(() => {
-        if (initialData) {
-            setFormData({
-                name: initialData.name || "",
-                start_date: initialData.start_date ? String(initialData.start_date).slice(0, 10) : "",
-                end_date: initialData.end_date ? String(initialData.end_date).slice(0, 10) : "",
-                payment_date: initialData.payment_date ? String(initialData.payment_date).slice(0, 10) : "",
-                period_type: initialData.period_type || "NORMAL",
-                period_frequency: initialData.period_frequency || "QUINCENAL",
-                days_count: initialData.days_count || 15,
-                pinned_rate: initialData.pinned_rate || "",
-                pinned_rate_note: initialData.pinned_rate_note || "",
-            })
-        } else {
-            setFormData({
-                name: "",
-                start_date: "",
-                end_date: "",
-                payment_date: "",
-                period_type: "NORMAL",
-                period_frequency: "QUINCENAL",
-                days_count: 15,
-                pinned_rate: "",
-                pinned_rate_note: "",
-            })
-        }
-        setErrors({})
-    }, [initialData, open])
-
-    const validate = () => {
-        const newErrors = {}
-        if (!formData.name.trim()) newErrors.name = "Nombre es requerido"
-        if (!formData.start_date) newErrors.start_date = "Fecha de inicio es requerida"
-        if (!formData.end_date) newErrors.end_date = "Fecha de fin es requerida"
-        if (!formData.payment_date) newErrors.payment_date = "Fecha de pago es requerida"
-        if (formData.days_count < 1) newErrors.days_count = "Días debe ser mayor a 0"
-        setErrors(newErrors)
-        return Object.keys(newErrors).length === 0
+    // Wrap handleChange to clear errors on change
+    const handleChangeWithClear = (field, value) => {
+        handleChange(field, value)
+        if (errors[field]) clearError(field)
     }
 
-    const handleSubmit = async (e) => {
-        e.preventDefault()
-        if (!validate()) return
-        setIsSubmitting(true)
-        try {
-            await onSubmit(formData)
-        } finally {
-            setIsSubmitting(false)
-        }
-    }
-
-    const handleChange = (field, value) => {
-        setFormData(prev => ({ ...prev, [field]: value }))
-        if (errors[field]) setErrors(prev => ({ ...prev, [field]: null }))
+    // Override validate to use the one from validation hook
+    const handleSubmitWithValidate = (e) => {
+        if (!validate(formData)) return
+        handleSubmit(e)
     }
 
     if (!open) return null
@@ -101,210 +53,13 @@ export const PayrollPeriodFormModal = ({ open, onClose, initialData, onSubmit })
                     </button>
                 </div>
 
-                <form onSubmit={handleSubmit} className="space-y-6">
-                    {/* Información Básica */}
-                    <fieldset className="space-y-4">
-                        <legend className="text-sm font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400">
-                            Información Básica
-                        </legend>
-
-                        <div className="space-y-1.5">
-                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                                Nombre del Período <span className="text-red-500">*</span>
-                            </label>
-                            <input
-                                type="text"
-                                value={formData.name}
-                                onChange={(e) => handleChange("name", e.target.value)}
-                                placeholder="Ej: Quincena 1 - Enero 2025"
-                                className={`w-full rounded-xl px-3 py-2.5 text-sm outline-none transition-all duration-200
-                                    bg-gray-50 border border-gray-200 text-gray-900 placeholder-gray-400
-                                    focus:border-blue-400 focus:ring-2 focus:ring-blue-100
-                                    dark:bg-[rgba(255,255,255,0.04)] dark:border-[rgba(255,255,255,0.08)] dark:text-white
-                                    dark:placeholder-[rgba(255,255,255,0.25)] dark:focus:border-[rgba(0,61,165,0.5)]
-                                    ${errors.name ? "border-red-400 focus:border-red-400 focus:ring-red-100" : ""}`}
-                            />
-                            {errors.name && <p className="text-xs text-red-500 flex items-center gap-1"><X className="w-3 h-3" /> {errors.name}</p>}
-                        </div>
-
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                            <div className="space-y-1.5">
-                                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                                    Fecha de Inicio <span className="text-red-500">*</span>
-                                </label>
-                                <div className="relative">
-                                    <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5"
-                                        style={{ color: isDark ? "rgba(255,255,255,0.3)" : "#9ca3af" }} />
-                                    <input
-                                        type="date"
-                                        value={formData.start_date}
-                                        onChange={(e) => handleChange("start_date", e.target.value)}
-                                        className={`w-full rounded-xl px-10 py-2.5 text-sm outline-none transition-all duration-200
-                                            bg-gray-50 border border-gray-200 text-gray-900
-                                            focus:border-blue-400 focus:ring-2 focus:ring-blue-100
-                                            dark:bg-[rgba(255,255,255,0.04)] dark:border-[rgba(255,255,255,0.08)] dark:text-white
-                                            dark:focus:border-[rgba(0,61,165,0.5)]
-                                            ${errors.start_date ? "border-red-400 focus:border-red-400 focus:ring-red-100" : ""}`}
-                                    />
-                                </div>
-                                {errors.start_date && <p className="text-xs text-red-500 flex items-center gap-1"><X className="w-3 h-3" /> {errors.start_date}</p>}
-                            </div>
-
-                            <div className="space-y-1.5">
-                                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                                    Fecha de Fin <span className="text-red-500">*</span>
-                                </label>
-                                <div className="relative">
-                                    <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5"
-                                        style={{ color: isDark ? "rgba(255,255,255,0.3)" : "#9ca3af" }} />
-                                    <input
-                                        type="date"
-                                        value={formData.end_date}
-                                        onChange={(e) => handleChange("end_date", e.target.value)}
-                                        className={`w-full rounded-xl px-10 py-2.5 text-sm outline-none transition-all duration-200
-                                            bg-gray-50 border border-gray-200 text-gray-900
-                                            focus:border-blue-400 focus:ring-2 focus:ring-blue-100
-                                            dark:bg-[rgba(255,255,255,0.04)] dark:border-[rgba(255,255,255,0.08)] dark:text-white
-                                            dark:focus:border-[rgba(0,61,165,0.5)]
-                                            ${errors.end_date ? "border-red-400 focus:border-red-400 focus:ring-red-100" : ""}`}
-                                    />
-                                </div>
-                                {errors.end_date && <p className="text-xs text-red-500 flex items-center gap-1"><X className="w-3 h-3" /> {errors.end_date}</p>}
-                            </div>
-                        </div>
-
-                        <div className="space-y-1.5">
-                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                                Fecha de Pago <span className="text-red-500">*</span>
-                            </label>
-                            <div className="relative">
-                                <DollarSign className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5"
-                                    style={{ color: isDark ? "rgba(255,255,255,0.3)" : "#9ca3af" }} />
-                                <input
-                                    type="date"
-                                    value={formData.payment_date}
-                                    onChange={(e) => handleChange("payment_date", e.target.value)}
-                                    className={`w-full rounded-xl px-10 py-2.5 text-sm outline-none transition-all duration-200
-                                        bg-gray-50 border border-gray-200 text-gray-900
-                                        focus:border-blue-400 focus:ring-2 focus:ring-blue-100
-                                        dark:bg-[rgba(255,255,255,0.04)] dark:border-[rgba(255,255,255,0.08)] dark:text-white
-                                        dark:focus:border-[rgba(0,61,165,0.5)]
-                                        ${errors.payment_date ? "border-red-400 focus:border-red-400 focus:ring-red-100" : ""}`}
-                                />
-                            </div>
-                            {errors.payment_date && <p className="text-xs text-red-500 flex items-center gap-1"><X className="w-3 h-3" /> {errors.payment_date}</p>}
-                        </div>
-
-                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                            <div className="space-y-1.5">
-                                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                                    Tipo de Período
-                                </label>
-                                <select
-                                    value={formData.period_type}
-                                    onChange={(e) => handleChange("period_type", e.target.value)}
-                                    className={`w-full rounded-xl px-3 py-2.5 text-sm outline-none transition-all duration-200
-                                        bg-gray-50 border border-gray-200 text-gray-900
-                                        focus:border-blue-400 focus:ring-2 focus:ring-blue-100
-                                        dark:bg-[rgba(255,255,255,0.04)] dark:border-[rgba(255,255,255,0.08)] dark:text-white
-                                        dark:focus:border-[rgba(0,61,165,0.5)]`}>
-                                    <option value="NORMAL">Normal</option>
-                                    <option value="EXTRAORDINARY">Extraordinario</option>
-                                    <option value="VACATION">Vacaciones</option>
-                                    <option value="UTILIDADES">Utilidades</option>
-                                    <option value="SETTLEMENT">Liquidación</option>
-                                    <option value="ADJUSTMENT">Ajuste</option>
-                                </select>
-                            </div>
-
-                            <div className="space-y-1.5">
-                                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                                    Frecuencia
-                                </label>
-                                <select
-                                    value={formData.period_frequency}
-                                    onChange={(e) => handleChange("period_frequency", e.target.value)}
-                                    className={`w-full rounded-xl px-3 py-2.5 text-sm outline-none transition-all duration-200
-                                        bg-gray-50 border border-gray-200 text-gray-900
-                                        focus:border-blue-400 focus:ring-2 focus:ring-blue-100
-                                        dark:bg-[rgba(255,255,255,0.04)] dark:border-[rgba(255,255,255,0.08)] dark:text-white
-                                        dark:focus:border-[rgba(0,61,165,0.5)]`}>
-                                    <option value="WEEKLY">Semanal</option>
-                                    <option value="BIWEEKLY">Quincenal</option>
-                                    <option value="QUINCENAL">Quincenal (15 días)</option>
-                                    <option value="MONTHLY">Mensual</option>
-                                </select>
-                            </div>
-
-                            <div className="space-y-1.5">
-                                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                                    Días del Período
-                                </label>
-                                <input
-                                    type="number"
-                                    value={formData.days_count}
-                                    onChange={(e) => handleChange("days_count", parseInt(e.target.value) || 0)}
-                                    min="1"
-                                    max="31"
-                                    className={`w-full rounded-xl px-3 py-2.5 text-sm outline-none transition-all duration-200
-                                        bg-gray-50 border border-gray-200 text-gray-900
-                                        focus:border-blue-400 focus:ring-2 focus:ring-blue-100
-                                        dark:bg-[rgba(255,255,255,0.04)] dark:border-[rgba(255,255,255,0.08)] dark:text-white
-                                        dark:focus:border-[rgba(0,61,165,0.5)]
-                                        ${errors.days_count ? "border-red-400 focus:border-red-400 focus:ring-red-100" : ""}`}
-                                />
-                                {errors.days_count && <p className="text-xs text-red-500 flex items-center gap-1"><X className="w-3 h-3" /> {errors.days_count}</p>}
-                            </div>
-                        </div>
-                    </fieldset>
-
-                    {/* Configuración Avanzada */}
-                    <fieldset className="space-y-4 border-t border-gray-200 dark:border-[rgba(255,255,255,0.08)] pt-6">
-                        <legend className="text-sm font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400 flex items-center gap-2">
-                            <Hash className="w-4 h-4" style={{ color: "#003DA5" }} />
-                            Configuración Avanzada (Opcional)
-                        </legend>
-
-                        <div className="space-y-1.5">
-                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 flex items-center gap-2">
-                                Tasa de Cambio Fijada (BS/USD)
-                                <HelpCircle className="w-4 h-4 text-gray-400" title="Si se especifica, se usará esta tasa para todos los cálculos del período en lugar de la tasa BCV del día" />
-                            </label>
-                            <div className="relative">
-                                <DollarSign className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5"
-                                    style={{ color: isDark ? "rgba(255,255,255,0.3)" : "#9ca3af" }} />
-                                <input
-                                    type="number"
-                                    step="0.01"
-                                    value={formData.pinned_rate}
-                                    onChange={(e) => handleChange("pinned_rate", e.target.value ? parseFloat(e.target.value) : "")}
-                                    placeholder="Ej: 36.50"
-                                    className={`w-full rounded-xl px-10 py-2.5 text-sm outline-none transition-all duration-200
-                                        bg-gray-50 border border-gray-200 text-gray-900 placeholder-gray-400
-                                        focus:border-blue-400 focus:ring-2 focus:ring-blue-100
-                                        dark:bg-[rgba(255,255,255,0.04)] dark:border-[rgba(255,255,255,0.08)] dark:text-white
-                                        dark:placeholder-[rgba(255,255,255,0.25)] dark:focus:border-[rgba(0,61,165,0.5)]`}
-                                />
-                            </div>
-                        </div>
-
-                        <div className="space-y-1.5">
-                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                                Nota de la Tasa Fijada
-                            </label>
-                            <textarea
-                                value={formData.pinned_rate_note}
-                                onChange={(e) => handleChange("pinned_rate_note", e.target.value)}
-                                placeholder="Motivo de la tasa fijada, referencia oficial, etc."
-                                rows={2}
-                                className={`w-full rounded-xl px-3 py-2.5 text-sm outline-none transition-all duration-200
-                                    bg-gray-50 border border-gray-200 text-gray-900 placeholder-gray-400 resize-none
-                                    focus:border-blue-400 focus:ring-2 focus:ring-blue-100
-                                    dark:bg-[rgba(255,255,255,0.04)] dark:border-[rgba(255,255,255,0.08)] dark:text-white
-                                    dark:placeholder-[rgba(255,255,255,0.25)] dark:focus:border-[rgba(0,61,165,0.5)]`}>
-                            </textarea>
-                        </div>
-                    </fieldset>
+                <form onSubmit={handleSubmitWithValidate} className="space-y-6">
+                    <PayrollPeriodFormFields
+                        formData={formData}
+                        errors={errors}
+                        handleChange={handleChangeWithClear}
+                        isDark={isDark}
+                    />
 
                     {/* Actions */}
                     <div className="flex justify-end gap-3 border-t border-gray-200 dark:border-[rgba(255,255,255,0.08)] pt-6">
@@ -343,3 +98,5 @@ export const PayrollPeriodFormModal = ({ open, onClose, initialData, onSubmit })
         </div>
     )
 }
+
+export default PayrollPeriodFormModal

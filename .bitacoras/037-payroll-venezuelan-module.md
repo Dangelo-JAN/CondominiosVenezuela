@@ -142,7 +142,7 @@
 - [x] 7.3.3 PermissionCheck frontend (hook `usePermissions` + `useHRAuth.can()` integrado en botones)
 
 ### 7.4 Refactor + Code Splitting
-- [ ] 7.4.1 Split HRPayrollPage (8 tabs)
+- [x] 7.4.1 Split HRPayrollPage (8 tabs) → PayrollTabsContainer + 8 lazy-loaded tabs
 - [ ] 7.4.2 Split PayrollPeriodFormModal
 - [ ] 7.4.3 Lazy loading rutas
 - [ ] 7.4.4 manualChunks vite
