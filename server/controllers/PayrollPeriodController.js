@@ -5,6 +5,8 @@ import { Employee } from '../models/Employee.model.js'
 import { Department } from '../models/Department.model.js'
 import { calculatePayrollPeriod, calculateEmployeeReceipt } from '../services/payroll/payroll-engine.js'
 import { JournalGenerator } from '../services/payroll/journal-generator.js'
+import { exportBankFiles } from '../services/payroll/bank-export.js'
+import { addBankExportJob, addPayslipEmailJob } from '../config/queue.js'
 
 export const PayrollPeriodController = {
     // GET /api/v1/payroll-periods
@@ -236,12 +238,33 @@ export const PayrollPeriodController = {
             period.status = 'PAID'
             await period.save()
 
-            // TODO: Lanzar export_bank_files y send_payslips_email (Celery tasks)
+            // Encolar exportación bancaria (async via Bull/Redis)
+            let bankExportJob = null
+            try {
+                bankExportJob = await addBankExportJob(req.ORGID, id)
+            } catch (queueError) {
+                console.error('[PayrollPeriodController.pay] Error encolando exportación bancaria:', queueError)
+            }
+
+            // Encolar envío de boletas por email (async via Bull/Redis)
+            let payslipEmailJob = null
+            try {
+                const payslipBaseURL = process.env.CLIENT_URL || 'https://app.condove.com'
+                payslipEmailJob = await addPayslipEmailJob(req.ORGID, id, payslipBaseURL)
+            } catch (queueError) {
+                console.error('[PayrollPeriodController.pay] Error encolando envío de boletas:', queueError)
+            }
 
             return res.status(200).json({
                 success: true,
-                message: 'Período marcado como pagado',
-                data: { periodStatus: 'PAID' }
+                message: 'Período marcado como pagado. Procesos de exportación y notificación encolados.',
+                data: { 
+                    periodStatus: 'PAID',
+                    queuedJobs: {
+                        bankExport: bankExportJob ? { jobId: bankExportJob.id, status: 'queued' } : { status: 'failed', error: 'Queue no disponible' },
+                        payslipEmail: payslipEmailJob ? { jobId: payslipEmailJob.id, status: 'queued' } : { status: 'failed', error: 'Queue no disponible' }
+                    }
+                }
             })
         } catch (error) {
             return res.status(500).json({ success: false, message: error.message })

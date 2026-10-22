@@ -2,6 +2,8 @@ import { Decimal } from 'decimal.js'
 import { PayrollPolicy } from '../../models/payroll/PayrollPolicy.model.js'
 import { ISLRRetention } from '../../models/payroll/ISLRRetention.model.js'
 import { ISLRRetentionTable } from '../../models/payroll/ISLRRetentionTable.model.js'
+import { PayrollPeriod } from '../../models/payroll/PayrollPeriod.model.js'
+import { PayrollReceipt } from '../../models/payroll/PayrollReceipt.model.js'
 
 /**
  * Calculador de ISLR Progresivo - ISLRCalculator
@@ -97,20 +99,26 @@ export class ISLRCalculator {
     }
 
     /**
-     * Obtiene tabla ISLR del año
+     * Obtiene tabla ISLR del año desde BD
      */
     async _getIslrTable(year) {
-        // En producción: consultar modelo ISLRRetentionTable
-        // Por ahora tabla por defecto
-        return [
-            { income_from_ut: 0, income_to_ut: 1000, rate: 0, subtrahend: 0 },
-            { income_from_ut: 1000, income_to_ut: 2000, rate: 6, subtrahend: 60 },
-            { income_from_ut: 2000, income_to_ut: 3000, rate: 9, subtrahend: 120 },
-            { income_from_ut: 3000, income_to_ut: 4000, rate: 12, subtrahend: 210 },
-            { income_from_ut: 4000, income_to_ut: 5000, rate: 16, subtrahend: 370 },
-            { income_from_ut: 5000, income_to_ut: 6000, rate: 20, subtrahend: 570 },
-            { income_from_ut: 6000, income_to_ut: null, rate: 24, subtrahend: 810 }
-        ]
+        // Consultar tabla desde base de datos
+        const table = await ISLRRetentionTable.find(
+            { year, is_active: true },
+            { income_from_ut: 1, income_to_ut: 1, rate: 1, subtrahend: 1, ut_value: 1 }
+        ).sort({ income_from_ut: 1 }).lean()
+
+        if (!table || table.length === 0) {
+            console.warn(`[ISLRCalculator] No ISLR table found for year ${year}, using default`)
+            return getDefaultISLRTable()
+        }
+
+        return table.map(row => ({
+            income_from_ut: row.income_from_ut,
+            income_to_ut: row.income_to_ut,
+            rate: row.rate,
+            subtrahend: row.subtrahend
+        }))
     }
 
     /**
@@ -261,17 +269,19 @@ export function calculateAccumulatedISLR(accumulatedIncome, table, utValue) {
 }
 
 /**
- * Obtiene tabla ISLR por defecto
+ * Obtiene tabla ISLR por defecto (fallback)
  */
 export function getDefaultISLRTable() {
     return [
         { income_from_ut: 0, income_to_ut: 1000, rate: 0, subtrahend: 0 },
-        { income_from_ut: 1000, income_to_ut: 2000, rate: 6, subtrahend: 60 },
-        { income_from_ut: 2000, income_to_ut: 3000, rate: 9, subtrahend: 120 },
-        { income_from_ut: 3000, income_to_ut: 4000, rate: 12, subtrahend: 210 },
-        { income_from_ut: 4000, income_to_ut: 5000, rate: 16, subtrahend: 370 },
-        { income_from_ut: 5000, income_to_ut: 6000, rate: 20, subtrahend: 570 },
-        { income_from_ut: 6000, income_to_ut: null, rate: 24, subtrahend: 810 }
+        { income_from_ut: 1000, income_to_ut: 1500, rate: 6, subtrahend: 60 },
+        { income_from_ut: 1500, income_to_ut: 2000, rate: 9, subtrahend: 105 },
+        { income_from_ut: 2000, income_to_ut: 2500, rate: 12, subtrahend: 150 },
+        { income_from_ut: 2500, income_to_ut: 3000, rate: 16, subtrahend: 250 },
+        { income_from_ut: 3000, income_to_ut: 4000, rate: 20, subtrahend: 370 },
+        { income_from_ut: 4000, income_to_ut: 6000, rate: 24, subtrahend: 530 },
+        { income_from_ut: 6000, income_to_ut: 10000, rate: 28, subtrahend: 770 },
+        { income_from_ut: 10000, income_to_ut: null, rate: 34, subtrahend: 1370 }
     ]
 }
 

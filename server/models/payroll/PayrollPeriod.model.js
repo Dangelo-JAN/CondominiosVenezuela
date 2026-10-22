@@ -68,4 +68,20 @@ const PayrollPeriodSchema = new Schema({
 PayrollPeriodSchema.index({ organizationID: 1, start_date: 1, end_date: 1 })
 PayrollPeriodSchema.index({ organizationID: 1, status: 1 })
 
+// Cascade delete: al eliminar período, eliminar recibos y líneas asociadas
+PayrollPeriodSchema.pre('deleteOne', { document: true, query: false }, async function(next) {
+    try {
+        const { PayrollReceipt } = await import('./PayrollReceipt.model.js')
+        const { PayrollReceiptLine } = await import('./PayrollReceiptLine.model.js')
+        
+        await PayrollReceipt.deleteMany({ period: this._id, organizationID: this.organizationID })
+        await PayrollReceiptLine.deleteMany({ 
+            receipt: { $in: (await PayrollReceipt.find({ period: this._id }).distinct('_id')) } 
+        })
+        next()
+    } catch (error) {
+        next(error)
+    }
+})
+
 export const PayrollPeriod = mongoose.model('PayrollPeriod', PayrollPeriodSchema)

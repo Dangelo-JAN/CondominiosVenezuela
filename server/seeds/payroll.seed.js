@@ -5,6 +5,8 @@ import { seedPayrollConcepts } from './payroll-concepts.seed.js'
 import { seedReceiptTypes } from './receipt-types.seed.js'
 import { seedPayrollCompany } from './payroll-company.seed.js'
 import { seedHolidays } from './holidays.seed.js'
+import { seedISLRRetentionTables } from './islr-retention-table.seed.js'
+import { seedAccountSubcategories } from './account-subcategory.seed.js'
 
 /**
  * Seed maestro para el módulo de Nómina Venezolana
@@ -36,10 +38,16 @@ export const runPayrollSeeds = async () => {
         console.log('\n3️⃣  Seeding PayrollCompany...')
         await seedPayrollCompany(organizationID)
 
-        console.log('\n4️⃣  Seeding PayrollConcepts...')
+        console.log('\n4️⃣  Seeding ISLR Retention Tables...')
+        await seedISLRRetentionTables(organizationID)
+
+        console.log('\n5️⃣  Seeding Account Subcategories...')
+        await seedAccountSubcategories(organizationID)
+
+        console.log('\n6️⃣  Seeding PayrollConcepts...')
         await seedPayrollConcepts(organizationID)
 
-        console.log('\n5️⃣  Seeding Holidays...')
+        console.log('\n7️⃣  Seeding Holidays...')
         await seedHolidays(organizationID)
 
         console.log('\n✅ ¡Todos los seeds de nómina completados exitosamente!')
@@ -47,6 +55,8 @@ export const runPayrollSeeds = async () => {
         console.log('   - PayrollPolicy: Parámetros legales venezolanos')
         console.log('   - PayrollCompany: Configuración organizacional')
         console.log('   - ReceiptTypes: 8 tipos de recibo')
+        console.log('   - ISLR Retention Tables: 18 filas (2024-2025)')
+        console.log('   - Account Subcategories: 38 cuentas contables (6xxx, 2xxx, 4xxx)')
         console.log('   - PayrollConcepts: 45+ conceptos (ingresos, deducciones, costos patronales)')
         console.log('   - Holidays: 30 feriados 2024-2025')
 

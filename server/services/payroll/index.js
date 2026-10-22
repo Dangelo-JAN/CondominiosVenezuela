@@ -35,6 +35,9 @@ export { ISLRCalculator, calculateISLRMonthly, calculateAccumulatedISLR, getDefa
 // Generador de asientos contables
 export { JournalGenerator, generatePayrollJournal, mapConceptToAccount, validateDoubleEntry } from './journal-generator.js'
 
+// Exportación bancaria
+export { BankExportGenerator, exportBankFiles } from './bank-export.js'
+
 // Tipos y constantes
 export const PAYROLL_CONCEPT_KINDS = ['INCOME', 'DEDUCTION', 'EMPLOYER_COST', 'INFORMATIONAL']
 export const COMPUTATION_METHODS = ['FIXED_AMOUNT', 'PERCENTAGE_OF_BASIC', 'DYNAMIC_FORMULA', 'TABLE', 'EXTERNAL_API']
