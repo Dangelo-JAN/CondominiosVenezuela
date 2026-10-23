@@ -150,7 +150,7 @@
 
 ### 7.5 Deploy/Infra
 - [x] 7.5.1 Firebase vars prod (documentado en .env.example client/server)
-- [ ] 7.5.2 CORS custom domains
+- [x] 7.5.2 CORS custom domains (server/index.js: CORS_ORIGIN_REGEX env)
 - [ ] 7.5.3 Health check extendido
 - [ ] 7.5.4 Indexes Atlas script
 - [ ] 7.5.5 Deploy staging test

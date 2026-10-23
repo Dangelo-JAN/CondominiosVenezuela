@@ -114,9 +114,84 @@ app.use("/api/v1/vacations", VacationRouter)
 app.use("/api/v1/social-benefits", SocialBenefitsRouter)
 app.use("/api/v1/utilidades", UtilidadesRouter)
 
-// ✅ Health check (MUY recomendado)
-app.get("/api/health", (req, res) => {
-  res.status(200).json({ status: "ok" })
+// ✅ Health check extendido (DB + Redis + Firebase)
+app.get("/api/health", async (req, res) => {
+    const checks = {
+        status: "ok",
+        timestamp: new Date().toISOString(),
+        services: {}
+    }
+
+    // 1. MongoDB
+    try {
+        const db = (await import("./config/connectDB.js")).default
+        // ConnectDB returns mongoose connection
+        const mongoose = (await import("mongoose")).default
+        checks.services.mongodb = {
+            status: mongoose.connection.readyState === 1 ? "connected" : "disconnected",
+            readyState: mongoose.connection.readyState
+        }
+    } catch (e) {
+        checks.services.mongodb = { status: "error", message: e.message }
+        checks.status = "degraded"
+    }
+
+    // 2. Redis / Bull Queue
+    try {
+        const { redisClient } = await import("./config/redis.js")
+        checks.services.redis = {
+            status: redisClient.status === "ready" ? "connected" : redisClient.status,
+            clientStatus: redisClient.status
+        }
+        if (redisClient.status !== "ready") checks.status = "degraded"
+    } catch (e) {
+        checks.services.redis = { status: "error", message: e.message }
+        checks.status = "degraded"
+    }
+
+    // 3. Bull Queues
+    try {
+        const { payrollQueues } = await import("./config/queue.js")
+        const queueStatus = {}
+        for (const [name, queue] of Object.entries(payrollQueues)) {
+            queueStatus[name] = {
+                status: "ready",
+                waiting: await queue.getWaitingCount(),
+                active: await queue.getActiveCount(),
+                completed: await queue.getCompletedCount(),
+                failed: await queue.getFailedCount(),
+            }
+        }
+        checks.services.queues = queueStatus
+    } catch (e) {
+        checks.services.queues = { status: "error", message: e.message }
+        checks.status = "degraded"
+    }
+
+    // 4. Firebase Admin (opcional)
+    try {
+        if (process.env.FIREBASE_PROJECT_ID && process.env.FIREBASE_CLIENT_EMAIL && process.env.FIREBASE_PRIVATE_KEY) {
+            const admin = (await import("firebase-admin")).default
+            if (!admin.apps.length) {
+                admin.initializeApp({
+                    credential: admin.credential.cert({
+                        projectId: process.env.FIREBASE_PROJECT_ID,
+                        clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
+                        privateKey: process.env.FIREBASE_PRIVATE_KEY.replace(/\\n/g, "\n"),
+                    }),
+                })
+            }
+            checks.services.firebase = { status: "initialized" }
+        } else {
+            checks.services.firebase = { status: "not_configured" }
+        }
+    } catch (e) {
+        checks.services.firebase = { status: "error", message: e.message }
+        checks.status = "degraded"
+    }
+
+    const statusCode = checks.status === "ok" ? 200 : 503
+    res.status(statusCode).json(checks)
 })
 
 const PORT = process.env.PORT || 10000
