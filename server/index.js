@@ -45,28 +45,39 @@ app.use(express.urlencoded({ extended: true, limit: "10mb" }))
 app.use(cookieParser())
 
 // --- CONFIGURACIÓN DE CORS CON REGEX ---
+const corsOriginRegex = process.env.CORS_ORIGIN_REGEX
+
 const allowedOrigins = [
   process.env.CLIENT_URL,
-  /\.vercel\.app$/,
-  /cron-job\.org$/,  // Para servicios de cron externos
-];
+  /.vercel.app$/,
+  /cron-job.org$/,  // Para servicios de cron externos
+]
+
+// Si existe CORS_ORIGIN_REGEX en env, usarlo como patrón adicional
+if (corsOriginRegex) {
+  try {
+    allowedOrigins.push(new RegExp(corsOriginRegex))
+  } catch (e) {
+    console.warn('[CORS] CORS_ORIGIN_REGEX inválido:', corsOriginRegex)
+  }
+}
 
 app.use(cors({
   origin: function (origin, callback) {
-    if (!origin) return callback(null, true);
+    if (!origin) return callback(null, true)
     const isAllowed = allowedOrigins.some((pattern) =>
       pattern instanceof RegExp ? pattern.test(origin) : pattern === origin
-    );
+    )
     if (isAllowed) {
-      callback(null, true);
+      callback(null, true)
     } else {
-      callback(new Error('No permitido por CORS (Regex Vercel)'));
+      callback(new Error('No permitido por CORS'))
     }
   },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization', 'Cookie']
-}));
+}))
 
 app.use("/api/auth/employee", EmployeeAuthRouter)
 app.use("/api/auth/HR", HRAuthrouter)
