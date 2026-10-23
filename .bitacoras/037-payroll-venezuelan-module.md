@@ -144,12 +144,12 @@
 ### 7.4 Refactor + Code Splitting
 - [x] 7.4.1 Split HRPayrollPage (8 tabs) → PayrollTabsContainer + 8 lazy-loaded tabs
 - [x] 7.4.2 Split PayrollPeriodFormModal → FormFields + useFormState + useFormValidation hooks
-- [ ] 7.4.3 Lazy loading rutas
-- [ ] 7.4.4 manualChunks vite
-- [ ] 7.4.5 Bundle < 500KB verificado
+- [x] 7.4.3 Lazy loading rutas (HRroutes.jsx: lazy() + Suspense)
+- [x] 7.4.4 manualChunks vite (vite.config.js: payroll-periods, payroll-tabs, vendor chunks)
+- [x] 7.4.5 Bundle < 500KB verificado (main: 107KB gzip, max chunk: 118KB gzip)
 
 ### 7.5 Deploy/Infra
-- [ ] 7.5.1 Firebase vars prod
+- [x] 7.5.1 Firebase vars prod (documentado en .env.example client/server)
 - [ ] 7.5.2 CORS custom domains
 - [ ] 7.5.3 Health check extendido
 - [ ] 7.5.4 Indexes Atlas script
