@@ -1,9 +1,10 @@
-import { createClient } from 'ioredis'
+import ioredis from 'ioredis'
 import dotenv from 'dotenv'
 dotenv.config()
 
 // Cliente Redis singleton para Bull
-export const redisClient = new createClient({
+const Redis = ioredis.default || ioredis
+export const redisClient = new Redis({
     host: process.env.REDIS_HOST || 'localhost',
     port: parseInt(process.env.REDIS_PORT) || 6379,
     password: process.env.REDIS_PASSWORD || undefined,
