@@ -118,99 +118,9 @@ Este informe documenta la implementación del **Módulo de Nómina Venezolana (F
 
 ---
 
-## 2. ANÁLISIS FORENSE: BUCLE INFINITO EN LOGIN DE EMPLEADO
+## 2. ANÁLISIS DE RUTAS: INVISIBILIDAD DEL MÓDULO EN PERFIL RR.HH.
 
-### 2.1 Flujo de Login Actual (Frontend → Backend)
-
-```
-EmployeeLogin.jsx (líneas 27-32, 49-68)
-  ↓ dispatch HandlePostEmployees({apiroute: "LOGIN", data})
-  ↓ EmployeeThunk.js línea 24: employeeApiService.post(APIsEndPoints.LOGIN, data)
-  ↓ EmployeeApiService.js interceptor: NO agrega token (ruta en EM_PUBLIC)
-  ↓ POST /api/auth/employee/login
-  ↓ EmplyoeeAuth.controller.js línea 136: HandleEmplyoeeLogin()
-  ↓ bcrypt.compare + GenerateJwtTokenAndSetCookiesEmployee()
-  ↓ Response {token} → localStorage.setItem("EMtoken")
-  ↓ EmployeeSlice: isAuthenticated = true
-  ↓ EmployeeLogin useEffect línea 56: RedirectToDashboard()
-```
-
-### 2.2 Causa Raíz del Bucle Infinito
-
-**ARCHIVO: `client/src/pages/Employees/emplyoeelogin.jsx` (LÍNEAS 49-68)**
-
-```javascript
-useEffect(() => {
-    // Solo verificar autenticación una vez al montar el componente
-    if (!hasCheckedAuth && !EmployeeState.isAuthenticated) {
-        setHasCheckedAuth(true)
-        dispatch(HandleGetEmployees({ apiroute: "CHECKELOGIN" }))  // ← PROBLEMA
-    }
-    // ...
-}, [EmployeeState.isAuthenticated, EmployeeState.error, hasCheckedAuth])
-```
-
-**PROBLEMA 1 - Race Condition en CHECKLOGIN:**
-- `CHECKELOGIN` → `APIsEndPoints.CHECKELOGIN = "/api/auth/employee/check-login"`
-- Esta ruta **requiere `VerifyEmployeeToken` middleware** (EmployeeAuth.route.js línea 20)
-- El middleware extrae token de `Authorization: Bearer <token>` header
-- **Pero en login inicial NO HAY TOKEN** (se obtiene DESPUÉS del login exitoso)
-- El middleware responde `401 Unauthorized` → `rejectWithValue` → `EmployeeState.error.status = true`
-- El `useEffect` se re-ejecuta por cambio en `EmployeeState.error`
-- **Bucle: dispatch CHECKLOGIN → 401 → error → re-render → dispatch CHECKLOGIN...**
-
-**PROBLEMA 2 - Dependencias del useEffect Incorrectas:**
-```javascript
-}, [EmployeeState.isAuthenticated, EmployeeState.error, hasCheckedAuth])
-```
-- `EmployeeState.error` cambia en **CADA** llamada fallida a CHECKLOGIN
-- Esto re-dispara el effect infinitamente
-
-**PROBLEMA 3 - Lógica Invertida:**
-- El `CHECKELOGIN` debe llamarse **SOLO** cuando YA hay token en localStorage (restaurar sesión)
-- En login fresco, **NO debe llamarse** hasta después del login exitoso
-
-### 2.3 Evidencia en Código Backend (Confirmación)
-
-**`server/routes/EmployeeAuth.route.js` línea 20:**
-```javascript
-router.get("/check-login", VerifyEmployeeToken, HandleEmployeeCheck)
-```
-
-**`server/middlewares/Auth.middleware.js` líneas 4-30:**
-```javascript
-export const VerifyEmployeeToken = (req, res, next) => {
-    const authHeader = req.headers.authorization
-    const token = authHeader && authHeader.startsWith("Bearer ") ? authHeader.slice(7) : null
-    if (!token) {
-        return res.status(401).json({ success: false, message: "Unauthorized access", gologin: true })
-    }
-    // ...
-}
-```
-
-**CONCLUSIÓN:** El middleware **SIEMPRE** retorna 401 si no hay header Authorization. El frontend llama a este endpoint **antes** de tener token.
-
-### 2.4 Fix Requerido (Frontend)
-
-```javascript
-// En EmployeeLogin.jsx - CORREGIR useEffect:
-useEffect(() => {
-    // SOLO verificar si YA hay token guardado (restaurar sesión)
-    const hasToken = localStorage.getItem("EMtoken")
-    if (!hasCheckedAuth && !EmployeeState.isAuthenticated && hasToken) {
-        setHasCheckedAuth(true)
-        dispatch(HandleGetEmployees({ apiroute: "CHECKELOGIN" }))
-    }
-    // ...
-}, [EmployeeState.isAuthenticated, hasCheckedAuth]) // QUITAR EmployeeState.error
-```
-
----
-
-## 3. ANÁLISIS DE RUTAS: INVISIBILIDAD DEL MÓDULO EN PERFIL RR.HH.
-
-### 3.1 Mapeo de Rutas Frontend (HR)
+### 2.1 Mapeo de Rutas Frontend (HR)
 
 **`client/src/routes/HRroutes.jsx` líneas 98-105:**
 ```javascript
@@ -237,20 +147,20 @@ useEffect(() => {
 }, [isReady, role, isAdmin, allowedRoles, navigate, redirectTo])
 ```
 
-### 3.2 Problema 1: Falta de Permiso Explícito en Ruta Payroll
+### 2.2 Problema 1: Falta de Permiso Explícito en Ruta Payroll
 
 La ruta `/HR/dashboard/payroll` **NO está envuelta en `ProtectedHRRoute`** (líneas 99-105). Solo está en `Suspense`. Esto significa:
 - Cualquier HR logueado puede acceder (sin verificación de permiso `payroll.read`)
 - Si `useHRAuth` no tiene `role` listo (`isReady=false`), renderiza `null` (línea 61)
 - **Síntoma:** Pantalla en blanco o "leyendo..." si `isReady` nunca pasa a `true`
 
-### 3.3 Problema 2: useHRAuth - Estado `isReady` Nunca Resuelto
+### 2.3 Problema 2: useHRAuth - Estado `isReady` Nunca Resuelto
 
 **`client/src/hooks/useHRAuth.js`** (no leído pero inferido por uso en `ProtectedHRRoute`):
 - `isReady` depende de `HandleGetHR({apiroute: "CHECKLOGIN"})` completarse
 - Si el backend `/api/auth/HR/check-login` falla (igual que empleado), `isReady` puede quedar `false`永远
 
-### 3.4 Problema 3: Falta de Ruta Empleado para Ver Sus Recibos
+### 2.4 Problema 3: Falta de Ruta Empleado para Ver Sus Recibos
 
 **`client/src/redux/apis/APIsEndpoints.js` línea 123:**
 ```javascript
@@ -267,7 +177,7 @@ router.get("/employee/:employeeId", VerifyhHRToken, ...)  // SOLO HR
 
 **No hay ruta con `VerifyEmployeeToken` para `/api/v1/payslips/employee/:employeeId`**
 
-### 3.5 Problema 4: Exportación PayrollReceiptRouter en server/index.js
+### 2.5 Problema 4: Exportación PayrollReceiptRouter en server/index.js
 
 **`server/index.js` línea 110:**
 ```javascript
@@ -278,9 +188,9 @@ Pero `PayrollReceiptRouter` solo expone rutas protegidas por `VerifyhHRToken`. E
 
 ---
 
-## 4. ESPECIFICACIÓN TÉCNICA DE FUNCIONES CRÍTICAS (LOTTT)
+## 3. ESPECIFICACIÓN TÉCNICA DE FUNCIONES CRÍTICAS (LOTTT)
 
-### 4.1 Retenciones IVSS/FAOV/RPE/INCES - `employer-costs.js`
+### 3.1 Retenciones IVSS/FAOV/RPE/INCES - `employer-costs.js`
 
 | Función | Firma | Parámetros | Retorno | Mutabilidad |
 |---------|-------|------------|---------|-------------|
@@ -302,7 +212,7 @@ const employerIVSS = cappedBase.times(policy.ivss_employer_rate || 9).div(100)
 
 ---
 
-### 4.2 Cálculo Cestaticket - `concept-rules.js` / `payroll-engine.js`
+### 3.2 Cálculo Cestaticket - `concept-rules.js` / `payroll-engine.js`
 
 | Función | Firma | Parámetros | Retorno |
 |---------|-------|------------|---------|
@@ -324,7 +234,7 @@ _getCestaticketDaily(employee) {
 
 ---
 
-### 4.3 Cálculo Sueldo Base - `payroll-engine.js` líneas 102-103, 368-369
+### 3.3 Cálculo Sueldo Base - `payroll-engine.js` líneas 102-103, 368-369
 
 ```javascript
 // En calculateEmployeeReceipt:
@@ -347,7 +257,7 @@ const salaryBaseVes = new Decimal(contract.salary_amount).times(exchangeRate)
 
 ---
 
-### 4.4 Motor de Acumuladores - `accumulator-engine.js`
+### 3.4 Motor de Acumuladores - `accumulator-engine.js`
 
 | Función | Firma | Mutabilidad |
 |---------|-------|-------------|
@@ -368,9 +278,9 @@ for (const incidence of concept.incidences || []) {
 
 ---
 
-## 5. ANÁLISIS DE ERRORES SILENCIOSOS Y COMPORTAMIENTOS INDETERMINISTAS
+## 4. ANÁLISIS DE ERRORES SILENCIOSOS Y COMPORTAMIENTOS INDETERMINISTAS
 
-### 5.1 Bloques Try/Catch Vacíos o Débiles
+### 4.1 Bloques Try/Catch Vacíos o Débiles
 
 | Archivo | Línea | Código Problemático | Riesgo |
 |---------|-------|---------------------|--------|
@@ -380,7 +290,7 @@ for (const incidence of concept.incidences || []) {
 | `vacation-calculator.js` | 254-271 | `static async accrueVacationsForAllEmployees... catch no manejado` | Cron job falla sin logs visibles |
 | `journal-generator.js` | ~150 | `try { await generator.postJournalDraft } catch { return res.status(500) }` | OK - propaga error |
 
-### 5.2 Pérdida de Precisión Financiera
+### 4.2 Pérdida de Precisión Financiera
 
 | Ubicación | Código | Problema |
 |-----------|--------|----------|
@@ -396,7 +306,7 @@ for (const incidence of concept.incidences || []) {
 
 ---
 
-### 5.3 Condiciones de Carrera (Race Conditions)
+### 4.3 Condiciones de Carrera (Race Conditions)
 
 | Archivo | Línea | Patrón | Descripción |
 |---------|-------|--------|-------------|
@@ -410,7 +320,7 @@ for (const incidence of concept.incidences || []) {
 
 ---
 
-### 5.4 Otros Comportamientos Indeterministas
+### 4.4 Otros Comportamientos Indeterministas
 
 1. **`_getActiveContract` (payroll-engine.js:494-512) - PLACEHOLDER HARDCODEADO:**
 ```javascript
@@ -442,7 +352,7 @@ static async accrueVacationsForAllEmployees(organizationID, policy) {
 
 ---
 
-## 6. MATRIZ DE CUMPLIMIENTO ARQUITECTÓNICO
+## 5. MATRIZ DE CUMPLIMIENTO ARQUITECTÓNICO
 
 | Patrón/Regla Estipulada del Proyecto | ¿Se cumplió? | Evidencia en Código / Justificación Técnica del Desvío |
 | :--- | :---: | :--- |
@@ -467,7 +377,7 @@ static async accrueVacationsForAllEmployees(organizationID, policy) {
 
 ---
 
-## 7. HALLAZGOS CRÍTICOS RESUMEN (BLOQUEANTES PARA PRODUCCIÓN)
+## 6. HALLAZGOS CRÍTICOS RESUMEN (BLOQUEANTES PARA PRODUCCIÓN)
 
 | # | Hallazgo | Severidad | Archivo/Línea | Acción Requerida |
 |---|----------|-----------|---------------|------------------|
@@ -485,7 +395,7 @@ static async accrueVacationsForAllEmployees(organizationID, policy) {
 
 ---
 
-## 8. PLAN DE ACCIÓN INMEDIATO (HOTFIX)
+## 7. PLAN DE ACCIÓN INMEDIATO (HOTFIX)
 
 ### Prioridad 0 - Bloqueadores de Login/Acceso (HOY) — **ACTUALIZADO 2026-10-23**
 1. ~~**Fix EmployeeLogin useEffect** - Permitir login sin bucle~~ → **PENDIENTE**

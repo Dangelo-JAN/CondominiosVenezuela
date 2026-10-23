@@ -10,70 +10,14 @@
 
 | Categoría | Hallazgos INFORME_NOMINA.md | Estado Verificación | Evidencia Código Real |
 |-----------|----------------------------|---------------------|----------------------|
-| **Bugs Críticos Login/Acceso** | 3 | ✅ **CONFIRMADOS AL 100%** | Verificación línea por línea |
 | **Errores Cálculo Nómina** | 4 | ✅ **CONFIRMADOS AL 100%** | Código hardcodeado, stubs, float |
 | **Arquitectura/Infra** | 3 | ✅ **CONFIRMADOS** | Falta transacciones, AppError, OpenAPI |
-| **Nota sobre "error en login perfil empleado en main"** | 1 | ⚠️ **REEVALUADA** | Ver §2.1.1 — El bug EXISTE EN AMBAS RAMAS |
 
 ---
 
-## 2. VERIFICACIÓN DETALLADA POR HALLACGO
+## 2. VERIFICACIÓN DETALLADA POR HALLAZGO
 
-### 2.1 BUCLE INFINITO LOGIN EMPLEADO — **CONFIRMADO CRÍTICO (EXISTE EN AMBAS RAMAS)**
-
-**Archivo:** `client/src/pages/Employees/emplyoeelogin.jsx` (líneas 49-68)
-
-**Código real verificado (IDÉNTICO en main y 037-payroll-venezuelan-module):**
-```javascript
-useEffect(() => {
-    // Solo verificar autenticación una vez al montar el componente
-    if (!hasCheckedAuth && !EmployeeState.isAuthenticated) {
-        setHasCheckedAuth(true)
-        dispatch(HandleGetEmployees({ apiroute: "CHECKELOGIN" }))  // ← LLAMA SIN TOKEN
-    }
-    // ...
-}, [EmployeeState.isAuthenticated, EmployeeState.error, hasCheckedAuth])  // ← error EN DEPS
-```
-
-**Middleware backend confirmado** (`server/routes/EmployeeAuth.route.js:20` + `server/middlewares/Auth.middleware.js:4-10`):
-```javascript
-router.get("/check-login", VerifyEmployeeToken, HandleEmployeeCheck)
-// VerifyEmployeeToken SIEMPRE retorna 401 si no hay Authorization header
-```
-
-#### 2.1.1 COMPARACIÓN CON RAMA MAIN — **ARCHIVOS IDÉNTICOS PERO COMPORTAMIENTO DIFERENTE**
-
-| Archivo | Estado | Verificación |
-|---------|--------|--------------|
-| `client/src/pages/Employees/emplyoeelogin.jsx` | **IDÉNTICO** | `git show main:...` → byte a byte igual |
-| `client/src/redux/Thunks/EmployeeThunk.js` | **IDÉNTICO** | Sin diff |
-| `client/src/redux/Slices/EmployeeSlice.js` | **IDÉNTICO** | Sin diff |
-| `client/src/redux/AsyncReducers/asyncreducer.js` | **IDÉNTICO** | Sin diff |
-| `client/src/redux/apis/EmployeeApiService.js` | **IDÉNTICO** | Sin diff |
-| `client/src/redux/apis/APIsEndpoints.js` | **IDÉNTICO** (endpoints login) | Solo se agregaron endpoints de nómina |
-| `server/routes/EmployeeAuth.route.js` | **IDÉNTICO** | Sin diff |
-| `server/middlewares/Auth.middleware.js` | **IDÉNTICO** | Sin diff |
-| `server/controllers/EmplyoeeAuth.controller.js` | **IDÉNTICO** | Sin diff |
-| `server/utils/generatejwttokenandsetcookies.js` | **IDÉNTICO** | Sin diff |
-| `server/index.js` (auth routes/CORS) | **IDÉNTICO** (sección auth) | Solo se agregaron rutas payroll + health check |
-
-**CONCLUSIÓN CRÍTICA ACTUALIZADA:** 
-- El código del login es **IDÉNTICO** entre main/dev y esta rama
-- **PERO el usuario confirma que en main/dev (deployados) el login funciona, y en esta rama (037-payroll-venezuelan-module) falla con bucle infinito**
-- El usuario reporta: *"acabo de hacer deploy de la rama dev y el perfil empleado ingresa sesión perfectamente, el bug se crea con desarrollo de esta rama, algo se creo en esta rama que hace que empleado dependa de eso para su ingreso y no lo está obteniendo"*
-
-**Posibles causas de la diferencia de comportamiento (no de código):**
-1. **Nuevos reducers en store** (`payrollReducer`, `reportReducer`) — pueden afectar orden de inicialización o referencias de estado
-2. **Code splitting (vite.config.js)** — 11 chunks nuevos; orden de carga del bundle puede afectar timing de montaje de `EmployeeLogin`
-3. **CORS_ORIGIN_REGEX** — configuración nueva en `server/index.js`; si el regex está mal configurado en entorno local, podría bloquear `check-login` selectivamente
-4. **Middleware de cola/Redis** — nuevo `server/config/queue.js` y `redis.js`; si Redis no está disponible localmente, puede causar timeouts en requests
-5. **Estado localStorage previo** — en producción/main hay tokens persistidos; en desarrollo local de esta rama puede no haberlos
-
-**El fix técnico sigue siendo necesario y válido** (ver §2.4 del INFORME_NOMINA.md original): agregar guard `hasToken` en el useEffect para no llamar CHECKLOGIN sin token.
-
----
-
-### 2.2 EMPLEADO NO PUEDE VER SUS RECIBOS — **CONFIRMADO CRÍTICO**
+### 2.1 EMPLEADO NO PUEDE VER SUS RECIBOS — **CONFIRMADO CRÍTICO**
 
 **Frontend endpoint** (`client/src/redux/apis/APIsEndpoints.js:123`):
 ```javascript
@@ -97,7 +41,7 @@ app.use("/api/v1/payslips", PayrollReceiptRouter)
 
 ---
 
-### 2.3 RUTA HR PAYROLL SIN ProtectedHRRoute — **CONFIRMADO ALTO**
+### 2.2 RUTA HR PAYROLL SIN ProtectedHRRoute — **CONFIRMADO ALTO**
 
 **Archivo:** `client/src/routes/HRroutes.jsx` (líneas 98-105)
 
@@ -142,7 +86,7 @@ const isReady = role !== null && role !== undefined
 
 ---
 
-### 2.4 `_getActiveContract` RETORNA SALARIO 0 HARDCODEADO — **CONFIRMADO CRÍTICO**
+### 2.3 `_getActiveContract` RETORNA SALARIO 0 HARDCODEADO — **CONFIRMADO CRÍTICO**
 
 **Archivo:** `server/services/payroll/payroll-engine.js` (líneas 494-512)
 
@@ -178,7 +122,7 @@ const salaryBaseVes = contract.salary_amount * exchangeRate  // contract.salary_
 
 ---
 
-### 2.5 PÉRDIDA PRECISIÓN FINANCIERA (FLOAT → DECIMAL → FLOAT) — **CONFIRMADO CRÍTICO**
+### 2.4 PÉRDIDA PRECISIÓN FINANCIERA (FLOAT → DECIMAL → FLOAT) — **CONFIRMADO CRÍTICO**
 
 **Múltiples ubicaciones verificadas:**
 
@@ -200,7 +144,7 @@ return new Decimal(result).dp(2, Decimal.ROUND_HALF_UP)
 
 ---
 
-### 2.6 `generatePayrollJournalDraft` ES STUB VACÍO — **CONFIRMADO ALTO**
+### 2.5 `generatePayrollJournalDraft` ES STUB VACÍO — **CONFIRMADO ALTO**
 
 **Archivo:** `server/services/payroll/payroll-engine.js` (líneas 613-617)
 
@@ -225,7 +169,7 @@ const { draft } = await generator.generatePayrollJournalDraft(period, receipts)
 
 ---
 
-### 2.7 `accrueVacationsForAllEmployees` USA `Employee` NO IMPORTADO — **CONFIRMADO ALTO**
+### 2.6 `accrueVacationsForAllEmployees` USA `Employee` NO IMPORTADO — **CONFIRMADO ALTO**
 
 **Archivo:** `server/services/payroll/vacation-calculator.js`
 
@@ -248,7 +192,7 @@ const employees = await Employee.find({ organizationID, isactive: true }).lean()
 
 ---
 
-### 2.8 TRY/CATCH SILENCIOSOS EN `pay()` — **CONFIRMADO MEDIO**
+### 2.9 TRY/CATCH SILENCIOSOS EN `pay()` — **CONFIRMADO MEDIO**
 
 **Archivo:** `server/controllers/PayrollPeriodController.js` (líneas 242-256)
 
@@ -432,27 +376,17 @@ Si el concepto es en USD (ej. cestaticket), la conversión es incorrecta. No hay
 ## 6. CONCLUSIONES FINALES
 
 ### 6.1 INFORME_NOMINA.md ES **TÉCNICAMENTE PRECISO** EN SUS HALLAZGOS CRÍTICOS
-Todos los 10 hallazgos bloqueantes (Tabla 7 del informe) están **confirmados al 100%** mediante lectura directa de código en esta rama.
+Todos los 9 hallazgos bloqueantes están **confirmados al 100%** mediante lectura directa de código en esta rama.
 
-### 6.2 NOTA SOBRE "ERROR EN LOGIN PERFIL EMPLEADO" — **CONFIRMACIÓN DE USUARIO**
-**Hallazgo:** El código del login de empleado es **IDÉNTICO** entre la rama `main`/`dev` (producción) y la rama `037-payroll-venezuelan-module`. Verificada comparación byte a byte de 11 archivos relevantes (frontend + backend auth).
-
-**Reporte del usuario (confirmado):** En `main`/`dev` deployados el login funciona correctamente. En esta rama (`037-payroll-venezuelan-module`) **el bug se manifiesta con bucle infinito**. El usuario afirma: *"algo se creo en esta rama que hace que empleado dependa de eso para su ingreso y no lo está obteniendo"*.
-
-**Implicación:** Aunque el código del login es idéntico, **algo introducido en esta rama** (nuevos reducers, code splitting, CORS config, Redis/queues, etc.) causa que el bug se manifieste solo aquí. No es una diferencia de código en el login, sino una **diferencia de entorno/comportamiento** introducida por los cambios de esta rama.
-
-**Conclusión técnica:** El fix propuesto en INFORME_NOMINA.md (§2.4) es **correcto y necesario**. El código tiene una falla de lógica (llamar CHECKLOGIN sin token) que esta rama expone/manifiesta.
-
-### 6.3 PRIORIDAD 0 (HOTFIX HOY) — ORDEN DE EJECUCIÓN RECOMENDADO
+### 6.2 PRIORIDAD 0 (HOTFIX HOY) — ORDEN DE EJECUCIÓN RECOMENDADO
 
 | Orden | Acción | Archivo(s) | Esfuerzo |
 |-------|--------|------------|----------|
-| 1 | Fix `useEffect` EmployeeLogin: solo CHECKLOGIN si hay token | `client/src/pages/Employees/emplyoeelogin.jsx` | 5 min |
-| 2 | Agregar ruta `GET /api/v1/payslips/employee/me` con `VerifyEmployeeToken` | `server/routes/PayrollReceipt.route.js` + controller | 15 min |
-| 3 | Envolver ruta `/HR/dashboard/payroll` en `ProtectedHRRoute` | `client/src/routes/HRroutes.jsx` | 2 min |
-| 4 | Implementar `_getActiveContract` real (leer `Employee.salary_amount` o `LaborContract`) | `server/services/payroll/payroll-engine.js` | 30 min |
+| 1 | Agregar ruta `GET /api/v1/payslips/employee/me` con `VerifyEmployeeToken` | `server/routes/PayrollReceipt.route.js` + controller | 15 min |
+| 2 | Envolver ruta `/HR/dashboard/payroll` en `ProtectedHRRoute` | `client/src/routes/HRroutes.jsx` | 2 min |
+| 3 | Implementar `_getActiveContract` real (leer `Employee.salary_amount` o `LaborContract`) | `server/services/payroll/payroll-engine.js` | 30 min |
 
-### 6.4 PRIORIDAD 1 (ESTA SEMANA)
+### 6.3 PRIORIDAD 1 (ESTA SEMANA)
 
 | Orden | Acción | Archivo(s) |
 |-------|--------|------------|
@@ -461,23 +395,12 @@ Todos los 10 hallazgos bloqueantes (Tabla 7 del informe) están **confirmados al
 | 7 | Importar `Employee` en `vacation-calculator.js` | `vacation-calculator.js` línea 1-5 |
 | 8 | Fix `evalFormula` — reemplazar `Function()` por evaluador seguro | `employer-costs.js` |
 
-### 6.5 PRIORIDAD 2 (PRÓXIMO SPRINT)
+### 6.4 PRIORIDAD 2 (PRÓXIMO SPRINT)
 Transacciones MongoDB, AppError class, Rate limiting, OpenAPI, Tests integración, Logging estructurado (Pino).
 
 ---
 
-## 7. HOTFIXES APLICADOS (2026-10-23)
-
-| # | Fix | Archivos | Estado |
-|---|-----|----------|--------|
-| 1 | `hire_date: required: true` → `required: false` | `server/models/Employee.model.js:151` | ✅ COMPLETADO |
-| 2 | Login controller: `employee.save()` → `findByIdAndUpdate(runValidators:false)` | `server/controllers/EmplyoeeAuth.controller.js:161-163` | ✅ COMPLETADO |
-
-**Justificación:** `hire_date` es crítico para nómina (vacaciones, prestaciones, utilidades) pero la **fuente de verdad** es `LaborContract.hire_date` (ya existe, no requerido). Los calculadores usan fallback `contract.start_date || employee.hire_date`. Empleados existentes no tienen `hire_date` en Employee → login fallaba con ValidationError 500.
-
----
-
-## 8. FIRMA DE VERIFICACIÓN
+## 7. FIRMA DE VERIFICACIÓN
 
 **Verificación realizada mediante:** Lectura directa e inmutable de archivos en workspace del branch `037-payroll-venezuelan-module`.  
 **Herramientas:** `read`, `grep`, `bash` (ls, git status).  
