@@ -7,13 +7,11 @@ const LaborContractSchema = new Schema(
             type: Types.ObjectId,
             ref: "Organization",
             required: true,
-            index: true,
         },
         employee: {
             type: Types.ObjectId,
             ref: "Employee",
             required: true,
-            index: true,
         },
         // Tipo de contrato
         contract_type: {
@@ -65,7 +63,6 @@ const LaborContractSchema = new Schema(
         is_active: {
             type: Boolean,
             default: true,
-            index: true,
         },
         // Días de descanso personalizados
         rest_weekdays: {
@@ -90,7 +87,7 @@ const LaborContractSchema = new Schema(
     { timestamps: true }
 )
 
-// Índices compuestos
+// Índices compuestos (incluyen organizationID, employee, is_active)
 LaborContractSchema.index({ organizationID: 1, employee: 1, is_active: 1 })
 LaborContractSchema.index({ organizationID: 1, is_active: 1 })
 

@@ -7,19 +7,16 @@ const VacationPaymentSchema = new Schema(
             type: Types.ObjectId,
             ref: "Organization",
             required: true,
-            index: true,
         },
         vacation_request: {
             type: Types.ObjectId,
             ref: "VacationRequest",
             required: true,
-            index: true,
         },
         payment_id: {
             type: Types.ObjectId,
             ref: "PayrollReceipt",
             required: true,
-            index: true,
         },
         // Datos del pago
         days_paid: {
@@ -59,7 +56,7 @@ const VacationPaymentSchema = new Schema(
     { timestamps: true }
 )
 
-// Índices
+// Índices compuestos (incluyen organizationID, vacation_request, payment_id, status)
 VacationPaymentSchema.index({ organizationID: 1, vacation_request: 1 })
 VacationPaymentSchema.index({ organizationID: 1, payment_id: 1 })
 VacationPaymentSchema.index({ organizationID: 1, status: 1 })
