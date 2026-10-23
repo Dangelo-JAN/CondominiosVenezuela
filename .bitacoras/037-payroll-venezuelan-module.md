@@ -155,6 +155,11 @@
 - [x] 7.5.4 Indexes Atlas script (server/scripts/create-indexes.mjs)
 - [ ] 7.5.5 Deploy staging test
 
+### 7.6 Hotfixes Críticos (2026-10-23)
+- [x] **Fix hire_date required → false** en Employee.model.js (permite login empleados existentes sin hire_date)
+- [x] **Fix login controller** — usar findByIdAndUpdate con runValidators: false (evita validación completa al actualizar lastlogin)
+- [x] Validación: hire_date sigue siendo crítico para nómina (vacaciones, prestaciones, utilidades) — fuente de verdad: LaborContract.hire_date
+
 ---
 
-**Última actualización:** 2026-10-22 — Tarea reabierta tras auditoría exhaustiva. Fase 7 iniciada.
+**Última actualización:** 2026-10-23 — Hotfixes aplicados para login empleado en producción. Fase 7 continúa.

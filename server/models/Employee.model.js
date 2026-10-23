@@ -148,7 +148,7 @@ const EmployeeSchema = new Schema({
     },
     hire_date: {
         type: Date,
-        required: true
+        required: false
     },
     termination_date: {
         type: Date,

@@ -159,8 +159,9 @@ export const HandleEmplyoeeLogin = async (req, res) => {
         }
 
         const token = GenerateJwtTokenAndSetCookiesEmployee(res, employee._id, employee.role, employee.organizationID)
-        employee.lastlogin = new Date()
-        await employee.save()
+        await Employee.findByIdAndUpdate(employee._id, { 
+            lastlogin: new Date() 
+        }, { runValidators: false })
 
         return res.status(200).json({ success: true, message: "Emplyoee Login Successfull", token })
     } catch (error) {
