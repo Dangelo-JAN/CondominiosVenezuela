@@ -7,7 +7,8 @@
   "scripts": {
     "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js --config jest.config.json",
     "server": "nodemon index.js",
-    "seed:payroll": "node --experimental-vm-modules seeds/payroll.seed.js"
+    "seed:payroll": "node --experimental-vm-modules seeds/payroll.seed.js",
+    "create:indexes": "node --experimental-vm-modules scripts/create-indexes.mjs"
   },
   "author": "Darsh Jogi",
   "license": "ISC",
