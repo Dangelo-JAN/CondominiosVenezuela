@@ -348,6 +348,8 @@ export const VacationController = {
         } catch (error) {
             return res.status(500).json({ success: false, message: error.message })
         }
+    },
+
     // GET /api/v1/vacations/balances/me (EMPLEADO - saldo propio)
     async getMyBalance(req, res) {
         try {

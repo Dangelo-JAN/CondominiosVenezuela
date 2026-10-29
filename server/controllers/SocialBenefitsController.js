@@ -351,6 +351,9 @@ export const SocialBenefitsController = {
         } catch (error) {
             return res.status(500).json({ success: false, message: error.message })
         }
+
+    },
+
     // GET /api/v1/social-benefits/ledger/me (EMPLEADO - libro propio)
     async getMyLedger(req, res) {
         try {

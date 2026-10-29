@@ -71,8 +71,8 @@ router.post('/concepts/receipt-types', VerifyhHRToken, PermissionCheck('payroll'
 // ---- POLÍTICAS Y CONFIGURACIÓN (/policies) ----
 router.get('/policies', VerifyhHRToken, PermissionCheck('payroll', 'read'), PayrollPolicyController.getPolicy)
 router.put('/policies', VerifyhHRToken, PermissionCheck('payroll', 'update'), PayrollPolicyController.updatePolicy)
-router.get('/policies/company', VerifyhHRToken, PermissionCheck('payroll', 'read'), PayrollPolicyController.getCompany)
-router.put('/policies/company', VerifyhHRToken, PermissionCheck('payroll', 'update'), PayrollPolicyController.updateCompany)
+router.get('/policies/company', VerifyhHRToken, PermissionCheck('payroll', 'read'), PayrollPolicyController.getCompanyConfig)
+router.put('/policies/company', VerifyhHRToken, PermissionCheck('payroll', 'update'), PayrollPolicyController.updateCompanyConfig)
 
 // ---- NOVEDADES (/novelties) ----
 router.get('/novelties', VerifyhHRToken, PermissionCheck('payroll', 'read'), PayrollNoveltyController.getAll)
@@ -85,27 +85,27 @@ router.post('/novelties/:id/reject', VerifyhHRToken, PermissionCheck('payroll', 
 router.post('/novelties/bulk-create', VerifyhHRToken, PermissionCheck('payroll', 'create'), PayrollNoveltyController.bulkCreate)
 
 // ---- VACACIONES (/vacations) ----
-router.get('/vacations/balances', VerifyhHRToken, PermissionCheck('payroll', 'read'), VacationController.getAllBalances)
+router.get('/vacations/balances', VerifyhHRToken, PermissionCheck('payroll', 'read'), VacationController.getBalances)
 router.get('/vacations/balances/:employeeId', VerifyhHRToken, PermissionCheck('payroll', 'read'), VacationController.getBalanceByEmployee)
 
-router.get('/vacations/requests', VerifyhHRToken, PermissionCheck('payroll', 'read'), VacationController.getAllRequests)
+router.get('/vacations/requests', VerifyhHRToken, PermissionCheck('payroll', 'read'), VacationController.getRequests)
 router.get('/vacations/requests/:id', VerifyhHRToken, PermissionCheck('payroll', 'read'), VacationController.getRequestById)
 router.post('/vacations/requests', VerifyhHRToken, PermissionCheck('payroll', 'create'), VacationController.createRequest)
 router.post('/vacations/requests/:id/approve', VerifyhHRToken, PermissionCheck('payroll', 'approve'), VacationController.approveRequest)
 router.post('/vacations/requests/:id/reject', VerifyhHRToken, PermissionCheck('payroll', 'approve'), VacationController.rejectRequest)
-router.post('/vacations/requests/:id/pay', VerifyhHRToken, PermissionCheck('payroll', 'pay'), VacationController.payRequest)
+router.post('/vacations/requests/:id/pay', VerifyhHRToken, PermissionCheck('payroll', 'pay'), VacationController.payVacation)
 
 router.get('/vacations/holidays', VerifyhHRToken, PermissionCheck('payroll', 'read'), VacationController.getHolidays)
 router.post('/vacations/holidays', VerifyhHRToken, PermissionCheck('payroll', 'create'), VacationController.createHoliday)
 router.delete('/vacations/holidays/:id', VerifyhHRToken, PermissionCheck('payroll', 'delete'), VacationController.deleteHoliday)
 
 // ---- PRESTACIONES SOCIALES (/social-benefits) ----
-router.get('/social-benefits/ledger', VerifyhHRToken, PermissionCheck('payroll', 'read'), SocialBenefitsController.getAllLedger)
+router.get('/social-benefits/ledger', VerifyhHRToken, PermissionCheck('payroll', 'read'), SocialBenefitsController.getLedger)
 router.get('/social-benefits/ledger/employee/:employeeId', VerifyhHRToken, PermissionCheck('payroll', 'read'), SocialBenefitsController.getLedgerByEmployee)
 
 router.post('/social-benefits/settlements/calculate', VerifyhHRToken, PermissionCheck('payroll', 'calculate'), SocialBenefitsController.calculateSettlement)
 router.post('/social-benefits/settlements', VerifyhHRToken, PermissionCheck('payroll', 'create'), SocialBenefitsController.createSettlement)
-router.get('/social-benefits/settlements', VerifyhHRToken, PermissionCheck('payroll', 'read'), SocialBenefitsController.getAllSettlements)
+router.get('/social-benefits/settlements', VerifyhHRToken, PermissionCheck('payroll', 'read'), SocialBenefitsController.getSettlements)
 router.get('/social-benefits/settlements/:id', VerifyhHRToken, PermissionCheck('payroll', 'read'), SocialBenefitsController.getSettlementById)
 router.post('/social-benefits/settlements/:id/approve', VerifyhHRToken, PermissionCheck('payroll', 'approve'), SocialBenefitsController.approveSettlement)
 router.post('/social-benefits/settlements/:id/pay', VerifyhHRToken, PermissionCheck('payroll', 'pay'), SocialBenefitsController.paySettlement)
@@ -114,15 +114,14 @@ router.post('/social-benefits/accrual/calculate', VerifyhHRToken, PermissionChec
 router.post('/social-benefits/accrual/record', VerifyhHRToken, PermissionCheck('payroll', 'create'), SocialBenefitsController.recordAccrual)
 
 // ---- UTILIDADES (/utilidades) ----
-router.get('/utilidades/periods', VerifyhHRToken, PermissionCheck('payroll', 'read'), UtilidadesController.getAllPeriods)
+router.get('/utilidades/periods', VerifyhHRToken, PermissionCheck('payroll', 'read'), UtilidadesController.getPeriods)
 router.get('/utilidades/periods/:id', VerifyhHRToken, PermissionCheck('payroll', 'read'), UtilidadesController.getPeriodById)
 router.post('/utilidades/periods', VerifyhHRToken, PermissionCheck('payroll', 'create'), UtilidadesController.createPeriod)
 router.post('/utilidades/periods/:id/calculate', VerifyhHRToken, PermissionCheck('payroll', 'calculate'), UtilidadesController.calculatePeriod)
 router.post('/utilidades/periods/:id/approve', VerifyhHRToken, PermissionCheck('payroll', 'approve'), UtilidadesController.approvePeriod)
 router.post('/utilidades/periods/:id/pay', VerifyhHRToken, PermissionCheck('payroll', 'pay'), UtilidadesController.payPeriod)
 
-router.get('/utilidades/payments', VerifyhHRToken, PermissionCheck('payroll', 'read'), UtilidadesController.getAllPayments)
+router.get('/utilidades/payments', VerifyhHRToken, PermissionCheck('payroll', 'read'), UtilidadesController.getPayments)
 router.get('/utilidades/payments/:id', VerifyhHRToken, PermissionCheck('payroll', 'read'), UtilidadesController.getPaymentById)
-router.post('/utilidades/payments/:id/pay', VerifyhHRToken, PermissionCheck('payroll', 'pay'), UtilidadesController.payPayment)
 
 export default router

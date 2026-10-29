@@ -297,6 +297,9 @@ export const UtilidadesController = {
         } catch (error) {
             return res.status(500).json({ success: false, message: error.message })
         }
+
+    },
+
     // GET /api/v1/utilidades/payments/me (EMPLEADO - sus pagos)
     async getMyPayments(req, res) {
         try {
