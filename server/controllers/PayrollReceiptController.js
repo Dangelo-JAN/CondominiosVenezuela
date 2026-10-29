@@ -96,6 +96,30 @@ export const PayrollReceiptController = {
         }
     },
 
+    // GET /api/v1/payslips/employee/me (Employee - ver SUS propORS recibos)
+    async getMyReceipts(req, res) {
+        try {
+            const { period, status } = req.query
+
+            const filter = { employee: req.EMPID, organizationID: req.ORGID }
+            if (period) filter.period = period
+            if (status) filter.status = status
+
+            const receipts = await PayrollReceipt.find(filter)
+                .populate('period', 'name start_date end_date payment_date status')
+                .sort({ 'period.start_date': -1 })
+                .lean()
+
+            return res.status(200).json({
+                success: true,
+                message: 'Mis recibos recuperados',
+                data: receipts
+            })
+        } catch (error) {
+            return res.status(500).json({ success: false, message: error.message })
+        }
+    },
+
     // POST /api/v1/payslips/:id/recalculate
     async recalculate(req, res) {
         try {

@@ -98,9 +98,11 @@ export const HRRoutes = [
             {
                 path: "/HR/dashboard/payroll",
                 element: (
-                    <Suspense fallback={<Loading />}>
-                        <HRPayrollPage />
-                    </Suspense>
+                    <ProtectedHRRoute allowedRoles={["HR-Admin", "HR-Manager"]}>
+                        <Suspense fallback={<Loading />}>
+                            <HRPayrollPage />
+                        </Suspense>
+                    </ProtectedHRRoute>
                 )
             }
         ]

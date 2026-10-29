@@ -120,7 +120,7 @@ export const PayrollEndPoints = {
     // Recibos de nómina
     RECEIPTS_GETALL: "/api/v1/payslips",
     RECEIPTS_GETONE: (id) => `/api/v1/payslips/${id}`,
-    RECEIPTS_GET_EMPLOYEE: (employeeId) => `/api/v1/payslips/employee/${employeeId}`,
+    RECEIPTS_GET_EMPLOYEE: "/api/v1/payslips/employee/me",
     RECEIPTS_RECALCULATE: (id) => `/api/v1/payslips/${id}/recalculate`,
     RECEIPTS_VOID: (id) => `/api/v1/payslips/${id}/void`,
     RECEIPTS_EXPORT: (id) => `/api/v1/payslips/${id}/export`,

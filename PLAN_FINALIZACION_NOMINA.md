@@ -21,9 +21,8 @@
 
 | # | Hallazgo | Severidad | Archivo/Línea | Estado |
 |---|----------|-----------|---------------|--------|
-| **P0-1** | Bucle infinito login empleado | 🔴 CRÍTICO | `client/src/pages/Employees/emplyoeelogin.jsx:49-68` | ⬜ PENDIENTE |
-| **P0-2** | Empleado no ve sus recibos (falta ruta `VerifyEmployeeToken`) | 🔴 CRÍTICO | `server/routes/PayrollReceipt.route.js` + `APIsEndpoints.js:123` | ⬜ PENDIENTE |
-| **P0-3** | Ruta HR Payroll sin `ProtectedHRRoute` | 🟠 ALTO | `client/src/routes/HRroutes.jsx:99-105` | ⬜ PENDIENTE |
+| **P0-1** | Empleado no ve sus recibos (falta ruta `VerifyEmployeeToken`) | 🔴 CRÍTICO | `server/routes/PayrollReceipt.route.js` + `APIsEndpoints.js:123` | ⬜ PENDIENTE |
+| **P0-2** | Ruta HR Payroll sin `ProtectedHRRoute` | 🟠 ALTO | `client/src/routes/HRroutes.jsx:99-105` | ⬜ PENDIENTE |
 | **P1-1** | `_getActiveContract` retorna salario 0 hardcodeado | 🔴 CRÍTICO | `payroll-engine.js:494-512` | ⬜ PENDIENTE |
 | **P1-2** | Pérdida precisión financiera (`.toNumber()` en persistencia) | 🔴 CRÍTICO | Múltiples: `payroll-engine.js`, `employer-costs.js`, `vacation-calculator.js` | ⬜ PENDIENTE |
 | **P1-3** | `generatePayrollJournalDraft` es stub vacío | 🟠 ALTO | `payroll-engine.js:613-617` | ⬜ PENDIENTE |
@@ -47,9 +46,8 @@
 
 | Paso | Acción | Archivos | Validación |
 |------|--------|----------|------------|
-| A.1 | Fix `useEffect` en `EmployeeLogin`: solo disparar `CHECKELOGIN` si existe `EMtoken` en localStorage; quitar `EmployeeState.error` de dependencias | `client/src/pages/Employees/emplyoeelogin.jsx` | Login funciona sin bucle; `npm run build` client OK |
-| A.2 | Agregar ruta `GET /api/v1/payslips/employee/me` protegida con `VerifyEmployeeToken` en `PayrollReceiptController.getMyReceipts` | `server/routes/PayrollReceipt.route.js`, `server/controllers/PayrollReceiptController.js` | `curl` con token empleado devuelve 200 + recibos |
-| A.3 | Envolver ruta `/HR/dashboard/payroll` en `ProtectedHRRoute` con `allowedRoles={["HR-Admin","HR-Manager"]}` | `client/src/routes/HRroutes.jsx` | HR-Viewer ve redirect; HR-Admin/Manager accede; `npm run build` OK |
+| A.1 | Agregar ruta `GET /api/v1/payslips/employee/me` protegida con `VerifyEmployeeToken` en `PayrollReceiptController.getMyReceipts` | `server/routes/PayrollReceipt.route.js`, `server/controllers/PayrollReceiptController.js` | `curl` con token empleado devuelve 200 + recibos |
+| A.2 | Envolver ruta `/HR/dashboard/payroll` en `ProtectedHRRoute` con `allowedRoles={["HR-Admin","HR-Manager"]}` | `client/src/routes/HRroutes.jsx` | HR-Viewer ve redirect; HR-Admin/Manager accede; `npm run build` OK |
 
 **STOP A** → Usuario valida: login empleado funciona, ve sus recibos, HR accede a nómina con permisos.
 

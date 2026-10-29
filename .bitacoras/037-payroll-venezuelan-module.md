@@ -160,6 +160,11 @@
 - [x] **Fix login controller** — usar findByIdAndUpdate con runValidators: false (evita validación completa al actualizar lastlogin)
 - [x] Validación: hire_date sigue siendo crítico para nómina (vacaciones, prestaciones, utilidades) — fuente de verdad: LaborContract.hire_date
 
+### 7.7 Fase A: Bloqueadores Login/Acceso/Convención (2026-10-23) — **COMPLETADA**
+- [x] **A.1** Corregir convención rutas en `PayrollReceipt.route.js`: separar HR (VerifyhHRToken) vs Employee (VerifyEmployeeToken + `/employee/me`)
+- [x] **A.2** Frontend: cambiar `RECEIPTS_GET_EMPLOYEE` a `/employee/me` en `APIsEndpoints.js`
+- [x] **A.3** Envolver `/HR/dashboard/payroll` en `ProtectedHRRoute allowedRoles={["HR-Admin","HR-Manager"]}` en `HRroutes.jsx`
+
 ---
 
-**Última actualización:** 2026-10-23 — Hotfixes aplicados para login empleado en producción. Fase 7 continúa.
+**Última actualización:** 2026-10-23 — Fase A completada: convención rutas corregida, empleado ve sus recibos vía `/me`, HR accede a nómina con permisos. Build client 0 errores, tests server 66 passing. STOP A — esperando validación usuario.
