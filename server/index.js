@@ -26,6 +26,14 @@ import BitacoraRouter from './routes/Bitacora.route.js'
 import NotificationRouter from './routes/Notification.route.js'
 import PushNotificationRouter from './routes/PushNotification.route.js'
 import ReportRouter from './routes/Report.route.js'
+import PayrollPeriodRouter from './routes/PayrollPeriod.route.js'
+import PayrollReceiptRouter from './routes/PayrollReceipt.route.js'
+import PayrollConceptRouter from './routes/PayrollConcept.route.js'
+import PayrollPolicyRouter from './routes/PayrollPolicy.route.js'
+import PayrollNoveltyRouter from './routes/PayrollNovelty.route.js'
+import VacationRouter from './routes/Vacation.route.js'
+import SocialBenefitsRouter from './routes/SocialBenefits.route.js'
+import UtilidadesRouter from './routes/Utilidades.route.js'
 import { ConnectDB } from './config/connectDB.js';
 import cookieParser from 'cookie-parser';
 import cors from "cors"
@@ -37,28 +45,39 @@ app.use(express.urlencoded({ extended: true, limit: "10mb" }))
 app.use(cookieParser())
 
 // --- CONFIGURACIÓN DE CORS CON REGEX ---
+const corsOriginRegex = process.env.CORS_ORIGIN_REGEX
+
 const allowedOrigins = [
   process.env.CLIENT_URL,
-  /\.vercel\.app$/,
-  /cron-job\.org$/,  // Para servicios de cron externos
-];
+  /.vercel.app$/,
+  /cron-job.org$/,  // Para servicios de cron externos
+]
+
+// Si existe CORS_ORIGIN_REGEX en env, usarlo como patrón adicional
+if (corsOriginRegex) {
+  try {
+    allowedOrigins.push(new RegExp(corsOriginRegex))
+  } catch (e) {
+    console.warn('[CORS] CORS_ORIGIN_REGEX inválido:', corsOriginRegex)
+  }
+}
 
 app.use(cors({
   origin: function (origin, callback) {
-    if (!origin) return callback(null, true);
+    if (!origin) return callback(null, true)
     const isAllowed = allowedOrigins.some((pattern) =>
       pattern instanceof RegExp ? pattern.test(origin) : pattern === origin
-    );
+    )
     if (isAllowed) {
-      callback(null, true);
+      callback(null, true)
     } else {
-      callback(new Error('No permitido por CORS (Regex Vercel)'));
+      callback(new Error('No permitido por CORS'))
     }
   },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization', 'Cookie']
-}));
+}))
 
 app.use("/api/auth/employee", EmployeeAuthRouter)
 app.use("/api/auth/HR", HRAuthrouter)
@@ -86,10 +105,93 @@ app.use("/api/v1/bitacora", BitacoraRouter)
 app.use("/api/v1/notification", NotificationRouter)
 app.use("/api/v1/push", PushNotificationRouter)
 app.use("/api/v1/report", ReportRouter)
+app.use("/api/v1/payroll-periods", PayrollPeriodRouter)
+app.use("/api/v1/payslips", PayrollReceiptRouter)
+app.use("/api/v1/payroll-concepts", PayrollConceptRouter)
+app.use("/api/v1/payroll-policy", PayrollPolicyRouter)
+app.use("/api/v1/payroll-novelties", PayrollNoveltyRouter)
+app.use("/api/v1/vacations", VacationRouter)
+app.use("/api/v1/social-benefits", SocialBenefitsRouter)
+app.use("/api/v1/utilidades", UtilidadesRouter)
 
-// ✅ Health check (MUY recomendado)
-app.get("/api/health", (req, res) => {
-  res.status(200).json({ status: "ok" })
+// ✅ Health check extendido (DB + Redis + Firebase)
+app.get("/api/health", async (req, res) => {
+    const checks = {
+        status: "ok",
+        timestamp: new Date().toISOString(),
+        services: {}
+    }
+
+    // 1. MongoDB
+    try {
+        const db = (await import("./config/connectDB.js")).default
+        // ConnectDB returns mongoose connection
+        const mongoose = (await import("mongoose")).default
+        checks.services.mongodb = {
+            status: mongoose.connection.readyState === 1 ? "connected" : "disconnected",
+            readyState: mongoose.connection.readyState
+        }
+    } catch (e) {
+        checks.services.mongodb = { status: "error", message: e.message }
+        checks.status = "degraded"
+    }
+
+    // 2. Redis / Bull Queue
+    try {
+        const { redisClient } = await import("./config/redis.js")
+        checks.services.redis = {
+            status: redisClient.status === "ready" ? "connected" : redisClient.status,
+            clientStatus: redisClient.status
+        }
+        if (redisClient.status !== "ready") checks.status = "degraded"
+    } catch (e) {
+        checks.services.redis = { status: "error", message: e.message }
+        checks.status = "degraded"
+    }
+
+    // 3. Bull Queues
+    try {
+        const { payrollQueues } = await import("./config/queue.js")
+        const queueStatus = {}
+        for (const [name, queue] of Object.entries(payrollQueues)) {
+            queueStatus[name] = {
+                status: "ready",
+                waiting: await queue.getWaitingCount(),
+                active: await queue.getActiveCount(),
+                completed: await queue.getCompletedCount(),
+                failed: await queue.getFailedCount(),
+            }
+        }
+        checks.services.queues = queueStatus
+    } catch (e) {
+        checks.services.queues = { status: "error", message: e.message }
+        checks.status = "degraded"
+    }
+
+    // 4. Firebase Admin (opcional)
+    try {
+        if (process.env.FIREBASE_PROJECT_ID && process.env.FIREBASE_CLIENT_EMAIL && process.env.FIREBASE_PRIVATE_KEY) {
+            const admin = (await import("firebase-admin")).default
+            if (!admin.apps.length) {
+                admin.initializeApp({
+                    credential: admin.credential.cert({
+                        projectId: process.env.FIREBASE_PROJECT_ID,
+                        clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
+                        privateKey: process.env.FIREBASE_PRIVATE_KEY.replace(/\\n/g, "\n"),
+                    }),
+                })
+            }
+            checks.services.firebase = { status: "initialized" }
+        } else {
+            checks.services.firebase = { status: "not_configured" }
+        }
+    } catch (e) {
+        checks.services.firebase = { status: "error", message: e.message }
+        checks.status = "degraded"
+    }
+
+    const statusCode = checks.status === "ok" ? 200 : 503
+    res.status(statusCode).json(checks)
 })
 
 const PORT = process.env.PORT || 10000
