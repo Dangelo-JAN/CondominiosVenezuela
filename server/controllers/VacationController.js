@@ -348,7 +348,95 @@ export const VacationController = {
         } catch (error) {
             return res.status(500).json({ success: false, message: error.message })
         }
-    }
+    // GET /api/v1/vacations/balances/me (EMPLEADO - saldo propio)
+    async getMyBalance(req, res) {
+        try {
+            const balance = await VacationBalance.findOne({ employee: req.EMPID, organizationID: req.ORGID })
+                .populate('employee', 'firstname lastname department hire_date')
+                .populate('related_request', 'start_date end_date status')
+                .lean()
+
+            if (!balance) {
+                return res.status(404).json({ success: false, message: 'Saldo de vacaciones no encontrado' })
+            }
+
+            return res.status(200).json({ success: true, message: 'Saldo encontrado', data: balance })
+        } catch (error) {
+            return res.status(500).json({ success: false, message: error.message })
+        }
+    },
+
+    // GET /api/v1/vacations/requests/me (EMPLEADO - sus solicitudes)
+    async getMyRequests(req, res) {
+        try {
+            const { status, page = 1, limit = 20 } = req.query
+            const filter = { employee: req.EMPID, organizationID: req.ORGID }
+            if (status) filter.status = status
+
+            const requests = await VacationRequest.find(filter)
+                .populate('employee', 'firstname lastname department')
+                .populate('contract', 'salary_amount salary_currency')
+                .populate('reviewed_by', 'firstname lastname')
+                .sort({ createdAt: -1 })
+                .skip((page - 1) * limit)
+                .limit(parseInt(limit))
+                .lean()
+
+            const total = await VacationRequest.countDocuments(filter)
+
+            return res.status(200).json({
+                success: true,
+                message: 'Mis solicitudes de vacaciones recuperadas',
+                data: requests,
+                pagination: { page: parseInt(page), limit: parseInt(limit), total, pages: Math.ceil(total / limit) }
+            })
+        } catch (error) {
+            return res.status(500).json({ success: false, message: error.message })
+        }
+    },
+
+    // POST /api/v1/vacations/requests (EMPLEADO - crear solicitud propia)
+    async createRequest(req, res) {
+        try {
+            const { start_date, end_date, days_requested, vacation_type, notes, supporting_document } = req.body
+
+            if (!start_date || !end_date || !days_requested) {
+                return res.status(400).json({ success: false, message: 'Campos requeridos: start_date, end_date, days_requested' })
+            }
+
+            // Verificar saldo disponible
+            const balance = await VacationBalance.findOne({ employee: req.EMPID, organizationID: req.ORGID }).lean()
+            if (balance && balance.pending_days < days_requested) {
+                return res.status(400).json({
+                    success: false,
+                    message: `Días solicitados (${days_requested}) superan días pendientes (${balance.pending_days})`
+                })
+            }
+
+            // Obtener contrato activo del empleado
+            const employee = await Employee.findById(req.EMPID).lean()
+            if (!employee || !employee.active_contract) {
+                return res.status(400).json({ success: false, message: 'Empleado sin contrato activo' })
+            }
+
+            const request = await VacationRequest.create({
+                employee: req.EMPID,
+                contract: employee.active_contract,
+                start_date: new Date(start_date),
+                end_date: new Date(end_date),
+                days_requested,
+                vacation_type: vacation_type || 'NORMAL',
+                status: 'PENDING',
+                notes: notes || '',
+                supporting_document: supporting_document || '',
+                organizationID: req.ORGID
+            })
+
+            return res.status(201).json({ success: true, message: 'Solicitud de vacaciones creada', data: request })
+        } catch (error) {
+            return res.status(500).json({ success: false, message: error.message })
+        }
+    },
 }
 
 export default VacationController

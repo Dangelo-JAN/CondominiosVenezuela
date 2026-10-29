@@ -26,14 +26,7 @@ import BitacoraRouter from './routes/Bitacora.route.js'
 import NotificationRouter from './routes/Notification.route.js'
 import PushNotificationRouter from './routes/PushNotification.route.js'
 import ReportRouter from './routes/Report.route.js'
-import PayrollPeriodRouter from './routes/PayrollPeriod.route.js'
-import PayrollReceiptRouter from './routes/PayrollReceipt.route.js'
-import PayrollConceptRouter from './routes/PayrollConcept.route.js'
-import PayrollPolicyRouter from './routes/PayrollPolicy.route.js'
-import PayrollNoveltyRouter from './routes/PayrollNovelty.route.js'
-import VacationRouter from './routes/Vacation.route.js'
-import SocialBenefitsRouter from './routes/SocialBenefits.route.js'
-import UtilidadesRouter from './routes/Utilidades.route.js'
+import PayrollRouter from './routes/Payroll.route.js'
 import { ConnectDB } from './config/connectDB.js';
 import cookieParser from 'cookie-parser';
 import cors from "cors"
@@ -105,14 +98,7 @@ app.use("/api/v1/bitacora", BitacoraRouter)
 app.use("/api/v1/notification", NotificationRouter)
 app.use("/api/v1/push", PushNotificationRouter)
 app.use("/api/v1/report", ReportRouter)
-app.use("/api/v1/payroll-periods", PayrollPeriodRouter)
-app.use("/api/v1/payslips", PayrollReceiptRouter)
-app.use("/api/v1/payroll-concepts", PayrollConceptRouter)
-app.use("/api/v1/payroll-policy", PayrollPolicyRouter)
-app.use("/api/v1/payroll-novelties", PayrollNoveltyRouter)
-app.use("/api/v1/vacations", VacationRouter)
-app.use("/api/v1/social-benefits", SocialBenefitsRouter)
-app.use("/api/v1/utilidades", UtilidadesRouter)
+app.use("/api/v1/payroll", PayrollRouter)
 
 // ✅ Health check extendido (DB + Redis + Firebase)
 app.get("/api/health", async (req, res) => {

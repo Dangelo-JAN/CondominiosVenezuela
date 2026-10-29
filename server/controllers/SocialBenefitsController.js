@@ -351,7 +351,31 @@ export const SocialBenefitsController = {
         } catch (error) {
             return res.status(500).json({ success: false, message: error.message })
         }
-    }
+    // GET /api/v1/social-benefits/ledger/me (EMPLEADO - libro propio)
+    async getMyLedger(req, res) {
+        try {
+            const entries = await SocialBenefitsLedger.find({ employee: req.EMPID, organizationID: req.ORGID })
+                .populate('contract', 'salary_amount salary_currency start_date')
+                .sort({ period_start: 1 })
+                .lean()
+
+            // Calcular totales
+            const totals = entries.reduce((acc, entry) => {
+                acc.earned += entry.earned_amount || 0
+                acc.paid += entry.paid_amount || 0
+                acc.pending += (entry.earned_amount || 0) - (entry.paid_amount || 0)
+                return acc
+            }, { earned: 0, paid: 0, pending: 0 })
+
+            return res.status(200).json({
+                success: true,
+                message: 'Mi libro de prestaciones recuperado',
+                data: { entries, totals }
+            })
+        } catch (error) {
+            return res.status(500).json({ success: false, message: error.message })
+        }
+    },
 }
 
 export default SocialBenefitsController

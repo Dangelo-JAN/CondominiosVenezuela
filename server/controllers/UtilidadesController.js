@@ -297,7 +297,34 @@ export const UtilidadesController = {
         } catch (error) {
             return res.status(500).json({ success: false, message: error.message })
         }
-    }
+    // GET /api/v1/utilidades/payments/me (EMPLEADO - sus pagos)
+    async getMyPayments(req, res) {
+        try {
+            const { period, status, page = 1, limit = 20 } = req.query
+            const filter = { employee: req.EMPID, organizationID: req.ORGID }
+            if (period) filter.period = period
+            if (status) filter.status = status
+
+            const payments = await UtilidadesPayment.find(filter)
+                .populate('period', 'name year start_date end_date status')
+                .populate('contract', 'salary_amount salary_currency')
+                .sort({ 'period.year': -1 })
+                .skip((page - 1) * limit)
+                .limit(parseInt(limit))
+                .lean()
+
+            const total = await UtilidadesPayment.countDocuments(filter)
+
+            return res.status(200).json({
+                success: true,
+                message: 'Mis pagos de utilidades recuperados',
+                data: payments,
+                pagination: { page: parseInt(page), limit: parseInt(limit), total, pages: Math.ceil(total / limit) }
+            })
+        } catch (error) {
+            return res.status(500).json({ success: false, message: error.message })
+        }
+    },
 }
 
 export default UtilidadesController
