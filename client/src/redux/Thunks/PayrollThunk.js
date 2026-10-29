@@ -1,5 +1,6 @@
 import { createAsyncThunk } from "@reduxjs/toolkit"
 import { hrApiService } from "../apis/HRApiService"
+import { employeeApiService } from "../apis/EmployeeApiService"
 import { PayrollEndPoints } from "../apis/APIsEndpoints"
 
 // ─── PERÍODOS DE NÓMINA ───
@@ -81,6 +82,10 @@ export const HandlePayrollReceipts = createAsyncThunk("HandlePayrollReceipts", a
                 if (status) params.append("status", status)
                 const response = await hrApiService.get(`${PayrollEndPoints.RECEIPTS_GET_EMPLOYEE(employeeId)}?${params}`)
                 return { ...response.data, type: "GET_EMPLOYEE" }
+            }
+            case "GET_ME": {
+                const response = await employeeApiService.get(PayrollEndPoints.RECEIPTS_GET_ME)
+                return { ...response.data, type: "GET_ME" }
             }
             case "RECALCULATE": {
                 const response = await hrApiService.post(PayrollEndPoints.RECEIPTS_RECALCULATE(id), {})

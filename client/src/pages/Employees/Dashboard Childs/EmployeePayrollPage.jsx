@@ -2,6 +2,7 @@ import { useEffect, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { HandlePayrollReceipts } from "@/redux/Thunks/PayrollThunk.js"
 import { PayrollEndPoints } from "@/redux/apis/APIsEndpoints.js"
+import { employeeApiService } from "@/redux/apis/EmployeeApiService.js"
 import { 
     Card, Table, TableContainer, TableHead, TableRow, TableCell, TableBody,
     Typography, Button, IconButton, Chip, Alert, Box, Grid, Paper,
@@ -125,8 +126,7 @@ export const EmployeePayrollPage = () => {
     useEffect(() => {
         // Cargar recibos del empleado autenticado
         dispatch(HandlePayrollReceipts({ 
-            type: "GET_EMPLOYEE",
-            endpoint: PayrollEndPoints.RECEIPTS_GET_EMPLOYEE
+            type: "GET_ME"
         }))
     }, [dispatch])
 
