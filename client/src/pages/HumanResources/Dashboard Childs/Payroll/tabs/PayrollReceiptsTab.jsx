@@ -9,19 +9,19 @@ import { ThemedListWrapper, ThemedHeadingBar, ThemedListContainer } from "../../
 import { ConfirmDialog } from "../../../../../components/common/ConfirmDialog.jsx"
 import { Search, Filter, Calendar, FileText, ChevronDown, Eye, Download, RefreshCw, XCircle, Loader2, FileJson, FileSpreadsheet } from "lucide-react"
 
-// --- Helper Functions ---
-const formatCurrency = (val) => {
-    if (val === undefined || val === null) return '—'
-    return `$ ${val.toLocaleString('es-VE', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
-}
-
-const formatDate = (dateStr) => {
-    if (!dateStr) return '—'
-    return new Date(dateStr).toLocaleDateString('es-ES', { day: '2-digit', month: 'short', year: 'numeric' })
-}
-
 // --- ReceiptDetailModal Component ---
 const ReceiptDetailModal = ({ receipt, onClose, isDark, onExportJson, onExportCsv }) => {
+    // Helpers inside modal (since they're no longer global)
+    const formatCurrency = (val) => {
+        if (val === undefined || val === null) return '—'
+        return `$ ${val.toLocaleString('es-VE', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+    }
+
+    const formatDate = (dateStr) => {
+        if (!dateStr) return '—'
+        return new Date(dateStr).toLocaleDateString('es-ES', { day: '2-digit', month: 'short', year: 'numeric' })
+    }
+
     const statusConfig = {
         PAID: { bg: 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400', label: 'Pagado' },
         APPROVED: { bg: 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-400', label: 'Aprobado' },
@@ -199,9 +199,41 @@ const ReceiptDetailModal = ({ receipt, onClose, isDark, onExportJson, onExportCs
     )
 }
 
-const handleExport = useCallback(async (receiptId, format = 'json') => {
+export const PayrollReceiptsTab = () => {
+    const isDark = useIsDark()
+    const dispatch = useDispatch()
+    const navigate = useNavigate()
+    const [searchParams] = useSearchParams()
+    const { data: receipts, isLoading, error, pagination } = useSelector((state) => state.payrollReducer.receipts)
+    const { data: periods } = useSelector((state) => state.payrollReducer.periods)
+    const { can, isReady } = useHRAuth()
+
+    const [statusFilter, setStatusFilter] = useState("all")
+    const [searchTerm, setSearchTerm] = useState("")
+    const [employeeFilter, setEmployeeFilter] = useState("")
+    const [periodFilter, setPeriodFilter] = useState("")
+    const [typeFilter, setTypeFilter] = useState("all")
+    const [currentPage, setCurrentPage] = useState(1)
+    const [selectedReceipt, setSelectedReceipt] = useState(null)
+    const [showDetailModal, setShowDetailModal] = useState(false)
+    const [deleteConfirm, setDeleteConfirm] = useState(null)
+    const [voidConfirm, setVoidConfirm] = useState(null)
+    const [recalculateConfirm, setRecalculateConfirm] = useState(null)
+
+    // --- Helper Functions (inside component) ---
+    const formatCurrency = (val) => {
+        if (val === undefined || val === null) return '—'
+        return `$ ${val.toLocaleString('es-VE', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+    }
+
+    const formatDate = (dateStr) => {
+        if (!dateStr) return '—'
+        return new Date(dateStr).toLocaleDateString('es-ES', { day: '2-digit', month: 'short', year: 'numeric' })
+    }
+
+    // Export function with useCallback (inside component where dispatch is available)
+    const handleExport = useCallback(async (receiptId, format = 'json') => {
         try {
-            // Use the existing thunk with EXPORT type
             const result = await dispatch(HandlePayrollReceipts({ 
                 type: "EXPORT", 
                 id: receiptId, 
@@ -209,7 +241,6 @@ const handleExport = useCallback(async (receiptId, format = 'json') => {
             })).unwrap()
             
             if (result.success && result.data) {
-                // Create blob and download
                 const dataStr = format === 'csv' 
                     ? convertToCSV(result.data)
                     : JSON.stringify(result.data, null, 2)
@@ -234,10 +265,9 @@ const handleExport = useCallback(async (receiptId, format = 'json') => {
         }
     }, [dispatch])
 
-    // Helper to convert receipt data to CSV
+    // Helper to convert receipt data to CSV (inside component where formatDate is available)
     const convertToCSV = (data) => {
         const lines = []
-        // Header info
         lines.push(['Campo', 'Valor'])
         lines.push(['Período', data.period?.name || 'N/A'])
         lines.push(['Empleado', `${data.employee?.firstname || ''} ${data.employee?.lastname || ''}`.trim()])
@@ -263,27 +293,6 @@ const handleExport = useCallback(async (receiptId, format = 'json') => {
         
         return lines.map(row => row.map(cell => `"${String(cell).replace(/"/g, '""')}"`).join(',')).join('\n')
     }
-
-export const PayrollReceiptsTab = () => {
-    const isDark = useIsDark()
-    const dispatch = useDispatch()
-    const navigate = useNavigate()
-    const [searchParams] = useSearchParams()
-    const { data: receipts, isLoading, error, pagination } = useSelector((state) => state.payrollReducer.receipts)
-    const { data: periods } = useSelector((state) => state.payrollReducer.periods)
-    const { can, isReady } = useHRAuth()
-
-    const [statusFilter, setStatusFilter] = useState("all")
-    const [searchTerm, setSearchTerm] = useState("")
-    const [employeeFilter, setEmployeeFilter] = useState("")
-    const [periodFilter, setPeriodFilter] = useState("")
-    const [typeFilter, setTypeFilter] = useState("all")
-    const [currentPage, setCurrentPage] = useState(1)
-    const [selectedReceipt, setSelectedReceipt] = useState(null)
-    const [showDetailModal, setShowDetailModal] = useState(false)
-    const [deleteConfirm, setDeleteConfirm] = useState(null)
-    const [voidConfirm, setVoidConfirm] = useState(null)
-    const [recalculateConfirm, setRecalculateConfirm] = useState(null)
 
     // Memoized period options for CustomSelect
     const periodOptions = useMemo(() => [
