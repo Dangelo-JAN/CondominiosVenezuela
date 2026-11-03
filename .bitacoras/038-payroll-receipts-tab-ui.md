@@ -79,9 +79,13 @@
 ✅ **Builds Finales Verificados:**
    - Client: `npm run build` → **0 errores** ✅
    - Server: `npm run test` → **127 passing, 3 skipped** ✅
+✅ **Bug Fix Post-Commit:** Pantalla en blanco corregida (commit `5f4749b`)
+   - `handleExport` y `convertToCSV` movidos DENTRO del componente (useCallback requiere estar dentro)
+   - Helpers `formatCurrency`/`formatDate` agregados dentro de `ReceiptDetailModal`
+   - Eliminada declaración duplicada del componente
+✅ **Auto-mantenimiento Post-Flight:** **Sin cambios requeridos** (tarea usa patrones existentes, no introduce cambios arquitectónicos)
 ✅ **Bitácora** actualizada completamente (`038-payroll-receipts-tab-ui.md`)
 ✅ **Commits** realizados en rama `feat/038-payroll-receipts-tab-ui`
-✅ **Auto-mantenimiento post-flight** pendiente (requiere lectura de self-maintenance.md)
 ✅ **PR** preparado: `feat/038-payroll-receipts-tab-ui` → `037-payroll-venezuelan-module`
 
 ---
