@@ -22,6 +22,7 @@ const PermissionsSchema = new Schema({
     interviews:     { type: PermissionModuleSchema, default: () => ({}) },
     hrprofiles:     { type: PermissionModuleSchema, default: () => ({}) },
     bitacoras:      { type: PermissionModuleSchema, default: () => ({}) },
+    payroll:        { type: PermissionModuleSchema, default: () => ({}) },
 }, { _id: false })
 
 // ── Mapeo de Cargo a Rol ─────────────────────────────────────────────────
@@ -53,6 +54,7 @@ export const DEFAULT_PERMISSIONS = {
         interviews:  { create: true,  read: true, update: true,  delete: true  },
         hrprofiles:  { create: true,  read: true, update: true,  delete: true  },
         bitacoras:   { create: false, read: true, update: false, delete: true  },
+        payroll:     { create: true,  read: true, update: true,  delete: true  },
     },
     "HR-Manager": {
         employees:   { create: true,  read: true, update: true,  delete: true  },
@@ -68,6 +70,7 @@ export const DEFAULT_PERMISSIONS = {
         interviews:  { create: true,  read: true, update: true,  delete: true  },
         hrprofiles:  { create: false, read: true, update: false, delete: false },
         bitacoras:   { create: false, read: true, update: false, delete: false },
+        payroll:     { create: true,  read: true, update: true,  delete: true  },
     },
     "HR-Viewer": {
         employees:   { create: false, read: true, update: false, delete: false },
@@ -83,6 +86,7 @@ export const DEFAULT_PERMISSIONS = {
         interviews:  { create: false, read: true, update: false, delete: false },
         hrprofiles:  { create: false, read: false, update: false, delete: false },
         bitacoras:   { create: false, read: true,  update: false, delete: false },
+        payroll:     { create: false, read: true, update: false, delete: false },
     }
 }
 

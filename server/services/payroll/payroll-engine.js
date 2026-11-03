@@ -18,6 +18,7 @@ import { AccumulatorEngine } from './accumulator-engine.js'
 import { ConceptRulesEngine } from './concept-rules.js'
 import { safeEval, validateFormula } from './formula-evaluator.js'
 import { calculateEmployerCosts } from './employer-costs.js'
+import { JournalGenerator } from './journal-generator.js'
 
 /**
  * Motor Principal de Nómina - PayrollEngine
@@ -67,19 +68,55 @@ export class PayrollEngine {
         }).lean()
 
         const receipts = []
+        const errors = []
 
-        for (const employee of employees) {
-            // Obtener contrato activo
-            const contract = await this._getActiveContract(employee._id, period)
-            if (!contract) continue
+        // Batch processing: procesar en chunks de PAYROLL_BATCH_SIZE (default 50)
+        const batchSize = parseInt(process.env.PAYROLL_BATCH_SIZE) || 50
+        const totalEmployees = employees.length
 
-            try {
-                const receipt = await this.calculateEmployeeReceipt(employee, period, contract)
-                receipts.push(receipt)
-            } catch (error) {
-                console.error(`Error calculando recibo para empleado ${employee._id}:`, error)
-                // Continuar con otros empleados
+        console.log(`[PayrollEngine] Iniciando cálculo para ${totalEmployees} empleados (batch size: ${batchSize})`)
+
+        for (let i = 0; i < totalEmployees; i += batchSize) {
+            const batch = employees.slice(i, i + batchSize)
+            const batchNumber = Math.floor(i / batchSize) + 1
+            const totalBatches = Math.ceil(totalEmployees / batchSize)
+
+            console.log(`[PayrollEngine] Procesando batch ${batchNumber}/${totalBatches} (${batch.length} empleados)`)
+
+            // Procesar batch en paralelo con Promise.allSettled
+            const batchPromises = batch.map(async (employee) => {
+                const contract = await this._getActiveContract(employee._id, period)
+                if (!contract) return { receipt: null, error: 'No contract' }
+
+                try {
+                    const receipt = await this.calculateEmployeeReceipt(employee, period, contract)
+                    return { receipt, error: null }
+                } catch (error) {
+                    return { receipt: null, error: error.message, employeeId: employee._id }
+                }
+            })
+
+            const results = await Promise.allSettled(batchPromises)
+
+            for (const result of results) {
+                if (result.status === 'fulfilled') {
+                    if (result.value.receipt) {
+                        receipts.push(result.value.receipt)
+                    } else if (result.value.error && result.value.error !== 'No contract') {
+                        errors.push({ employeeId: result.value.employeeId, error: result.value.error })
+                    }
+                } else {
+                    errors.push({ employeeId: 'unknown', error: result.reason?.message || 'Unknown error' })
+                }
             }
+
+            // Progress log
+            const processed = Math.min(i + batchSize, totalEmployees)
+            console.log(`[PayrollEngine] Progreso: ${processed}/${totalEmployees} empleados (${receipts.length} recibos, ${errors.length} errores)`)
+        }
+
+        if (errors.length > 0) {
+            console.warn(`[PayrollEngine] ${errors.length} errores durante el cálculo:`, errors.slice(0, 5))
         }
 
         // Generar borrador de asiento contable
@@ -611,9 +648,25 @@ export class PayrollEngine {
      * Genera borrador de asiento contable
      */
     async generatePayrollJournalDraft(periodId, receipts) {
-        // Implementación delegada a journal-generator.js
-        // Por ahora placeholder
-        return { lines: [] }
+        const period = await PayrollPeriod.findById(periodId).lean()
+        if (!period) {
+            throw new Error('Período no encontrado')
+        }
+
+        const generator = new JournalGenerator(this.organizationID)
+        await generator.initialize()
+        
+        // Convert receipts to the format expected by journal-generator
+        // receipts should be array of receipt objects with populated employee, branch, etc.
+        const { draft, lines } = await generator.generatePayrollJournalDraft(period, receipts)
+        
+        // Validate double entry
+        const validation = generator.validateDoubleEntry(draft)
+        if (!validation.valid) {
+            throw new Error(`Asiento contable desbalanceado: diferencia ${validation.difference.toFixed(2)} VES`)
+        }
+
+        return { draft, lines }
     }
 
     /**

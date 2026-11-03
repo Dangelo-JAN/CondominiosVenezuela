@@ -7,21 +7,21 @@ import crypto from "crypto"
 import { Organization } from "../models/Organization.model.js"
 import { Attendance } from "../models/Attendance.model.js"
 
-export const HandleEmplyoeeSignup = async (req, res) => {
+export const HandleEmployeeSignup = async (req, res) => {
     const { firstname, lastname, email, password, contactnumber } = req.body
     
-    console.log("[LOG SERVER] HandleEmplyoeeSignup - datos recibidos:", { firstname, lastname, email, hasPassword: !!password, contactnumber })
+    console.log("[LOG SERVER] HandleEmployeeSignup - datos recibidos:", { firstname, lastname, email, hasPassword: !!password, contactnumber })
     
     try {
         if (!firstname || !lastname || !email || !contactnumber) {
-            console.log("[LOG SERVER] HandleEmplyoeeSignup - ERROR: campos requeridos faltantes")
+            console.log("[LOG SERVER] HandleEmployeeSignup - ERROR: campos requeridos faltantes")
             throw new Error("All Fields are required")
         }
 
         const organization = await Organization.findOne({ _id: req.ORGID })
 
         if (!organization) {
-            console.log("[LOG SERVER] HandleEmplyoeeSignup - ERROR: organización no encontrada")
+            console.log("[LOG SERVER] HandleEmployeeSignup - ERROR: organización no encontrada")
             return res.status(404).json({ success: false, message: "Organization or Company not found" })
         }
 
@@ -33,7 +33,7 @@ export const HandleEmplyoeeSignup = async (req, res) => {
             const invitationtoken = crypto.randomBytes(32).toString("hex")
             const invitationtokenexpires = Date.now() + 1000 * 60 * 60 * 48 // 48 horas
             
-            console.log("[LOG SERVER] HandleEmplyoeeSignup - creando empleado con invitationtoken")
+            console.log("[LOG SERVER] HandleEmployeeSignup - creando empleado con invitationtoken")
 
             const newEmployee = await Employee.create({
                 firstname, lastname, email, password: hashedPassword, contactnumber,
@@ -82,7 +82,7 @@ export const HandleEmplyoeeSignup = async (req, res) => {
     }
 }
 
-export const HandleEmplyoeeVerifyEmail = async (req, res) => {
+export const HandleEmployeeVerifyEmail = async (req, res) => {
     const { verificationcode } = req.body
     
     try {
@@ -108,7 +108,7 @@ export const HandleEmplyoeeVerifyEmail = async (req, res) => {
     }
 }
 
-export const HandleResetEmplyoeeVerifyEmail = async (req, res) => {
+export const HandleResetEmployeeVerifyEmail = async (req, res) => {
     const { email } = req.body
     try {
         const employee = await Employee.findOne({ email: email })
@@ -133,7 +133,7 @@ export const HandleResetEmplyoeeVerifyEmail = async (req, res) => {
     }
 }
 
-export const HandleEmplyoeeLogin = async (req, res) => {
+export const HandleEmployeeLogin = async (req, res) => {
     const { email, password } = req.body
     try {
         const employee = await Employee.findOne({ email: email })
@@ -163,7 +163,7 @@ export const HandleEmplyoeeLogin = async (req, res) => {
             lastlogin: new Date() 
         }, { runValidators: false })
 
-        return res.status(200).json({ success: true, message: "Emplyoee Login Successfull", token })
+        return res.status(200).json({ success: true, message: "Employee Login Successful", token })
     } catch (error) {
         res.status(500).json({ success: false, message: "Internal Server Error", error: error })
     }
@@ -196,7 +196,7 @@ export const HandleEmployeeCheck = async (req, res) => {
     }
 }
 
-export const HandleEmplyoeeLogout = async (req, res) => {
+export const HandleEmployeeLogout = async (req, res) => {
     try {
         return res.status(200).json({ success: true, message: "Logged out successfully" })
     } catch (error) {
@@ -204,7 +204,7 @@ export const HandleEmplyoeeLogout = async (req, res) => {
     }
 }
 
-export const HandleEmplyoeeForgotPassword = async (req, res) => {
+export const HandleEmployeeForgotPassword = async (req, res) => {
     const { email } = req.body
     try {
         const employee = await Employee.findOne({ email: email, organizationID: req.ORGID })
@@ -228,7 +228,7 @@ export const HandleEmplyoeeForgotPassword = async (req, res) => {
     }
 }
 
-export const HandleEmplyoeeSetPassword = async (req, res) => {
+export const HandleEmployeeSetPassword = async (req, res) => {
     const { token } = req.params
     const { password } = req.body
     try {

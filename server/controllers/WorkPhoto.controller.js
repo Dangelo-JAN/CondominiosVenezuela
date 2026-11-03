@@ -3,6 +3,7 @@ import { Employee } from "../models/Employee.model.js"
 import { v2 as cloudinary } from "cloudinary"
 import dayjs from "dayjs"
 import { buildDateRangeFilter } from "../utils/dateFilter.util.js"
+import { logger } from "../utils/logger.js"
 
 // Configurar Cloudinary (requiere CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET en .env)
 cloudinary.config({
@@ -19,18 +20,18 @@ export const HandleUploadWorkPhoto = async (req, res) => {
         if (req.file) {
             // multipart/form-data: usar buffer del archivo
             photoData = `data:${req.file.mimetype};base64,${req.file.buffer.toString("base64")}`
-            console.log("[DEBUG] Usando archivo de multer, mimetype:", req.file.mimetype, "size:", req.file.size)
+            logger.debug("Usando archivo de multer", { mimetype: req.file.mimetype, size: req.file.size })
         } else if (req.body.photo) {
             // JSON con base64
             photoData = req.body.photo
-            console.log("[DEBUG] Usando base64 del body")
+            logger.debug("Usando base64 del body")
         }
 
         const { description, workdate, timezone } = req.body
 
-        // DEBUG: Log timezone recibidos
-        console.log("[DEBUG] workdate recibido:", workdate)
-        console.log("[DEBUG] timezone recibido:", timezone)
+        // Log timezone recibidos
+        logger.debug("workdate recibido", { workdate })
+        logger.debug("timezone recibido", { timezone })
 
         if (!photoData || !workdate) {
             return res.status(400).json({ success: false, message: "La foto y la fecha son requeridas" })
@@ -50,17 +51,18 @@ export const HandleUploadWorkPhoto = async (req, res) => {
             exif: true
         })
 
-        console.log("[DEBUG] Upload realizado, public_id:", uploadResult.public_id)
-
-        // ── DEBUG: Log de respuesta de Cloudinary para diagnosis ──
-        console.log("[DEBUG] Cloudinary uploadResult keys:", Object.keys(uploadResult))
-        console.log("[DEBUG] Has exif:", !!uploadResult.exif)
-        console.log("[DEBUG] Has image_metadata:", !!uploadResult.image_metadata)
-        if (uploadResult.exif) {
-            console.log("[DEBUG] exif keys:", Object.keys(uploadResult.exif))
-            console.log("[DEBUG] exif.DateTimeOriginal:", uploadResult.exif.DateTimeOriginal)
-            console.log("[DEBUG] exif.GPSLatitude:", uploadResult.exif.GPSLatitude)
-            console.log("[DEBUG] exif.GPSLongitude:", uploadResult.exif.GPSLongitude)
+        // Solo log en desarrollo
+        if (process.env.NODE_ENV !== 'production') {
+            console.log("[DEBUG] Upload realizado, public_id:", uploadResult.public_id)
+            console.log("[DEBUG] Cloudinary uploadResult keys:", Object.keys(uploadResult))
+            console.log("[DEBUG] Has exif:", !!uploadResult.exif)
+            console.log("[DEBUG] Has image_metadata:", !!uploadResult.image_metadata)
+            if (uploadResult.exif) {
+                console.log("[DEBUG] exif keys:", Object.keys(uploadResult.exif))
+                console.log("[DEBUG] exif.DateTimeOriginal:", uploadResult.exif.DateTimeOriginal)
+                console.log("[DEBUG] exif.GPSLatitude:", uploadResult.exif.GPSLatitude)
+                console.log("[DEBUG] exif.GPSLongitude:", uploadResult.exif.GPSLongitude)
+            }
         }
 
         // ── Extraer metadata EXIF (Fecha de captura + GPS) ──

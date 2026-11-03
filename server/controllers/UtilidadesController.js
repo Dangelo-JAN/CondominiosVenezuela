@@ -5,6 +5,7 @@ import { Employee } from '../models/Employee.model.js'
 import { LaborContract } from '../models/LaborContract.model.js'
 import { PayrollPolicy } from '../models/payroll/PayrollPolicy.model.js'
 import { UtilidadesCalculator } from '../services/payroll/utilidades-calculator.js'
+import { getExchangeRate } from '../services/exchange-rate.service.js'
 
 export const UtilidadesController = {
     // GET /api/v1/utilidades/periods
@@ -177,7 +178,42 @@ export const UtilidadesController = {
             period.paid_at = new Date()
             await period.save()
 
-            // TODO: Generar recibos de nómina para cada pago
+            // Generar recibos de nómina para cada pago
+            const exchangeRateValue = exchange_rate || (await getExchangeRate()).toNumber()
+            for (const payment of result.payments) {
+                try {
+                    const utilidadesReceipt = await PayrollReceipt.create({
+                        employee: payment.employee,
+                        period: payment.period,
+                        contract: payment.contract?._id,
+                        contract_snapshot: {
+                            salary_amount: payment.employee.salary_amount,
+                            salary_currency: payment.employee.salary_currency,
+                            payment_frequency: payment.employee.payment_frequency,
+                            includes_cestaticket: payment.employee.includes_cestaticket
+                        },
+                        salary_base_snapshot: payment.employee.salary_amount,
+                        exchange_rate_snapshot: exchangeRateValue,
+                        currency_code: 'VES',
+                        total_income_ves: payment.total_ves,
+                        total_deductions_ves: payment.islr_withheld_ves,
+                        net_pay_ves: payment.net_ves,
+                        status: 'PAID',
+                        tipo_recibo: 'UTILIDADES',
+                        payment_date: payment_date ? new Date(payment_date) : new Date(),
+                        organizationID: req.ORGID
+                    })
+
+                    // Actualizar pago con referencia al recibo
+                    await UtilidadesPayment.findByIdAndUpdate(payment._id, {
+                        status: 'PAID',
+                        paid_at: payment_date ? new Date(payment_date) : new Date(),
+                        payroll_receipt: utilidadesReceipt._id
+                    })
+                } catch (receiptError) {
+                    console.error(`[UtilidadesController.payPeriod] Error creando recibo para empleado ${payment.employee}:`, receiptError.message)
+                }
+            }
 
             return res.status(200).json({
                 success: true,

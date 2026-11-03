@@ -1,92 +1,131 @@
 import { AccountingAccountSubcategory } from '../models/accounting/AccountSubcategory.model.js'
+import { Organization } from '../models/Organization.model.js'
 
 /**
- * Seed: Subcuentas Contables para Nómina Venezolana
- * Plan de cuentas compatible con JournalGenerator
- * Estructura: 6xxx = Gastos, 2xxx = Pasivos (por pagar), 4xxx = Retenciones
+ * Seed de Subcategorías Contables para Nómina
+ * Códigos según plan contable venezolano (adaptado para Nóminix)
+ * 
+ * Estructura:
+ * - 1xxx: ACTIVOS
+ * - 2xxx: PASIVOS (Por pagar)
+ * - 3xxx: PATRIMONIO
+ * - 4xxx: PASIVOS (Retenciones/Entes)
+ * - 5xxx: INGRESOS
+ * - 6xxx: GASTOS
+ * - 7xxx: COSTOS
  */
 
-export const seedAccountSubcategories = async (organizationID) => {
-    const accounts = [
-        // ═══════════════════════════════════════════════════════════════════════
-        // GASTOS DE PERSONAL (61xx) - Cuentas de resultado (DÉBITO en ingresos)
-        // ═══════════════════════════════════════════════════════════════════════
-        { code: '6111', name: 'Sueldo Base', dre_role: 'EXPENSE', is_active: true, organizationID },
-        { code: '6112', name: 'Complemento Salarial', dre_role: 'EXPENSE', is_active: true, organizationID },
-        { code: '6113', name: 'Cestaticket / Alimentación', dre_role: 'EXPENSE', is_active: true, organizationID },
-        { code: '6121', name: 'Horas Extra Diurnas', dre_role: 'EXPENSE', is_active: true, organizationID },
-        { code: '6122', name: 'Horas Extra Nocturnas', dre_role: 'EXPENSE', is_active: true, organizationID },
-        { code: '6123', name: 'Bono Nocturnidad', dre_role: 'EXPENSE', is_active: true, organizationID },
-        { code: '6124', name: 'Días Feriados Trabajados', dre_role: 'EXPENSE', is_active: true, organizationID },
-        { code: '6125', name: 'Domingos Trabajados', dre_role: 'EXPENSE', is_active: true, organizationID },
-        { code: '6126', name: 'Días de Descanso Trabajados', dre_role: 'EXPENSE', is_active: true, organizationID },
-        { code: '6131', name: 'Reposo Médico (33%)', dre_role: 'EXPENSE', is_active: true, organizationID },
-        { code: '6132', name: 'Reposo Médico (100%)', dre_role: 'EXPENSE', is_active: true, organizationID },
-        { code: '6141', name: 'Vacaciones Pagadas', dre_role: 'EXPENSE', is_active: true, organizationID },
-        { code: '6142', name: 'Bono Vacacional', dre_role: 'EXPENSE', is_active: true, organizationID },
-        { code: '6151', name: 'Utilidades', dre_role: 'EXPENSE', is_active: true, organizationID },
-        { code: '6161', name: 'Prestaciones Sociales / Liquidación', dre_role: 'EXPENSE', is_active: true, organizationID },
-        { code: '6199', name: 'Otros Gastos de Personal', dre_role: 'EXPENSE', is_active: true, organizationID },
+const accountSubcategories = [
+    // ============================================
+    // GASTOS DE PERSONAL (61xx)
+    // ============================================
+    { code: '6111', name: 'Sueldos y Salarios Base', dre_role: 'EXPENSE', group: '61' },
+    { code: '6112', name: 'Complementos y Adicionales', dre_role: 'EXPENSE', group: '61' },
+    { code: '6113', name: 'Cestaticket / Alimentación', dre_role: 'EXPENSE', group: '61' },
+    { code: '6121', name: 'Horas Extra Diurnas', dre_role: 'EXPENSE', group: '61' },
+    { code: '6122', name: 'Horas Extra Nocturnas', dre_role: 'EXPENSE', group: '61' },
+    { code: '6123', name: 'Bono Nocturno', dre_role: 'EXPENSE', group: '61' },
+    { code: '6124', name: 'Días Feriados Trabajados', dre_role: 'EXPENSE', group: '61' },
+    { code: '6125', name: 'Domingos Trabajados', dre_role: 'EXPENSE', group: '61' },
+    { code: '6126', name: 'Días de Descanso Trabajados', dre_role: 'EXPENSE', group: '61' },
+    { code: '6131', name: 'Reposo 3/3 (Enfermedad/Maternidad)', dre_role: 'EXPENSE', group: '61' },
+    { code: '6132', name: 'Reposo Total (Accidente Laboral)', dre_role: 'EXPENSE', group: '61' },
+    { code: '6199', name: 'Otros Gastos de Personal N.C.P.', dre_role: 'EXPENSE', group: '61' },
 
-        // ═══════════════════════════════════════════════════════════════════════
-        // GASTOS PATRONALES (62xx) - Cuentas de resultado (DÉBITO en costos patronales)
-        // ═══════════════════════════════════════════════════════════════════════
-        { code: '6211', name: 'IVSS Patronal (9%)', dre_role: 'EXPENSE', is_active: true, organizationID },
-        { code: '6212', name: 'FAOV Patronal (2%)', dre_role: 'EXPENSE', is_active: true, organizationID },
-        { code: '6213', name: 'RPE Patronal (2%)', dre_role: 'EXPENSE', is_active: true, organizationID },
-        { code: '6214', name: 'INCES Patronal (2%)', dre_role: 'EXPENSE', is_active: true, organizationID },
-        { code: '6215', name: 'LPPSS Patronal (9%)', dre_role: 'EXPENSE', is_active: true, organizationID },
-        { code: '6216', name: 'BANVIH Patronal (2%)', dre_role: 'EXPENSE', is_active: true, organizationID },
-        { code: '6299', name: 'Otros Costos Patronales', dre_role: 'EXPENSE', is_active: true, organizationID },
+    // ============================================
+    // GASTOS PATRONALES (62xx)
+    // ============================================
+    { code: '6211', name: 'IVSS Patronal', dre_role: 'EXPENSE', group: '62' },
+    { code: '6212', name: 'FAOV Patronal', dre_role: 'EXPENSE', group: '62' },
+    { code: '6213', name: 'RPE Patronal', dre_role: 'EXPENSE', group: '62' },
+    { code: '6214', name: 'INCES Patronal', dre_role: 'EXPENSE', group: '62' },
+    { code: '6215', name: 'LPPSS Patronal', dre_role: 'EXPENSE', group: '62' },
+    { code: '6216', name: 'BANVIH Patronal', dre_role: 'EXPENSE', group: '62' },
+    { code: '6299', name: 'Otros Costos Patronales N.C.P.', dre_role: 'EXPENSE', group: '62' },
 
-        // ═══════════════════════════════════════════════════════════════════════
-        // POR PAGAR A EMPLEADOS (21xx) - Pasivos (CRÉDITO en ingresos, DÉBITO en deducciones)
-        // ═══════════════════════════════════════════════════════════════════════
-        { code: '2111', name: 'Por Pagar - Sueldos y Salarios', dre_role: 'LIABILITY', is_active: true, organizationID },
-        { code: '2112', name: 'Por Pagar - Vacaciones', dre_role: 'LIABILITY', is_active: true, organizationID },
-        { code: '2113', name: 'Por Pagar - Utilidades', dre_role: 'LIABILITY', is_active: true, organizationID },
-        { code: '2114', name: 'Por Pagar - Prestaciones Sociales', dre_role: 'LIABILITY', is_active: true, organizationID },
-        { code: '2115', name: 'Por Pagar - Anticipos y Préstamos', dre_role: 'LIABILITY', is_active: true, organizationID },
+    // ============================================
+    // CUENTAS POR PAGAR A EMPLEADOS (21xx)
+    // ============================================
+    { code: '2111', name: 'Por Pagar a Empleados - Sueldos', dre_role: 'LIABILITY', group: '21' },
+    { code: '2112', name: 'Por Pagar a Empleados - Vacaciones', dre_role: 'LIABILITY', group: '21' },
+    { code: '2113', name: 'Por Pagar a Empleados - Utilidades', dre_role: 'LIABILITY', group: '21' },
+    { code: '2114', name: 'Por Pagar a Empleados - Prestaciones', dre_role: 'LIABILITY', group: '21' },
+    { code: '2115', name: 'Por Pagar a Empleados - Anticipos', dre_role: 'LIABILITY', group: '21' },
+    { code: '2116', name: 'Por Pagar a Empleados - Préstamos', dre_role: 'LIABILITY', group: '21' },
+    { code: '2199', name: 'Otras Cuentas por Pagar a Empleados', dre_role: 'LIABILITY', group: '21' },
 
-        // ═══════════════════════════════════════════════════════════════════════
-        // POR PAGAR A ENTES PATRONALES (22xx) - Pasivos (CRÉDITO en costos patronales)
-        // ═══════════════════════════════════════════════════════════════════════
-        { code: '2211', name: 'Por Pagar - IVSS Patronal', dre_role: 'LIABILITY', is_active: true, organizationID },
-        { code: '2212', name: 'Por Pagar - FAOV Patronal', dre_role: 'LIABILITY', is_active: true, organizationID },
-        { code: '2213', name: 'Por Pagar - RPE Patronal', dre_role: 'LIABILITY', is_active: true, organizationID },
-        { code: '2214', name: 'Por Pagar - INCES Patronal', dre_role: 'LIABILITY', is_active: true, organizationID },
-        { code: '2215', name: 'Por Pagar - LPPSS Patronal', dre_role: 'LIABILITY', is_active: true, organizationID },
-        { code: '2216', name: 'Por Pagar - BANVIH Patronal', dre_role: 'LIABILITY', is_active: true, organizationID },
+    // ============================================
+    // CUENTAS POR PAGAR A ENTES/RETENCIONES (22xx, 41xx)
+    // ============================================
+    { code: '2211', name: 'Por Pagar IVSS', dre_role: 'LIABILITY', group: '22' },
+    { code: '2212', name: 'Por Pagar FAOV', dre_role: 'LIABILITY', group: '22' },
+    { code: '2213', name: 'Por Pagar RPE', dre_role: 'LIABILITY', group: '22' },
+    { code: '2214', name: 'Por Pagar INCES', dre_role: 'LIABILITY', group: '22' },
+    { code: '2215', name: 'Por Pagar LPPSS', dre_role: 'LIABILITY', group: '22' },
+    { code: '2216', name: 'Por Pagar BANVIH', dre_role: 'LIABILITY', group: '22' },
 
-        // ═══════════════════════════════════════════════════════════════════════
-        // RETENCIONES Y POR PAGAR A TERCEROS (41xx) - Pasivos (CRÉDITO en deducciones)
-        // ═══════════════════════════════════════════════════════════════════════
-        { code: '4111', name: 'Por Retener/Entregar - IVSS Empleado (4%)', dre_role: 'LIABILITY', is_active: true, organizationID },
-        { code: '4112', name: 'Por Retener/Entregar - FAOV Empleado (1%)', dre_role: 'LIABILITY', is_active: true, organizationID },
-        { code: '4113', name: 'Por Retener/Entregar - RPE Empleado (0.5%)', dre_role: 'LIABILITY', is_active: true, organizationID },
-        { code: '4114', name: 'Por Retener/Entregar - ISLR', dre_role: 'LIABILITY', is_active: true, organizationID },
-        { code: '4115', name: 'Por Retener/Entregar - Descuentos por Faltas', dre_role: 'LIABILITY', is_active: true, organizationID },
-        { code: '4116', name: 'Por Retener/Entregar - Anticipo Vacacional', dre_role: 'LIABILITY', is_active: true, organizationID },
-        { code: '4117', name: 'Por Retener/Entregar - Préstamos Empleados', dre_role: 'LIABILITY', is_active: true, organizationID },
-        { code: '4199', name: 'Otras Retenciones por Entregar', dre_role: 'LIABILITY', is_active: true, organizationID },
-    ]
+    { code: '4111', name: 'Retenciones IVSS Empleado', dre_role: 'LIABILITY', group: '41' },
+    { code: '4112', name: 'Retenciones FAOV Empleado', dre_role: 'LIABILITY', group: '41' },
+    { code: '4113', name: 'Retenciones RPE Empleado', dre_role: 'LIABILITY', group: '41' },
+    { code: '4114', name: 'Retenciones ISLR', dre_role: 'LIABILITY', group: '41' },
+    { code: '4115', name: 'Retenciones Faltas/Descuentos', dre_role: 'LIABILITY', group: '41' },
+    { code: '4116', name: 'Retenciones Anticipo Vacacional', dre_role: 'LIABILITY', group: '41' },
+    { code: '4117', name: 'Retenciones Préstamos/Adelantos', dre_role: 'LIABILITY', group: '41' },
+    { code: '4199', name: 'Otras Retenciones y Cuentas por Pagar', dre_role: 'LIABILITY', group: '41' },
+]
 
-    let created = 0
-    let updated = 0
+export async function seedAccountSubcategories(organizationID) {
+    // Si no se pasa organizationID, obtener todas las activas
+    let organizations
+    if (organizationID) {
+        organizations = [{ _id: organizationID }]
+    } else {
+        organizations = await Organization.find({ isactive: true }).lean()
+    }
+    
+    let totalCreated = 0
+    let totalSkipped = 0
 
-    for (const acc of accounts) {
-        const result = await AccountingAccountSubcategory.findOneAndUpdate(
-            { organizationID: acc.organizationID, code: acc.code },
-            { $setOnInsert: acc },
-            { upsert: true, new: true, runValidators: true }
-        )
+    for (const org of organizations) {
+        for (const acc of accountSubcategories) {
+            try {
+                const existing = await AccountingAccountSubcategory.findOne({
+                    organizationID: org._id,
+                    code: acc.code
+                })
 
-        if (result.isNew) created++
-        else updated++
+                if (existing) {
+                    totalSkipped++
+                    continue
+                }
+
+                await AccountingAccountSubcategory.create({
+                    ...acc,
+                    organizationID: org._id,
+                    is_active: true
+                })
+                totalCreated++
+            } catch (error) {
+                if (error.code === 11000) {
+                    totalSkipped++
+                } else {
+                    console.error(`[Seed] Error creando cuenta ${acc.code} para org ${org._id}:`, error.message)
+                }
+            }
+        }
     }
 
-    console.log(`✅ AccountSubcategory seeded for organization ${organizationID}: ${created} creadas, ${updated} existentes`)
-    return { created, updated }
+    console.log(`[Seed] AccountSubcategory: ${totalCreated} creadas, ${totalSkipped} ya existían`)
+    return { created: totalCreated, skipped: totalSkipped }
 }
 
-export default seedAccountSubcategories
+// Ejecutar si se llama directamente
+if (import.meta.url === `file://${process.argv[1]}`) {
+    import('../config/connectDB.js').then(({ default: connectDB }) => {
+        connectDB().then(() => {
+            seedAccountSubcategories().then(() => process.exit(0)).catch(() => process.exit(1))
+        })
+    })
+}
+
+export default { seedAccountSubcategories, accountSubcategories }

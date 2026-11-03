@@ -12,11 +12,7 @@ export async function initializePayrollQueues() {
 
     // Cola para exportación bancaria
     payrollQueues.bankExport = new Queue('bank-export', {
-        redis: {
-            host: process.env.REDIS_HOST || 'localhost',
-            port: parseInt(process.env.REDIS_PORT) || 6379,
-            password: process.env.REDIS_PASSWORD || undefined,
-        },
+        redis: redisClient,
         defaultJobOptions: {
             removeOnComplete: 100,
             removeOnFail: 50,
@@ -30,11 +26,7 @@ export async function initializePayrollQueues() {
 
     // Cola para envío de boletas por email
     payrollQueues.payslipEmail = new Queue('payslip-email', {
-        redis: {
-            host: process.env.REDIS_HOST || 'localhost',
-            port: parseInt(process.env.REDIS_PORT) || 6379,
-            password: process.env.REDIS_PASSWORD || undefined,
-        },
+        redis: redisClient,
         defaultJobOptions: {
             removeOnComplete: 500,
             removeOnFail: 100,
@@ -48,11 +40,7 @@ export async function initializePayrollQueues() {
 
     // Cola para cálculo de nómina pesado (batch processing)
     payrollQueues.payrollCalculation = new Queue('payroll-calculation', {
-        redis: {
-            host: process.env.REDIS_HOST || 'localhost',
-            port: parseInt(process.REDIS_PORT) || 6379,
-            password: process.env.REDIS_PASSWORD || undefined,
-        },
+        redis: redisClient,
         defaultJobOptions: {
             removeOnComplete: 50,
             removeOnFail: 20,
@@ -66,11 +54,7 @@ export async function initializePayrollQueues() {
 
     // Cola genérica para notificaciones
     payrollQueues.notifications = new Queue('notifications', {
-        redis: {
-            host: process.env.REDIS_HOST || 'localhost',
-            port: parseInt(process.env.REDIS_PORT) || 6379,
-            password: process.env.REDIS_PASSWORD || undefined,
-        },
+        redis: redisClient,
         defaultJobOptions: {
             removeOnComplete: 1000,
             removeOnFail: 200,

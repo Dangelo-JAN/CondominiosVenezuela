@@ -1,4 +1,5 @@
 import { Decimal } from 'decimal.js'
+import { safeEval } from './formula-evaluator.js'
 
 /**
  * Calculador de Costos Patronales - EmployerCosts
@@ -198,17 +199,20 @@ export async function calculateEmployerCosts(context, accumulators) {
 
 /**
  * Evalúa fórmula simple para faov_employer_base_formula
+ * Usa safeEval (AST-based) en lugar de Function() constructor para evitar RCE
  */
 function evalFormula(formula, variables) {
-    // Reemplazar variables conocidas
-    let expr = formula
+    // Preparar allowedNames para safeEval - solo variables numéricas
+    const allowedNames = {}
     for (const [key, value] of Object.entries(variables)) {
         if (value instanceof Decimal) {
-            expr = expr.replace(new RegExp(key, 'g'), value.toString())
+            allowedNames[key] = value.toNumber()
+        } else if (typeof value === 'number') {
+            allowedNames[key] = value
         }
     }
-    // Evaluación segura simple (solo operaciones básicas)
-    return Function('"use strict"; return (' + expr + ')')()
+    // Evaluación segura con AST (no usa Function/eval)
+    return safeEval(formula, allowedNames)
 }
 
 /**

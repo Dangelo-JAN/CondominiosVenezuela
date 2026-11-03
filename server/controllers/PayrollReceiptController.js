@@ -206,8 +206,11 @@ export const PayrollReceiptController = {
             const exportData = { ...receipt, lines, employerCosts }
 
             if (format === 'pdf') {
-                // TODO: Generar PDF
-                return res.status(501).json({ success: false, message: 'Exportación PDF no implementada aún' })
+                // PDF no implementado - usar CSV o JSON
+                return res.status(400).json({ 
+                    success: false, 
+                    message: 'Exportación PDF no disponible. Use formato "csv" o "json" para obtener los datos del recibo.' 
+                })
             }
 
             return res.status(200).json({

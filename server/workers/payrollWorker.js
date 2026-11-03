@@ -117,7 +117,14 @@ async function startWorker() {
     console.log('[Payroll Worker] Activo y escuchando colas:', Object.keys(payrollQueues).join(', '))
 }
 
-startWorker().catch(err => {
-    console.error('[Payroll Worker] Error fatal:', err)
-    process.exit(1)
-})
+export async function startPayrollWorker() {
+    return startWorker()
+}
+
+// Auto-start si se ejecuta directamente
+if (import.meta.url === `file://${process.argv[1]}`) {
+    startWorker().catch(err => {
+        console.error('[Payroll Worker] Error fatal:', err)
+        process.exit(1)
+    })
+}

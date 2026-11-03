@@ -2,10 +2,12 @@ import { VacationBalance } from '../models/payroll/VacationBalance.model.js'
 import { VacationRequest } from '../models/payroll/VacationRequest.model.js'
 import { VacationPayment } from '../models/payroll/VacationPayment.model.js'
 import { PayrollReceipt } from '../models/payroll/PayrollReceipt.model.js'
+import { PayrollNovelty } from '../models/payroll/PayrollNovelty.model.js'
 import { Employee } from '../models/Employee.model.js'
 import { PayrollPolicy } from '../models/payroll/PayrollPolicy.model.js'
 import { VacationCalculator } from '../services/payroll/vacation-calculator.js'
 import { Holiday } from '../models/payroll/Holiday.model.js'
+import { getExchangeRate } from '../services/exchange-rate.service.js'
 
 export const VacationController = {
     // GET /api/v1/vacations/balances
@@ -237,7 +239,7 @@ export const VacationController = {
                     includes_cestaticket: request.employee.includes_cestaticket
                 },
                 salary_base_snapshot: request.employee.salary_amount,
-                exchange_rate_snapshot: 1, // TODO: obtener tasa real
+                exchange_rate_snapshot: (await getExchangeRate()).toNumber(),
                 currency_code: 'VES',
                 total_income_ves: paymentCalc.total.toNumber(),
                 total_deductions_ves: 0,
@@ -251,6 +253,27 @@ export const VacationController = {
             request.status = 'TAKEN'
             request.payroll_novelty = vacationReceipt._id
             await request.save()
+
+            // Crear novedad de anticipo vacacional para incluir en nómina
+            const advanceAmount = paymentCalc.advance_amount ? paymentCalc.advance_amount.toNumber() : 0
+            if (advanceAmount > 0) {
+                await PayrollNovelty.create({
+                    employee: request.employee._id,
+                    period: period_id,
+                    concept_code: 'ANTICIPO_VACACIONAL',
+                    amount: advanceAmount,
+                    quantity: request.days_requested,
+                    unit: 'DÍAS',
+                    description: `Anticipo vacacional - ${request.days_requested} días - Período ${request.start_date?.toISOString().slice(0,10)} a ${request.end_date?.toISOString().slice(0,10)}`,
+                    source: 'LEAVE',
+                    reference_id: request._id,
+                    reference_model: 'VacationRequest',
+                    status: 'APPLIED',
+                    applied_by: req.HRID,
+                    applied_at: new Date(),
+                    organizationID: req.ORGID
+                })
+            }
 
             // Actualizar saldo
             await calculator.updateVacationBalance(

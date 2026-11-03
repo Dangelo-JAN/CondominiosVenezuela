@@ -20,8 +20,7 @@ import BalanceRouter from './routes/Balance.route.js'
 import ScheduleRouter from './routes/Schedule.route.js'
 import WorkPhotoRouter from './routes/WorkPhoto.route.js'
 import HRProfilesRouter from './routes/HRProfiles.route.js'
-import ContactSalesRouter from './routes/ContactSales.route.js'
-import ContactGeneralRouter from './routes/ContactGeneral.route.js'
+import ContactRouter from './routes/Contact.route.js'
 import BitacoraRouter from './routes/Bitacora.route.js'
 import NotificationRouter from './routes/Notification.route.js'
 import PushNotificationRouter from './routes/PushNotification.route.js'
@@ -30,6 +29,7 @@ import PayrollRouter from './routes/Payroll.route.js'
 import { ConnectDB } from './config/connectDB.js';
 import cookieParser from 'cookie-parser';
 import cors from "cors"
+import { startPayrollWorker } from './workers/payrollWorker.js';
 
 dotenv.config()
 const app = express();
@@ -92,8 +92,7 @@ app.use("/api/v1/balance", BalanceRouter)
 app.use("/api/v1/schedule", ScheduleRouter)
 app.use("/api/v1/workphoto", WorkPhotoRouter)
 app.use("/api/v1/hr-profiles", HRProfilesRouter)
-app.use("/api/v1/contact", ContactSalesRouter)
-app.use("/api/v1/contact", ContactGeneralRouter)
+app.use("/api/v1/contact", ContactRouter)
 app.use("/api/v1/bitacora", BitacoraRouter)
 app.use("/api/v1/notification", NotificationRouter)
 app.use("/api/v1/push", PushNotificationRouter)
@@ -135,20 +134,28 @@ app.get("/api/health", async (req, res) => {
         checks.status = "degraded"
     }
 
-    // 3. Bull Queues
+    // 3. Bull Queues (solo si ya inicializadas - no inicializar en health check)
     try {
         const { payrollQueues } = await import("./config/queue.js")
         const queueStatus = {}
+        let queuesInitialized = false
         for (const [name, queue] of Object.entries(payrollQueues)) {
-            queueStatus[name] = {
-                status: "ready",
-                waiting: await queue.getWaitingCount(),
-                active: await queue.getActiveCount(),
-                completed: await queue.getCompletedCount(),
-                failed: await queue.getFailedCount(),
+            if (queue && typeof queue.getWaitingCount === 'function') {
+                queuesInitialized = true
+                queueStatus[name] = {
+                    status: "ready",
+                    waiting: await queue.getWaitingCount(),
+                    active: await queue.getActiveCount(),
+                    completed: await queue.getCompletedCount(),
+                    failed: await queue.getFailedCount(),
+                }
             }
         }
-        checks.services.queues = queueStatus
+        if (!queuesInitialized) {
+            checks.services.queues = { status: "not_initialized", message: "Queues not started (worker not running)" }
+        } else {
+            checks.services.queues = queueStatus
+        }
     } catch (e) {
         checks.services.queues = { status: "error", message: e.message }
         checks.status = "degraded"
@@ -185,4 +192,11 @@ const PORT = process.env.PORT || 10000
 app.listen(PORT, async () => {
   await ConnectDB()
   console.log(`Server running on http://localhost:${PORT}`)
+  
+  // Iniciar worker de nómina (async, no bloquea el servidor)
+  if (process.env.NODE_ENV !== 'test') {
+    startPayrollWorker().catch(err => {
+      console.error('[Server] Error iniciando worker de nómina:', err.message)
+    })
+  }
 })
