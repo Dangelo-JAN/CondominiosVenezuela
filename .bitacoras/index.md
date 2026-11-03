@@ -52,6 +52,7 @@
 - [x] [[035-hr-employee-reports]] - ✅ COMPLETADO el 21/08/2026
 - [x] [[036-dynamic-seed]] - ✅ COMPLETADO el 21/09/2026 (commit `4e15744`, PR hacia dev)
 - [ ] [[037-payroll-venezuelan-module]] - 🟡 EN CURSO (reabierta 22/10/2026 — Fase 7: Producción/Gaps Críticos, PR hacia dev existente)
+- [x] [[038-payroll-receipts-tab-ui]] - ✅ COMPLETADO el 03/11/2026 (commit `879fef9`, PR hacia 037-payroll-venezuelan-module)
 ---
 
 ## 🛠️ REGLAS DE ORO (DE CUMPLIMIENTO OBLIGATORIO)
