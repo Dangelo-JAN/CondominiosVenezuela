@@ -7,7 +7,7 @@ import { useHRAuth } from "../../../../../hooks/useHRAuth.js"
 import { CustomSelect } from "../../../../../components/ui/custom-select.jsx"
 import { ThemedListWrapper, ThemedHeadingBar, ThemedListContainer } from "../../../../../components/common/Dashboard/ListDesigns"
 import { ConfirmDialog } from "../../../../../components/common/ConfirmDialog.jsx"
-import { Search, Filter, Calendar, FileText, ChevronDown, Eye, Download, RefreshCw, XCircle, Loader2 } from "lucide-react"
+import { Search, Filter, Calendar, FileText, ChevronDown, Eye, Download, RefreshCw, XCircle, Loader2, FileJson, FileSpreadsheet } from "lucide-react"
 
 // --- Helper Functions ---
 const formatCurrency = (val) => {
@@ -21,7 +21,7 @@ const formatDate = (dateStr) => {
 }
 
 // --- ReceiptDetailModal Component ---
-const ReceiptDetailModal = ({ receipt, onClose, isDark }) => {
+const ReceiptDetailModal = ({ receipt, onClose, isDark, onExportJson, onExportCsv }) => {
     const statusConfig = {
         PAID: { bg: 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400', label: 'Pagado' },
         APPROVED: { bg: 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-400', label: 'Aprobado' },
@@ -163,6 +163,32 @@ const ReceiptDetailModal = ({ receipt, onClose, isDark }) => {
                     {/* Footer Actions */}
                     <div className="flex justify-end gap-2 pt-4 border-t mt-6"
                         style={{ borderColor: isDark ? "rgba(0,61,165,0.15)" : "rgba(0,61,165,0.2)" }}>
+                        <button 
+                            onClick={onExportJson} 
+                            className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium transition-colors"
+                            style={{
+                                background: isDark ? "rgba(0,61,165,0.15)" : "rgba(0,61,165,0.1)",
+                                color: "#003DA5",
+                                border: isDark ? "1px solid rgba(0,61,165,0.3)" : "1px solid rgba(0,61,165,0.2)"
+                            }}
+                            title="Exportar JSON"
+                        >
+                            <FileJson className="w-4 h-4" />
+                            JSON
+                        </button>
+                        <button 
+                            onClick={onExportCsv} 
+                            className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium transition-colors"
+                            style={{
+                                background: isDark ? "rgba(34,197,94,0.15)" : "rgba(34,197,94,0.1)",
+                                color: "#22c55e",
+                                border: isDark ? "1px solid rgba(34,197,94,0.3)" : "1px solid rgba(34,197,94,0.2)"
+                            }}
+                            title="Exportar CSV"
+                        >
+                            <FileSpreadsheet className="w-4 h-4" />
+                            CSV
+                        </button>
                         <button onClick={onClose} className="px-4 py-2 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
                             Cerrar
                         </button>
@@ -173,12 +199,70 @@ const ReceiptDetailModal = ({ receipt, onClose, isDark }) => {
     )
 }
 
-// Placeholder for export function - to be implemented in Phase 4
-const handleExport = (receiptId) => {
-    console.log('Export receipt:', receiptId)
-    // TODO: Implement export functionality in Phase 4
-    alert('Exportación se implementará en Fase 4')
-}
+const handleExport = useCallback(async (receiptId, format = 'json') => {
+        try {
+            // Use the existing thunk with EXPORT type
+            const result = await dispatch(HandlePayrollReceipts({ 
+                type: "EXPORT", 
+                id: receiptId, 
+                format 
+            })).unwrap()
+            
+            if (result.success && result.data) {
+                // Create blob and download
+                const dataStr = format === 'csv' 
+                    ? convertToCSV(result.data)
+                    : JSON.stringify(result.data, null, 2)
+                const mimeType = format === 'csv' ? 'text/csv' : 'application/json'
+                const extension = format === 'csv' ? 'csv' : 'json'
+                
+                const blob = new Blob([dataStr], { type: mimeType })
+                const url = window.URL.createObjectURL(blob)
+                const link = document.createElement('a')
+                link.href = url
+                link.download = `recibo-${receiptId}.${extension}`
+                document.body.appendChild(link)
+                link.click()
+                document.body.removeChild(link)
+                window.URL.revokeObjectURL(url)
+            } else {
+                throw new Error(result.message || 'Error en la exportación')
+            }
+        } catch (error) {
+            console.error('Export error:', error)
+            alert(`Error al exportar: ${error.message || 'Error desconocido'}`)
+        }
+    }, [dispatch])
+
+    // Helper to convert receipt data to CSV
+    const convertToCSV = (data) => {
+        const lines = []
+        // Header info
+        lines.push(['Campo', 'Valor'])
+        lines.push(['Período', data.period?.name || 'N/A'])
+        lines.push(['Empleado', `${data.employee?.firstname || ''} ${data.employee?.lastname || ''}`.trim()])
+        lines.push(['Departamento', data.employee?.department?.name || '—'])
+        lines.push(['Estado', data.status])
+        lines.push(['Tipo Recibo', data.tipo_recibo || 'NORMAL'])
+        lines.push(['Fecha Pago', data.payment_date ? formatDate(data.payment_date) : 'Pendiente'])
+        lines.push(['Total Ingresos (VES)', data.total_income_ves || 0])
+        lines.push(['Total Deducciones (VES)', data.total_deductions_ves || 0])
+        lines.push(['Neto a Pagar (VES)', data.net_pay_ves || 0])
+        lines.push([])
+        lines.push(['Conceptos'])
+        lines.push(['Concepto', 'Tipo', 'Cantidad', 'Monto (VES)'])
+        
+        data.lines?.forEach(line => {
+            lines.push([
+                line.concept_name,
+                line.kind === 'INCOME' ? 'Ingreso' : 'Deducción',
+                line.quantity,
+                line.amount_ves || 0
+            ])
+        })
+        
+        return lines.map(row => row.map(cell => `"${String(cell).replace(/"/g, '""')}"`).join(',')).join('\n')
+    }
 
 export const PayrollReceiptsTab = () => {
     const isDark = useIsDark()
@@ -521,13 +605,13 @@ export const PayrollReceiptsTab = () => {
                                         {/* Exportar */}
                                         {can("payroll", "read") && (
                                             <button
-                                                onClick={(e) => { e.stopPropagation(); handleExport(receipt._id); }}
+                                                onClick={(e) => { e.stopPropagation(); handleExport(receipt._id, 'json'); }}
                                                 className="p-2 rounded-xl transition-all duration-200 hover:-translate-y-0.5"
                                                 style={{
                                                     background: isDark ? "rgba(34,197,94,0.1)" : "#dcfce7",
                                                     color: isDark ? "#86efac" : "#22c55e"
                                                 }}
-                                                title="Exportar (JSON/CSV)"
+                                                title="Exportar JSON"
                                             >
                                                 <Download className="w-4 h-4" />
                                             </button>
@@ -615,6 +699,8 @@ export const PayrollReceiptsTab = () => {
                     receipt={selectedReceipt}
                     onClose={() => { setShowDetailModal(false); setSelectedReceipt(null); }}
                     isDark={isDark}
+                    onExportJson={() => handleExport(selectedReceipt._id, 'json')}
+                    onExportCsv={() => handleExport(selectedReceipt._id, 'csv')}
                 />
             )}
 
