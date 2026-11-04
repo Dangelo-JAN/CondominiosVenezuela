@@ -162,7 +162,7 @@ export const PayrollConceptsTab = () => {
                     </div>
                 </div>
 
-                {isReady && can("payroll", "create") && (
+                {can("payroll", "create") && (
                     <button
                         onClick={() => { setEditConcept(null); setShowFormModal(true); }}
                         className="px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 text-white flex items-center gap-2"
@@ -368,7 +368,7 @@ export const PayrollConceptsTab = () => {
                                         )}
 
                                         {/* Eliminar */}
-                                        {isReady && can("payroll", "delete") && !concept.is_system && (
+                                        {can("payroll", "delete") && !concept.is_system && (
                                             <button
                                                 onClick={() => setDeleteConfirm(concept._id)}
                                                 className="p-2 rounded-xl transition-all duration-200 hover:-translate-y-0.5"

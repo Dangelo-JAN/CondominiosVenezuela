@@ -24,6 +24,11 @@
 - [x] **Fase 4:** Builds verificados ✅ | Commit `e5a48d7` ✅ | Push ✅ 
 - [x] **Fix crítico 1:** Reordenadas rutas en `Payroll.route.js` - específicas antes que `:id` (fix "Cast to ObjectId failed")
 - [x] **Fix crítico 2:** Reescrito `ConceptFormModal.jsx` - early return temprano, estructura tipo `PayrollPeriodFormModal`, animaciones (fix modal no aparece)
+- [x] **Fix crítico 3 (auth):** Permissions no retornadas en HRLogin/HandleAcceptInvitation + fallback cliente a DEFAULT_PERMISSIONS[role]
+  - `HRAuth.controller.js`: HandleHRLogin agrega `permissions: HR.permissions.toObject()`
+  - `HRProfiles.controller.js`: HandleAcceptInvitation agrega `permissions: hr.permissions.toObject()`
+  - `useHRAuth.js`: fallback a `DEFAULT_PERMISSIONS[role]` si permissions undefined
+  - Fix: botones Payroll (create/read) ahora visibles para HR-Manager
 - [ ] **Fase 5:** Commit fixes + Push + PR + Post-flight
 
 ---
