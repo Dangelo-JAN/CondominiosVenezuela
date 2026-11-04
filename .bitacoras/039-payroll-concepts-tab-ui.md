@@ -20,8 +20,11 @@
 ## 📝 CAMBIOS TÉCNICOS CLAVE
 - [x] **Fase 1:** Estructura base + ThemedList + Filtros (Kind, Active, Search) + Paginación ✅ **STOP APROBADO**
 - [x] **Fase 2:** Modal Crear/Editar Concepto (ConceptFormModal) con todos los campos del modelo ✅ **STOP APROBADO**
-- [ ] **Fase 3:** Validación de fórmula en tiempo real + Carga de Receipt Types + Acciones CRUD completas
-- [ ] **Fase 4:** Builds verificados (client build 0 errores, server tests pass) + Commit + Push
+- [x] **Fase 3:** Validación de fórmula en tiempo real + Carga de Receipt Types + Acciones CRUD completas (incluido en Fase 2) ✅
+- [x] **Fase 4:** Builds verificados ✅ | Commit `e5a48d7` ✅ | Push ✅ 
+- [x] **Fix crítico 1:** Reordenadas rutas en `Payroll.route.js` - específicas antes que `:id` (fix "Cast to ObjectId failed")
+- [x] **Fix crítico 2:** Reescrito `ConceptFormModal.jsx` - early return temprano, estructura tipo `PayrollPeriodFormModal`, animaciones (fix modal no aparece)
+- [ ] **Fase 5:** Commit fixes + Push + PR + Post-flight
 
 ---
 

@@ -17,7 +17,7 @@ export const ConceptFormModal = ({
     const dispatch = useDispatch()
     const { data: concepts } = useSelector((state) => state.payrollReducer.concepts)
 
-    // Form state
+    // ===== FORM STATE =====
     const [formData, setFormData] = useState({
         code: "",
         name: "",
@@ -52,7 +52,7 @@ export const ConceptFormModal = ({
     const [validatingFormula, setValidatingFormula] = useState(false)
     const [touched, setTouched] = useState({})
 
-    // Options
+    // ===== OPTIONS (memoized) =====
     const kindOptions = useMemo(() => [
         { value: "INCOME", label: "Ingresos" },
         { value: "DEDUCTION", label: "Deducciones" },
@@ -110,7 +110,7 @@ export const ConceptFormModal = ({
         { value: "ISLR", label: "ISLR" },
     ], [])
 
-    // Initialize form with initialData
+    // ===== INITIALIZE FORM =====
     useEffect(() => {
         if (initialData) {
             setFormData({
@@ -120,10 +120,8 @@ export const ConceptFormModal = ({
                 rules: initialData.rules || {},
                 incidences: initialData.incidences || [],
             })
-            // Clear validation when editing existing
             setFormulaValidation(null)
         } else {
-            // Reset to defaults for new concept
             setFormData({
                 code: "",
                 name: "",
@@ -158,7 +156,7 @@ export const ConceptFormModal = ({
         }
     }, [initialData, open])
 
-    // Validate formula in real-time (debounced)
+    // ===== FORMULA VALIDATION =====
     const validateFormula = useCallback(async (formulaValue) => {
         if (!formulaValue || formulaValue.trim() === "") {
             setFormulaValidation({ valid: true, message: "" })
@@ -171,7 +169,6 @@ export const ConceptFormModal = ({
                 type: "VALIDATE_FORMULA", 
                 formula: formulaValue 
             })).unwrap()
-            
             setFormulaValidation(result.data)
         } catch (error) {
             setFormulaValidation({ valid: false, error: error?.message || "Error validando fórmula" })
@@ -180,26 +177,19 @@ export const ConceptFormModal = ({
         }
     }, [dispatch])
 
-    // Debounced formula validation
     useEffect(() => {
         if (formData.computation_method === "DYNAMIC_FORMULA") {
-            const timer = setTimeout(() => {
-                validateFormula(formData.formula)
-            }, 500)
+            const timer = setTimeout(() => validateFormula(formData.formula), 500)
             return () => clearTimeout(timer)
         } else {
             setFormulaValidation(null)
         }
     }, [formData.formula, formData.computation_method, validateFormula])
 
-    // Handle input changes
+    // ===== HANDLERS =====
     const handleChange = (field, value) => {
         setFormData(prev => ({ ...prev, [field]: value }))
-        // Clear error when user types
-        if (errors[field]) {
-            setErrors(prev => ({ ...prev, [field]: null }))
-        }
-        // Mark as touched
+        if (errors[field]) setErrors(prev => ({ ...prev, [field]: null }))
         setTouched(prev => ({ ...prev, [field]: true }))
     }
 
@@ -208,28 +198,17 @@ export const ConceptFormModal = ({
         validateField(field, formData[field])
     }
 
-    // Field validation
     const validateField = (field, value) => {
         const newErrors = { ...errors }
-        
         switch (field) {
             case "code":
-                if (!value || value.trim() === "") {
-                    newErrors.code = "Código es requerido"
-                } else if (!/^[A-Z0-9_]+$/.test(value)) {
-                    newErrors.code = "Solo mayúsculas, números y guión bajo"
-                } else if (!initialData) {
-                    // Check uniqueness only for new concepts
-                    const exists = concepts?.some(c => c.code === value.toUpperCase())
-                    if (exists) newErrors.code = "Ya existe un concepto con este código"
-                }
+                if (!value?.trim()) newErrors.code = "Código es requerido"
+                else if (!/^[A-Z0-9_]+$/.test(value)) newErrors.code = "Solo mayúsculas, números y guión bajo"
+                else if (!initialData && concepts?.some(c => c.code === value.toUpperCase())) newErrors.code = "Ya existe un concepto con este código"
                 break
             case "name":
-                if (!value || value.trim() === "") {
-                    newErrors.name = "Nombre es requerido"
-                } else if (value.length < 3) {
-                    newErrors.name = "Mínimo 3 caracteres"
-                }
+                if (!value?.trim()) newErrors.name = "Nombre es requerido"
+                else if (value.length < 3) newErrors.name = "Mínimo 3 caracteres"
                 break
             case "kind":
                 if (!value) newErrors.kind = "Tipo es requerido"
@@ -238,105 +217,53 @@ export const ConceptFormModal = ({
                 if (!value) newErrors.computation_method = "Método es requerido"
                 break
             case "value":
-                if (formData.computation_method === "FIXED_AMOUNT" || formData.computation_method === "PERCENTAGE_OF_BASIC") {
+                if (["FIXED_AMOUNT", "PERCENTAGE_OF_BASIC"].includes(formData.computation_method)) {
                     if (value === "" || value === null) newErrors.value = "Valor es requerido"
                     else if (isNaN(value)) newErrors.value = "Debe ser un número"
-                    else if (formData.computation_method === "PERCENTAGE_OF_BASIC" && (value < 0 || value > 100)) {
-                        newErrors.value = "Porcentaje debe ser entre 0 y 100"
-                    }
+                    else if (formData.computation_method === "PERCENTAGE_OF_BASIC" && (value < 0 || value > 100)) newErrors.value = "Porcentaje debe ser entre 0 y 100"
                 }
                 break
             case "formula":
-                if (formData.computation_method === "DYNAMIC_FORMULA" && (!value || value.trim() === "")) {
-                    newErrors.formula = "Fórmula es requerida para método DYNAMIC_FORMULA"
-                }
+                if (formData.computation_method === "DYNAMIC_FORMULA" && !value?.trim()) newErrors.formula = "Fórmula es requerida"
                 break
             case "receipt_order":
                 if (value === "" || value === null) newErrors.receipt_order = "Orden es requerido"
                 else if (isNaN(value) || value < 0) newErrors.receipt_order = "Debe ser número >= 0"
                 break
         }
-        
         setErrors(newErrors)
         return !newErrors[field]
     }
 
-    // Validate entire form
     const validateForm = () => {
         const newErrors = {}
         let isValid = true
 
-        // Required fields
-        if (!formData.code || formData.code.trim() === "") {
-            newErrors.code = "Código es requerido"
-            isValid = false
-        } else if (!/^[A-Z0-9_]+$/.test(formData.code)) {
-            newErrors.code = "Solo mayúsculas, números y guión bajo"
-            isValid = false
-        } else if (!initialData) {
-            const exists = concepts?.some(c => c.code === formData.code.toUpperCase())
-            if (exists) {
-                newErrors.code = "Ya existe un concepto con este código"
-                isValid = false
-            }
+        if (!formData.code?.trim()) { newErrors.code = "Código es requerido"; isValid = false }
+        else if (!/^[A-Z0-9_]+$/.test(formData.code)) { newErrors.code = "Solo mayúsculas, números y guión bajo"; isValid = false }
+        else if (!initialData && concepts?.some(c => c.code === formData.code.toUpperCase())) { newErrors.code = "Ya existe un concepto con este código"; isValid = false }
+
+        if (!formData.name?.trim()) { newErrors.name = "Nombre es requerido"; isValid = false }
+        else if (formData.name.length < 3) { newErrors.name = "Mínimo 3 caracteres"; isValid = false }
+
+        if (!formData.kind) { newErrors.kind = "Tipo es requerido"; isValid = false }
+        if (!formData.computation_method) { newErrors.computation_method = "Método es requerido"; isValid = false }
+
+        if (["FIXED_AMOUNT", "PERCENTAGE_OF_BASIC"].includes(formData.computation_method)) {
+            if (formData.value === "" || formData.value === null) { newErrors.value = "Valor es requerido"; isValid = false }
+            else if (isNaN(formData.value)) { newErrors.value = "Debe ser un número"; isValid = false }
+            else if (formData.computation_method === "PERCENTAGE_OF_BASIC" && (formData.value < 0 || formData.value > 100)) { newErrors.value = "Porcentaje debe ser entre 0 y 100"; isValid = false }
         }
 
-        if (!formData.name || formData.name.trim() === "") {
-            newErrors.name = "Nombre es requerido"
-            isValid = false
-        } else if (formData.name.length < 3) {
-            newErrors.name = "Mínimo 3 caracteres"
-            isValid = false
-        }
-
-        if (!formData.kind) {
-            newErrors.kind = "Tipo es requerido"
-            isValid = false
-        }
-
-        if (!formData.computation_method) {
-            newErrors.computation_method = "Método es requerido"
-            isValid = false
-        }
-
-        // Value validation based on computation method
-        if (formData.computation_method === "FIXED_AMOUNT" || formData.computation_method === "PERCENTAGE_OF_BASIC") {
-            if (formData.value === "" || formData.value === null) {
-                newErrors.value = "Valor es requerido"
-                isValid = false
-            } else if (isNaN(formData.value)) {
-                newErrors.value = "Debe ser un número"
-                isValid = false
-            } else if (formData.computation_method === "PERCENTAGE_OF_BASIC" && (formData.value < 0 || formData.value > 100)) {
-                newErrors.value = "Porcentaje debe ser entre 0 y 100"
-                isValid = false
-            }
-        }
-
-        // Formula validation
         if (formData.computation_method === "DYNAMIC_FORMULA") {
-            if (!formData.formula || formData.formula.trim() === "") {
-                newErrors.formula = "Fórmula es requerida"
-                isValid = false
-            } else if (formulaValidation && !formulaValidation.valid) {
-                newErrors.formula = formulaValidation.error || "Fórmula inválida"
-                isValid = false
-            }
+            if (!formData.formula?.trim()) { newErrors.formula = "Fórmula es requerida"; isValid = false }
+            else if (formulaValidation && !formulaValidation.valid) { newErrors.formula = formulaValidation.error || "Fórmula inválida"; isValid = false }
         }
 
-        if (formData.receipt_order === "" || formData.receipt_order === null) {
-            newErrors.receipt_order = "Orden es requerido"
-            isValid = false
-        } else if (isNaN(formData.receipt_order) || formData.receipt_order < 0) {
-            newErrors.receipt_order = "Debe ser número >= 0"
-            isValid = false
-        }
+        if (formData.receipt_order === "" || formData.receipt_order === null) { newErrors.receipt_order = "Orden es requerido"; isValid = false }
+        else if (isNaN(formData.receipt_order) || formData.receipt_order < 0) { newErrors.receipt_order = "Debe ser número >= 0"; isValid = false }
 
-        // System concepts cannot be modified
-        if (initialData?.is_system) {
-            newErrors.general = "No se pueden modificar conceptos del sistema"
-            isValid = false
-        }
+        if (initialData?.is_system) { newErrors.general = "No se pueden modificar conceptos del sistema"; isValid = false }
 
         setErrors(newErrors)
         setTouched(Object.keys(formData).reduce((acc, key) => ({ ...acc, [key]: true }), {}))
@@ -346,8 +273,6 @@ export const ConceptFormModal = ({
     const handleSubmit = (e) => {
         e.preventDefault()
         if (!validateForm()) return
-        
-        // Prepare data for submission
         const submitData = {
             ...formData,
             code: formData.code.toUpperCase(),
@@ -357,14 +282,13 @@ export const ConceptFormModal = ({
             rules: formData.rules || {},
             incidences: formData.incidences || [],
         }
-        
         onSubmit(submitData)
     }
 
-    const isSystemConcept = initialData?.is_system === true
-    const isEditing = !!initialData
+    // ===== EARLY RETURN - CRITICAL: must be after hooks but before heavy computation =====
+    if (!open) return null
 
-    // Helper to get kind config for badge
+    // ===== RENDER HELPERS (inside render, after early return) =====
     const getKindConfig = (kind) => {
         const configs = {
             INCOME: { bg: 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400', icon: Calculator, label: 'Ingreso' },
@@ -377,12 +301,13 @@ export const ConceptFormModal = ({
 
     const kindConfig = getKindConfig(formData.kind)
     const KindIcon = kindConfig.icon
+    const isSystemConcept = initialData?.is_system === true
+    const isEditing = !!initialData
 
-    if (!open) return null
-
+    // ===== RENDER =====
     return (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4" onClick={onClose}>
-            <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-xl max-w-4xl w-full max-h-[95vh] overflow-auto" onClick={(e) => e.stopPropagation()}>
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4 animate-fade-in" onClick={onClose}>
+            <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-xl max-w-4xl w-full max-h-[95vh] overflow-auto animate-slide-up" onClick={(e) => e.stopPropagation()}>
                 {/* Header */}
                 <div className="flex items-center justify-between p-4 border-b transition-colors duration-300"
                     style={{ borderColor: isDark ? "rgba(0,61,165,0.15)" : "rgba(0,61,165,0.2)" }}>
@@ -401,12 +326,10 @@ export const ConceptFormModal = ({
                         </div>
                     </div>
                     <div className="flex items-center gap-2">
-                        {formData.kind && (
-                            <span className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-semibold ${kindConfig.bg}`}>
-                                <KindIcon className="w-3 h-3" />
-                                {kindConfig.label}
-                            </span>
-                        )}
+                        <span className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-semibold ${kindConfig.bg}`}>
+                            <KindIcon className="w-3 h-3" />
+                            {kindConfig.label}
+                        </span>
                         {isSystemConcept && (
                             <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-semibold
                                 bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-400">
@@ -414,10 +337,8 @@ export const ConceptFormModal = ({
                                 Sistema (Solo lectura)
                             </span>
                         )}
-                        <button onClick={onClose} className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
-                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                            </svg>
+                        <button onClick={onClose} className="p-2 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+                            <XCircle className="w-5 h-5" />
                         </button>
                     </div>
                 </div>
@@ -641,7 +562,7 @@ export const ConceptFormModal = ({
                                         </p>
                                     )}
                                     <p className="mt-1 text-xs" style={{ color: isDark ? "rgba(255,255,255,0.4)" : "#9ca3af" }}>
-                                        Variables disponibles: SALARIO_PERIOD, SUELDO_BASE_DIARIO, DIAS_EFECTIVOS, H_EXTRA_DIURNA, H_EXTRA_NOCTURNA, H_EXTRA_FERIADO, H_EXTRA_DESCANSO, IVSS_BASE, FAOV_BASE, minimum_wage_ves, ivss_employee_rate, faov_employee_rate, inces_employee_rate, islr_retention
+                                        Variables: SALARIO_PERIOD, SUELDO_BASE_DIARIO, DIAS_EFECTIVOS, H_EXTRA_DIURNA, H_EXTRA_NOCTURNA, H_EXTRA_FERIADO, H_EXTRA_DESCANSO, IVSS_BASE, FAOV_BASE, minimum_wage_ves, ivss_employee_rate, faov_employee_rate, inces_employee_rate, islr_retention
                                     </p>
                                 </div>
                             )}
@@ -746,7 +667,7 @@ export const ConceptFormModal = ({
                                     onValueChange={(val) => handleChange("tipo_recibo", val)}
                                     options={[
                                         { value: "", label: "Sin asignar (usa default)" },
-                                        ...receiptTypes.map(rt => ({ value: rt._id, label: `${rt.code} - ${rt.name}` }))
+                                        ...(receiptTypes || []).map(rt => ({ value: rt._id, label: `${rt.code} - ${rt.name}` }))
                                     ]}
                                     placeholder="Seleccionar tipo"
                                     accentColor="blue"
@@ -799,12 +720,8 @@ export const ConceptFormModal = ({
                             {incidencesOptions.map(opt => (
                                 <label key={opt.value} className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg border transition-colors cursor-pointer"
                                     style={{
-                                        borderColor: formData.incidences?.includes(opt.value) 
-                                            ? "#003DA5" 
-                                            : isDark ? "rgba(255,255,255,0.12)" : "#e5e7eb",
-                                        background: formData.incidences?.includes(opt.value)
-                                            ? "rgba(0,61,165,0.1)"
-                                            : isDark ? "rgba(255,255,255,0.04)" : "#f9fafb",
+                                        borderColor: formData.incidences?.includes(opt.value) ? "#003DA5" : (isDark ? "rgba(255,255,255,0.12)" : "#e5e7eb"),
+                                        background: formData.incidences?.includes(opt.value) ? "rgba(0,61,165,0.1)" : (isDark ? "rgba(255,255,255,0.04)" : "#f9fafb"),
                                         color: formData.incidences?.includes(opt.value) ? "#003DA5" : "inherit"
                                     }}>
                                     <input
@@ -812,11 +729,8 @@ export const ConceptFormModal = ({
                                         checked={formData.incidences?.includes(opt.value)}
                                         onChange={(e) => {
                                             const newIncidences = formData.incidences || []
-                                            if (e.target.checked) {
-                                                handleChange("incidences", [...newIncidences, opt.value])
-                                            } else {
-                                                handleChange("incidences", newIncidences.filter(i => i !== opt.value))
-                                            }
+                                            if (e.target.checked) handleChange("incidences", [...newIncidences, opt.value])
+                                            else handleChange("incidences", newIncidences.filter(i => i !== opt.value))
                                         }}
                                         className="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
                                     />
@@ -837,113 +751,41 @@ export const ConceptFormModal = ({
                         </legend>
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                             <div className="flex items-center gap-2">
-                                <input
-                                    type="checkbox"
-                                    id="is_salary_incidence"
-                                    checked={formData.is_salary_incidence}
-                                    onChange={(e) => handleChange("is_salary_incidence", e.target.checked)}
-                                    className="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-                                />
-                                <label htmlFor="is_salary_incidence" className="text-sm text-gray-700 dark:text-gray-300">
-                                    Incide en salario (base prestaciones/vacaciones/utilidades)
-                                </label>
+                                <input type="checkbox" id="is_salary_incidence" checked={formData.is_salary_incidence} onChange={(e) => handleChange("is_salary_incidence", e.target.checked)} className="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500" />
+                                <label htmlFor="is_salary_incidence" className="text-sm text-gray-700 dark:text-gray-300">Incide en salario (base prestaciones/vacaciones/utilidades)</label>
                             </div>
                             <div className="flex items-center gap-2">
-                                <input
-                                    type="checkbox"
-                                    id="is_novelty_eligible"
-                                    checked={formData.is_novelty_eligible}
-                                    onChange={(e) => handleChange("is_novelty_eligible", e.target.checked)}
-                                    className="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-                                />
-                                <label htmlFor="is_novelty_eligible" className="text-sm text-gray-700 dark:text-gray-300">
-                                    Elegible para novedades
-                                </label>
+                                <input type="checkbox" id="is_novelty_eligible" checked={formData.is_novelty_eligible} onChange={(e) => handleChange("is_novelty_eligible", e.target.checked)} className="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500" />
+                                <label htmlFor="is_novelty_eligible" className="text-sm text-gray-700 dark:text-gray-300">Elegible para novedades</label>
                             </div>
                             <div className="flex items-center gap-2">
-                                <input
-                                    type="checkbox"
-                                    id="deducts_from_base_salary"
-                                    checked={formData.deducts_from_base_salary}
-                                    onChange={(e) => handleChange("deducts_from_base_salary", e.target.checked)}
-                                    className="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-                                />
-                                <label htmlFor="deducts_from_base_salary" className="text-sm text-gray-700 dark:text-gray-300">
-                                    Descuenta del salario base
-                                </label>
+                                <input type="checkbox" id="deducts_from_base_salary" checked={formData.deducts_from_base_salary} onChange={(e) => handleChange("deducts_from_base_salary", e.target.checked)} className="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500" />
+                                <label htmlFor="deducts_from_base_salary" className="text-sm text-gray-700 dark:text-gray-300">Descuenta del salario base</label>
                             </div>
                             <div className="flex items-center gap-2">
-                                <input
-                                    type="checkbox"
-                                    id="adds_to_complement"
-                                    checked={formData.adds_to_complement}
-                                    onChange={(e) => handleChange("adds_to_complement", e.target.checked)}
-                                    className="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-                                />
-                                <label htmlFor="adds_to_complement" className="text-sm text-gray-700 dark:text-gray-300">
-                                    Suma al complemento salarial
-                                </label>
+                                <input type="checkbox" id="adds_to_complement" checked={formData.adds_to_complement} onChange={(e) => handleChange("adds_to_complement", e.target.checked)} className="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500" />
+                                <label htmlFor="adds_to_complement" className="text-sm text-gray-700 dark:text-gray-300">Suma al complemento salarial</label>
                             </div>
                             <div className="flex items-center gap-2">
-                                <input
-                                    type="checkbox"
-                                    id="replaces_base_salary"
-                                    checked={formData.replaces_base_salary}
-                                    onChange={(e) => handleChange("replaces_base_salary", e.target.checked)}
-                                    className="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-                                />
-                                <label htmlFor="replaces_base_salary" className="text-sm text-gray-700 dark:text-gray-300">
-                                    Reemplaza salario base
-                                </label>
+                                <input type="checkbox" id="replaces_base_salary" checked={formData.replaces_base_salary} onChange={(e) => handleChange("replaces_base_salary", e.target.checked)} className="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500" />
+                                <label htmlFor="replaces_base_salary" className="text-sm text-gray-700 dark:text-gray-300">Reemplaza salario base</label>
                             </div>
                             <div className="flex items-center gap-2">
-                                <input
-                                    type="checkbox"
-                                    id="show_on_payslip"
-                                    checked={formData.show_on_payslip}
-                                    onChange={(e) => handleChange("show_on_payslip", e.target.checked)}
-                                    className="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-                                />
-                                <label htmlFor="show_on_payslip" className="text-sm text-gray-700 dark:text-gray-300">
-                                    Mostrar en boleta
-                                </label>
+                                <input type="checkbox" id="show_on_payslip" checked={formData.show_on_payslip} onChange={(e) => handleChange("show_on_payslip", e.target.checked)} className="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500" />
+                                <label htmlFor="show_on_payslip" className="text-sm text-gray-700 dark:text-gray-300">Mostrar en boleta</label>
                             </div>
                             <div className="flex items-center gap-2">
-                                <input
-                                    type="checkbox"
-                                    id="appears_on_receipt"
-                                    checked={formData.appears_on_receipt}
-                                    onChange={(e) => handleChange("appears_on_receipt", e.target.checked)}
-                                    className="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-                                />
-                                <label htmlFor="appears_on_receipt" className="text-sm text-gray-700 dark:text-gray-300">
-                                    Aparece en recibo
-                                </label>
+                                <input type="checkbox" id="appears_on_receipt" checked={formData.appears_on_receipt} onChange={(e) => handleChange("appears_on_receipt", e.target.checked)} className="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500" />
+                                <label htmlFor="appears_on_receipt" className="text-sm text-gray-700 dark:text-gray-300">Aparece en recibo</label>
                             </div>
                             <div className="flex items-center gap-2">
-                                <input
-                                    type="checkbox"
-                                    id="show_even_if_zero"
-                                    checked={formData.show_even_if_zero}
-                                    onChange={(e) => handleChange("show_even_if_zero", e.target.checked)}
-                                    className="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-                                />
-                                <label htmlFor="show_even_if_zero" className="text-sm text-gray-700 dark:text-gray-300">
-                                    Mostrar aunque sea cero
-                                </label>
+                                <input type="checkbox" id="show_even_if_zero" checked={formData.show_even_if_zero} onChange={(e) => handleChange("show_even_if_zero", e.target.checked)} className="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500" />
+                                <label htmlFor="show_even_if_zero" className="text-sm text-gray-700 dark:text-gray-300">Mostrar aunque sea cero</label>
                             </div>
                             {isEditing && !isSystemConcept && (
                                 <div className="flex items-center gap-2">
-                                    <input
-                                        type="checkbox"
-                                        id="is_system"
-                                        checked={formData.is_system}
-                                        onChange={(e) => handleChange("is_system", e.target.checked)}
-                                        className="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-                                    />
-                                    <label htmlFor="is_system" className="text-sm text-amber-600 dark:text-amber-400">
-                                        Concepto de sistema (⚠️ inmutable)
-                                    </label>
+                                    <input type="checkbox" id="is_system" checked={formData.is_system} onChange={(e) => handleChange("is_system", e.target.checked)} className="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500" />
+                                    <label htmlFor="is_system" className="text-sm text-amber-600 dark:text-amber-400">Concepto de sistema (⚠️ inmutable)</label>
                                 </div>
                             )}
                         </div>
@@ -962,20 +804,11 @@ export const ConceptFormModal = ({
                     {/* Footer Actions */}
                     <div className="flex justify-end gap-3 pt-4 border-t"
                         style={{ borderColor: isDark ? "rgba(0,61,165,0.15)" : "rgba(0,61,165,0.2)" }}>
-                        <button
-                            type="button"
-                            onClick={onClose}
-                            className="px-4 py-2 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
-                        >
+                        <button type="button" onClick={onClose} className="px-4 py-2 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
                             Cancelar
                         </button>
                         {!isSystemConcept && (
-                            <button
-                                type="submit"
-                                disabled={isSubmitting}
-                                className="px-4 py-2 rounded-lg text-white font-medium transition-colors flex items-center gap-2"
-                                style={{ background: "#003DA5" }}
-                            >
+                            <button type="submit" disabled={isSubmitting} className="px-4 py-2 rounded-lg text-white font-medium transition-colors flex items-center gap-2" style={{ background: "#003DA5" }}>
                                 {isSubmitting ? (
                                     <>
                                         <Loader2 className="w-4 h-4 animate-spin" />
