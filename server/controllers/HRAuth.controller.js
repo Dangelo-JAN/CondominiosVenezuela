@@ -140,7 +140,8 @@ export const HandleHRLogin = async (req, res) => {
             email: HR.email,
             role: HR.role,
             cargo: HR.cargo,
-            isverified: HR.isverified
+            isverified: HR.isverified,
+            permissions: HR.permissions ? HR.permissions.toObject() : {}
         })
     } catch (error) {
         return res.status(500).json({ success: false, message: "Internal Server Error", error: error, type: "HRLogin" })
