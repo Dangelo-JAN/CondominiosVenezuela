@@ -6,7 +6,8 @@ import { useHRAuth } from "../../../../../hooks/useHRAuth.js"
 import { CustomSelect } from "../../../../../components/ui/custom-select.jsx"
 import { ConfirmDialog } from "../../../../../components/common/ConfirmDialog.jsx"
 import { ThemedListWrapper, ThemedHeadingBar, ThemedListContainer } from "../../../../../components/common/Dashboard/ListDesigns"
-import { Search, Filter, ChevronDown, Settings, Edit, Trash2, Eye, AlertTriangle, CheckCircle, XCircle, Loader2, FileText, Calculator, Database, Zap } from "lucide-react"
+import { ConceptFormModal } from "../../../../../components/payroll/ConceptFormModal.jsx"
+import { Search, Filter, ChevronDown, Settings, Edit, Trash2, AlertTriangle, CheckCircle, XCircle, Loader2, FileText, Calculator, Database, Zap } from "lucide-react"
 
 export const PayrollConceptsTab = () => {
     const isDark = useIsDark()
@@ -22,6 +23,7 @@ export const PayrollConceptsTab = () => {
     const [showFormModal, setShowFormModal] = useState(false)
     const [editConcept, setEditConcept] = useState(null)
     const [deleteConfirm, setDeleteConfirm] = useState(null)
+    const [isSubmitting, setIsSubmitting] = useState(false)
 
     const kindOptions = useMemo(() => [
         { value: "all", label: "Todos los tipos" },
@@ -82,6 +84,24 @@ export const PayrollConceptsTab = () => {
         await dispatch(HandlePayrollConcepts({ type: "DELETE", id }))
         setDeleteConfirm(null)
     }, [dispatch])
+
+    const handleSubmit = useCallback(async (data) => {
+        setIsSubmitting(true)
+        try {
+            if (editConcept) {
+                await dispatch(HandlePayrollConcepts({ type: "UPDATE", id: editConcept._id, data })).unwrap()
+            } else {
+                await dispatch(HandlePayrollConcepts({ type: "CREATE", data })).unwrap()
+            }
+            setShowFormModal(false)
+            setEditConcept(null)
+        } catch (error) {
+            // Error handled by modal's internal validation
+            console.error("Error submitting concept:", error)
+        } finally {
+            setIsSubmitting(false)
+        }
+    }, [dispatch, editConcept])
 
     const formatKindBadge = (kind) => {
         const configs = {
@@ -408,54 +428,15 @@ export const PayrollConceptsTab = () => {
                 </div>
             )}
 
-            {/* Create/Edit Modal - Placeholder for Phase 2 */}
-            {showFormModal && (
-                <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4" onClick={() => { setShowFormModal(false); setEditConcept(null); }}>
-                    <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-xl max-w-2xl w-full max-h-[90vh] overflow-auto" onClick={(e) => e.stopPropagation()}>
-                        <div className="flex items-center justify-between p-4 border-b transition-colors duration-300"
-                            style={{ borderColor: isDark ? "rgba(0,61,165,0.15)" : "rgba(0,61,165,0.2)" }}>
-                            <div className="flex items-center gap-3">
-                                <div className="w-10 h-10 rounded-xl flex items-center justify-center"
-                                    style={{ background: isDark ? "rgba(0,61,165,0.15)" : "rgba(0,61,165,0.1)" }}>
-                                    <Settings className="w-5 h-5" style={{ color: "#003DA5" }} />
-                                </div>
-                                <div>
-                                    <h2 className="text-xl font-bold text-gray-900 dark:text-white">
-                                        {editConcept ? "Editar Concepto" : "Nuevo Concepto"}
-                                    </h2>
-                                    <p className="text-sm" style={{ color: isDark ? "rgba(255,255,255,0.5)" : "#6b7280" }}>
-                                        {editConcept ? "Modificar configuración del concepto" : "Crear nuevo concepto de nómina"}
-                                    </p>
-                                </div>
-                            </div>
-                            <button onClick={() => { setShowFormModal(false); setEditConcept(null); }} className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
-                                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                                </svg>
-                            </button>
-                        </div>
-                        <div className="p-6 text-center">
-                            <div className="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-4"
-                                style={{ background: isDark ? "rgba(0,61,165,0.1)" : "rgba(0,61,165,0.1)" }}>
-                                <Zap className="w-8 h-8" style={{ color: "#003DA5" }} />
-                            </div>
-                            <p className="text-gray-500 dark:text-gray-400">
-                                Formulario completo en <strong>Fase 2</strong>
-                            </p>
-                            <p className="text-sm text-gray-400 dark:text-gray-500 mt-1">
-                                Incluirá: todos los campos del modelo, validación fórmula, Receipt Types
-                            </p>
-                        </div>
-                        <div className="flex justify-end gap-2 p-4 border-t"
-                            style={{ borderColor: isDark ? "rgba(0,61,165,0.15)" : "rgba(0,61,165,0.2)" }}>
-                            <button onClick={() => { setShowFormModal(false); setEditConcept(null); }}
-                                className="px-4 py-2 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
-                                Cerrar
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            )}
+            {/* Create/Edit Modal - ConceptFormModal */}
+            <ConceptFormModal
+                open={showFormModal}
+                onClose={() => { setShowFormModal(false); setEditConcept(null); }}
+                initialData={editConcept}
+                receiptTypes={receiptTypes || []}
+                onSubmit={handleSubmit}
+                isSubmitting={isSubmitting}
+            />
 
             {/* Delete Confirmation */}
             <ConfirmDialog

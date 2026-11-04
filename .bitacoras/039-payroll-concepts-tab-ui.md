@@ -19,7 +19,7 @@
 
 ## 📝 CAMBIOS TÉCNICOS CLAVE
 - [x] **Fase 1:** Estructura base + ThemedList + Filtros (Kind, Active, Search) + Paginación ✅ **STOP APROBADO**
-- [ ] **Fase 2:** Modal Crear/Editar Concepto (ConceptFormModal) con todos los campos del modelo
+- [x] **Fase 2:** Modal Crear/Editar Concepto (ConceptFormModal) con todos los campos del modelo ✅ **STOP APROBADO**
 - [ ] **Fase 3:** Validación de fórmula en tiempo real + Carga de Receipt Types + Acciones CRUD completas
 - [ ] **Fase 4:** Builds verificados (client build 0 errores, server tests pass) + Commit + Push
 
