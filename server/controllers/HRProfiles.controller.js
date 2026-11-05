@@ -146,6 +146,7 @@ export const HandleAcceptInvitation = async (req, res) => {
         hr.isactive = true
         hr.invitationtoken = undefined
         hr.invitationtokenexpires = undefined
+        hr.permissions = DEFAULT_PERMISSIONS[hr.role]
         await hr.save()
 
         const jwtToken = GenerateJwtTokenAndSetCookiesHR(res, hr._id, hr.role, hr.organizationID)

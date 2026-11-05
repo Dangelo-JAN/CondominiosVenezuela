@@ -168,10 +168,10 @@ useEffect(() => {
 
 ## ✅ CHECKLIST DE VALIDACIÓN POST-FIX
 
-- [ ] Importar `HandleHRCheck` en HRSlice.js
-- [ ] Agregar `HRAsyncReducer(builder, HandleHRCheck)` en extraReducers
-- [ ] Build client: `npm run build` → 0 errores
-- [ ] Test server: `npm run test` → 127 passing
+- [x] Importar `HandleHRCheck` en HRSlice.js
+- [x] Agregar `HRAsyncReducer(builder, HandleHRCheck)` en extraReducers
+- [x] Build client: `npm run build` → 0 errores
+- [x] Test server: `npm run test` → 127 passing
 - [ ] Verificar en Redux DevTools (cloud): `HRReducer.data.permissions` poblado tras carga
 - [ ] Verificar `can("payroll", "create")` → `true` para HR-Manager
 - [ ] Botón "Nuevo Concepto" visible en cloud
@@ -196,7 +196,7 @@ useEffect(() => {
 
 ## 📁 ARCHIVOS MODIFICADOS EN ESTE ANÁLISIS
 
-- `client/src/redux/Slices/HRSlice.js` — **FIX REQUERIDO AQUÍ**
+- `client/src/redux/Slices/HRSlice.js` — **FIX REQUERIDO AQUÍ** ✅ APLICADO (commit e02a7eb)
 - `client/src/redux/Thunks/HRThunk.js` — Thunk creado correctamente
 - `client/src/App.jsx` — Dispatch correcto
 - `client/src/redux/AsyncReducers/asyncreducer.js` — Lógica de reducer correcta (pero no invocada)
@@ -206,6 +206,224 @@ useEffect(() => {
 
 ---
 
-*Análisis realizado por: Senior Frontend Dev + CTO Mode*
-*Fecha: 2026-11-05*
-*Tarea: #039-payroll-concepts-tab-ui*
+## 🚨 BUG PERSISTE — PLAN DE DEBUG SISTEMÁTICO POR FASES
+
+> **Estado:** Fix aplicado (conectar HandleHRCheck al reducer) pero botón sigue sin verse en cloud.
+> **Hipótesis:** El fix era necesario pero **no suficiente**. Hay al menos un bug silencioso adicional en la cadena.
+
+---
+
+### 📋 FASE 0: PRE-FLIGHT — Verificar que el fix está realmente deployado en cloud
+
+| Paso | Acción | Verificación | Esperado |
+|------|--------|--------------|----------|
+| 0.1 | Verificar commit en rama cloud | `git log --oneline -1` en servidor/preview | Commit `e02a7eb` presente |
+| 0.2 | Verificar build actual en Vercel/Render | Dashboard → Build logs | Build exitoso post-commit |
+| 0.3 | Hard refresh cloud (incógnito) | Ctrl+Shift+R / nueva ventana incógnito | Sin cache viejo |
+| 0.4 | Verificar `HRtoken` en localStorage cloud | DevTools → Application → LocalStorage | Token presente y válido (JWT) |
+
+**Criterio de salida:** Si algún paso falla → corregir deploy antes de continuar.
+
+---
+
+### 📋 FASE 1: NETWORK — Verificar que la llamada API `/check-login` sucede y responde bien
+
+| Paso | Acción | Verificación | Esperado |
+|------|--------|--------------|----------|
+| 1.1 | Abrir Network tab (DevTools cloud) | Filtrar "check-login" | Request GET `/api/auth/HR/check-login` visible |
+| 1.2 | Verificar headers de request | Authorization: `Bearer <token>` | Token enviado correctamente |
+| 1.3 | Verificar response status | 200 OK | No 401/403/500 |
+| 1.4 | Verificar response body | `{ success: true, type: "checkHR", role, permissions, ... }` | `role` y `permissions` presentes y no vacíos |
+| 1.5 | Verificar timing | Request sale al montar App (no delayed) | Inmediato tras carga |
+
+**Criterio de salida:** Si request no sale → bug en App.jsx useEffect. Si 401/403 → token inválido/expirado. Si response sin role/permissions → bug server.
+
+---
+
+### 📋 FASE 2: REDUX STORE — Verificar que el reducer procesa la action (SIN Redux DevTools)
+
+| Paso | Acción | Verificación | Esperado |
+|------|--------|--------------|----------|
+| 2.1 | **Console log en thunk** (ya agregado en Fase 1.3) | Verificar que `HandleHRCheck/fulfilled` retorna payload | Log: `[DEBUG] HandleHRCheck - RESPONSE { success: true, type: "checkHR", role, permissions, ... }` |
+| 2.2 | **Console log en reducer** (instrumentación temporal) | Agregar `console.log` en `HRAsyncReducer` dentro del bloque `if (action.payload.type == "checkHR")` | Log: `[DEBUG] HRAsyncReducer - checkHR payload { role, permissions, ... }` + state actualizado |
+| 2.3 | **Console log en slice listener** (opcional) | `store.subscribe(() => console.log('[DEBUG] Store updated:', store.getState().HumanResources))` en App.jsx | Log muestra `data` poblado tras fulfilled |
+| 2.4 | **Verificar flags en consola** | Log `isAuthenticated`, `isAuthourized` desde hook o componente | Ambos `true` tras fulfilled |
+| 2.5 | **Console.log directo en useHRAuth** (Fase 3.1) | Verificar que `role` y `permissions` llegan al hook | `role: "HR-Manager"`, `permissions: {...}` |
+
+**Criterio de salida:** Si log 2.1 sale pero 2.2 NO sale → reducer no matchea `type === "checkHR"`. Si 2.2 sale pero 2.5 ve null → race condition o selector incorrecto.
+
+---
+
+#### 🔧 Instrumentación exacta para copiar/pegar (Fase 2.2):
+
+**Archivo: `client/src/redux/AsyncReducers/asyncreducer.js` (línea ~51)**
+
+```javascript
+// BUSCAR ESTE BLOQUE:
+if ((action.payload.type == "checkHR") || (action.payload.type == "HRLogin") || (action.payload.type == "HRforgotpassword")) {
+
+// AGREGAR INMEDIATAMENTE DESPUÉS DE LA LÍNEA DE APERTURA:
+console.log("[DEBUG] HRAsyncReducer - MATCHED checkHR/HRLogin", {
+  type: action.payload.type,
+  role: action.payload.role,
+  permissionsKeys: action.payload.permissions ? Object.keys(action.payload.permissions) : "UNDEFINED",
+  prevStateDataKeys: state.data ? Object.keys(state.data) : "NULL"
+});
+
+// EL RESTO DEL BLOQUE SIGUE IGUAL:
+state.isSignUp = true
+state.isLoading = false;
+// ...
+```
+
+**Archivo: `client/src/App.jsx` (para Fase 2.3 - listener global)**
+
+```javascript
+// AGREGAR DENTRO DEL useEffect, DESPUÉS DEL DISPATCH:
+useEffect(() => {
+    const token = localStorage.getItem("HRtoken")
+    if (token) {
+        dispatch(HandleHRCheck())
+    }
+    
+    // 👇 LISTENER TEMPORAL PARA VER TODOS LOS CAMBIOS DE STORE
+    const unsubscribe = store.subscribe(() => {
+        const hrState = store.getState().HumanResources
+        if (hrState.data && (hrState.data.role || hrState.data.permissions)) {
+            console.log("[DEBUG] Store listener - HRReducer.data:", {
+                role: hrState.data.role,
+                permissionsKeys: hrState.data.permissions ? Object.keys(hrState.data.permissions) : "UNDEFINED",
+                isAuthenticated: hrState.isAuthenticated,
+                isAuthourized: hrState.isAuthourized
+            })
+        }
+    })
+    return () => unsubscribe()
+}, [dispatch])
+
+// IMPORTAR store al inicio del archivo:
+import { store } from "./redux/store.js"
+```
+
+---
+
+### 📋 FASE 3: HOOK useHRAuth — Verificar que el selector lee el estado correcto
+
+| Paso | Acción | Verificación | Esperado |
+|------|--------|--------------|----------|
+| 3.1 | Console log en useHRAuth (temporal) | Log `role`, `permissions`, `effectivePermissions` | `role: "HR-Manager"`, `permissions` objeto poblado |
+| 3.2 | Verificar `isReady` | `role !== null && role !== undefined` | `true` |
+| 3.3 | Verificar `can("payroll", "create")` | Llamar en consola | `true` |
+| 3.4 | Verificar `canCreate("payroll")` | Igual que anterior | `true` |
+
+**Criterio de salida:** Si `role` es null → selector incorrecto o state no actualizado. Si `effectivePermissions` vacío → fallback falla.
+
+---
+
+### 📋 FASE 4: COMPONENTE — Verificar render condicional
+
+| Paso | Acción | Verificación | Esperado |
+|------|--------|--------------|----------|
+| 4.1 | Console log en PayrollConceptsTab | Log `canCreate("payroll")` al render | `true` |
+| 4.2 | Inspeccionar DOM | Buscar botón "Nuevo Concepto" | Presente en árbol (aunque hidden por CSS) |
+| 4.3 | Verificar CSS | No `display: none`, `visibility: hidden`, `opacity: 0` | Visible |
+| 4.4 | Verificar `ProtectedHRRoute` | No está bloqueando el render | Children se renderizan |
+
+**Criterio de salida:** Si hook retorna true pero botón no está en DOM → bug en JSX condicional. Si en DOM pero invisible → CSS.
+
+---
+
+### 📋 FASE 5: SERVER SIDE — Verificar endpoint y middleware
+
+| Paso | Acción | Verificación | Esperado |
+|------|--------|--------------|----------|
+| 5.1 | Logs servidor (Render/Render logs) | `[LOG SERVER] VerifyhHRToken` | Token decodificado, HR encontrado |
+| 5.2 | Verificar `req.HRid` / `req.ORGID` | En middleware | Validos, coinciden con BD |
+| 5.3 | Verificar `HR.permissions` en BD | Query directa MongoDB | Existe, no vacío, estructura correcta |
+| 5.4 | Verificar `CARGO_TO_ROLE` mapping | HR.cargo → role | Coincide con esperado |
+
+**Criterio de salida:** Si middleware falla → token inválido. Si HR no tiene permissions → seed/data issue.
+
+---
+
+### 📋 FASE 6: EDGE CASES — Casos frontera que rompen la cadena
+
+| Caso | Síntoma | Verificación | Fix |
+|------|---------|--------------|-----|
+| Token expirado | 401 en check-login | JWT decode → `exp` < now | Re-login o refresh token |
+| Token válido pero HR borrado | 403 en middleware | Log "HR no encontrado o inactivo" | Recrear HR o limpiar localStorage |
+| HR sin permissions en BD | `permissions: {}` | Query BD | Seed DEFAULT_PERMISSIONS |
+| CORS bloquea request | Network error | Console: CORS error | Config CORS_ORIGIN_REGEX |
+| Race condition: useEffect antes de store | Dispatch en store no listo | Log orden mount | `store.subscribe` o `useSelector` gate |
+| Múltiples dispatch simultáneos | State race | Redux DevTools: actions orden | `takeLatest` o guard en thunk |
+
+---
+
+### 🛠️ HERRAMIENTAS DE DEBUG TEMPORAL (Agregar y remover)
+
+#### En `client/src/redux/Thunks/HRThunk.js`:
+```javascript
+export const HandleHRCheck = createAsyncThunk("HandleHRCheck", async (_, { rejectWithValue }) => {
+    console.log("[DEBUG] HandleHRCheck - START")
+    try {
+        const response = await hrApiService.get(HREndPoints.CHECKLOGIN)
+        console.log("[DEBUG] HandleHRCheck - RESPONSE", response.data)
+        return { ...response.data, type: "checkHR" }
+    } catch (error) {
+        console.error("[DEBUG] HandleHRCheck - ERROR", error.response?.data)
+        return rejectWithValue(error.response?.data)
+    }
+})
+```
+
+#### En `client/src/redux/AsyncReducers/asyncreducer.js` (línea 51):
+```javascript
+if ((action.payload.type == "checkHR") || ...) {
+    console.log("[DEBUG] HRAsyncReducer - checkHR payload", action.payload)
+    state.data = { ... }
+}
+```
+
+#### En `client/src/hooks/useHRAuth.js` (línea 86):
+```javascript
+const effectivePermissions = useMemo(() => {
+    console.log("[DEBUG] useHRAuth - role:", role, "permissions:", permissions)
+    // ...
+}, [permissions, role])
+```
+
+#### En `client/src/components/payroll/PayrollConceptsTab.jsx`:
+```javascript
+const { canCreate } = useHRAuth()
+console.log("[DEBUG] PayrollConceptsTab - canCreate(payroll):", canCreate("payroll"))
+```
+
+---
+
+### 📊 MATRIZ DE DECISIÓN RÁPIDA
+
+| Síntoma observado | Fase a investigar | Acción inmediata |
+|-------------------|-------------------|------------------|
+| No hay request check-login en Network | Fase 1 | Verificar App.jsx useEffect, token en localStorage |
+| Request sale pero 401/403 | Fase 5 | Verificar token validez, middleware, HR en BD |
+| Request 200 pero sin role/permissions | Fase 5 | Verificar controller, modelo BD |
+| Action en Redux pero state no cambia | Fase 2 | Verificar reducer matchea `type === "checkHR"` |
+| State cambia pero hook ve null | Fase 3 | Verificar selector path `HRReducer.data` |
+| Hook ve true pero botón no renderiza | Fase 4 | Verificar JSX, CSS, ProtectedHRRoute |
+
+---
+
+### 🎯 PRÓXIMOS PASOS INMEDIATOS (Al recibir instrucción)
+
+1. **Deploy logs temporales** en cloud (Vercel/Render) con console.logs arriba
+2. **Abrir cloud en incógnito** con DevTools → Network + Console + Redux DevTools
+3. **Ejecutar matriz de decisión** según síntomas observados
+4. **Identificar fase exacta** donde se rompe
+5. **Aplicar fix quirúrgico** (no parches)
+6. **Revalidar** todo el flujo
+7. **Limpiar logs temporales** y commit final
+
+---
+
+*Plan generado: 2026-11-05 | Post-fix e02a7eb | Bug persiste en cloud*
+*Actualizado: 2026-11-05 - Fase 2 modificada para validación SIN Redux DevTools (console logs + store listener)*

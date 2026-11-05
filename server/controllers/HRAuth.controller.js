@@ -1,4 +1,4 @@
-import { HumanResources, CARGO_TO_ROLE } from "../models/HR.model.js"
+import { HumanResources, CARGO_TO_ROLE, DEFAULT_PERMISSIONS } from "../models/HR.model.js"
 import bcrypt from 'bcrypt'
 import crypto from 'crypto'
 import { GenerateJwtTokenAndSetCookiesHR } from "../utils/generatejwttokenandsetcookies.js"
@@ -69,7 +69,8 @@ export const HandleHRSignup = async (req, res) => {
                 firstname, lastname, email, password: hashedpassword, contactnumber,
                 role: newRole, cargo: newCargo, organizationID: organization._id,
                 verificationtoken: verificationcode,
-                verificationtokenexpires: Date.now() + 24 * 60 * 60 * 1000
+                verificationtokenexpires: Date.now() + 24 * 60 * 60 * 1000,
+                permissions: DEFAULT_PERMISSIONS[newRole]
             })
 
             organization.HRs.push(newHR._id)
