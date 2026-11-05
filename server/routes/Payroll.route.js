@@ -59,14 +59,16 @@ router.post('/receipts/:id/void', VerifyhHRToken, PermissionCheck('payroll', 'vo
 router.get('/receipts/:id/export', VerifyhHRToken, PermissionCheck('payroll', 'read'), PayrollReceiptController.exportReceipt)
 
 // ---- CONCEPTOS DE NÓMINA (/concepts) ----
+// Rutas específicas DEBEN ir ANTES que rutas con parámetros (:id)
 router.get('/concepts', VerifyhHRToken, PermissionCheck('payroll', 'read'), PayrollConceptController.getAll)
-router.get('/concepts/:id', VerifyhHRToken, PermissionCheck('payroll', 'read'), PayrollConceptController.getById)
 router.post('/concepts', VerifyhHRToken, PermissionCheck('payroll', 'create'), PayrollConceptController.create)
-router.put('/concepts/:id', VerifyhHRToken, PermissionCheck('payroll', 'update'), PayrollConceptController.update)
-router.delete('/concepts/:id', VerifyhHRToken, PermissionCheck('payroll', 'delete'), PayrollConceptController.delete)
-router.post('/concepts/validate-formula', VerifyhHRToken, PermissionCheck('payroll', 'calculate'), PayrollConceptController.validateFormula)
 router.get('/concepts/receipt-types', VerifyhHRToken, PermissionCheck('payroll', 'read'), PayrollConceptController.getReceiptTypes)
 router.post('/concepts/receipt-types', VerifyhHRToken, PermissionCheck('payroll', 'create'), PayrollConceptController.createReceiptType)
+router.post('/concepts/validate-formula', VerifyhHRToken, PermissionCheck('payroll', 'calculate'), PayrollConceptController.validateFormula)
+// Rutas con parámetros al final
+router.get('/concepts/:id', VerifyhHRToken, PermissionCheck('payroll', 'read'), PayrollConceptController.getById)
+router.put('/concepts/:id', VerifyhHRToken, PermissionCheck('payroll', 'update'), PayrollConceptController.update)
+router.delete('/concepts/:id', VerifyhHRToken, PermissionCheck('payroll', 'delete'), PayrollConceptController.delete)
 
 // ---- POLÍTICAS Y CONFIGURACIÓN (/policies) ----
 router.get('/policies', VerifyhHRToken, PermissionCheck('payroll', 'read'), PayrollPolicyController.getPolicy)
