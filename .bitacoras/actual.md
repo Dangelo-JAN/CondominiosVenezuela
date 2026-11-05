@@ -49,13 +49,27 @@
 
 ---
 
-## ⬜ FASE 4 - Pulido y Validaciones (PENDIENTE)
-- [ ] F4-01: Formato de números (VES/USD/%), step apropiado por campo
-- [ ] F4-02: Validación cruzada (ej. vacation_days_max ≥ vacation_days_base)
-- [ ] F4-03: Responsive: grid 2/3/4 cols según breakpoint
-- [ ] F4-04: Accesibilidad: labels, aria-describedby, focus visible
-- [ ] F4-05: Consistencia visual con PayrollConceptsTab.jsx (ThemedListWrapper, CustomSelect, etc.)
-- **STOP 4:** Verificar UX completa + build client ✅ + tests server ✅ → Esperar aprobación
+## ✅ FASE 2 COMPLETADA - Edición Inline (Integrada en Fase 1)
+- [x] Edición inline por sección (sin modal separado, siguiendo patrón PayrollConceptsTab)
+- [x] Inputs tipados: number (step/min/max), select (enum), boolean (checkbox), text
+- [x] Tooltips con contexto legislación venezolana en cada campo
+- [x] Validación HTML5 + manejo errores server
+- [x] Submit individual + batch "Guardar Todo"
+
+## ✅ FASE 3 COMPLETADA - Integración Submit (Integrada en Fase 1)
+- [x] Botones "Editar" → modo edición inline
+- [x] handleSubmit → dispatch POLICY_UPDATE / COMPANY_UPDATE según sección/modelo
+- [x] Manejo errores + loading state
+- [x] Redux state actualizado tras éxito
+
+## ✅ FASE 4 COMPLETADA - Pulido y Validaciones (STOP ✅)
+- [x] F4-01: Formato de números mejorado (VES/USD/%/factor/x) con tipos específicos
+- [x] F4-02: Validación cruzada (vacation_days_max ≥ vacation_days_base, etc.)
+- [x] F4-03: Responsive fine-tuning (grid 1/2/3 cols, sticky save bar)
+- [x] F4-04: Accesibilidad: aria-labels, aria-describedby, aria-invalid, focus visible, role=alert
+- [x] F4-05: Consistencia visual con PayrollConceptsTab.jsx (CustomSelect obligatorio, tokens design system)
+- **Gate Fase 4:** ✅ Client build 0 errores, Server tests 127 passing
+- **STOP 4:** Builds verificados
 
 ---
 

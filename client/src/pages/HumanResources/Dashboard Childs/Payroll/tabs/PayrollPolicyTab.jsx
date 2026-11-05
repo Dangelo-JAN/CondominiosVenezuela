@@ -1,9 +1,11 @@
-import { useEffect, useState, useMemo } from "react"
+import { useEffect, useState, useMemo, useCallback } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { HandlePayrollPolicy } from "../../../../../redux/Thunks/PayrollThunk.js"
 import { useIsDark } from "../../../../../hooks/useIsDark.js"
 import { useHRAuth } from "../../../../../hooks/useHRAuth.js"
-import { Loader2, Settings, AlertCircle, CheckCircle, Edit, ChevronRight, Save, X } from "lucide-react"
+import { CustomSelect } from "../../../../../components/ui/custom-select.jsx"
+import { ThemedListWrapper, ThemedHeadingBar, ThemedListContainer } from "../../../../../components/common/Dashboard/ListDesigns"
+import { Loader2, Settings, AlertCircle, Edit, Save, X, ChevronRight, AlertTriangle } from "lucide-react"
 
 const SECTIONS = [
     {
@@ -12,20 +14,20 @@ const SECTIONS = [
         icon: Settings,
         model: "policy",
         fields: [
-            { key: "minimum_wage_ves", label: "Salario Mínimo (VES)", type: "number", step: 0.01, min: 0, help: "Salario mínimo mensual vigente en VES" },
-            { key: "ivss_employee_rate", label: "IVSS Empleado (%)", type: "number", step: 0.01, min: 0, max: 100, help: "Aporte del empleado al IVSS (4% por defecto)" },
-            { key: "ivss_employer_rate", label: "IVSS Patronal (%)", type: "number", step: 0.01, min: 0, max: 100, help: "Aporte del empleador al IVSS (9% por defecto)" },
+            { key: "minimum_wage_ves", label: "Salario Mínimo (VES)", type: "currency", currency: "VES", step: 0.01, min: 0, help: "Salario mínimo mensual vigente en VES" },
+            { key: "ivss_employee_rate", label: "IVSS Empleado (%)", type: "percentage", step: 0.01, min: 0, max: 100, help: "Aporte del empleado al IVSS (4% por defecto)" },
+            { key: "ivss_employer_rate", label: "IVSS Patronal (%)", type: "percentage", step: 0.01, min: 0, max: 100, help: "Aporte del empleador al IVSS (9% por defecto)" },
             { key: "ivss_salary_cap_multiplier", label: "Tope IVSS (x salario mínimo)", type: "number", step: 1, min: 1, help: "Múltiplo del salario mínimo para tope de cotización IVSS (5x por defecto)" },
-            { key: "faov_employee_rate", label: "FAOV Empleado (%)", type: "number", step: 0.01, min: 0, max: 100, help: "Aporte del empleado al FAOV (1% por defecto)" },
-            { key: "faov_employer_rate", label: "FAOV Patronal (%)", type: "number", step: 0.01, min: 0, max: 100, help: "Aporte del empleador al FAOV (2% por defecto)" },
+            { key: "faov_employee_rate", label: "FAOV Empleado (%)", type: "percentage", step: 0.01, min: 0, max: 100, help: "Aporte del empleado al FAOV (1% por defecto)" },
+            { key: "faov_employer_rate", label: "FAOV Patronal (%)", type: "percentage", step: 0.01, min: 0, max: 100, help: "Aporte del empleador al FAOV (2% por defecto)" },
             { key: "faov_employer_base_formula", label: "Base FAOV Patronal", type: "select", options: ["SALARIO_MENSUAL", "SALARIO_DIARIO", "SALARIO_INTEGRAL"], help: "Fórmula base para cálculo aporte patronal FAOV" },
-            { key: "rpe_employee_rate", label: "RPE Empleado (%)", type: "number", step: 0.01, min: 0, max: 100, help: "Aporte del empleado al RPE (0.5% por defecto)" },
-            { key: "rpe_employer_rate", label: "RPE Patronal (%)", type: "number", step: 0.01, min: 0, max: 100, help: "Aporte del empleador al RPE (2% por defecto)" },
-            { key: "lppss_rate", label: "LPSSS (%)", type: "number", step: 0.01, min: 0, max: 100, help: "Ley Orgánica de Prevención, Condiciones y Medio Ambiente de Trabajo (9% por defecto)" },
-            { key: "imii_usd", label: "IMII (USD)", type: "number", step: 0.01, min: 0, help: "Ingreso Mínimo Indexado en USD (130 USD por defecto)" },
-            { key: "inces_employer_rate", label: "INCES Patronal (%)", type: "number", step: 0.01, min: 0, max: 100, help: "Aporte del empleador al INCES (2% por defecto)" },
-            { key: "cestaticket_amount_usd", label: "Cestaticket (USD)", type: "number", step: 0.01, min: 0, help: "Valor diario del cestaticket en USD (40 USD por defecto)" },
-            { key: "ut_value_ves", label: "UT (VES)", type: "number", step: 0.01, min: 0, help: "Valor de la Unidad Tributaria en VES (9 VES por defecto)" },
+            { key: "rpe_employee_rate", label: "RPE Empleado (%)", type: "percentage", step: 0.01, min: 0, max: 100, help: "Aporte del empleado al RPE (0.5% por defecto)" },
+            { key: "rpe_employer_rate", label: "RPE Patronal (%)", type: "percentage", step: 0.01, min: 0, max: 100, help: "Aporte del empleador al RPE (2% por defecto)" },
+            { key: "lppss_rate", label: "LPSSS (%)", type: "percentage", step: 0.01, min: 0, max: 100, help: "Ley Orgánica de Prevención, Condiciones y Medio Ambiente de Trabajo (9% por defecto)" },
+            { key: "imii_usd", label: "IMII (USD)", type: "currency", currency: "USD", step: 0.01, min: 0, help: "Ingreso Mínimo Indexado en USD (130 USD por defecto)" },
+            { key: "inces_employer_rate", label: "INCES Patronal (%)", type: "percentage", step: 0.01, min: 0, max: 100, help: "Aporte del empleador al INCES (2% por defecto)" },
+            { key: "cestaticket_amount_usd", label: "Cestaticket (USD)", type: "currency", currency: "USD", step: 0.01, min: 0, help: "Valor diario del cestaticket en USD (40 USD por defecto)" },
+            { key: "ut_value_ves", label: "UT (VES)", type: "currency", currency: "VES", step: 0.01, min: 0, help: "Valor de la Unidad Tributaria en VES (9 VES por defecto)" },
             { key: "exchange_rate_source", label: "Fuente Tasa Cambio", type: "select", options: ["BCV", "PARALELO", "MANUAL"], help: "Fuente oficial para tasa de cambio" },
         ]
     },
@@ -35,11 +37,11 @@ const SECTIONS = [
         icon: Settings,
         model: "policy",
         fields: [
-            { key: "holiday_payout_factor", label: "Factor Día Festivo", type: "number", step: 0.01, min: 1, help: "Multiplicador para pago de días festivos (1.5x por defecto)" },
-            { key: "rest_day_payout_factor", label: "Factor Día Descanso", type: "number", step: 0.01, min: 1, help: "Multiplicador para pago de días de descanso (1.5x por defecto)" },
-            { key: "overtime_day_factor", label: "Factor Horas Extra Diurnas", type: "number", step: 0.01, min: 1, help: "Multiplicador para horas extra diurnas (1.5x por defecto)" },
-            { key: "overtime_night_factor", label: "Factor Horas Extra Nocturnas", type: "number", step: 0.01, min: 1, help: "Multiplicador para horas extra nocturnas (1.5x por defecto)" },
-            { key: "night_bonus_rate", label: "Bono Nocturno (%)", type: "number", step: 0.01, min: 0, max: 100, help: "Porcentaje adicional por trabajo nocturno (30% por defecto)" },
+            { key: "holiday_payout_factor", label: "Factor Día Festivo", type: "factor", step: 0.01, min: 1, help: "Multiplicador para pago de días festivos (1.5x por defecto)" },
+            { key: "rest_day_payout_factor", label: "Factor Día Descanso", type: "factor", step: 0.01, min: 1, help: "Multiplicador para pago de días de descanso (1.5x por defecto)" },
+            { key: "overtime_day_factor", label: "Factor Horas Extra Diurnas", type: "factor", step: 0.01, min: 1, help: "Multiplicador para horas extra diurnas (1.5x por defecto)" },
+            { key: "overtime_night_factor", label: "Factor Horas Extra Nocturnas", type: "factor", step: 0.01, min: 1, help: "Multiplicador para horas extra nocturnas (1.5x por defecto)" },
+            { key: "night_bonus_rate", label: "Bono Nocturno (%)", type: "percentage", step: 0.01, min: 0, max: 100, help: "Porcentaje adicional por trabajo nocturno (30% por defecto)" },
         ]
     },
     {
@@ -48,13 +50,13 @@ const SECTIONS = [
         icon: Settings,
         model: "policy",
         fields: [
-            { key: "vacation_days_base", label: "Días Base Vacaciones", type: "number", step: 1, min: 0, help: "Días de vacaciones base al cumplir 1 año (15 por defecto)" },
-            { key: "vacation_days_per_year", label: "Días Adicionales por Año", type: "number", step: 1, min: 0, help: "Días extra por cada año adicional de servicio (1 por defecto)" },
-            { key: "vacation_days_max", label: "Máximo Días Vacaciones", type: "number", step: 1, min: 0, help: "Tope máximo de días de vacaciones (30 por defecto)" },
-            { key: "vacation_bonus_days_base", label: "Días Base Bono Vacacional", type: "number", step: 1, min: 0, help: "Días base para cálculo del bono vacacional (15 por defecto)" },
-            { key: "vacation_bonus_days_per_year", label: "Días Bono por Año", type: "number", step: 1, min: 0, help: "Días extra de bono por cada año adicional (1 por defecto)" },
-            { key: "vacation_bonus_days_max", label: "Máximo Días Bono Vacacional", type: "number", step: 1, min: 0, help: "Tope máximo de días de bono vacacional (30 por defecto)" },
-            { key: "min_service_months", label: "Antigüedad Mínima (meses)", type: "number", step: 1, min: 1, help: "Meses de servicio mínimos para derecho a vacaciones (12 por defecto)" },
+            { key: "vacation_days_base", label: "Días Base Vacaciones", type: "integer", step: 1, min: 0, help: "Días de vacaciones base al cumplir 1 año (15 por defecto)" },
+            { key: "vacation_days_per_year", label: "Días Adicionales por Año", type: "integer", step: 1, min: 0, help: "Días extra por cada año adicional de servicio (1 por defecto)" },
+            { key: "vacation_days_max", label: "Máximo Días Vacaciones", type: "integer", step: 1, min: 0, help: "Tope máximo de días de vacaciones (30 por defecto)" },
+            { key: "vacation_bonus_days_base", label: "Días Base Bono Vacacional", type: "integer", step: 1, min: 0, help: "Días base para cálculo del bono vacacional (15 por defecto)" },
+            { key: "vacation_bonus_days_per_year", label: "Días Bono por Año", type: "integer", step: 1, min: 0, help: "Días extra de bono por cada año adicional (1 por defecto)" },
+            { key: "vacation_bonus_days_max", label: "Máximo Días Bono Vacacional", type: "integer", step: 1, min: 0, help: "Tope máximo de días de bono vacacional (30 por defecto)" },
+            { key: "min_service_months", label: "Antigüedad Mínima (meses)", type: "integer", step: 1, min: 1, help: "Meses de servicio mínimos para derecho a vacaciones (12 por defecto)" },
             { key: "pay_rest_days", label: "Pagar Días Descanso en Vacaciones", type: "boolean", help: "Incluir pago de días de descanso durante vacaciones" },
             { key: "pay_holidays", label: "Pagar Festivos en Vacaciones", type: "boolean", help: "Incluir pago de días festivos durante vacaciones" },
             { key: "accrual_mode", label: "Modo Acumulación", type: "select", options: ["ANNUAL", "MONTHLY", "DAILY"], help: "Modo de acumulación de días de vacaciones" },
@@ -71,7 +73,7 @@ const SECTIONS = [
         model: "both",
         fields: [
             { key: "salary_split_mode", label: "Modo Split", type: "select", options: ["MIXTO", "BASE_COMPLEMENT", "TOTAL_BASE"], help: "Modo de división salarial: Mixto, Base+Complemento, Total Base" },
-            { key: "split_percentage_base", label: "% Base en Split Mixto", type: "number", step: 0.01, min: 0, max: 100, help: "Porcentaje asignado a salario base en modo mixto (60% por defecto)" },
+            { key: "split_percentage_base", label: "% Base en Split Mixto", type: "percentage", step: 0.01, min: 0, max: 100, help: "Porcentaje asignado a salario base en modo mixto (60% por defecto)" },
         ]
     },
     {
@@ -80,8 +82,8 @@ const SECTIONS = [
         icon: Settings,
         model: "both",
         fields: [
-            { key: "rest_weekdays", label: "Días de Descanso (0=Dom...6=Sáb)", type: "text", help: "Array JSON de días de descanso, ej: [5,6] para Sábado/Domingo" },
-            { key: "seniority_cap_years", label: "Tope Antigüedad (años)", type: "number", step: 1, min: 0, help: "Años máximos para cálculo de antigüedad/prestaciones (30 por defecto)" },
+            { key: "rest_weekdays", label: "Días de Descanso", type: "text", help: "Array JSON de días de descanso (0=Dom...6=Sáb), ej: [5,6] para Sábado/Domingo" },
+            { key: "seniority_cap_years", label: "Tope Antigüedad (años)", type: "integer", step: 1, min: 0, help: "Años máximos para cálculo de antigüedad/prestaciones (30 por defecto)" },
             { key: "include_cestaticket_in_benefits", label: "Incluir Cestaticket en Prestaciones", type: "boolean", help: "Considerar cestaticket para cálculo de prestaciones sociales" },
             { key: "include_commissions_in_benefits", label: "Incluir Comisiones en Prestaciones", type: "boolean", help: "Considerar comisiones para cálculo de prestaciones sociales" },
             { key: "include_bonuses_in_benefits", label: "Incluir Bonos en Prestaciones", type: "boolean", help: "Considerar bonos para cálculo de prestaciones sociales" },
@@ -94,15 +96,18 @@ const SECTIONS = [
 const formatValue = (value, field) => {
     if (value === null || value === undefined) return "—"
     if (field.type === "boolean") return value ? "Sí" : "No"
-    if (field.type === "number" && field.key?.includes("rate") || field.key?.includes("factor") || field.key?.includes("percentage") || field.key?.includes("bonus")) {
+    if (field.type === "percentage") {
         return `${value}%`
     }
-    if (field.type === "number" && (field.key?.includes("_usd") || field.key?.includes("_ves") || field.key?.includes("cestaticket") || field.key?.includes("imii") || field.key?.includes("minimum_wage") || field.key?.includes("ut_value"))) {
-        const currency = field.key?.includes("_usd") || field.key?.includes("cestaticket") || field.key?.includes("imii") ? "USD" : "VES"
-        return `${currency} ${value.toLocaleString('es-VE', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+    if (field.type === "currency") {
+        const currency = field.currency === "USD" ? "USD" : "VES"
+        return `${currency} ${Number(value).toLocaleString('es-VE', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
     }
-    if (field.type === "number") {
-        return value.toLocaleString('es-VE')
+    if (field.type === "factor") {
+        return `${value}x`
+    }
+    if (field.type === "integer" || field.type === "number") {
+        return Number(value).toLocaleString('es-VE')
     }
     if (field.key === "rest_weekdays" && Array.isArray(value)) {
         const days = ["Dom", "Lun", "Mar", "Mié", "Jue", "Vie", "Sáb"]
@@ -111,20 +116,47 @@ const formatValue = (value, field) => {
     return String(value)
 }
 
-const getFieldConfig = (field, isDark) => {
-    const baseInput = `w-full rounded-xl px-3 py-2.5 text-sm outline-none transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed
-        bg-gray-50 border border-gray-200 text-gray-900 placeholder-gray-400
-        focus:border-blue-400 focus:bg-white focus:ring-2 focus:ring-blue-100
-        dark:bg-[rgba(255,255,255,0.04)] dark:border-[rgba(255,255,255,0.08)] dark:text-white
-        dark:placeholder-[rgba(255,255,255,0.25)] dark:focus:border-[rgba(0,61,165,0.5)]`
+const validateField = (field, value, allValues) => {
+    if (value === "" || value === null || value === undefined) return null
+    
+    const numValue = typeof value === "number" ? value : parseFloat(value)
+    if (isNaN(numValue)) return null
 
-    if (field.type === "select") {
-        return { component: "select", className: baseInput }
+    if (field.min !== undefined && numValue < field.min) {
+        return `El valor mínimo es ${field.min}`
     }
-    if (field.type === "boolean") {
-        return { component: "checkbox", className: "w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500 focus:ring-2 dark:border-[rgba(255,255,255,0.2)] dark:bg-[rgba(255,255,255,0.04)]" }
+    if (field.max !== undefined && numValue > field.max) {
+        return `El valor máximo es ${field.max}`
     }
-    return { component: "input", className: baseInput, inputType: field.type === "number" ? "number" : "text" }
+
+    // Cross-field validations
+    if (field.key === "vacation_days_max" && allValues.vacation_days_base !== undefined) {
+        if (numValue < allValues.vacation_days_base) {
+            return "Máximo debe ser ≥ Días Base"
+        }
+    }
+    if (field.key === "vacation_bonus_days_max" && allValues.vacation_bonus_days_base !== undefined) {
+        if (numValue < allValues.vacation_bonus_days_base) {
+            return "Máximo debe ser ≥ Días Base Bono"
+        }
+    }
+    if (field.key === "vacation_days_per_year" && allValues.vacation_days_base !== undefined && allValues.vacation_days_max !== undefined) {
+        const projected = allValues.vacation_days_base + numValue * 15 // aprox 15 años
+        if (projected > allValues.vacation_days_max) {
+            return "Proyección excede el máximo"
+        }
+    }
+    if (field.key === "split_percentage_base" && allValues.salary_split_mode === "MIXTO") {
+        if (numValue < 1 || numValue > 99) {
+            return "En modo MIXTO debe ser 1-99%"
+        }
+    }
+    return null
+}
+
+const getSelectOptions = (field) => {
+    if (!field.options) return []
+    return field.options.map(opt => ({ value: opt, label: opt }))
 }
 
 export const PayrollPolicyTab = () => {
@@ -139,9 +171,9 @@ export const PayrollPolicyTab = () => {
     const policyError = useSelector((state) => state.payrollReducer.policy.error)
     const companyError = useSelector((state) => state.payrollReducer.companyConfig.error)
 
-    const [expandedSection, setExpandedSection] = useState(null)
     const [editSection, setEditSection] = useState(null)
     const [formData, setFormData] = useState({})
+    const [errors, setErrors] = useState({})
     const [isSubmitting, setIsSubmitting] = useState(false)
     const [submitError, setSubmitError] = useState(null)
     const [hasChanges, setHasChanges] = useState(false)
@@ -158,36 +190,60 @@ export const PayrollPolicyTab = () => {
         }
     }, [policy, companyConfig])
 
-    const getModelData = (model) => {
-        if (model === "policy") return policy
-        if (model === "company") return companyConfig
-        return { ...policy, ...companyConfig }
-    }
+    const validateAll = useCallback((values) => {
+        const newErrors = {}
+        let hasErrors = false
+        SECTIONS.forEach(section => {
+            section.fields.forEach(field => {
+                const error = validateField(field, values[field.key], values)
+                if (error) {
+                    newErrors[field.key] = error
+                    hasErrors = true
+                }
+            })
+        })
+        setErrors(newErrors)
+        return !hasErrors
+    }, [])
 
-    const getSectionData = (section) => {
-        const modelData = getModelData(section.model)
-        return section.fields.map(f => ({
-            ...f,
-            value: modelData?.[f.key]
-        }))
-    }
-
-    const handleInputChange = (sectionId, fieldKey, value) => {
+    const handleInputChange = useCallback((fieldKey, value) => {
         setFormData(prev => ({ ...prev, [fieldKey]: value }))
         setHasChanges(true)
-    }
+        // Clear error on change
+        if (errors[fieldKey]) {
+            setErrors(prev => ({ ...prev, [fieldKey]: null }))
+        }
+    }, [errors])
 
-    const handleSubmit = async (sectionId) => {
+    const handleBlur = useCallback((fieldKey) => {
+        const error = validateField(
+            SECTIONS.flatMap(s => s.fields).find(f => f.key === fieldKey),
+            formData[fieldKey],
+            formData
+        )
+        if (error) {
+            setErrors(prev => ({ ...prev, [fieldKey]: error }))
+        }
+    }, [formData])
+
+    const handleSubmit = useCallback(async (sectionId) => {
         const section = SECTIONS.find(s => s.id === sectionId)
         if (!section) return
+
+        // Validate section fields
+        const sectionFields = section.fields.map(f => f.key)
+        const sectionValues = {}
+        sectionFields.forEach(k => { sectionValues[k] = formData[k] })
+        if (!validateAll(sectionValues)) {
+            return
+        }
 
         setIsSubmitting(true)
         setSubmitError(null)
 
         try {
-            const sectionData = getSectionData(section)
             const payload = {}
-            sectionData.forEach(f => {
+            section.fields.forEach(f => {
                 if (formData[f.key] !== undefined) {
                     payload[f.key] = formData[f.key]
                 }
@@ -203,16 +259,45 @@ export const PayrollPolicyTab = () => {
         } finally {
             setIsSubmitting(false)
         }
-    }
+    }, [dispatch, formData, validateAll])
 
-    const handleCancel = () => {
+    const handleCancel = useCallback(() => {
         if (policy && companyConfig) {
             setFormData({ ...policy, ...companyConfig })
         }
         setEditSection(null)
         setHasChanges(false)
         setSubmitError(null)
-    }
+        setErrors({})
+    }, [policy, companyConfig])
+
+    const handleSaveAll = useCallback(async () => {
+        if (!validateAll(formData)) return
+
+        setIsSubmitting(true)
+        setSubmitError(null)
+
+        try {
+            for (const section of SECTIONS) {
+                const payload = {}
+                section.fields.forEach(f => {
+                    if (formData[f.key] !== undefined) {
+                        payload[f.key] = formData[f.key]
+                    }
+                })
+                if (Object.keys(payload).length > 0) {
+                    const endpointType = section.model === "company" ? "COMPANY_UPDATE" : "POLICY_UPDATE"
+                    await dispatch(HandlePayrollPolicy({ type: endpointType, data: payload })).unwrap()
+                }
+            }
+            setEditSection(null)
+            setHasChanges(false)
+        } catch (error) {
+            setSubmitError(error.message || "Error al guardar")
+        } finally {
+            setIsSubmitting(false)
+        }
+    }, [dispatch, formData, validateAll])
 
     if (policyError || companyError) {
         return (
@@ -226,6 +311,7 @@ export const PayrollPolicyTab = () => {
     }
 
     const isLoading = policyLoading || companyLoading
+    const allFields = useMemo(() => SECTIONS.flatMap(s => s.fields), [])
 
     return (
         <div className="w-full h-full flex flex-col gap-6 px-4 py-6">
@@ -240,17 +326,19 @@ export const PayrollPolicyTab = () => {
                     </h1>
                 </div>
 
-                {isReady && can("payroll", "update") && hasChanges && (
-                    <button
-                        onClick={() => setEditSection("all")}
-                        disabled={isSubmitting}
-                        className="px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 text-white flex items-center gap-2"
-                        style={{ background: "#003DA5" }}
-                    >
-                        <Save className="w-4 h-4" />
-                        Guardar Todo
-                    </button>
-                )}
+                <div className="flex items-center gap-3">
+                    {isReady && can("payroll", "update") && hasChanges && (
+                        <button
+                            onClick={() => setEditSection("all")}
+                            disabled={isSubmitting}
+                            className="px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 text-white flex items-center gap-2"
+                            style={{ background: "#003DA5" }}
+                        >
+                            <Save className="w-4 h-4" />
+                            Guardar Todo
+                        </button>
+                    )}
+                </div>
             </div>
 
             {/* Divider */}
@@ -284,28 +372,28 @@ export const PayrollPolicyTab = () => {
                 ) : (
                     <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4">
                         {SECTIONS.map((section) => {
-                            const sectionData = getSectionData(section)
                             const isEditing = editSection === section.id || editSection === "all"
                             const Icon = section.icon
+                            const sectionFields = section.fields
 
                             return (
                                 <div
                                     key={section.id}
-                                    className={`bg-white dark:bg-[#0f0f1a] rounded-2xl border transition-all duration-200
+                                    className={`bg-white dark:bg-[#0f0f1a] rounded-2xl border transition-all duration-200 flex flex-col
                                         ${isEditing ? "ring-2 ring-blue-500/50 shadow-lg" : "hover:shadow-md"}
                                     `}
                                     style={{ borderColor: isDark ? "rgba(0,61,165,0.15)" : "rgba(0,61,165,0.2)" }}
                                 >
                                     {/* Section Header */}
-                                    <div className="flex items-center justify-between p-4 border-b transition-colors duration-300"
+                                    <div className="flex items-center justify-between p-4 border-b transition-colors duration-300 flex-shrink-0"
                                         style={{ borderColor: isDark ? "rgba(0,61,165,0.1)" : "rgba(0,61,165,0.15)" }}>
                                         <div className="flex items-center gap-3">
-                                            <div className="w-10 h-10 rounded-xl flex items-center justify-center"
+                                            <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0"
                                                 style={{ background: isDark ? "rgba(0,61,165,0.15)" : "rgba(0,61,165,0.1)" }}>
                                                 <Icon className="w-5 h-5" style={{ color: "#003DA5" }} />
                                             </div>
-                                            <div>
-                                                <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+                                            <div className="min-w-0">
+                                                <h3 className="text-lg font-semibold text-gray-900 dark:text-white truncate">
                                                     {section.label}
                                                 </h3>
                                                 <p className="text-xs" style={{ color: isDark ? "rgba(255,255,255,0.5)" : "#6b7280" }}>
@@ -316,12 +404,13 @@ export const PayrollPolicyTab = () => {
                                         {isReady && can("payroll", "update") && !isEditing && (
                                             <button
                                                 onClick={() => setEditSection(section.id)}
-                                                className="p-2 rounded-xl transition-all duration-200 hover:-translate-y-0.5"
+                                                className="p-2 rounded-xl transition-all duration-200 hover:-translate-y-0.5 flex-shrink-0"
                                                 style={{
                                                     background: isDark ? "rgba(0,61,165,0.1)" : "rgba(0,61,165,0.1)",
                                                     color: "#003DA5"
                                                 }}
                                                 title="Editar sección"
+                                                aria-label={`Editar ${section.label}`}
                                             >
                                                 <Edit className="w-4 h-4" />
                                             </button>
@@ -329,78 +418,127 @@ export const PayrollPolicyTab = () => {
                                     </div>
 
                                     {/* Section Content */}
-                                    <div className="p-4">
+                                    <div className="p-4 flex-1 overflow-auto">
                                         {isEditing ? (
                                             <div className="space-y-4">
-                                                {sectionData.map((field) => {
-                                                    const config = getFieldConfig(field, isDark)
+                                                {sectionFields.map((field) => {
+                                                    const error = errors[field.key]
+                                                    const fieldId = `policy-${field.key}`
 
                                                     return (
                                                         <div key={field.key} className="flex flex-col gap-1.5">
-                                                            <label className="flex items-center gap-2 text-sm font-medium"
+                                                            <label htmlFor={fieldId} className="flex items-center gap-2 text-sm font-medium"
                                                                 style={{ color: isDark ? "rgba(255,255,255,0.8)" : "#374151" }}>
                                                                 <span>{field.label}</span>
                                                                 {field.help && (
-                                                                    <span className="text-[10px] px-1.5 py-0.5 rounded"
+                                                                    <span 
+                                                                        className="text-[10px] px-1.5 py-0.5 rounded cursor-help"
                                                                         style={{
                                                                             background: isDark ? "rgba(0,61,165,0.15)" : "rgba(0,61,165,0.1)",
                                                                             color: "#003DA5",
                                                                             border: isDark ? "1px solid rgba(0,61,165,0.3)" : "1px solid rgba(0,61,165,0.2)"
                                                                         }}
-                                                                        title={field.help}
+                                                                        aria-label={field.help}
                                                                     >
                                                                         ?
                                                                     </span>
                                                                 )}
                                                             </label>
 
-                                                            {config.component === "select" && (
-                                                                <select
+                                                            {field.type === "select" && (
+                                                                <CustomSelect
+                                                                    id={fieldId}
                                                                     value={formData[field.key] ?? ""}
-                                                                    onChange={(e) => handleInputChange(section.id, field.key, e.target.value)}
+                                                                    onValueChange={(val) => handleInputChange(field.key, val)}
+                                                                    options={getSelectOptions(field)}
+                                                                    placeholder="Seleccionar..."
+                                                                    accentColor="blue"
                                                                     disabled={isSubmitting}
-                                                                    className={config.className}
-                                                                >
-                                                                    <option value="">Seleccionar...</option>
-                                                                    {field.options?.map(opt => (
-                                                                        <option key={opt} value={opt}>{opt}</option>
-                                                                    ))}
-                                                                </select>
+                                                                    error={error}
+                                                                    aria-describedby={field.help ? `${fieldId}-help` : undefined}
+                                                                />
                                                             )}
 
-                                                            {config.component === "input" && (
+                                                            {(field.type === "number" || field.type === "integer" || field.type === "percentage" || field.type === "currency" || field.type === "factor") && (
                                                                 <input
-                                                                    type={config.inputType}
+                                                                    id={fieldId}
+                                                                    type="number"
                                                                     value={formData[field.key] ?? ""}
                                                                     onChange={(e) => {
                                                                         let val = e.target.value
-                                                                        if (field.type === "number") {
-                                                                            val = val === "" ? "" : parseFloat(val)
+                                                                        if (val === "") {
+                                                                            handleInputChange(field.key, "")
+                                                                        } else {
+                                                                            const parsed = parseFloat(val)
+                                                                            if (!isNaN(parsed)) {
+                                                                                handleInputChange(field.key, parsed)
+                                                                            }
                                                                         }
-                                                                        handleInputChange(section.id, field.key, val)
                                                                     }}
+                                                                    onBlur={() => handleBlur(field.key)}
                                                                     step={field.step}
                                                                     min={field.min}
                                                                     max={field.max}
                                                                     disabled={isSubmitting}
-                                                                    className={config.className}
-                                                                    placeholder={field.placeholder}
+                                                                    className={`w-full rounded-xl px-3 py-2.5 text-sm outline-none transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed
+                                                                        bg-gray-50 border border-gray-200 text-gray-900 placeholder-gray-400
+                                                                        focus:border-blue-400 focus:bg-white focus:ring-2 focus:ring-blue-100
+                                                                        dark:bg-[rgba(255,255,255,0.04)] dark:border-[rgba(255,255,255,0.08)] dark:text-white
+                                                                        dark:placeholder-[rgba(255,255,255,0.25)] dark:focus:border-[rgba(0,61,165,0.5)]
+                                                                        ${error ? "border-red-500 focus:border-red-500 focus:ring-red-100" : ""}`}
+                                                                    placeholder={field.type === "percentage" ? "0.00" : field.type === "currency" ? "0.00" : ""}
+                                                                    aria-invalid={error ? "true" : "false"}
+                                                                    aria-describedby={error ? `${fieldId}-error` : field.help ? `${fieldId}-help` : undefined}
                                                                 />
                                                             )}
 
-                                                            {config.component === "checkbox" && (
-                                                                <div className="flex items-center gap-2">
+                                                            {field.type === "text" && (
+                                                                <input
+                                                                    id={fieldId}
+                                                                    type="text"
+                                                                    value={formData[field.key] ?? ""}
+                                                                    onChange={(e) => handleInputChange(field.key, e.target.value)}
+                                                                    onBlur={() => handleBlur(field.key)}
+                                                                    disabled={isSubmitting}
+                                                                    className={`w-full rounded-xl px-3 py-2.5 text-sm outline-none transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed
+                                                                        bg-gray-50 border border-gray-200 text-gray-900 placeholder-gray-400
+                                                                        focus:border-blue-400 focus:bg-white focus:ring-2 focus:ring-blue-100
+                                                                        dark:bg-[rgba(255,255,255,0.04)] dark:border-[rgba(255,255,255,0.08)] dark:text-white
+                                                                        dark:placeholder-[rgba(255,255,255,0.25)] dark:focus:border-[rgba(0,61,165,0.5)]
+                                                                        ${error ? "border-red-500 focus:border-red-500 focus:ring-red-100" : ""}`}
+                                                                    placeholder="Ej: [5,6]"
+                                                                    aria-invalid={error ? "true" : "false"}
+                                                                    aria-describedby={error ? `${fieldId}-error` : field.help ? `${fieldId}-help` : undefined}
+                                                                />
+                                                            )}
+
+                                                            {field.type === "boolean" && (
+                                                                <div className="flex items-center gap-3">
                                                                     <input
+                                                                        id={fieldId}
                                                                         type="checkbox"
                                                                         checked={formData[field.key] ?? false}
-                                                                        onChange={(e) => handleInputChange(section.id, field.key, e.target.checked)}
+                                                                        onChange={(e) => handleInputChange(field.key, e.target.checked)}
                                                                         disabled={isSubmitting}
-                                                                        className={config.className}
+                                                                        className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500 focus:ring-2 dark:border-[rgba(255,255,255,0.2)] dark:bg-[rgba(255,255,255,0.04)]"
+                                                                        aria-describedby={field.help ? `${fieldId}-help` : undefined}
                                                                     />
-                                                                    <span className="text-sm" style={{ color: isDark ? "rgba(255,255,255,0.6)" : "#6b7280" }}>
+                                                                    <label htmlFor={fieldId} className="text-sm cursor-pointer" style={{ color: isDark ? "rgba(255,255,255,0.6)" : "#6b7280" }}>
                                                                         {field.help}
-                                                                    </span>
+                                                                    </label>
                                                                 </div>
+                                                            )}
+
+                                                            {error && (
+                                                                <p id={`${fieldId}-error`} className="text-sm text-red-500 flex items-center gap-1" role="alert">
+                                                                    <AlertCircle className="w-3.5 h-3.5 flex-shrink-0" />
+                                                                    {error}
+                                                                </p>
+                                                            )}
+                                                            {field.help && !error && (
+                                                                <p id={`${fieldId}-help`} className="text-[11px]" style={{ color: isDark ? "rgba(255,255,255,0.35)" : "#9ca3af" }}>
+                                                                    {field.help}
+                                                                </p>
                                                             )}
                                                         </div>
                                                     )
@@ -429,7 +567,7 @@ export const PayrollPolicyTab = () => {
                                                         </button>
                                                         <button
                                                             onClick={() => handleSubmit(section.id)}
-                                                            disabled={isSubmitting}
+                                                            disabled={isSubmitting || Object.values(errors).some(e => e && sectionFields.find(f => f.key === Object.keys(errors).find(k => errors[k] === e)))}
                                                             className="px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 text-white flex items-center gap-2"
                                                             style={{ background: "#003DA5" }}
                                                         >
@@ -441,7 +579,7 @@ export const PayrollPolicyTab = () => {
                                             </div>
                                         ) : (
                                             <div className="space-y-3">
-                                                {sectionData.map((field) => (
+                                                {sectionFields.map((field) => (
                                                     <div key={field.key} className="flex items-center justify-between py-2 border-b last:border-b-0"
                                                         style={{ borderColor: isDark ? "rgba(255,255,255,0.06)" : "rgba(0,0,0,0.06)" }}>
                                                         <div className="flex flex-col gap-0.5 min-w-0">
@@ -456,7 +594,7 @@ export const PayrollPolicyTab = () => {
                                                             )}
                                                         </div>
                                                         <span className="text-sm font-mono text-gray-500 dark:text-gray-400 whitespace-nowrap ml-4 shrink-0">
-                                                            {formatValue(formData[field.key] ?? field.value, field)}
+                                                            {formatValue(formData[field.key] ?? (policy?.[field.key] ?? companyConfig?.[field.key]), field)}
                                                         </span>
                                                     </div>
                                                 ))}
@@ -467,15 +605,15 @@ export const PayrollPolicyTab = () => {
                             )
                         })}
 
-                        {/* Submit buttons for "Guardar Todo" mode */}
+                        {/* Submit bar for "Guardar Todo" mode */}
                         {editSection === "all" && (
                             <div className="lg:col-span-2 xl:col-span-3">
-                                <div className="bg-white dark:bg-[#0f0f1a] rounded-2xl border p-4"
+                                <div className="bg-white dark:bg-[#0f0f1a] rounded-2xl border p-4 sticky bottom-4"
                                     style={{ borderColor: isDark ? "rgba(0,61,165,0.15)" : "rgba(0,61,165,0.2)" }}>
-                                    <div className="flex items-center justify-between">
+                                    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                                         <div className="flex items-center gap-3 text-sm" style={{ color: isDark ? "rgba(255,255,255,0.7)" : "#4b5563" }}>
-                                            <AlertCircle className="w-5 h-5 text-amber-500" />
-                                            <span>Editando todas las secciones. Los cambios se guardarán en lote.</span>
+                                            <AlertTriangle className="w-5 h-5 text-amber-500 flex-shrink-0" />
+                                            <span>Editando todas las secciones ({SECTIONS.reduce((acc, s) => acc + s.fields.length, 0)} campos). Los cambios se guardarán en lote.</span>
                                         </div>
                                         <div className="flex gap-2">
                                             <button
@@ -491,8 +629,8 @@ export const PayrollPolicyTab = () => {
                                                 Cancelar Todo
                                             </button>
                                             <button
-                                                onClick={() => SECTIONS.forEach(s => handleSubmit(s.id))}
-                                                disabled={isSubmitting}
+                                                onClick={handleSaveAll}
+                                                disabled={isSubmitting || Object.values(errors).some(Boolean)}
                                                 className="px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 text-white flex items-center gap-2"
                                                 style={{ background: "#003DA5" }}
                                             >
