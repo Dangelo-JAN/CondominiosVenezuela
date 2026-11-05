@@ -11,22 +11,16 @@
 ## 🚦 PUNTO DE CONTROL (Contexto de Reanudación)
 *Usa esto para "despertar" a la IA si el chat se cierra:*
 
-- **Lo último que funcionó:** 
+- **Lo último que funcionó (BUGS RESUELTOS):**
+  - ✅ **Bug 1 RESUELTO (cloud):** Botón "Nuevo Concepto" ya aparece — `HandleHRCheck` thunk creado + dispatch en `App.jsx` on mount → `HRReducer.data.permissions` poblado → `can("payroll", "create")` retorna `true` para HR-Manager
+  - ✅ **Bug 2 RESUELTO (local):** Crash modal fijado — `Select.Item value=""` colisionaba con Radix UI internal empty string → cambiado a `value="unassigned"`
   - PayrollConceptsTab UI completa (listado, filtros, paginación, ThemedList blue)
   - ConceptFormModal CRUD completo (todos los campos, validación fórmula, Receipt Types, incidencias, flags)
   - Fixes: rutas orden correcto, modal rendering, auth permissions en login/accept-invitation, fallback useHRAuth, isReady gate removido
   - Builds: Client 0 errores, Server 127 tests passing
-  - Commit actual: `1b4f1eb` en rama `feature/039-payroll-concepts-tab-ui`
+  - Commit actual: `089ba65` en rama `feature/039-payroll-concepts-tab-ui`
 
-- **Dónde se rompió/detuvo (BUGS ACTUALES):**
-  1. **Botón "Nuevo Concepto" NO aparece** (local + cloud): `can("payroll", "create")` retorna `false` para HR-Manager. Posible causa: `checkHR` no se dispara al cargar la app → Redux tiene `role` pero `permissions: undefined` → fallback `DEFAULT_PERMISSIONS[role]` no se evalúa correctamente.
-  2. **Pantalla en blanco + error al click "Nuevo Concepto" (solo local):** Error en ConceptFormModal al abrir. Pendiente ver consola para error exacto (posible: `receiptTypes` undefined en `.map()`, thunk failure, hidratación).
-
-- **Siguiente acción inmediata (mañana):**
-  1. Verificar en Redux DevTools: `HRReducer.data.permissions` existe?
-  2. Agregar `dispatch(HandleHRCheck())` en App init o ProtectedHRRoute para poblar permissions
-  3. Revisar consola error local al abrir modal
-  4. Verificar `receiptTypes` prop en ConceptFormModal (puede ser undefined)
+- **Estado actual:** Ambos bugs críticos resueltos. Listo para Fase 5 (PR + post-flight).
 
 ---
 
@@ -45,8 +39,8 @@
 - [x] **Fix crítico 4 (UI gate):** Removido `isReady &&` de botones create/delete en PayrollConceptsTab
   - Patrón alineado con employees page: `can()` directo (con fallback de role en useHRAuth)
   - Fix: botones visibles para HR-Manager sin esperar isReady
-- [ ] **Bug 1:** Botón "Nuevo Concepto" NO aparece (local + cloud) — `can("payroll", "create")` false para HR-Manager
-- [ ] **Bug 2:** Pantalla en blanco + error al click "Nuevo Concepto" (local) — error en ConceptFormModal
+- [x] **Bug 1 RESUELTO:** Botón "Nuevo Concepto" NO aparece (cloud) — `HandleHRCheck` thunk + dispatch App.jsx → permissions hidratadas
+- [x] **Bug 2 RESUELTO:** Pantalla en blanco + error al click "Nuevo Concepto" (local) — `Select.Item value=""` → `value="unassigned"`
 - [ ] **Fase 5:** Commit fixes + Push + PR + Post-flight
 
 ---
