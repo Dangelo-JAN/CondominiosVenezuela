@@ -6,11 +6,11 @@
 ---
 
 ## 🚩 ESTADO ACTUAL
-- **Tarea activa:** #039-payroll-concepts-tab-ui 🟡 EN CURSO (04/11/2026 - 2 bugs críticos pendientes)
-- **Última completada:** #038-payroll-receipts-tab-ui ✅ (03/11/2026)
-- **Branch actual:** feature/039-payroll-concepts-tab-ui (desde 037-payroll-venezuelan-module, PR hacia 037)
+- **Tarea activa:** #037-payroll-venezuelan-module 🟡 EN CURSO (reabierta 22/10/2026 — Fase 7: Producción/Gaps Críticos, PR hacia dev existente)
+- **Última completada:** #039-payroll-concepts-tab-ui ✅ (05/11/2026)
+- **Branch actual:** 037-payroll-venezuelan-module (PR hacia dev YA CREADO, se mantiene)
 - **Deploy pendiente:** Vercel + Render desde `main` (después de PR merge + Fase 7 completada)
-- **Archivo de referencia rápida:** `actual.md` + `039-payroll-concepts-tab-ui.md`
+- **Archivo de referencia rápida:** `actual.md`
 
 ---
 
@@ -53,7 +53,7 @@
 - [x] [[036-dynamic-seed]] - ✅ COMPLETADO el 21/09/2026 (commit `4e15744`, PR hacia dev)
 - [ ] [[037-payroll-venezuelan-module]] - 🟡 EN CURSO (reabierta 22/10/2026 — Fase 7: Producción/Gaps Críticos, PR hacia dev existente)
 - [x] [[038-payroll-receipts-tab-ui]] - ✅ COMPLETADO el 03/11/2026 (commit `879fef9`, PR hacia 037-payroll-venezuelan-module)
-- [ ] [[039-payroll-concepts-tab-ui]] - 🟡 EN CURSO (04/11/2026 - UI completa, 2 bugs críticos RESUELTOS: botón "Nuevo Concepto" fixed por HandleHRCheck, modal crash fixed value="unassigned"; commit `089ba65`, listo Fase 5)
+- [x] [[039-payroll-concepts-tab-ui]] - ✅ COMPLETADO el 05/11/2026 (UI completa + 3 bugs críticos resueltos: HandleHRCheck thunk, Select value fix, HR permissions stale data + auto-sync middleware; commits `089ba65` `e02a7eb` `c41b94e`, PR hacia 037-payroll-venezuelan-module)
 ---
 
 ## 🛠️ REGLAS DE ORO (DE CUMPLIMIENTO OBLIGATORIO)

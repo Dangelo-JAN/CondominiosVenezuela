@@ -15,6 +15,7 @@
 
 - **Lo último que funcionó:** Fases 1-5 parcialmente completadas - Tests ✅ 127 passing, Client build ✅ 0 errores. Completados: build blockers, RCE fixes, journal generator real, worker auto-start, seeds, batch processing, timezone CRON, queue error handling, documentación arquitectura completa, security scan, CORS config.
 - **Dónde se rompió/detuvo:** Fase 5 pendiente: Tests E2E, variables Firebase, deploy staging, load test, coverage ≥ 80%. PR hacia dev YA EXISTE (no se crea nuevo). **TRABAJO EN RAMA ACTUAL `037-payroll-venezuelan-module`.**
+- **Siguiente acción inmediata:** Continuar Fase 5 - Tests E2E, variables Firebase, deploy staging, load test, coverage ≥ 80%.
 
 ---
 
@@ -81,22 +82,31 @@
 
 ---
 
-## ✅ FASE 5 - Validación Final y Deploy (PARCIALMENTE COMPLETADA)
+## 🟡 FASE 5 - Validación Final y Deploy (EN CURSO)
 > **NOTA:** PR hacia `dev` YA EXISTE - NO SE CREA NUEVO PR. Se actualiza el PR existente con los commits de esta fase.
 
-- [x] F5-01: Tests de integración E2E - **DOCUMENTADO** en arquitectura (requiere DB real para ejecución)
-- [x] F5-02: Documentación arquitectura en `/docs/architecture/` - **COMPLETADA**
+- [ ] F5-01: Tests de integración E2E - DOCUMENTADO en arquitectura (requiere DB real para ejecución)
+- [ ] F5-02: Documentación arquitectura en `/docs/architecture/` - COMPLETADA
   - [x] `payroll-module.md` - Arquitectura general + diagramas Mermaid
   - [x] `payroll-data-flow.md` - Flujos de datos con sequence diagrams
   - [x] `payroll-api-contracts.md` - Contratos OpenAPI-style
   - [x] `payroll-deployment.md` - Guía deploy Vercel + Render + Atlas
-- [ ] F5-03: Variables Firebase producción en Vercel/Render - **PENDIENTE** (config manual en dashboards)
-- [x] F5-04: CORS custom domains + Vercel regex - **COMPLETADO** (ya implementado en F1-07/CORS_ORIGIN_REGEX)
-- [ ] F5-05: Test deploy staging completo (Vercel + Render) - **PENDIENTE** (requiere acceso dashboards)
-- [x] F5-06: Security scan: npm audit - **EJECUTADO** (54 vulns, 36 tras fix, mayormente firebase-admin transitive)
-- [ ] F5-07: Load test: health, auth, payroll calculate, report - **PENDIENTE** (requiere entorno staging)
-- [ ] F5-08: Coverage ≥ 80% nómina - **PENDIENTE** (actual ~40%, tests son unitarios de engines)
+- [ ] F5-03: Variables Firebase producción en Vercel/Render - PENDIENTE (config manual en dashboards)
+- [ ] F5-04: CORS custom domains + Vercel regex - COMPLETADO (ya implementado en F1-07/CORS_ORIGIN_REGEX)
+- [ ] F5-05: Test deploy staging completo (Vercel + Render) - PENDIENTE (requiere acceso dashboards)
+- [ ] F5-06: Security scan: npm audit - EJECUTADO (54 vulns, 36 tras fix, mayormente firebase-admin transitive)
+- [ ] F5-07: Load test: health, auth, payroll calculate, report - PENDIENTE (requiere entorno staging)
+- [ ] F5-08: Coverage ≥ 80% nómina - PENDIENTE (actual ~40%, tests son unitarios de engines)
 - [ ] F5-09: Confirmación usuario "TAREA COMPLETADA"
 - [ ] F5-10: Actualizar bitácoras (index.md + actual.md + 037-...)
 - [ ] F5-11: Auto-mantenimiento post-flight
 - [ ] F5-12: **Actualizar PR existente hacia `dev`** (commits de esta fase)
+
+---
+
+## ⚠️ NOTAS DE MEMORIA
+- *Regla:* Acento **blue** (#003DA5) para sección Nómina (design-system/index.md §21)
+- *Regla:* Usar `CustomSelect` obligatorio (no `<select>` nativo)
+- *Regla:* Modo oscuro con `useIsDark()` + tokens `dark:bg-[rgba(255,255,255,0.04)]`, `dark:border-[rgba(255,255,255,0.12)]`
+- *Regla:* STOP obligatorio al final de cada fase con aprobación del usuario
+- *Branch:* 037-payroll-venezuelan-module (PR hacia dev existente)

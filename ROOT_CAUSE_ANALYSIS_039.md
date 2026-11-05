@@ -425,5 +425,62 @@ console.log("[DEBUG] PayrollConceptsTab - canCreate(payroll):", canCreate("payro
 
 ---
 
-*Plan generado: 2026-11-05 | Post-fix e02a7eb | Bug persiste en cloud*
-*Actualizado: 2026-11-05 - Fase 2 modificada para validación SIN Redux DevTools (console logs + store listener)*
+---
+
+## ✅ FASES COMPLETADAS — FIX PERMISOS HR
+
+### FASE 1: MIGRACIÓN BD ✅ (2026-11-05)
+- **Script:** `server/scripts/migrate-hr-permissions.mjs`
+- **Ejecutado en prod:** 5/5 usuarios actualizados
+- **Resultado:** Todos HR-Manager/HR-Admin con `payroll.create: true`
+
+### FASE 2: MIDDLEWARE PRE-SAVE ✅ (2026-11-05)
+- **Archivo:** `server/models/HR.model.js` (líneas 156-178)
+- **Función:** Auto-sync permissions al cambiar role/cargo
+- **Tests:** 127 passing
+
+### FASE 3: CONTROLLERS SET EXPLÍCITO ✅ (2026-11-05)
+- `HRAuth.controller.js`: HandleHRSignup + permissions
+- `HRProfiles.controller.js`: HandleAcceptInvitation + permissions
+- `HandleInviteHR` ya tenía permissions
+
+### FASE 4: FIX HANDLEUPDATEHR ✅ (2026-11-05)
+- **Archivo:** `server/controllers/HR.controller.js`
+- **Cambio:** `findByIdAndUpdate` → `findById + save()` para activar middleware
+- **Protección:** No permite actualizar `_id`, `password`, `organizationID`
+
+### COMMIT + PUSH ✅
+- **Commit:** `c41b94e` - "fix: HR permissions auto-sync + migration for 5 users"
+- **Push:** Ambos remotos (origin + Dangelo-JAN)
+
+---
+
+## 🧪 VALIDACIÓN PENDIENTE EN CLOUD (Fase 5)
+
+Ejecutar en incógnito cloud tras deploy automático:
+
+| Test | Acción | Esperado |
+|------|--------|----------|
+| 1. Login existing | Login con user migrado (Dangelo) | Botón "Nuevo Concepto" visible |
+| 2. Cambio role | Admin UI: HR-Manager → HR-Admin | Permissions actualizados (payroll.delete: true) |
+| 3. Cambio cargo | Admin UI: Coordinador → Secretario | Role sincronizado, permissions OK |
+| 4. Nuevo signup | Crear HR nuevo via signup | Permissions correctos desde creación |
+| 5. Aceptar invitación | Flujo invitación → accept | Permissions correctos |
+
+---
+
+## 📁 ARCHIVOS MODIFICADOS (Commits e02a7eb → c41b94e)
+
+| Archivo | Cambio |
+|---------|--------|
+| `server/models/HR.model.js` | Middleware pre-save auto-sync |
+| `server/controllers/HRAuth.controller.js` | HandleHRSignup + permissions |
+| `server/controllers/HRProfiles.controller.js` | HandleAcceptInvitation + permissions |
+| `server/controllers/HR.controller.js` | HandleUpdateHR usa save() |
+| `server/scripts/migrate-hr-permissions.mjs` | **NUEVO** - Script migración |
+| `server/scripts/verify-migration.mjs` | **NUEVO** - Verificación |
+| `ROOT_CAUSE_ANALYSIS_039.md` | Documentación completa |
+
+---
+
+*Actualizado: 2026-11-05 | Commit c41b94e | Listo para validación cloud*

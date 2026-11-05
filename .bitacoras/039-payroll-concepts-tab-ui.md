@@ -1,5 +1,5 @@
 # 🛠️ TAREA: Payroll Concepts Tab UI
-**ID:** #039 | **Estado:** 🟡 EN CURSO | **Fecha:** 2026-11-04
+**ID:** #039 | **Estado:** ✅ COMPLETADO | **Fecha:** 2026-11-04 | **Finalizada:** 2026-11-05
 
 ---
 
@@ -41,7 +41,8 @@
   - Fix: botones visibles para HR-Manager sin esperar isReady
 - [x] **Bug 1 RESUELTO:** Botón "Nuevo Concepto" NO aparece (cloud) — `HandleHRCheck` thunk + dispatch App.jsx → permissions hidratadas
 - [x] **Bug 2 RESUELTO:** Pantalla en blanco + error al click "Nuevo Concepto" (local) — `Select.Item value=""` → `value="unassigned"`
-- [ ] **Fase 5:** Commit fixes + Push + PR + Post-flight
+- [x] **Bug 3 RESUELTO (Root Cause):** Permisos HR-Manager en BD desactualizados (stale data) — Migración 5 users + Middleware pre-save auto-sync + Controllers explícitos + HandleUpdateHR fix
+- [x] **Fase 5:** Commit fixes + Push + PR + Post-flight ✅ COMPLETADO
 
 ---
 
