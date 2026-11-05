@@ -1,88 +1,59 @@
-# 🛠️ TAREA ACTUAL
+# 📋 PLANTILLA DE BITÁCORA (OBLIGATORIO SEGUIR)
 
-**ID:** #040 | **Estado:** 🟡 EN CURSO | **Fecha:** 2026-11-05
+> Todas las bitácoras DEBEN seguir esta estructura exacta.
+
+```markdown
+# 🛠️ TAREA: [Nombre Breve]
+**ID:** #XXX | **Estado:** 🟡 EN CURSO | **Fecha:** YYYY-MM-DD
 
 ---
 
 ## 🎯 OBJETIVO FINAL
-> Implementar la UI completa de la pestaña "Políticas" en la página de Nómina (HR), reemplazando el texto "En desarrollo" por un formulario organizado por 5 secciones que permita visualizar y editar la configuración de nómina venezolana (LOTTT, IVSS, FAOV, INCES, ISLR, RPE, LPPSS, cestaticket, vacaciones, bono vacacional, utilidades, prestaciones sociales, horas extra).
+> Una frase que defina el "éxito" de esta tarea (Ej: "Que el usuario pueda loguearse con Google sin errores").
 
 ---
 
 ## 🚦 PUNTO DE CONTROL (Contexto de Reanudación)
 *Usa esto para "despertar" a la IA si el chat se cierra:*
 
-- **Lo último que funcionó:** Plan aprobado por el usuario. Patrón de referencia: SOLO PayrollConceptsTab.jsx (PayrollReceiptsTab.jsx está mal implementado). Rama creada: 040-payroll-policy-tab-ui desde 037-payroll-venezuelan-module.
-- **Dónde se rompió/detuvo:** Inicio de implementación - Fase 1 pendiente.
-- **Siguiente acción inmediata:** Iniciar Fase 1 - Modificar PayrollPolicyTab.jsx para cargar policy + companyConfig y renderizar 5 tarjetas de sección (read-only).
+- **Lo último que funcionó:** [Ej: El botón de login ya envía los datos].
+- **Dónde se rompió/detuvo:** [Ej: Error 403 en el callback de la API].
+- **Siguiente acción inmediata:** [Ej: Revisar las credenciales en el archivo .env].
 
 ---
 
-## ✅ FASE 1 COMPLETADA - Estructura Base y Carga de Datos (STOP ✅)
-- [x] F1-01: Modificar `PayrollPolicyTab.jsx` - usar `useSelector` para `policy` + `companyConfig`
-- [x] F1-02: Dispatch `HandlePayrollPolicy` (POLICY_GET + COMPANY_GET) en `useEffect`
-- [x] F1-03: Renderizar skeleton/loading state
-- [x] F1-04: Renderizar 5 tarjetas de sección (read-only initially) con valores actuales
-- [x] F1-05: Header con título "Políticas de Nómina" + botón "Guardar Todo" (disabled hasta cambios)
-- **Gate Fase 1:** ✅ Client build 0 errores, Server tests 127 passing
-- **STOP 1:** Builds verificados
-
----
-
-## ⬜ FASE 2 - Modal de Edición Genérico (PENDIENTE)
-- [ ] F2-01: Crear `PolicyFormModal.jsx` en `client/src/components/payroll/`
-- [ ] F2-02: Props: `open`, `onClose`, `section`, `fields`, `initialData`, `onSubmit`, `isSubmitting`
-- [ ] F2-03: Campo dinámico según tipo: number, select (enum), boolean, text
-- [ ] F2-04: Validación: required, min/max, enum values
-- [ ] F2-05: Tooltips/ayuda en cada campo (legislación venezolana)
-- **STOP 2:** Verificar modal abre/renderiza campos + build client ✅ → Esperar aprobación
-
----
-
-## ⬜ FASE 3 - Integración y Submit (PENDIENTE)
-- [ ] F3-01: Conectar botones "Editar" de cada tarjeta → abrir modal con campos de esa sección
-- [ ] F3-02: Implementar `handleSubmit` → dispatch `POLICY_UPDATE` o `COMPANY_UPDATE` según sección
-- [ ] F3-03: Manejo de errores + toast de éxito
-- [ ] F3-04: Actualizar Redux state tras éxito (optimistic o reload)
-- [ ] F3-05: Botón "Guardar Todo" en header para batch update (opcional)
-- **STOP 3:** Verificar edición completa de todas las secciones + build client ✅ → Esperar aprobación
-
----
-
-## ✅ FASE 2 COMPLETADA - Edición Inline (Integrada en Fase 1)
-- [x] Edición inline por sección (sin modal separado, siguiendo patrón PayrollConceptsTab)
-- [x] Inputs tipados: number (step/min/max), select (enum), boolean (checkbox), text
-- [x] Tooltips con contexto legislación venezolana en cada campo
-- [x] Validación HTML5 + manejo errores server
-- [x] Submit individual + batch "Guardar Todo"
-
-## ✅ FASE 3 COMPLETADA - Integración Submit (Integrada en Fase 1)
-- [x] Botones "Editar" → modo edición inline
-- [x] handleSubmit → dispatch POLICY_UPDATE / COMPANY_UPDATE según sección/modelo
-- [x] Manejo errores + loading state
-- [x] Redux state actualizado tras éxito
-
-## ✅ FASE 4 COMPLETADA - Pulido y Validaciones (STOP ✅)
-- [x] F4-01: Formato de números mejorado (VES/USD/%/factor/x) con tipos específicos
-- [x] F4-02: Validación cruzada (vacation_days_max ≥ vacation_days_base, etc.)
-- [x] F4-03: Responsive fine-tuning (grid 1/2/3 cols, sticky save bar)
-- [x] F4-04: Accesibilidad: aria-labels, aria-describedby, aria-invalid, focus visible, role=alert
-- [x] F4-05: Consistencia visual con PayrollConceptsTab.jsx (CustomSelect obligatorio, tokens design system)
-- **Gate Fase 4:** ✅ Client build 0 errores, Server tests 127 passing
-- **STOP 4:** Builds verificados
+## 📝 CAMBIOS TÉCNICOS CLAVE
+- [x] [Configuración de Provider - COMPLETADO]
+- [ ] [Validación de JWT - PENDIENTE]
+- [ ] [Redirección al Dashboard - PENDIENTE]
 
 ---
 
 ## ⚠️ NOTAS DE MEMORIA
-- *Regla:* **SOLO** usar `PayrollConceptsTab.jsx` como patrón de referencia UI (PayrollReceiptsTab.jsx está mal implementado)
-- *Regla:* Acento **blue** (#003DA5) para sección Nómina (design-system/index.md §21)
-- *Regla:* Usar `CustomSelect` obligatorio (no `<select>` nativo)
-- *Regla:* Modo oscuro con `useIsDark()` + tokens `dark:bg-[rgba(255,255,255,0.04)]`, `dark:border-[rgba(255,255,255,0.12)]`
-- *Regla:* STOP obligatorio al final de cada fase con aprobación del usuario
-- *Branch:* 040-payroll-policy-tab-ui (desde 037-payroll-venezuelan-module)
-- *PR destino:* 037-payroll-venezuelan-module (NO a dev/main)
-- *Modelo:* PayrollPolicy (50+ campos) + PayrollCompany (config duplicada parcial)
-- *Redux:* policy + companyConfig en PayrollSlice
-- *Thunk:* HandlePayrollPolicy (POLICY_GET, POLICY_UPDATE, COMPANY_GET, COMPANY_UPDATE)
-- *Endpoints:* /api/v1/payroll/policies + /company
-- *Secciones:* 1) Tasas Legales (16 campos) 2) Factores Pago (6) 3) Vacaciones (14) 4) Split Salarial (2) 5) Config. General (11)
+- *Regla:* [Regla importante a recordar para esta tarea]
+- *Regla:* [Otra regla relevante]
+- *Branch:* [nombre de la rama]
+- *Commit:* [hash del commit si aplica]
+```
+
+---
+
+## 📝 REGLAS DE LA PLANTILLA
+
+| Campo | Formato | Ejemplo |
+|-------|---------|---------|
+| **ID** | `#001`, `#002`, etc. (secuencial) | `#001` |
+| **Estado** | 🟡 EN CURSO / ✅ FINALIZADO / 🔴 BLOQUEADO | 🟡 EN CURSO |
+| **Fecha** | YYYY-MM-DD | 2026-04-07 |
+| **Objetivo Final** | Una sola frase que defina el éxito | "Que el usuario pueda loguearse" |
+| **Punto de Control** | Contexto para recuperación si el chat se cierra | 3 puntos: último trabajo, dónde se detuvo, siguiente acción |
+| **Cambios Técnicos** | Checklist con [x] completado y [ ] pendiente | - [x] Tarea completada |
+| **Notas de Memoria** | Reglas importantes, branch, commit | - Branch: feat/login-google |
+
+---
+
+## 📌 EJEMPLO
+
+Ver bitácora de referencia: [[001-Update-HRCards]]
+
+*Esta plantilla es de cumplimiento obligatorio para todas las nuevas bitácoras.*
