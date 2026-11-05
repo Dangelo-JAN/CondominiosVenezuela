@@ -4,7 +4,6 @@ import { HandlePayrollPolicy } from "../../../../../redux/Thunks/PayrollThunk.js
 import { useIsDark } from "../../../../../hooks/useIsDark.js"
 import { useHRAuth } from "../../../../../hooks/useHRAuth.js"
 import { CustomSelect } from "../../../../../components/ui/custom-select.jsx"
-import { ThemedListWrapper, ThemedHeadingBar, ThemedListContainer } from "../../../../../components/common/Dashboard/ListDesigns"
 import { Loader2, Settings, AlertCircle, Edit, Save, X, ChevronRight, AlertTriangle } from "lucide-react"
 
 const SECTIONS = [
@@ -447,15 +446,12 @@ export const PayrollPolicyTab = () => {
 
                                                             {field.type === "select" && (
                                                                 <CustomSelect
-                                                                    id={fieldId}
                                                                     value={formData[field.key] ?? ""}
                                                                     onValueChange={(val) => handleInputChange(field.key, val)}
                                                                     options={getSelectOptions(field)}
                                                                     placeholder="Seleccionar..."
                                                                     accentColor="blue"
                                                                     disabled={isSubmitting}
-                                                                    error={error}
-                                                                    aria-describedby={field.help ? `${fieldId}-help` : undefined}
                                                                 />
                                                             )}
 
