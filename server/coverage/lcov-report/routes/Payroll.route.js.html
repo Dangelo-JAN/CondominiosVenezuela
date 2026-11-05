@@ -1,0 +1,463 @@
+
+<!doctype html>
+<html lang="en">
+
+<head>
+    <title>Code coverage report for routes/Payroll.route.js</title>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../prettify.css" />
+    <link rel="stylesheet" href="../base.css" />
+    <link rel="shortcut icon" type="image/x-icon" href="../favicon.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <style type='text/css'>
+        .coverage-summary .sorter {
+            background-image: url(../sort-arrow-sprite.png);
+        }
+    </style>
+</head>
+    
+<body>
+<div class='wrapper'>
+    <div class='pad1'>
+        <h1><a href="../index.html">All files</a> / <a href="index.html">routes</a> Payroll.route.js</h1>
+        <div class='clearfix'>
+            
+            <div class='fl pad1y space-right2'>
+                <span class="strong">0% </span>
+                <span class="quiet">Statements</span>
+                <span class='fraction'>0/71</span>
+            </div>
+        
+            
+            <div class='fl pad1y space-right2'>
+                <span class="strong">100% </span>
+                <span class="quiet">Branches</span>
+                <span class='fraction'>0/0</span>
+            </div>
+        
+            
+            <div class='fl pad1y space-right2'>
+                <span class="strong">100% </span>
+                <span class="quiet">Functions</span>
+                <span class='fraction'>0/0</span>
+            </div>
+        
+            
+            <div class='fl pad1y space-right2'>
+                <span class="strong">0% </span>
+                <span class="quiet">Lines</span>
+                <span class='fraction'>0/71</span>
+            </div>
+        
+            
+        </div>
+        <p class="quiet">
+            Press <em>n</em> or <em>j</em> to go to the next uncovered block, <em>b</em>, <em>p</em> or <em>k</em> for the previous block.
+        </p>
+        <template id="filterTemplate">
+            <div class="quiet">
+                Filter:
+                <input type="search" id="fileSearch">
+            </div>
+        </template>
+    </div>
+    <div class='status-line low'></div>
+    <pre><table class="coverage">
+<tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
+<a name='L2'></a><a href='#L2'>2</a>
+<a name='L3'></a><a href='#L3'>3</a>
+<a name='L4'></a><a href='#L4'>4</a>
+<a name='L5'></a><a href='#L5'>5</a>
+<a name='L6'></a><a href='#L6'>6</a>
+<a name='L7'></a><a href='#L7'>7</a>
+<a name='L8'></a><a href='#L8'>8</a>
+<a name='L9'></a><a href='#L9'>9</a>
+<a name='L10'></a><a href='#L10'>10</a>
+<a name='L11'></a><a href='#L11'>11</a>
+<a name='L12'></a><a href='#L12'>12</a>
+<a name='L13'></a><a href='#L13'>13</a>
+<a name='L14'></a><a href='#L14'>14</a>
+<a name='L15'></a><a href='#L15'>15</a>
+<a name='L16'></a><a href='#L16'>16</a>
+<a name='L17'></a><a href='#L17'>17</a>
+<a name='L18'></a><a href='#L18'>18</a>
+<a name='L19'></a><a href='#L19'>19</a>
+<a name='L20'></a><a href='#L20'>20</a>
+<a name='L21'></a><a href='#L21'>21</a>
+<a name='L22'></a><a href='#L22'>22</a>
+<a name='L23'></a><a href='#L23'>23</a>
+<a name='L24'></a><a href='#L24'>24</a>
+<a name='L25'></a><a href='#L25'>25</a>
+<a name='L26'></a><a href='#L26'>26</a>
+<a name='L27'></a><a href='#L27'>27</a>
+<a name='L28'></a><a href='#L28'>28</a>
+<a name='L29'></a><a href='#L29'>29</a>
+<a name='L30'></a><a href='#L30'>30</a>
+<a name='L31'></a><a href='#L31'>31</a>
+<a name='L32'></a><a href='#L32'>32</a>
+<a name='L33'></a><a href='#L33'>33</a>
+<a name='L34'></a><a href='#L34'>34</a>
+<a name='L35'></a><a href='#L35'>35</a>
+<a name='L36'></a><a href='#L36'>36</a>
+<a name='L37'></a><a href='#L37'>37</a>
+<a name='L38'></a><a href='#L38'>38</a>
+<a name='L39'></a><a href='#L39'>39</a>
+<a name='L40'></a><a href='#L40'>40</a>
+<a name='L41'></a><a href='#L41'>41</a>
+<a name='L42'></a><a href='#L42'>42</a>
+<a name='L43'></a><a href='#L43'>43</a>
+<a name='L44'></a><a href='#L44'>44</a>
+<a name='L45'></a><a href='#L45'>45</a>
+<a name='L46'></a><a href='#L46'>46</a>
+<a name='L47'></a><a href='#L47'>47</a>
+<a name='L48'></a><a href='#L48'>48</a>
+<a name='L49'></a><a href='#L49'>49</a>
+<a name='L50'></a><a href='#L50'>50</a>
+<a name='L51'></a><a href='#L51'>51</a>
+<a name='L52'></a><a href='#L52'>52</a>
+<a name='L53'></a><a href='#L53'>53</a>
+<a name='L54'></a><a href='#L54'>54</a>
+<a name='L55'></a><a href='#L55'>55</a>
+<a name='L56'></a><a href='#L56'>56</a>
+<a name='L57'></a><a href='#L57'>57</a>
+<a name='L58'></a><a href='#L58'>58</a>
+<a name='L59'></a><a href='#L59'>59</a>
+<a name='L60'></a><a href='#L60'>60</a>
+<a name='L61'></a><a href='#L61'>61</a>
+<a name='L62'></a><a href='#L62'>62</a>
+<a name='L63'></a><a href='#L63'>63</a>
+<a name='L64'></a><a href='#L64'>64</a>
+<a name='L65'></a><a href='#L65'>65</a>
+<a name='L66'></a><a href='#L66'>66</a>
+<a name='L67'></a><a href='#L67'>67</a>
+<a name='L68'></a><a href='#L68'>68</a>
+<a name='L69'></a><a href='#L69'>69</a>
+<a name='L70'></a><a href='#L70'>70</a>
+<a name='L71'></a><a href='#L71'>71</a>
+<a name='L72'></a><a href='#L72'>72</a>
+<a name='L73'></a><a href='#L73'>73</a>
+<a name='L74'></a><a href='#L74'>74</a>
+<a name='L75'></a><a href='#L75'>75</a>
+<a name='L76'></a><a href='#L76'>76</a>
+<a name='L77'></a><a href='#L77'>77</a>
+<a name='L78'></a><a href='#L78'>78</a>
+<a name='L79'></a><a href='#L79'>79</a>
+<a name='L80'></a><a href='#L80'>80</a>
+<a name='L81'></a><a href='#L81'>81</a>
+<a name='L82'></a><a href='#L82'>82</a>
+<a name='L83'></a><a href='#L83'>83</a>
+<a name='L84'></a><a href='#L84'>84</a>
+<a name='L85'></a><a href='#L85'>85</a>
+<a name='L86'></a><a href='#L86'>86</a>
+<a name='L87'></a><a href='#L87'>87</a>
+<a name='L88'></a><a href='#L88'>88</a>
+<a name='L89'></a><a href='#L89'>89</a>
+<a name='L90'></a><a href='#L90'>90</a>
+<a name='L91'></a><a href='#L91'>91</a>
+<a name='L92'></a><a href='#L92'>92</a>
+<a name='L93'></a><a href='#L93'>93</a>
+<a name='L94'></a><a href='#L94'>94</a>
+<a name='L95'></a><a href='#L95'>95</a>
+<a name='L96'></a><a href='#L96'>96</a>
+<a name='L97'></a><a href='#L97'>97</a>
+<a name='L98'></a><a href='#L98'>98</a>
+<a name='L99'></a><a href='#L99'>99</a>
+<a name='L100'></a><a href='#L100'>100</a>
+<a name='L101'></a><a href='#L101'>101</a>
+<a name='L102'></a><a href='#L102'>102</a>
+<a name='L103'></a><a href='#L103'>103</a>
+<a name='L104'></a><a href='#L104'>104</a>
+<a name='L105'></a><a href='#L105'>105</a>
+<a name='L106'></a><a href='#L106'>106</a>
+<a name='L107'></a><a href='#L107'>107</a>
+<a name='L108'></a><a href='#L108'>108</a>
+<a name='L109'></a><a href='#L109'>109</a>
+<a name='L110'></a><a href='#L110'>110</a>
+<a name='L111'></a><a href='#L111'>111</a>
+<a name='L112'></a><a href='#L112'>112</a>
+<a name='L113'></a><a href='#L113'>113</a>
+<a name='L114'></a><a href='#L114'>114</a>
+<a name='L115'></a><a href='#L115'>115</a>
+<a name='L116'></a><a href='#L116'>116</a>
+<a name='L117'></a><a href='#L117'>117</a>
+<a name='L118'></a><a href='#L118'>118</a>
+<a name='L119'></a><a href='#L119'>119</a>
+<a name='L120'></a><a href='#L120'>120</a>
+<a name='L121'></a><a href='#L121'>121</a>
+<a name='L122'></a><a href='#L122'>122</a>
+<a name='L123'></a><a href='#L123'>123</a>
+<a name='L124'></a><a href='#L124'>124</a>
+<a name='L125'></a><a href='#L125'>125</a>
+<a name='L126'></a><a href='#L126'>126</a>
+<a name='L127'></a><a href='#L127'>127</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import express from 'express'
+import PayrollPeriodController from '../controllers/PayrollPeriodController.js'
+import PayrollReceiptController from '../controllers/PayrollReceiptController.js'
+import PayrollConceptController from '../controllers/PayrollConceptController.js'
+import PayrollPolicyController from '../controllers/PayrollPolicyController.js'
+import PayrollNoveltyController from '../controllers/PayrollNoveltyController.js'
+import VacationController from '../controllers/VacationController.js'
+import SocialBenefitsController from '../controllers/SocialBenefitsController.js'
+import UtilidadesController from '../controllers/UtilidadesController.js'
+import { VerifyEmployeeToken, VerifyhHRToken } from '../middlewares/Auth.middleware.js'
+import { PermissionCheck } from '../middlewares/RoleAuth.middleware.js'
+&nbsp;
+const router = <span class="cstat-no" title="statement not covered" >express.Router()</span>
+&nbsp;
+// ============================================================================
+// RUTAS EMPLEADO (VerifyEmployeeToken) - Para que el empleado vea SU información
+// ============================================================================
+&nbsp;
+// Recibos del empleado autenticado
+<span class="cstat-no" title="statement not covered" >router.get('/receipts/me', VerifyEmployeeToken, PayrollReceiptController.getMyReceipts)</span>
+&nbsp;
+// Saldos de vacaciones del empleado autenticado
+<span class="cstat-no" title="statement not covered" >router.get('/vacations/balances/me', VerifyEmployeeToken, VacationController.getMyBalance)</span>
+&nbsp;
+// Solicitudes de vacaciones del empleado autenticado
+<span class="cstat-no" title="statement not covered" >router.get('/vacations/requests/me', VerifyEmployeeToken, VacationController.getMyRequests)</span>
+<span class="cstat-no" title="statement not covered" >router.post('/vacations/requests', VerifyEmployeeToken, VacationController.createRequest)</span>
+&nbsp;
+// Prestaciones sociales del empleado autenticado
+<span class="cstat-no" title="statement not covered" >router.get('/social-benefits/ledger/me', VerifyEmployeeToken, SocialBenefitsController.getMyLedger)</span>
+&nbsp;
+// Utilidades del empleado autenticado
+<span class="cstat-no" title="statement not covered" >router.get('/utilidades/payments/me', VerifyEmployeeToken, UtilidadesController.getMyPayments)</span>
+&nbsp;
+// ============================================================================
+// RUTAS HR (VerifyhHRToken + PermissionCheck) - Gestión completa
+// ============================================================================
+&nbsp;
+// ---- PERÍODOS DE NÓMINA (/periods) ----
+<span class="cstat-no" title="statement not covered" >router.get('/periods', VerifyhHRToken, PermissionCheck('payroll', 'read'), PayrollPeriodController.getAll)</span>
+<span class="cstat-no" title="statement not covered" >router.get('/periods/:id', VerifyhHRToken, PermissionCheck('payroll', 'read'), PayrollPeriodController.getById)</span>
+<span class="cstat-no" title="statement not covered" >router.post('/periods', VerifyhHRToken, PermissionCheck('payroll', 'create'), PayrollPeriodController.create)</span>
+<span class="cstat-no" title="statement not covered" >router.put('/periods/:id', VerifyhHRToken, PermissionCheck('payroll', 'update'), PayrollPeriodController.update)</span>
+<span class="cstat-no" title="statement not covered" >router.delete('/periods/:id', VerifyhHRToken, PermissionCheck('payroll', 'delete'), PayrollPeriodController.delete)</span>
+&nbsp;
+// Acciones de estado del período
+<span class="cstat-no" title="statement not covered" >router.post('/periods/:id/calculate', VerifyhHRToken, PermissionCheck('payroll', 'calculate'), PayrollPeriodController.calculate)</span>
+<span class="cstat-no" title="statement not covered" >router.post('/periods/:id/approve', VerifyhHRToken, PermissionCheck('payroll', 'approve'), PayrollPeriodController.approve)</span>
+<span class="cstat-no" title="statement not covered" >router.post('/periods/:id/pay', VerifyhHRToken, PermissionCheck('payroll', 'pay'), PayrollPeriodController.pay)</span>
+<span class="cstat-no" title="statement not covered" >router.post('/periods/:id/close', VerifyhHRToken, PermissionCheck('payroll', 'close'), PayrollPeriodController.close)</span>
+&nbsp;
+// ---- RECIBOS DE NÓMINA (/receipts) ----
+<span class="cstat-no" title="statement not covered" >router.get('/receipts', VerifyhHRToken, PermissionCheck('payroll', 'read'), PayrollReceiptController.getAll)</span>
+<span class="cstat-no" title="statement not covered" >router.get('/receipts/:id', VerifyhHRToken, PermissionCheck('payroll', 'read'), PayrollReceiptController.getById)</span>
+<span class="cstat-no" title="statement not covered" >router.get('/receipts/employee/:employeeId', VerifyhHRToken, PermissionCheck('payroll', 'read'), PayrollReceiptController.getByEmployee)</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >router.post('/receipts/:id/recalculate', VerifyhHRToken, PermissionCheck('payroll', 'calculate'), PayrollReceiptController.recalculate)</span>
+<span class="cstat-no" title="statement not covered" >router.post('/receipts/:id/void', VerifyhHRToken, PermissionCheck('payroll', 'void'), PayrollReceiptController.voidReceipt)</span>
+<span class="cstat-no" title="statement not covered" >router.get('/receipts/:id/export', VerifyhHRToken, PermissionCheck('payroll', 'read'), PayrollReceiptController.exportReceipt)</span>
+&nbsp;
+// ---- CONCEPTOS DE NÓMINA (/concepts) ----
+<span class="cstat-no" title="statement not covered" >router.get('/concepts', VerifyhHRToken, PermissionCheck('payroll', 'read'), PayrollConceptController.getAll)</span>
+<span class="cstat-no" title="statement not covered" >router.get('/concepts/:id', VerifyhHRToken, PermissionCheck('payroll', 'read'), PayrollConceptController.getById)</span>
+<span class="cstat-no" title="statement not covered" >router.post('/concepts', VerifyhHRToken, PermissionCheck('payroll', 'create'), PayrollConceptController.create)</span>
+<span class="cstat-no" title="statement not covered" >router.put('/concepts/:id', VerifyhHRToken, PermissionCheck('payroll', 'update'), PayrollConceptController.update)</span>
+<span class="cstat-no" title="statement not covered" >router.delete('/concepts/:id', VerifyhHRToken, PermissionCheck('payroll', 'delete'), PayrollConceptController.delete)</span>
+<span class="cstat-no" title="statement not covered" >router.post('/concepts/validate-formula', VerifyhHRToken, PermissionCheck('payroll', 'calculate'), PayrollConceptController.validateFormula)</span>
+<span class="cstat-no" title="statement not covered" >router.get('/concepts/receipt-types', VerifyhHRToken, PermissionCheck('payroll', 'read'), PayrollConceptController.getReceiptTypes)</span>
+<span class="cstat-no" title="statement not covered" >router.post('/concepts/receipt-types', VerifyhHRToken, PermissionCheck('payroll', 'create'), PayrollConceptController.createReceiptType)</span>
+&nbsp;
+// ---- POLÍTICAS Y CONFIGURACIÓN (/policies) ----
+<span class="cstat-no" title="statement not covered" >router.get('/policies', VerifyhHRToken, PermissionCheck('payroll', 'read'), PayrollPolicyController.getPolicy)</span>
+<span class="cstat-no" title="statement not covered" >router.put('/policies', VerifyhHRToken, PermissionCheck('payroll', 'update'), PayrollPolicyController.updatePolicy)</span>
+<span class="cstat-no" title="statement not covered" >router.get('/policies/company', VerifyhHRToken, PermissionCheck('payroll', 'read'), PayrollPolicyController.getCompanyConfig)</span>
+<span class="cstat-no" title="statement not covered" >router.put('/policies/company', VerifyhHRToken, PermissionCheck('payroll', 'update'), PayrollPolicyController.updateCompanyConfig)</span>
+&nbsp;
+// ---- NOVEDADES (/novelties) ----
+<span class="cstat-no" title="statement not covered" >router.get('/novelties', VerifyhHRToken, PermissionCheck('payroll', 'read'), PayrollNoveltyController.getAll)</span>
+<span class="cstat-no" title="statement not covered" >router.get('/novelties/:id', VerifyhHRToken, PermissionCheck('payroll', 'read'), PayrollNoveltyController.getById)</span>
+<span class="cstat-no" title="statement not covered" >router.post('/novelties', VerifyhHRToken, PermissionCheck('payroll', 'create'), PayrollNoveltyController.create)</span>
+<span class="cstat-no" title="statement not covered" >router.put('/novelties/:id', VerifyhHRToken, PermissionCheck('payroll', 'update'), PayrollNoveltyController.update)</span>
+<span class="cstat-no" title="statement not covered" >router.delete('/novelties/:id', VerifyhHRToken, PermissionCheck('payroll', 'delete'), PayrollNoveltyController.delete)</span>
+<span class="cstat-no" title="statement not covered" >router.post('/novelties/:id/apply', VerifyhHRToken, PermissionCheck('payroll', 'calculate'), PayrollNoveltyController.apply)</span>
+<span class="cstat-no" title="statement not covered" >router.post('/novelties/:id/reject', VerifyhHRToken, PermissionCheck('payroll', 'calculate'), PayrollNoveltyController.reject)</span>
+<span class="cstat-no" title="statement not covered" >router.post('/novelties/bulk-create', VerifyhHRToken, PermissionCheck('payroll', 'create'), PayrollNoveltyController.bulkCreate)</span>
+&nbsp;
+// ---- VACACIONES (/vacations) ----
+<span class="cstat-no" title="statement not covered" >router.get('/vacations/balances', VerifyhHRToken, PermissionCheck('payroll', 'read'), VacationController.getBalances)</span>
+<span class="cstat-no" title="statement not covered" >router.get('/vacations/balances/:employeeId', VerifyhHRToken, PermissionCheck('payroll', 'read'), VacationController.getBalanceByEmployee)</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >router.get('/vacations/requests', VerifyhHRToken, PermissionCheck('payroll', 'read'), VacationController.getRequests)</span>
+<span class="cstat-no" title="statement not covered" >router.get('/vacations/requests/:id', VerifyhHRToken, PermissionCheck('payroll', 'read'), VacationController.getRequestById)</span>
+<span class="cstat-no" title="statement not covered" >router.post('/vacations/requests', VerifyhHRToken, PermissionCheck('payroll', 'create'), VacationController.createRequest)</span>
+<span class="cstat-no" title="statement not covered" >router.post('/vacations/requests/:id/approve', VerifyhHRToken, PermissionCheck('payroll', 'approve'), VacationController.approveRequest)</span>
+<span class="cstat-no" title="statement not covered" >router.post('/vacations/requests/:id/reject', VerifyhHRToken, PermissionCheck('payroll', 'approve'), VacationController.rejectRequest)</span>
+<span class="cstat-no" title="statement not covered" >router.post('/vacations/requests/:id/pay', VerifyhHRToken, PermissionCheck('payroll', 'pay'), VacationController.payVacation)</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >router.get('/vacations/holidays', VerifyhHRToken, PermissionCheck('payroll', 'read'), VacationController.getHolidays)</span>
+<span class="cstat-no" title="statement not covered" >router.post('/vacations/holidays', VerifyhHRToken, PermissionCheck('payroll', 'create'), VacationController.createHoliday)</span>
+<span class="cstat-no" title="statement not covered" >router.delete('/vacations/holidays/:id', VerifyhHRToken, PermissionCheck('payroll', 'delete'), VacationController.deleteHoliday)</span>
+&nbsp;
+// ---- PRESTACIONES SOCIALES (/social-benefits) ----
+<span class="cstat-no" title="statement not covered" >router.get('/social-benefits/ledger', VerifyhHRToken, PermissionCheck('payroll', 'read'), SocialBenefitsController.getLedger)</span>
+<span class="cstat-no" title="statement not covered" >router.get('/social-benefits/ledger/employee/:employeeId', VerifyhHRToken, PermissionCheck('payroll', 'read'), SocialBenefitsController.getLedgerByEmployee)</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >router.post('/social-benefits/settlements/calculate', VerifyhHRToken, PermissionCheck('payroll', 'calculate'), SocialBenefitsController.calculateSettlement)</span>
+<span class="cstat-no" title="statement not covered" >router.post('/social-benefits/settlements', VerifyhHRToken, PermissionCheck('payroll', 'create'), SocialBenefitsController.createSettlement)</span>
+<span class="cstat-no" title="statement not covered" >router.get('/social-benefits/settlements', VerifyhHRToken, PermissionCheck('payroll', 'read'), SocialBenefitsController.getSettlements)</span>
+<span class="cstat-no" title="statement not covered" >router.get('/social-benefits/settlements/:id', VerifyhHRToken, PermissionCheck('payroll', 'read'), SocialBenefitsController.getSettlementById)</span>
+<span class="cstat-no" title="statement not covered" >router.post('/social-benefits/settlements/:id/approve', VerifyhHRToken, PermissionCheck('payroll', 'approve'), SocialBenefitsController.approveSettlement)</span>
+<span class="cstat-no" title="statement not covered" >router.post('/social-benefits/settlements/:id/pay', VerifyhHRToken, PermissionCheck('payroll', 'pay'), SocialBenefitsController.paySettlement)</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >router.post('/social-benefits/accrual/calculate', VerifyhHRToken, PermissionCheck('payroll', 'calculate'), SocialBenefitsController.calculateAccrual)</span>
+<span class="cstat-no" title="statement not covered" >router.post('/social-benefits/accrual/record', VerifyhHRToken, PermissionCheck('payroll', 'create'), SocialBenefitsController.recordAccrual)</span>
+&nbsp;
+// ---- UTILIDADES (/utilidades) ----
+<span class="cstat-no" title="statement not covered" >router.get('/utilidades/periods', VerifyhHRToken, PermissionCheck('payroll', 'read'), UtilidadesController.getPeriods)</span>
+<span class="cstat-no" title="statement not covered" >router.get('/utilidades/periods/:id', VerifyhHRToken, PermissionCheck('payroll', 'read'), UtilidadesController.getPeriodById)</span>
+<span class="cstat-no" title="statement not covered" >router.post('/utilidades/periods', VerifyhHRToken, PermissionCheck('payroll', 'create'), UtilidadesController.createPeriod)</span>
+<span class="cstat-no" title="statement not covered" >router.post('/utilidades/periods/:id/calculate', VerifyhHRToken, PermissionCheck('payroll', 'calculate'), UtilidadesController.calculatePeriod)</span>
+<span class="cstat-no" title="statement not covered" >router.post('/utilidades/periods/:id/approve', VerifyhHRToken, PermissionCheck('payroll', 'approve'), UtilidadesController.approvePeriod)</span>
+<span class="cstat-no" title="statement not covered" >router.post('/utilidades/periods/:id/pay', VerifyhHRToken, PermissionCheck('payroll', 'pay'), UtilidadesController.payPeriod)</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >router.get('/utilidades/payments', VerifyhHRToken, PermissionCheck('payroll', 'read'), UtilidadesController.getPayments)</span>
+<span class="cstat-no" title="statement not covered" >router.get('/utilidades/payments/:id', VerifyhHRToken, PermissionCheck('payroll', 'read'), UtilidadesController.getPaymentById)</span>
+&nbsp;
+export default router</pre></td></tr></table></pre>
+
+                <div class='push'></div><!-- for sticky footer -->
+            </div><!-- /wrapper -->
+            <div class='footer quiet pad2 space-top1 center small'>
+                Code coverage generated by
+                <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
+                at 2026-11-03T16:09:32.970Z
+            </div>
+        <script src="../prettify.js"></script>
+        <script>
+            window.onload = function () {
+                prettyPrint();
+            };
+        </script>
+        <script src="../sorter.js"></script>
+        <script src="../block-navigation.js"></script>
+    </body>
+</html>
+    

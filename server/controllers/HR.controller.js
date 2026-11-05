@@ -71,13 +71,22 @@ export const HandleUpdateHR = async (req, res) => {
             return res.status(400).json({ success: false, message: "Missing HRID or Updatedata" })
         }
 
-        const updatedHR = await HumanResources.findByIdAndUpdate(HRID, Updatedata, { new: true })
-
-        if (!updatedHR) {
+        // Usar findById + save() para activar middleware pre-save (auto-sync permissions si role/cargo cambian)
+        const hr = await HumanResources.findById(HRID)
+        if (!hr) {
             return res.status(404).json({ success: false, message: "HR Record Not Found" })
         }
 
-        return res.status(200).json({ success: true, message: "Human Resources Updated Successfully", data: updatedHR })
+        // Aplicar actualizaciones permitidas
+        Object.keys(Updatedata).forEach(key => {
+            if (key !== '_id' && key !== 'password' && key !== 'organizationID') {
+                hr[key] = Updatedata[key]
+            }
+        })
+
+        await hr.save() // ← Activa middleware pre-save
+
+        return res.status(200).json({ success: true, message: "Human Resources Updated Successfully", data: hr })
 
     } catch (error) {
         return res.status(500).json({ success: false, message: "internal Server Error", error: error })

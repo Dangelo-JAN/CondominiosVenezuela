@@ -103,3 +103,93 @@ export const HRNotificationsEndPoints = {
     UNSUBSCRIBE: (token) => `/api/v1/push/unsubscribe/${encodeURIComponent(token)}`,
     TEST_PUSH: "/api/v1/push/test",
 }
+
+// ── Nómina Venezolana ───────────────────────────────────────────────────────
+export const PayrollEndPoints = {
+    // Períodos de nómina (/api/v1/payroll/periods)
+    PERIODS_GETALL: "/api/v1/payroll/periods",
+    PERIODS_GETONE: (id) => `/api/v1/payroll/periods/${id}`,
+    PERIODS_CREATE: "/api/v1/payroll/periods",
+    PERIODS_UPDATE: (id) => `/api/v1/payroll/periods/${id}`,
+    PERIODS_DELETE: (id) => `/api/v1/payroll/periods/${id}`,
+    PERIODS_CALCULATE: (id) => `/api/v1/payroll/periods/${id}/calculate`,
+    PERIODS_APPROVE: (id) => `/api/v1/payroll/periods/${id}/approve`,
+    PERIODS_PAY: (id) => `/api/v1/payroll/periods/${id}/pay`,
+    PERIODS_CLOSE: (id) => `/api/v1/payroll/periods/${id}/close`,
+
+    // Recibos de nómina (/api/v1/payroll/receipts)
+    RECEIPTS_GETALL: "/api/v1/payroll/receipts",
+    RECEIPTS_GETONE: (id) => `/api/v1/payroll/receipts/${id}`,
+    RECEIPTS_GET_EMPLOYEE: (employeeId) => `/api/v1/payroll/receipts/employee/${employeeId}`,
+    RECEIPTS_GET_ME: "/api/v1/payroll/receipts/me",
+    RECEIPTS_GET_BY_EMPLOYEE: (employeeId) => `/api/v1/payroll/receipts/employee/${employeeId}`,
+    RECEIPTS_RECALCULATE: (id) => `/api/v1/payroll/receipts/${id}/recalculate`,
+    RECEIPTS_VOID: (id) => `/api/v1/payroll/receipts/${id}/void`,
+    RECEIPTS_EXPORT: (id) => `/api/v1/payroll/receipts/${id}/export`,
+
+    // Conceptos de nómina (/api/v1/payroll/concepts)
+    CONCEPTS_GETALL: "/api/v1/payroll/concepts",
+    CONCEPTS_GETONE: (id) => `/api/v1/payroll/concepts/${id}`,
+    CONCEPTS_CREATE: "/api/v1/payroll/concepts",
+    CONCEPTS_UPDATE: (id) => `/api/v1/payroll/concepts/${id}`,
+    CONCEPTS_DELETE: (id) => `/api/v1/payroll/concepts/${id}`,
+    CONCEPTS_VALIDATE_FORMULA: "/api/v1/payroll/concepts/validate-formula",
+    RECEIPT_TYPES_GETALL: "/api/v1/payroll/concepts/receipt-types",
+    RECEIPT_TYPES_CREATE: "/api/v1/payroll/concepts/receipt-types",
+
+    // Política y configuración (/api/v1/payroll/policies)
+    POLICY_GET: "/api/v1/payroll/policies",
+    POLICY_UPDATE: "/api/v1/payroll/policies",
+    COMPANY_GET: "/api/v1/payroll/policies/company",
+    COMPANY_UPDATE: "/api/v1/payroll/policies/company",
+
+    // Novedades (/api/v1/payroll/novelties)
+    NOVELTIES_GETALL: "/api/v1/payroll/novelties",
+    NOVELTIES_GETONE: (id) => `/api/v1/payroll/novelties/${id}`,
+    NOVELTIES_CREATE: "/api/v1/payroll/novelties",
+    NOVELTIES_UPDATE: (id) => `/api/v1/payroll/novelties/${id}`,
+    NOVELTIES_DELETE: (id) => `/api/v1/payroll/novelties/${id}`,
+    NOVELTIES_APPLY: (id) => `/api/v1/payroll/novelties/${id}/apply`,
+    NOVELTIES_REJECT: (id) => `/api/v1/payroll/novelties/${id}/reject`,
+    NOVELTIES_BULK_CREATE: "/api/v1/payroll/novelties/bulk-create",
+
+    // Vacaciones (/api/v1/payroll/vacations)
+    VACATION_BALANCES_GETALL: "/api/v1/payroll/vacations/balances",
+    VACATION_BALANCES_GETONE: (employeeId) => `/api/v1/payroll/vacations/balances/${employeeId}`,
+    VACATION_BALANCES_GET_ME: "/api/v1/payroll/vacations/balances/me",
+    VACATION_REQUESTS_GETALL: "/api/v1/payroll/vacations/requests",
+    VACATION_REQUESTS_GETONE: (id) => `/api/v1/payroll/vacations/requests/${id}`,
+    VACATION_REQUESTS_GET_ME: "/api/v1/payroll/vacations/requests/me",
+    VACATION_REQUESTS_CREATE: "/api/v1/payroll/vacations/requests",
+    VACATION_REQUESTS_APPROVE: (id) => `/api/v1/payroll/vacations/requests/${id}/approve`,
+    VACATION_REQUESTS_REJECT: (id) => `/api/v1/payroll/vacations/requests/${id}/reject`,
+    VACATION_REQUESTS_PAY: (id) => `/api/v1/payroll/vacations/requests/${id}/pay`,
+    HOLIDAYS_GETALL: "/api/v1/payroll/vacations/holidays",
+    HOLIDAYS_CREATE: "/api/v1/payroll/vacations/holidays",
+    HOLIDAYS_DELETE: (id) => `/api/v1/payroll/vacations/holidays/${id}`,
+
+    // Prestaciones Sociales (/api/v1/payroll/social-benefits)
+    SOCIAL_BENEFITS_LEDGER_GETALL: "/api/v1/payroll/social-benefits/ledger",
+    SOCIAL_BENEFITS_LEDGER_GET_EMPLOYEE: (employeeId) => `/api/v1/payroll/social-benefits/ledger/employee/${employeeId}`,
+    SOCIAL_BENEFITS_LEDGER_GET_ME: "/api/v1/payroll/social-benefits/ledger/me",
+    SOCIAL_BENEFITS_SETTLEMENTS_CALCULATE: "/api/v1/payroll/social-benefits/settlements/calculate",
+    SOCIAL_BENEFITS_SETTLEMENTS_CREATE: "/api/v1/payroll/social-benefits/settlements",
+    SOCIAL_BENEFITS_SETTLEMENTS_GETALL: "/api/v1/payroll/social-benefits/settlements",
+    SOCIAL_BENEFITS_SETTLEMENTS_GETONE: (id) => `/api/v1/payroll/social-benefits/settlements/${id}`,
+    SOCIAL_BENEFITS_SETTLEMENTS_APPROVE: (id) => `/api/v1/payroll/social-benefits/settlements/${id}/approve`,
+    SOCIAL_BENEFITS_SETTLEMENTS_PAY: (id) => `/api/v1/payroll/social-benefits/settlements/${id}/pay`,
+    SOCIAL_BENEFITS_ACCRUAL_CALCULATE: "/api/v1/payroll/social-benefits/accrual/calculate",
+    SOCIAL_BENEFITS_ACCRUAL_RECORD: "/api/v1/payroll/social-benefits/accrual/record",
+
+    // Utilidades (/api/v1/payroll/utilidades)
+    UTILIDADES_PERIODS_GETALL: "/api/v1/payroll/utilidades/periods",
+    UTILIDADES_PERIODS_GETONE: (id) => `/api/v1/payroll/utilidades/periods/${id}`,
+    UTILIDADES_PERIODS_CREATE: "/api/v1/payroll/utilidades/periods",
+    UTILIDADES_PERIODS_CALCULATE: (id) => `/api/v1/payroll/utilidades/periods/${id}/calculate`,
+    UTILIDADES_PERIODS_APPROVE: (id) => `/api/v1/payroll/utilidades/periods/${id}/approve`,
+    UTILIDADES_PERIODS_PAY: (id) => `/api/v1/payroll/utilidades/periods/${id}/pay`,
+    UTILIDADES_PAYMENTS_GETALL: "/api/v1/payroll/utilidades/payments",
+    UTILIDADES_PAYMENTS_GETONE: (id) => `/api/v1/payroll/utilidades/payments/${id}`,
+    UTILIDADES_PAYMENTS_GET_ME: "/api/v1/payroll/utilidades/payments/me",
+    UTILIDADES_PAYMENTS_PAY: (id) => `/api/v1/payroll/utilidades/payments/${id}/pay`,
+}

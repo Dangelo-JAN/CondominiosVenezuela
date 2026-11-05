@@ -146,6 +146,7 @@ export const HandleAcceptInvitation = async (req, res) => {
         hr.isactive = true
         hr.invitationtoken = undefined
         hr.invitationtokenexpires = undefined
+        hr.permissions = DEFAULT_PERMISSIONS[hr.role]
         await hr.save()
 
         const jwtToken = GenerateJwtTokenAndSetCookiesHR(res, hr._id, hr.role, hr.organizationID)
@@ -154,7 +155,15 @@ export const HandleAcceptInvitation = async (req, res) => {
             success: true,
             message: "Invitación aceptada exitosamente",
             type: "HRLogin",
-            token: jwtToken
+            token: jwtToken,
+            HRid: hr._id,
+            firstname: hr.firstname,
+            lastname: hr.lastname,
+            email: hr.email,
+            role: hr.role,
+            cargo: hr.cargo,
+            isverified: hr.isverified,
+            permissions: hr.permissions ? hr.permissions.toObject() : {}
         })
 
     } catch (error) {

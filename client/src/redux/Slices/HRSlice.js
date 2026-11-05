@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { HRAsyncReducer } from "../AsyncReducers/asyncreducer.js";
-import { HandlePostHumanResources, HandleGetHumanResources, HandlePatchHumanResources } from "../Thunks/HRThunk.js";
+import { HandlePostHumanResources, HandleGetHumanResources, HandlePatchHumanResources, HandleHRCheck } from "../Thunks/HRThunk.js";
 
 const HRSlice = createSlice({
     name: "HumanResources",
@@ -36,6 +36,7 @@ const HRSlice = createSlice({
     extraReducers: (builder) => {
         HRAsyncReducer(builder, HandlePostHumanResources)
         HRAsyncReducer(builder, HandleGetHumanResources)
+        HRAsyncReducer(builder, HandleHRCheck)
 
         // ── HandlePatchHumanResources (profile update) ──────────────────────
         builder

@@ -22,6 +22,7 @@ const PermissionsSchema = new Schema({
     interviews:     { type: PermissionModuleSchema, default: () => ({}) },
     hrprofiles:     { type: PermissionModuleSchema, default: () => ({}) },
     bitacoras:      { type: PermissionModuleSchema, default: () => ({}) },
+    payroll:        { type: PermissionModuleSchema, default: () => ({}) },
 }, { _id: false })
 
 // ── Mapeo de Cargo a Rol ─────────────────────────────────────────────────
@@ -53,6 +54,7 @@ export const DEFAULT_PERMISSIONS = {
         interviews:  { create: true,  read: true, update: true,  delete: true  },
         hrprofiles:  { create: true,  read: true, update: true,  delete: true  },
         bitacoras:   { create: false, read: true, update: false, delete: true  },
+        payroll:     { create: true,  read: true, update: true,  delete: true  },
     },
     "HR-Manager": {
         employees:   { create: true,  read: true, update: true,  delete: true  },
@@ -68,6 +70,7 @@ export const DEFAULT_PERMISSIONS = {
         interviews:  { create: true,  read: true, update: true,  delete: true  },
         hrprofiles:  { create: false, read: true, update: false, delete: false },
         bitacoras:   { create: false, read: true, update: false, delete: false },
+        payroll:     { create: true,  read: true, update: true,  delete: true  },
     },
     "HR-Viewer": {
         employees:   { create: false, read: true, update: false, delete: false },
@@ -83,6 +86,7 @@ export const DEFAULT_PERMISSIONS = {
         interviews:  { create: false, read: true, update: false, delete: false },
         hrprofiles:  { create: false, read: false, update: false, delete: false },
         bitacoras:   { create: false, read: true,  update: false, delete: false },
+        payroll:     { create: false, read: true, update: false, delete: false },
     }
 }
 
@@ -148,5 +152,34 @@ const HumanResourcesSchema = new Schema({
         ref: "Organization"
     }
 }, { timestamps: true })
+
+// ── Middleware: Auto-sync permissions cuando role o cargo cambian ───────────
+HumanResourcesSchema.pre('save', function(next) {
+    // Solo actuar si: documento nuevo O role modificado O cargo modificado
+    const isNewDoc = this.isNew;
+    const roleChanged = this.isModified('role');
+    const cargoChanged = this.isModified('cargo');
+
+    if (!isNewDoc && !roleChanged && !cargoChanged) {
+        return next(); // No tocar permissions si no hay cambios relevantes
+    }
+
+    // Determinar role objetivo
+    let targetRole = this.role;
+    
+    // Si cargo cambió y role no cambió explícitamente, derivar role de cargo
+    if (cargoChanged && !roleChanged) {
+        targetRole = CARGO_TO_ROLE[this.cargo] || 'HR-Admin';
+        this.role = targetRole; // Sincronizar role también
+    }
+    
+    // Fallback si role undefined
+    targetRole = targetRole || 'HR-Admin';
+
+    // Aplicar permissions del role objetivo
+    this.permissions = DEFAULT_PERMISSIONS[targetRole] || DEFAULT_PERMISSIONS['HR-Admin'];
+
+    next();
+});
 
 export const HumanResources = mongoose.model("HumanResources", HumanResourcesSchema)

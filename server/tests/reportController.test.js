@@ -40,16 +40,19 @@ async function seedWeekData () {
     empA = await Employee.create({
         firstname: 'Ana', lastname: 'Perez', email: 'ana@test.ve', password: 'x',
         contactnumber: '0414', role: 'Employee', isverified: true,
+        hire_date: new Date('2026-01-15T00:00:00.000Z'),
         department: deptMantenimiento._id, organizationID: ORG
     })
     empB = await Employee.create({
         firstname: 'Beto', lastname: 'Rossi', email: 'beto@test.ve', password: 'x',
         contactnumber: '0414', role: 'Employee', isverified: true,
+        hire_date: new Date('2026-01-15T00:00:00.000Z'),
         department: deptMantenimiento._id, organizationID: ORG
     })
     empC = await Employee.create({
         firstname: 'Carla', lastname: 'Diaz', email: 'carla@test.ve', password: 'x',
         contactnumber: '0414', role: 'Employee', isverified: true,
+        hire_date: new Date('2026-01-15T00:00:00.000Z'),
         department: deptLimpieza._id, organizationID: ORG
     })
 

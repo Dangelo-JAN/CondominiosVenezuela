@@ -11,7 +11,7 @@ const HR_NAV_ITEMS_ALL = [
     { label: "Departamentos", path: "/HR/dashboard/departments", icon: "/assets/HR-Dashboard/department.png" },
     { label: "Horarios", path: "/HR/dashboard/schedules", icon: "/assets/HR-Dashboard/attendance.png" },
     { label: "Fotos", path: "/HR/dashboard/work-photos", icon: "/assets/HR-Dashboard/notice.png" },
-    { label: "Nóminas", path: null, icon: "/assets/HR-Dashboard/salary.png" },
+    { label: "Nóminas", path: "/HR/dashboard/payroll", icon: "/assets/HR-Dashboard/salary.png" },
     { label: "Avisos", path: null, icon: "/assets/HR-Dashboard/notice.png" },
     { label: "Ausencias", path: "/HR/dashboard/leaves", icon: "/assets/HR-Dashboard/leave.png" },
     { label: "Asistencia", path: null, icon: "/assets/HR-Dashboard/attendance.png" },

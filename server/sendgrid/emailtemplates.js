@@ -453,3 +453,77 @@ export const CONTACT_GENERAL_TEMPLATE = `
 </body>
 </html>
 `
+
+// ── Boleta de Pago (Payslip) ────────────────────────────────────────────────
+export const PAYSLIP_EMAIL_TEMPLATE = `
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Boleta de Pago — CondoVE SGC</title>
+</head>
+<body style="${BASE_STYLE}">
+  <div style="${CARD_STYLE}">
+    ${HEADER("Tu Boleta de Pago está lista")}
+    <p style="margin: 0 0 12px; color: #4b5563; font-size: 15px;">Hola, <strong>{employeeName}</strong>,</p>
+    <p style="margin: 0 0 24px; color: #4b5563; font-size: 15px;">
+        Se ha procesado el pago correspondiente al período <strong>{periodName}</strong>. 
+        Tu boleta de pago ya está disponible en el sistema.
+    </p>
+    <div style="
+        background: linear-gradient(135deg, rgba(99,102,241,0.06), rgba(139,92,246,0.06));
+        border: 1px solid rgba(99,102,241,0.15);
+        border-radius: 12px;
+        padding: 20px 24px;
+        margin: 24px 0;
+    ">
+        <p style="margin: 0 0 8px; font-size: 14px; font-weight: 600; color: #6366f1;">Detalles del pago:</p>
+        <table style="width: 100%; border-collapse: collapse; margin-top: 12px;">
+            <tr>
+                <td style="padding: 8px 0; border-bottom: 1px solid rgba(99,102,241,0.1); font-weight: 600; width: 40%; color: #4b5563;">Período:</td>
+                <td style="padding: 8px 0; border-bottom: 1px solid rgba(99,102,241,0.1); color: #1a1a2e;">{periodName}</td>
+            </tr>
+            <tr>
+                <td style="padding: 8px 0; border-bottom: 1px solid rgba(99,102,241,0.1); font-weight: 600; color: #4b5563;">Fecha de pago:</td>
+                <td style="padding: 8px 0; border-bottom: 1px solid rgba(99,102,241,0.1); color: #1a1a2e;">{paymentDate}</td>
+            </tr>
+            <tr>
+                <td style="padding: 8px 0; border-bottom: 1px solid rgba(99,102,241,0.1); font-weight: 600; color: #4b5563;">Total Ingresos:</td>
+                <td style="padding: 8px 0; border-bottom: 1px solid rgba(99,102,241,0.1); color: #1a1a2e;">{totalIncome} VES</td>
+            </tr>
+            <tr>
+                <td style="padding: 8px 0; border-bottom: 1px solid rgba(99,102,241,0.1); font-weight: 600; color: #4b5563;">Total Deducciones:</td>
+                <td style="padding: 8px 0; border-bottom: 1px solid rgba(99,102,241,0.1); color: #1a1a2e;">{totalDeductions} VES</td>
+            </tr>
+            <tr>
+                <td style="padding: 8px 0; font-weight: 700; color: #4b5563;">Neto a Pagar:</td>
+                <td style="padding: 8px 0; font-weight: 700; color: #10b981; font-size: 16px;">{netPay} VES</td>
+            </tr>
+        </table>
+    </div>
+    <div style="text-align: center; margin: 32px 0;">
+        <a href="{payslipURL}" style="
+            display: inline-block;
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+            color: white;
+            padding: 14px 32px;
+            text-decoration: none;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 15px;
+            letter-spacing: 0.3px;
+            box-shadow: 0 4px 15px rgba(99,102,241,0.3);
+        ">Ver Boleta Completa</a>
+    </div>
+    <p style="margin: 0 0 8px; color: #6b7280; font-size: 14px;">
+        También puedes acceder desde la app en: Nóminas > Mis Recibos
+    </p>
+    <p style="margin: 0; color: #9ca3af; font-size: 13px;">
+        Si tienes dudas sobre tu liquidación, contacta a Recursos Humanos.
+    </p>
+    ${FOOTER}
+  </div>
+</body>
+</html>
+`

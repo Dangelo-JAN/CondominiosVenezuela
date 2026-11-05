@@ -6,10 +6,10 @@
 ---
 
 ## 🚩 ESTADO ACTUAL
-- **Tarea activa:** Ninguna — todas las fases completadas
-- **Última completada:** #036-dynamic-seed ✅ (21/09/2026 — seed dinámica reescrita, validada en deploy local, commit `4e15744`)
-- **Branch actual:** 035-dynamic-seed (PR hacia dev pendiente)
-- **Deploy pendiente:** Vercel + Render desde `main` (después de PR merge)
+- **Tarea activa:** #037-payroll-venezuelan-module 🟡 EN CURSO (reabierta 22/10/2026 — Fase 7: Producción/Gaps Críticos, PR hacia dev existente)
+- **Última completada:** #039-payroll-concepts-tab-ui ✅ (05/11/2026)
+- **Branch actual:** 037-payroll-venezuelan-module (PR hacia dev YA CREADO, se mantiene)
+- **Deploy pendiente:** Vercel + Render desde `main` (después de PR merge + Fase 7 completada)
 - **Archivo de referencia rápida:** `actual.md`
 
 ---
@@ -51,6 +51,9 @@
 - [x] [[034-public-navbar-component]] - ✅ COMPLETADO el 19/08/2026
 - [x] [[035-hr-employee-reports]] - ✅ COMPLETADO el 21/08/2026
 - [x] [[036-dynamic-seed]] - ✅ COMPLETADO el 21/09/2026 (commit `4e15744`, PR hacia dev)
+- [ ] [[037-payroll-venezuelan-module]] - 🟡 EN CURSO (reabierta 22/10/2026 — Fase 7: Producción/Gaps Críticos, PR hacia dev existente)
+- [x] [[038-payroll-receipts-tab-ui]] - ✅ COMPLETADO el 03/11/2026 (commit `879fef9`, PR hacia 037-payroll-venezuelan-module)
+- [x] [[039-payroll-concepts-tab-ui]] - ✅ COMPLETADO el 05/11/2026 (UI completa + 3 bugs críticos resueltos: HandleHRCheck thunk, Select value fix, HR permissions stale data + auto-sync middleware; commits `089ba65` `e02a7eb` `c41b94e`, PR hacia 037-payroll-venezuelan-module)
 ---
 
 ## 🛠️ REGLAS DE ORO (DE CUMPLIMIENTO OBLIGATORIO)
