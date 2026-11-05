@@ -3,8 +3,7 @@ import { useDispatch, useSelector } from "react-redux"
 import { HandlePayrollPolicy } from "../../../../../redux/Thunks/PayrollThunk.js"
 import { useIsDark } from "../../../../../hooks/useIsDark.js"
 import { useHRAuth } from "../../../../../hooks/useHRAuth.js"
-import { CustomSelect } from "../../../../../components/ui/custom-select.jsx"
-import { Loader2, Settings, AlertCircle, Edit, Save, X, ChevronRight, AlertTriangle } from "lucide-react"
+import { Loader2, Settings, AlertCircle, Edit, Save, X, ChevronRight, AlertTriangle, ChevronDown } from "lucide-react"
 
 const SECTIONS = [
     {
@@ -158,6 +157,37 @@ const getSelectOptions = (field) => {
     return field.options.map(opt => ({ value: opt, label: opt }))
 }
 
+// Styled native select component matching design system
+const StyledSelect = ({ value, onChange, options, placeholder, disabled, error, id, ariaDescribedBy, ariaInvalid }) => {
+    const isDark = useIsDark()
+    return (
+        <div className="relative">
+            <select
+                id={id}
+                value={value ?? ""}
+                onChange={(e) => onChange(e.target.value)}
+                disabled={disabled}
+                aria-invalid={ariaInvalid}
+                aria-describedby={ariaDescribedBy}
+                className={`w-full appearance-none rounded-xl px-3 py-2.5 pr-10 text-sm outline-none transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed
+                    bg-gray-50 border border-gray-200 text-gray-900 placeholder-gray-400
+                    focus:border-blue-400 focus:bg-white focus:ring-2 focus:ring-blue-100
+                    dark:bg-[rgba(255,255,255,0.04)] dark:border-[rgba(255,255,255,0.08)] dark:text-white
+                    dark:placeholder-[rgba(255,255,255,0.25)] dark:focus:border-[rgba(0,61,165,0.5)]
+                    ${error ? "border-red-500 focus:border-red-500 focus:ring-red-100" : ""}`}
+            >
+                <option value="" disabled>{placeholder}</option>
+                {options?.map(opt => (
+                    <option key={opt.value} value={opt.value}>{opt.label}</option>
+                ))}
+            </select>
+            <div className="absolute inset-y-0 right-0 flex items-center px-3 pointer-events-none">
+                <ChevronDown className="w-4 h-4 opacity-50" style={{ color: isDark ? "rgba(255,255,255,0.4)" : "#9ca3af" }} />
+            </div>
+        </div>
+    )
+}
+
 export const PayrollPolicyTab = () => {
     const isDark = useIsDark()
     const dispatch = useDispatch()
@@ -208,7 +238,6 @@ export const PayrollPolicyTab = () => {
     const handleInputChange = useCallback((fieldKey, value) => {
         setFormData(prev => ({ ...prev, [fieldKey]: value }))
         setHasChanges(true)
-        // Clear error on change
         if (errors[fieldKey]) {
             setErrors(prev => ({ ...prev, [fieldKey]: null }))
         }
@@ -229,13 +258,10 @@ export const PayrollPolicyTab = () => {
         const section = SECTIONS.find(s => s.id === sectionId)
         if (!section) return
 
-        // Validate section fields
         const sectionFields = section.fields.map(f => f.key)
         const sectionValues = {}
         sectionFields.forEach(k => { sectionValues[k] = formData[k] })
-        if (!validateAll(sectionValues)) {
-            return
-        }
+        if (!validateAll(sectionValues)) return
 
         setIsSubmitting(true)
         setSubmitError(null)
@@ -310,7 +336,6 @@ export const PayrollPolicyTab = () => {
     }
 
     const isLoading = policyLoading || companyLoading
-    const allFields = useMemo(() => SECTIONS.flatMap(s => s.fields), [])
 
     return (
         <div className="w-full h-full flex flex-col gap-6 px-4 py-6">
@@ -445,13 +470,16 @@ export const PayrollPolicyTab = () => {
                                                             </label>
 
                                                             {field.type === "select" && (
-                                                                <CustomSelect
+                                                                <StyledSelect
+                                                                    id={fieldId}
                                                                     value={formData[field.key] ?? ""}
-                                                                    onValueChange={(val) => handleInputChange(field.key, val)}
+                                                                    onChange={(val) => handleInputChange(field.key, val)}
                                                                     options={getSelectOptions(field)}
                                                                     placeholder="Seleccionar..."
-                                                                    accentColor="blue"
                                                                     disabled={isSubmitting}
+                                                                    error={error}
+                                                                    ariaDescribedBy={field.help ? `${fieldId}-help` : undefined}
+                                                                    ariaInvalid={error ? "true" : "false"}
                                                                 />
                                                             )}
 
