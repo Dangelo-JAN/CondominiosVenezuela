@@ -666,7 +666,7 @@ export const ConceptFormModal = ({
                                     value={formData.tipo_recibo}
                                     onValueChange={(val) => handleChange("tipo_recibo", val)}
                                     options={[
-                                        { value: "", label: "Sin asignar (usa default)" },
+                                        { value: "unassigned", label: "Sin asignar (usa default)" },
                                         ...(receiptTypes || []).map(rt => ({ value: rt._id, label: `${rt.code} - ${rt.name}` }))
                                     ]}
                                     placeholder="Seleccionar tipo"

@@ -6,11 +6,11 @@
 ---
 
 ## 🚩 ESTADO ACTUAL
-- **Tarea activa:** #037-payroll-venezuelan-module 🟡 EN CURSO (reabierta 22/10/2026 — auditoría reveló gaps críticos para producción)
-- **Última completada:** #036-dynamic-seed ✅ (21/09/2026)
-- **Branch actual:** 037-payroll-venezuelan-module (PR hacia dev YA CREADO, se mantiene)
+- **Tarea activa:** #039-payroll-concepts-tab-ui 🟡 EN CURSO (04/11/2026 - 2 bugs críticos pendientes)
+- **Última completada:** #038-payroll-receipts-tab-ui ✅ (03/11/2026)
+- **Branch actual:** feature/039-payroll-concepts-tab-ui (desde 037-payroll-venezuelan-module, PR hacia 037)
 - **Deploy pendiente:** Vercel + Render desde `main` (después de PR merge + Fase 7 completada)
-- **Archivo de referencia rápida:** `actual.md`
+- **Archivo de referencia rápida:** `actual.md` + `039-payroll-concepts-tab-ui.md`
 
 ---
 
@@ -53,6 +53,7 @@
 - [x] [[036-dynamic-seed]] - ✅ COMPLETADO el 21/09/2026 (commit `4e15744`, PR hacia dev)
 - [ ] [[037-payroll-venezuelan-module]] - 🟡 EN CURSO (reabierta 22/10/2026 — Fase 7: Producción/Gaps Críticos, PR hacia dev existente)
 - [x] [[038-payroll-receipts-tab-ui]] - ✅ COMPLETADO el 03/11/2026 (commit `879fef9`, PR hacia 037-payroll-venezuelan-module)
+- [ ] [[039-payroll-concepts-tab-ui]] - 🟡 EN CURSO (04/11/2026 - UI completa, 2 bugs críticos pendientes: botón "Nuevo Concepto" no aparece por permissions, error en modal local)
 ---
 
 ## 🛠️ REGLAS DE ORO (DE CUMPLIMIENTO OBLIGATORIO)
