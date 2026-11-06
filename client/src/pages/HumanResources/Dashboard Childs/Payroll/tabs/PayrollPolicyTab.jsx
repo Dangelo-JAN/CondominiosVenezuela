@@ -160,22 +160,24 @@ const getSelectOptions = (field) => {
 // Styled native select component matching design system
 const StyledSelect = ({ value, onChange, options, placeholder, disabled, error, id, ariaDescribedBy, ariaInvalid }) => {
     const isDark = useIsDark()
+    const selectProps = {
+        id,
+        value: value ?? "",
+        onChange: (e) => onChange(e.target.value),
+        disabled,
+        className: `w-full appearance-none rounded-xl px-3 py-2.5 pr-10 text-sm outline-none transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed
+            bg-gray-50 border border-gray-200 text-gray-900 placeholder-gray-400
+            focus:border-blue-400 focus:bg-white focus:ring-2 focus:ring-blue-100
+            dark:bg-[rgba(255,255,255,0.04)] dark:border-[rgba(255,255,255,0.08)] dark:text-white
+            dark:placeholder-[rgba(255,255,255,0.25)] dark:focus:border-[rgba(0,61,165,0.5)]
+            ${error ? "border-red-500 focus:border-red-500 focus:ring-red-100" : ""}`
+    }
+    // Only add aria attributes if they have values
+    if (ariaDescribedBy) selectProps['aria-describedby'] = ariaDescribedBy
+    if (ariaInvalid) selectProps['aria-invalid'] = ariaInvalid
     return (
         <div className="relative">
-            <select
-                id={id}
-                value={value ?? ""}
-                onChange={(e) => onChange(e.target.value)}
-                disabled={disabled}
-                aria-invalid={ariaInvalid}
-                aria-describedby={ariaDescribedBy}
-                className={`w-full appearance-none rounded-xl px-3 py-2.5 pr-10 text-sm outline-none transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed
-                    bg-gray-50 border border-gray-200 text-gray-900 placeholder-gray-400
-                    focus:border-blue-400 focus:bg-white focus:ring-2 focus:ring-blue-100
-                    dark:bg-[rgba(255,255,255,0.04)] dark:border-[rgba(255,255,255,0.08)] dark:text-white
-                    dark:placeholder-[rgba(255,255,255,0.25)] dark:focus:border-[rgba(0,61,165,0.5)]
-                    ${error ? "border-red-500 focus:border-red-500 focus:ring-red-100" : ""}`}
-            >
+            <select {...selectProps}>
                 <option value="" disabled>{placeholder}</option>
                 {options?.map(opt => (
                     <option key={opt.value} value={opt.value}>{opt.label}</option>
