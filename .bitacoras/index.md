@@ -6,9 +6,9 @@
 ---
 
 ## 🚩 ESTADO ACTUAL
-- **Tarea activa:** #037-payroll-venezuelan-module 🟡 EN CURSO (reabierta 22/10/2026 — Fase 7: Producción/Gaps Críticos, PR hacia dev existente)
-- **Última completada:** #039-payroll-concepts-tab-ui ✅ (05/11/2026)
-- **Branch actual:** 037-payroll-venezuelan-module (PR hacia dev YA CREADO, se mantiene)
+- **Tarea activa:** #041-payroll-organization-rif-signup 🟡 EN CURSO (RIF en Organization + PayrollCompany en Signup HR)
+- **Última completada:** #040-payroll-policy-tab-ui ✅ (05/11/2026)
+- **Branch actual:** 040-payroll-policy-tab-ui (PR #56 hacia 037-payroll-venezuelan-module YA CREADO)
 - **Deploy pendiente:** Vercel + Render desde `main` (después de PR merge + Fase 7 completada)
 - **Archivo de referencia rápida:** `actual.md`
 
@@ -55,6 +55,7 @@
 - [x] [[038-payroll-receipts-tab-ui]] - ✅ COMPLETADO el 03/11/2026 (commit `879fef9`, PR hacia 037-payroll-venezuelan-module)
 - [x] [[039-payroll-concepts-tab-ui]] - ✅ COMPLETADO el 05/11/2026 (UI completa + 3 bugs críticos resueltos: HandleHRCheck thunk, Select value fix, HR permissions stale data + auto-sync middleware; commits `089ba65` `e02a7eb` `c41b94e`, PR hacia 037-payroll-venezuelan-module)
 - [x] [[040-payroll-policy-tab-ui]] - ✅ COMPLETADO el 05/11/2026 (UI Policies Tab - 5 secciones, 49 campos, inline edit, validaciones cruzadas, fix React #300, commits `4cba99d` `ced904b` `2439c6a` `8fe489e`, PR hacia 037-payroll-venezuelan-module)
+- [ ] [[041-payroll-organization-rif-signup]] - 🟡 EN CURSO (RIF en Organization + PayrollCompany en Signup HR, migración Org Demo, arquitectura escalable multi-perfil)
 ---
 
 ## 🛠️ REGLAS DE ORO (DE CUMPLIMIENTO OBLIGATORIO)
