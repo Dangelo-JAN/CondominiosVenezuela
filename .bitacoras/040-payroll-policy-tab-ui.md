@@ -12,12 +12,9 @@
 ## 🚦 PUNTO DE CONTROL (Contexto de Reanudación)
 *Usa esto para "despertar" a la IA si el chat se cierra:*
 
-- **Lo último que funcionó:** UI completa implementada y desplegada en Vercel. Fix React Error #300 resuelto. PERO: bug crítico en controller getCompanyConfig crea PayrollCompany con rif/email vacíos → validation error Mongoose.
-- **Dónde se rompió/detuvo:** Tarea marcada COMPLETADO pero con bug en producción. Necesita: RIF en Organization + PayrollCompany en Signup + fix controller.
-- **Siguiente acción inmediata:** 
-  1. Actualizar producción MongoDB Atlas con nuevos campos Organization (rif, parentOrganizationID, organizationType)
-  2. Migrar organización existente (ObjectId('6a0cac2e63fe9b9c98e59a56')) con rif: J314188305
-  3. Implementar FASE 2-4 del plan extendido
+- **Lo último que funcionó:** FASE 1 y FASE 2 completadas. UI completa + Fix React #300 + Organization.model.js con RIF + Migración producción Atlas (Org 6a0cac2d63fe9b9c98e59a54 rif=J314188305) + HR Signup transacción atómica Org+PayrollCompany. Builds ✅ Tests ✅.
+- **Dónde se rompió/detuvo:** FASE 3 pendiente - Controller getCompanyConfig elimina lazy-creation → 404 COMPANY_NOT_CONFIGURED.
+- **Siguiente acción inmediata:** Implementar FASE 3 (Controller) y FASE 4 (UI manejo 404).
 
 ---
 
@@ -25,11 +22,11 @@
 - [x] UI completa: 5 secciones, 49 campos, inline edit, validaciones, dark mode
 - [x] Fix React Error #300 (native select styled)
 - [x] Build client: 0 errores | Build server: 127 tests passing
-- [ ] **EXTENSIÓN BUG FIX:** RIF en Organization.model.js (alphanumeric, sparse unique, sanitizeRif)
-- [ ] **EXTENSIÓN BUG FIX:** Migración producción: Org 6a0cac2e63fe9b9c98e59a56 → rif=J314188305
-- [ ] **EXTENSIÓN BUG FIX:** HR Signup → Transacción atómica Organization + PayrollCompany
-- [ ] **EXTENSIÓN BUG FIX:** Controller getCompanyConfig: eliminar lazy-creation → 404 COMPANY_NOT_CONFIGURED
-- [ ] **EXTENSIÓN BUG FIX:** UI PayrollPolicyTab: manejar 404 → estado "Configuración pendiente"
+- [x] **EXTENSIÓN BUG FIX F1:** RIF en Organization.model.js (alphanumeric, sparse unique, sanitizeRif) + parentOrganizationID + organizationType
+- [x] **EXTENSIÓN BUG FIX F1:** Migración producción: Org `6a0cac2d63fe9b9c98e59a54` → `rif=J314188305` (Atlas verificado)
+- [x] **EXTENSIÓN BUG FIX F2:** HR Signup → Transacción atómica Organization + PayrollCompany (rif=org.rif, email=org.email)
+- [ ] **EXTENSIÓN BUG FIX F3:** Controller getCompanyConfig: eliminar lazy-creation → 404 COMPANY_NOT_CONFIGURED
+- [ ] **EXTENSIÓN BUG FIX F4:** UI PayrollPolicyTab: manejar 404 → estado "Configuración pendiente" + CTA setup
 - [ ] Commit + PR hacia `037-payroll-venezuelan-module` (PR #56 existe)
 
 ---
