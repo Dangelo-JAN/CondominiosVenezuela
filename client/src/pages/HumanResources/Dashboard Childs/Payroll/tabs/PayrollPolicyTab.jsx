@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux"
 import { HandlePayrollPolicy } from "../../../../../redux/Thunks/PayrollThunk.js"
 import { useIsDark } from "../../../../../hooks/useIsDark.js"
 import { useHRAuth } from "../../../../../hooks/useHRAuth.js"
-import { Loader2, Settings, AlertCircle, Edit, Save, X, ChevronRight, AlertTriangle, ChevronDown } from "lucide-react"
+import { Loader2, Settings, AlertCircle, Edit, Save, X, ChevronRight, AlertTriangle, ChevronDown, Building2, PlusCircle } from "lucide-react"
 
 const SECTIONS = [
     {
@@ -324,7 +324,14 @@ export const PayrollPolicyTab = () => {
         }
     }, [dispatch, formData, validateAll])
 
-    if (policyError || companyError) {
+    // Helper to check if error is COMPANY_NOT_CONFIGURED
+    const isCompanyNotConfigured = companyError && 
+        (typeof companyError === 'object' ? companyError.code === 'COMPANY_NOT_CONFIGURED' : companyError.includes('COMPANY_NOT_CONFIGURED'))
+
+    // Helper to check if error is a real error (not COMPANY_NOT_CONFIGURED)
+    const hasRealError = (policyError || companyError) && !isCompanyNotConfigured
+
+    if (hasRealError) {
         return (
             <div className="w-full h-full flex flex-col items-center justify-center gap-4 p-8">
                 <div className="text-center text-red-500">
@@ -336,6 +343,98 @@ export const PayrollPolicyTab = () => {
     }
 
     const isLoading = policyLoading || companyLoading
+
+    // Handle COMPANY_NOT_CONFIGURED - show friendly setup state
+    const showSetupState = isCompanyNotConfigured
+
+    const handleCreateCompany = useCallback(async () => {
+        if (!isReady || !can("payroll", "update")) return
+        
+        setIsSubmitting(true)
+        setSubmitError(null)
+        
+        try {
+            // Get organization data from policy (which should have org info)
+            const orgName = policy?.name || 'Mi Organización'
+            const orgRif = policy?.rif || ''
+            const orgEmail = policy?.email || ''
+            
+            // Create PayrollCompany with defaults via COMPANY_UPDATE (upsert)
+            const payrollDefaults = {
+                rif: orgRif || 'PENDIENTE',
+                email: orgEmail || 'pendiente@configurar.com',
+                name: orgName,
+                salary_split_mode: 'MIXTO',
+                split_percentage_base: 60.00,
+                cestaticket_amount_usd: 40.00,
+                cestaticket_payment_day: 15,
+                cestaticket_package_mode: 'INTEGRADO',
+                vacation_days_base: 15,
+                vacation_days_per_year: 1,
+                vacation_days_max: 30,
+                vacation_bonus_days_base: 15,
+                vacation_bonus_days_per_year: 1,
+                vacation_bonus_days_max: 30,
+                exchange_rate_source: 'BCV',
+                rest_weekdays: [5, 6],
+                minimum_wage_ves: 130.00,
+                ut_value_ves: 9.00,
+                imii_usd: 130.00,
+                ivss_employee_rate: 4.00,
+                ivss_employer_rate: 9.00,
+                ivss_salary_cap_multiplier: 5,
+                faov_employee_rate: 1.00,
+                faov_employer_rate: 2.00,
+                rpe_employee_rate: 0.50,
+                rpe_employer_rate: 2.00,
+                lppss_rate: 9.00,
+                inces_employer_rate: 2.00,
+                holiday_payout_factor: 1.50,
+                rest_day_payout_factor: 1.50,
+                overtime_day_factor: 1.50,
+                overtime_night_factor: 1.50,
+                night_bonus_rate: 0.30,
+                min_service_months: 12,
+                pay_rest_days: true,
+                pay_holidays: true,
+                accrual_mode: 'ANNUAL',
+                vacation_salary_basis: 'LAST_SALARY',
+                vacation_salary_source: 'TOTAL_SALARY',
+                cestaticket_pay_on_vacation: true,
+                cestaticket_separate_period: false,
+                seniority_cap_years: 30,
+                include_cestaticket_in_benefits: true,
+                include_commissions_in_benefits: true,
+                include_bonuses_in_benefits: true,
+                include_overtime_in_benefits: true,
+                include_utilidades_in_benefits: true,
+                faov_employer_base_formula: 'SALARIO_MENSUAL',
+                vacation_cestaticket_label: 'CESTATICKET VACACIONAL',
+                active_modules: ['payroll', 'vacations', 'social_benefits', 'utilidades'],
+                banavih_patron_number: '',
+                inces_number: '',
+                faov_number: '',
+                ivss_number: '',
+                address: '',
+                phone: '',
+                logo: '',
+                colors: {
+                    primary: '#003DA5',
+                    secondary: '#FCE300'
+                }
+            }
+            
+            await dispatch(HandlePayrollPolicy({ type: "COMPANY_UPDATE", data: payrollDefaults })).unwrap()
+            
+            // Refresh company config
+            dispatch(HandlePayrollPolicy({ type: "COMPANY_GET" }))
+            
+        } catch (error) {
+            setSubmitError(error.message || "Error al crear configuración de empresa")
+        } finally {
+            setIsSubmitting(false)
+        }
+    }, [dispatch, isReady, can, policy])
 
     return (
         <div className="w-full h-full flex flex-col gap-6 px-4 py-6">
@@ -378,6 +477,47 @@ export const PayrollPolicyTab = () => {
                             <p className="text-sm" style={{ color: isDark ? "rgba(255,255,255,0.5)" : "#6b7280" }}>
                                 Cargando políticas...
                             </p>
+                        </div>
+                    </div>
+                ) : showSetupState ? (
+                    <div className="flex-1 flex flex-col items-center justify-center gap-6 p-8">
+                        <div className="w-20 h-20 rounded-2xl flex items-center justify-center transition-colors duration-300"
+                            style={{ background: isDark ? "rgba(255,190,11,0.1)" : "rgba(255,190,11,0.1)" }}>
+                            <Building2 className="w-10 h-10 transition-colors duration-300" style={{ color: "#F59E0B" }} />
+                        </div>
+                        <div className="text-center max-w-md">
+                            <h2 className="text-xl font-bold text-gray-900 dark:text-white">Configuración de Empresa Pendiente</h2>
+                            <p className="text-gray-500 dark:text-gray-400 mt-2 mb-6">
+                                Esta organización no tiene configuración de nómina creada. 
+                                Para gestionar las políticas, primero debe crear la configuración base de la empresa.
+                            </p>
+                            {isReady && can("payroll", "update") && (
+                                <button
+                                    onClick={handleCreateCompany}
+                                    disabled={isSubmitting}
+                                    className="px-6 py-3 rounded-xl text-base font-medium transition-all duration-200 text-white flex items-center justify-center gap-2 mx-auto"
+                                    style={{ background: "#F59E0B" }}
+                                >
+                                    {isSubmitting && <Loader2 className="w-5 h-5 animate-spin" />}
+                                    <PlusCircle className="w-5 h-5" />
+                                    Crear Configuración de Empresa
+                                </button>
+                            )}
+                            {!isReady || !can("payroll", "update") && (
+                                <p className="text-sm text-gray-500 dark:text-gray-400 mt-4">
+                                    {isReady 
+                                        ? "No tiene permisos para crear la configuración. Contacte al administrador." 
+                                        : "Verificando permisos..."}
+                                </p>
+                            )}
+                            {submitError && (
+                                <div className="mt-4 p-3 rounded-xl bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800">
+                                    <p className="text-sm text-red-600 dark:text-red-400 flex items-center justify-center gap-1">
+                                        <AlertCircle className="w-4 h-4" />
+                                        {submitError}
+                                    </p>
+                                </div>
+                            )}
                         </div>
                     </div>
                 ) : !policy && !companyConfig ? (
