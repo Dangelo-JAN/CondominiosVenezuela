@@ -160,9 +160,11 @@ const getSelectOptions = (field) => {
 // Styled native select component matching design system
 const StyledSelect = ({ value, onChange, options, placeholder, disabled, error, id, ariaDescribedBy, ariaInvalid }) => {
     const isDark = useIsDark()
+    // Ensure value is always a string to prevent React Error #310 (uncontrolled -> controlled)
+    const stringValue = value !== undefined && value !== null ? String(value) : ""
     const selectProps = {
         id,
-        value: value ?? "",
+        value: stringValue,
         onChange: (e) => onChange(e.target.value),
         disabled,
         className: `w-full appearance-none rounded-xl px-3 py-2.5 pr-10 text-sm outline-none transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed
@@ -629,7 +631,7 @@ export const PayrollPolicyTab = () => {
                                                                 <input
                                                                     id={fieldId}
                                                                     type="number"
-                                                                    value={formData[field.key] ?? ""}
+                                                                    value={formData[field.key] !== undefined && formData[field.key] !== null ? String(formData[field.key]) : ""}
                                                                     onChange={(e) => {
                                                                         let val = e.target.value
                                                                         if (val === "") {
@@ -662,7 +664,7 @@ export const PayrollPolicyTab = () => {
                                                                 <input
                                                                     id={fieldId}
                                                                     type="text"
-                                                                    value={formData[field.key] ?? ""}
+                                                                    value={formData[field.key] !== undefined && formData[field.key] !== null ? String(formData[field.key]) : ""}
                                                                     onChange={(e) => handleInputChange(field.key, e.target.value)}
                                                                     onBlur={() => handleBlur(field.key)}
                                                                     disabled={isSubmitting}
@@ -683,7 +685,7 @@ export const PayrollPolicyTab = () => {
                                                                     <input
                                                                         id={fieldId}
                                                                         type="checkbox"
-                                                                        checked={formData[field.key] ?? false}
+                                                                        checked={Boolean(formData[field.key])}
                                                                         onChange={(e) => handleInputChange(field.key, e.target.checked)}
                                                                         disabled={isSubmitting}
                                                                         className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500 focus:ring-2 dark:border-[rgba(255,255,255,0.2)] dark:bg-[rgba(255,255,255,0.04)]"
