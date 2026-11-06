@@ -1,35 +1,40 @@
 # 🛠️ TAREA: Payroll Policy Tab UI Implementation
-**ID:** #040 | **Estado:** ✅ COMPLETADO | **Fecha:** 2026-11-05
+**ID:** #040 | **Estado:** 🟡 EN CURSO | **Fecha:** 2026-11-05 (reabierta 2026-11-06)
 
 ---
 
 ## 🎯 OBJETIVO FINAL
 > Implementar la UI completa de la pestaña "Políticas" en la página de Nómina (HR), reemplazando el texto "En desarrollo" por un formulario organizado por 5 secciones que permita visualizar y editar la configuración de nómina venezolana (LOTTT, IVSS, FAOV, INCES, ISLR, RPE, LPPSS, cestaticket, vacaciones, bono vacacional, utilidades, prestaciones sociales, horas extra).
+> **Extendido:** Corregir bug crítico: lazy-creation de PayrollCompany con datos inválidos (rif/email vacíos) → integrar RIF en Organization + crear PayrollCompany válida en HR Signup (transacción atómica).
 
 ---
 
 ## 🚦 PUNTO DE CONTROL (Contexto de Reanudación)
 *Usa esto para "despertar" a la IA si el chat se cierra:*
 
-- **Lo último que funcionó:** UI completa implementada y desplegada en Vercel. Fix React Error #300 resuelto con native select styled.
-- **Dónde se rompió/detuvo:** Tarea completada.
-- **Siguiente acción inmediata:** PR hacia 037-payroll-venezuelan-module creado.
+- **Lo último que funcionó:** UI completa implementada y desplegada en Vercel. Fix React Error #300 resuelto. PERO: bug crítico en controller getCompanyConfig crea PayrollCompany con rif/email vacíos → validation error Mongoose.
+- **Dónde se rompió/detuvo:** Tarea marcada COMPLETADO pero con bug en producción. Necesita: RIF en Organization + PayrollCompany en Signup + fix controller.
+- **Siguiente acción inmediata:** 
+  1. Actualizar producción MongoDB Atlas con nuevos campos Organization (rif, parentOrganizationID, organizationType)
+  2. Migrar organización existente (ObjectId('6a0cac2e63fe9b9c98e59a56')) con rif: J314188305
+  3. Implementar FASE 2-4 del plan extendido
 
 ---
 
-## 📝 CAMBIOS TÉCNICOS CLAVE
-- [x] Crear bitácora #040
-- [x] Crear rama `040-payroll-policy-tab-ui` desde `037-payroll-venezuelan-module`
-- [x] **FASE 1:** Modificar `PayrollPolicyTab.jsx` - carga de datos + 5 tarjetas de sección (read-only + inline edit)
-- [x] **FASE 2/3:** Edición inline integrada (sin modal separado, siguiendo patrón PayrollConceptsTab.jsx)
-- [x] **FASE 4:** Pulido - validaciones cruzadas, formateo números, accesibilidad, responsive, dark mode
-- [x] Fix React Error #300 (SSR/hydration mismatch) - native select styled matching design system
+## 📝 CAMBIOS TÉCNICOS CLAVE (PLAN EXTENDIDO)
+- [x] UI completa: 5 secciones, 49 campos, inline edit, validaciones, dark mode
+- [x] Fix React Error #300 (native select styled)
 - [x] Build client: 0 errores | Build server: 127 tests passing
-- [x] Commit + PR hacia `037-payroll-venezuelan-module`
+- [ ] **EXTENSIÓN BUG FIX:** RIF en Organization.model.js (alphanumeric, sparse unique, sanitizeRif)
+- [ ] **EXTENSIÓN BUG FIX:** Migración producción: Org 6a0cac2e63fe9b9c98e59a56 → rif=J314188305
+- [ ] **EXTENSIÓN BUG FIX:** HR Signup → Transacción atómica Organization + PayrollCompany
+- [ ] **EXTENSIÓN BUG FIX:** Controller getCompanyConfig: eliminar lazy-creation → 404 COMPANY_NOT_CONFIGURED
+- [ ] **EXTENSIÓN BUG FIX:** UI PayrollPolicyTab: manejar 404 → estado "Configuración pendiente"
+- [ ] Commit + PR hacia `037-payroll-venezuelan-module` (PR #56 existe)
 
 ---
 
-## ✅ FUNCIONALIDADES IMPLEMENTADAS
+## ✅ FUNCIONALIDADES IMPLEMENTADAS (UI - COMPLETADO)
 
 ### 5 Secciones Configurables (49 campos totales):
 1. **Tasas Legales** (16 campos): IVSS, FAOV, RPE, LPSSS, INCES, Cestaticket, UT, IMII, Salario Mínimo, Tasa Cambio
@@ -50,16 +55,38 @@
 
 ---
 
+## 🐛 BUG CRÍTICO IDENTIFICADO (Post-Deploy)
+
+### Causa Raíz:
+```
+Controller getCompanyConfig (línea 83-141):
+  → No encuentra PayrollCompany
+  → Intenta crear con: rif: '', email: '' (strings vacíos)
+  → Mongoose validation FAIL: rif/email required
+  → Error 500 → UI muestra "Error cargando políticas"
+```
+
+### Solución Arquitectural (Plan Extendido):
+
+| Fase | Acción | Archivos |
+|------|--------|----------|
+| **F1** | Organization.model.js: agregar `rif` (alphanumeric, sparse unique, sanitizeRif setter) + `parentOrganizationID` + `organizationType` | Organization.model.js |
+| **F1** | Migración producción: Org `6a0cac2e63fe9b9c98e59a56` → `rif=J314188305` | migrate-organization-rif.mjs (Atlas) |
+| **F2** | HR Signup: transacción atómica Org + PayrollCompany (rif=org.rif, email=org.email) | HRSignupController |
+| **F3** | getCompanyConfig: eliminar .create() inválido → 404 COMPANY_NOT_CONFIGURED | PayrollPolicyController |
+| **F4** | PayrollPolicyTab: manejar 404 → UI "Configuración pendiente" + CTA setup | PayrollPolicyTab.jsx |
+
+---
+
 ## ⚠️ NOTAS DE MEMORIA
-- *Regla:* **SOLO** usar `PayrollConceptsTab.jsx` como patrón de referencia UI (PayrollReceiptsTab.jsx está mal implementado)
-- *Regla:* Acento **blue** (#003DA5) para sección Nómina (design-system/index.md §21)
-- *Regla:* Usar `CustomSelect` obligatorio → **Fix aplicado: native select styled** (Radix Select v2 incompatible con SSR condicional)
-- *Regla:* Modo oscuro con `useIsDark()` + tokens `dark:bg-[rgba(255,255,255,0.04)]`, `dark:border-[rgba(255,255,255,0.12)]`
-- *Regla:* STOP obligatorio al final de cada fase con aprobación del usuario
-- *Branch:* 040-payroll-policy-tab-ui (desde 037-payroll-venezuelan-module)
-- *PR destino:* 037-payroll-venezuelan-module (NO a dev/main)
-- *Commits:* 
-  - `4cba99d` - feat(payroll): implement Policy Tab UI with 5 sections inline editing
-  - `ced904b` - feat(payroll): Phase 4 polish - validation, accessibility, formatting
-  - `2439c6a` - fix(payroll): remove unused imports and fix CustomSelect props
-  - `8fe489e` - fix(payroll): replace CustomSelect with styled native select to fix React error #300 on Vercel
+- *Regla:* **SOLO** usar `PayrollConceptsTab.jsx` como patrón UI
+- *Regla:* Acento **blue** (#003DA5) para Nómina
+- *Regla:* Fix aplicado: native select styled (Radix Select v2 incompatible SSR condicional)
+- *Regla:* RIF en BD = Solo `[A-Z0-9]` (ej: `J314188305`) - NUNCA guiones
+- *Regla:* Transacción atómica Org + PayrollCompany o rollback total
+- *Regla:* Controller NUNCA crea datos inválidos - 404 explícito
+- *Regla:* Signup valida RIF - Requerido para HR/Administradora
+- *Regla:* Org producción `6a0cac2e63fe9b9c98e59a56` → `J314188305` EN ATLAS
+- *Branch:* 040-payroll-policy-tab-ui (trabajo en rama actual)
+- *PR:* #56 hacia 037-payroll-venezuelan-module (ya creado)
+- *Modelo:* PayrollCompany 1:1 Organization (no User) - multi-HR comparten misma company
