@@ -54,8 +54,7 @@
 - [ ] [[037-payroll-venezuelan-module]] - 🟡 EN CURSO (reabierta 22/10/2026 — Fase 7: Producción/Gaps Críticos, PR hacia dev existente)
 - [x] [[038-payroll-receipts-tab-ui]] - ✅ COMPLETADO el 03/11/2026 (commit `879fef9`, PR hacia 037-payroll-venezuelan-module)
 - [x] [[039-payroll-concepts-tab-ui]] - ✅ COMPLETADO el 05/11/2026 (UI completa + 3 bugs críticos resueltos: HandleHRCheck thunk, Select value fix, HR permissions stale data + auto-sync middleware; commits `089ba65` `e02a7eb` `c41b94e`, PR hacia 037-payroll-venezuelan-module)
-- [x] [[040-payroll-policy-tab-ui]] - ✅ COMPLETADO el 06/11/2026 (UI Policies Tab completa + Bug fixes críticos: React #300, validation error intermitente, lazy-creation inválida. Fases 1-4: Organization RIF + migración Atlas + HR Signup atómico + Controller 404 + UI setup state. Commits `9a6298b` `1362c3f` `1718f2b` `f04fbc7` `d2df5b7` `cb276d4` `77c1414`, PR #56 hacia 037-payroll-venezuelan-module)
-- [ ] [[041-payroll-organization-rif-signup]] - 🟡 EN CURSO (RIF en Organization + PayrollCompany en Signup HR, migración Org Demo, arquitectura escalable multi-perfil)
+- [ ] [[040-payroll-policy-tab-ui]] - 🟡 EN CURSO (Debug React Error #300 en Vercel - Fases D1-D4 planificadas, PR #56 hacia 037-payroll-venezuelan-module)
 ---
 
 ## 🛠️ REGLAS DE ORO (DE CUMPLIMIENTO OBLIGATORIO)

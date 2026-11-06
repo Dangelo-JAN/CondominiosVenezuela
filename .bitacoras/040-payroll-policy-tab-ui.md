@@ -6,27 +6,29 @@
 ## 🎯 OBJETIVO FINAL
 > Implementar la UI completa de la pestaña "Políticas" en la página de Nómina (HR), reemplazando el texto "En desarrollo" por un formulario organizado por 5 secciones que permita visualizar y editar la configuración de nómina venezolana (LOTTT, IVSS, FAOV, INCES, ISLR, RPE, LPPSS, cestaticket, vacaciones, bono vacacional, utilidades, prestaciones sociales, horas extra).
 > **Extendido:** Corregir bug crítico: lazy-creation de PayrollCompany con datos inválidos (rif/email vacíos) → integrar RIF en Organization + crear PayrollCompany válida en HR Signup (transacción atómica).
+> **BUG ACTUAL:** React Error #300 en producción Vercel - "Element type is invalid"
 
 ---
 
 ## 🚦 PUNTO DE CONTROL (Contexto de Reanudación)
 *Usa esto para "despertar" a la IA si el chat se cierra:*
 
-- **Lo último que funcionó:** TODAS LAS FASES COMPLETADAS (1-4). UI completa + Fix React #300 + Organization RIF + Migración Atlas + HR Signup atómico + Controller 404 fix + UI setup state. Builds ✅ Tests ✅.
-- **Dónde se rompió/detuvo:** Tarea completada - lista para PR final.
-- **Siguiente acción inmediata:** Actualizar bitácoras finales, auto-mantenimiento, confirmar PR merge.
+- **Lo último que funcionó:** Builds locales OK, tests passing. Error #300 persiste en Vercel production.
+- **Dónde se rompió/detuvo:** Error #300 en Vercel al navegar a pestaña Políticas. Build local OK.
+- **Siguiente acción inmediata:** Iniciar Fase D1 - Análisis stack trace Error #300.
 
 ---
 
 ## 📝 CAMBIOS TÉCNICOS CLAVE (PLAN EXTENDIDO)
 - [x] UI completa: 5 secciones, 49 campos, inline edit, validaciones, dark mode
-- [x] Fix React Error #300 (native select styled)
+- [x] Fix React Error #300 (native select styled) - **PERO ERROR PERSISTE EN VERCEL**
 - [x] Build client: 0 errores | Build server: 127 tests passing
 - [x] **EXTENSIÓN BUG FIX F1:** RIF en Organization.model.js (alphanumeric, sparse unique, sanitizeRif) + parentOrganizationID + organizationType
 - [x] **EXTENSIÓN BUG FIX F1:** Migración producción: Org `6a0cac2d63fe9b9c98e59a54` → `rif=J314188305` (Atlas verificado)
 - [x] **EXTENSIÓN BUG FIX F2:** HR Signup → Transacción atómica Organization + PayrollCompany (rif=org.rif, email=org.email)
 - [x] **EXTENSIÓN BUG FIX F3:** Controller getCompanyConfig: eliminar lazy-creation → 404 COMPANY_NOT_CONFIGURED
 - [x] **EXTENSIÓN BUG FIX F4:** UI PayrollPolicyTab: manejar 404 → estado "Configuración pendiente" + CTA setup
+- [ ] **FASE D1-D4:** Debug React Error #300 en producción Vercel
 - [ ] Commit + PR hacia `037-payroll-venezuelan-module` (PR #56 existe)
 
 ---
@@ -54,7 +56,7 @@
 
 ## 🐛 BUG CRÍTICO IDENTIFICADO (Post-Deploy)
 
-### Causa Raíz:
+### Causa Raíz Original:
 ```
 Controller getCompanyConfig (línea 83-141):
   → No encuentra PayrollCompany
@@ -64,7 +66,6 @@ Controller getCompanyConfig (línea 83-141):
 ```
 
 ### Solución Arquitectural (Plan Extendido):
-
 | Fase | Acción | Archivos |
 |------|--------|----------|
 | **F1** | Organization.model.js: agregar `rif` (alphanumeric, sparse unique, sanitizeRif setter) + `parentOrganizationID` + `organizationType` | Organization.model.js |
@@ -75,34 +76,67 @@ Controller getCompanyConfig (línea 83-141):
 
 ---
 
-## ✅ TAREA COMPLETADA - RESUMEN FINAL
+## 🔴 FASE D: DEBUG REACT ERROR #300 EN PRODUCCIÓN VERCEL (EN CURSO)
 
-### 🏁 Fases Completadas:
-1. **FASE 1** ✅ Organization.model.js con RIF + sanitizeRif + sparse unique index + parentOrganizationID + organizationType
-2. **FASE 1** ✅ Migración producción Atlas: Org `6a0cac2d63fe9b9c98e59a54` → `rif=J314188305` (verificado)
-3. **FASE 2** ✅ HR Signup → Transacción atómica Org + PayrollCompany con defaults venezolanos
-3. **FASE 3** ✅ Controller getCompanyConfig → 404 COMPANY_NOT_CONFIGURED (elimina lazy-creation bug)
-4. **FASE 4** ✅ UI PayrollPolicyTab → Estado "Configuración pendiente" + CTA "Crear Configuración" con COMPANY_UPDATE upsert
+### 🔍 ANÁLISIS PRELIMINAR DEL ERROR #300
 
-### 🐛 Bugs Críticos Resueltos:
-- **React Error #300** (SSR/hydration mismatch Radix Select) → Native select styled
-- **Validation error intermitente** (rif/email required) → Controller 404 + UI setup state
-- **Lazy-creation inválida** → PayrollCompany creada solo en HR Signup (transacción atómica)
+**Error #300 = "Element type is invalid"**
+- Ocurre cuando React recibe un tipo de elemento inválido (null, undefined, número, etc.) en lugar de un componente válido
+- Stack trace apunta a `vendor-react-DNXgf9I9.js` → componente en `payroll-tabs-*`
+- **Posibles causas en PayrollPolicyTab:**
+  1. `StyledSelect` pasando props inválidos a `<select>` nativo (aria-describedby={undefined})
+  2. Componente condicional que retorna `null`/`undefined` en lugar de JSX
+  3. Import dinámico (`lazy`) fallando en Vercel
+  4. Componente hijo importado que no existe o exporta mal
+  5. `normalizeValue` o `INITIAL_FORM_DATA` causando tipo inválido
 
-### 📦 Commits en PR #56:
-- `9a6298b` - Phase 4: UI handles COMPANY_NOT_CONFIGURED
-- `1362c3f` - Phase 3: Controller 404 fix
-- `1718f2b` - Phase 3: Controller 404 fix
+### 📋 PLAN DE DEBUG PASO A PASO (FASE D)
+
+---
+
+#### **FASE D1: Análisis Stack Trace y Aislamiento (STOP OBLIGATORIO 1)**
+- [ ] D1.1: Obtener stack trace completo en Vercel (Source Maps habilitados)
+- [ ] D1.2: Identificar componente exacto que lanza Error #300 (payroll-tabs-* chunk)
+- [ ] D1.3: Verificar imports en PayrollPolicyTab.jsx (StyledSelect, normalizeValue, etc.)
+- [ ] D1.4: Revisar HRPayrollPage.jsx - lazy loading de PayrollPolicyTab
+- [ ] D1.5: Revisar PayrollTabsContainer.jsx - renderTabContent
+- **STOP 1:** Commit con hallazgos + push. Esperar aprobación para continuar.
+
+#### **FASE D2: Reproducción Local y Source Map Analysis (STOP OBLIGATORIO 2)**
+- [ ] D2.1: Habilitar Source Maps en build de Vercel (vercel.json)
+- [ ] D2.2: Build local con `npm run build` y analizar chunk `payroll-tabs-*`
+- [ ] D2.3: Buscar componente que retorna tipo inválido en `payroll-tabs-*.js`
+- [ ] D2.4: Test manual navegando a `/payroll/policy` en local
+- [ ] D2.5: Verificar que `StyledSelect` no pasa props undefined a `<select>`
+- **STOP 2:** Commit con fix candidato + push. Esperar aprobación.
+
+#### **FASE D3: Fix y Validación en Producción (STOP OBLIGATORIO 3)**
+- [ ] D3.1: Aplicar fix identificado (ej: StyledSelect props, lazy loading, etc.)
+- [ ] D3.2: Build + deploy a Vercel preview
+- [ ] D3.3: Test navegación a `/payroll/policy` en preview
+- [ ] D3.4: Verificar navegación entre tabs (periods → policy → concepts → policy)
+- **STOP 3:** Commit con fix validado + push. Esperar aprobación.
+
+#### **FASE D4: Validación Final y Cierre (STOP OBLIGATORIO 4)**
+- [ ] D4.1: Deploy a producción Vercel
+- [ ] D4.2: Test completo flujo: login → nómina → pestaña políticas → navegar tabs
+- [ ] D4.3: Verificar ausencia Error #300 en consola
+- [ ] D4.4: Actualizar bitácora con resolución final
+- [ ] D4.5: PR listo para merge a `037-payroll-venezuelan-module`
+- **STOP 4:** Confirmación usuario "TAREA COMPLETADA".
+
+---
+
+## 📦 COMMITS EN PR #56 (Historial)
+- `af5059a` - fix #310: initialize formData with ALL keys
+- `6a2b069` - fix #310: normalizeValue helper
+- `972863f` - fix #300: StyledSelect undefined aria props
+- `e6e381a` - fix #310: ensure all inputs always controlled
+- `1362c3f` / `1718f2b` - Phase 3: Controller 404 fix
 - `f04fbc7` - Phase 1&2 docs
 - `d2df5b7` - Phase 2: HR Signup atomic
 - `cb276d4` - Production migration rif=J314188305
 - `77c1414` - Phase 1: Organization RIF
-
-### ✅ Verificaciones Finales:
-- Client build: 0 errores
-- Server tests: 127 passing
-- Deploy Vercel: Funcional (sin React Error #300)
-- PR #56 hacia `037-payroll-venezuelan-module` listo
 
 ---
 
@@ -118,3 +152,4 @@ Controller getCompanyConfig (línea 83-141):
 - *Branch:* 040-payroll-policy-tab-ui (trabajo en rama actual)
 - *PR:* #56 hacia 037-payroll-venezuelan-module (ya creado)
 - *Modelo:* PayrollCompany 1:1 Organization (no User) - multi-HR comparten misma company
+- *ERROR ACTUAL:* React Error #300 en Vercel al navegar a pestaña Políticas
