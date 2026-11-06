@@ -12,9 +12,9 @@
 ## 🚦 PUNTO DE CONTROL (Contexto de Reanudación)
 *Usa esto para "despertar" a la IA si el chat se cierra:*
 
-- **Lo último que funcionó:** FASE 1 y FASE 2 completadas. UI completa + Fix React #300 + Organization.model.js con RIF + Migración producción Atlas (Org 6a0cac2d63fe9b9c98e59a54 rif=J314188305) + HR Signup transacción atómica Org+PayrollCompany. Builds ✅ Tests ✅.
-- **Dónde se rompió/detuvo:** FASE 3 pendiente - Controller getCompanyConfig elimina lazy-creation → 404 COMPANY_NOT_CONFIGURED.
-- **Siguiente acción inmediata:** Implementar FASE 3 (Controller) y FASE 4 (UI manejo 404).
+- **Lo último que funcionó:** FASE 1, 2 y 3 completadas. UI completa + Fix React #300 + Organization RIF + Migración Atlas + HR Signup atómico + Controller getCompanyConfig 404 fix. Builds ✅ Tests ✅.
+- **Dónde se rompió/detuvo:** FASE 4 pendiente - UI PayrollPolicyTab manejo 404 COMPANY_NOT_CONFIGURED.
+- **Siguiente acción inmediata:** Implementar FASE 4 (UI manejo 404 → estado "Configuración pendiente" + CTA setup).
 
 ---
 
@@ -25,7 +25,7 @@
 - [x] **EXTENSIÓN BUG FIX F1:** RIF en Organization.model.js (alphanumeric, sparse unique, sanitizeRif) + parentOrganizationID + organizationType
 - [x] **EXTENSIÓN BUG FIX F1:** Migración producción: Org `6a0cac2d63fe9b9c98e59a54` → `rif=J314188305` (Atlas verificado)
 - [x] **EXTENSIÓN BUG FIX F2:** HR Signup → Transacción atómica Organization + PayrollCompany (rif=org.rif, email=org.email)
-- [ ] **EXTENSIÓN BUG FIX F3:** Controller getCompanyConfig: eliminar lazy-creation → 404 COMPANY_NOT_CONFIGURED
+- [x] **EXTENSIÓN BUG FIX F3:** Controller getCompanyConfig: eliminar lazy-creation → 404 COMPANY_NOT_CONFIGURED
 - [ ] **EXTENSIÓN BUG FIX F4:** UI PayrollPolicyTab: manejar 404 → estado "Configuración pendiente" + CTA setup
 - [ ] Commit + PR hacia `037-payroll-venezuelan-module` (PR #56 existe)
 
