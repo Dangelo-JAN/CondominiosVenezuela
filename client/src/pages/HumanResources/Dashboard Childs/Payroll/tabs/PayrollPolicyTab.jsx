@@ -5,6 +5,24 @@ import { useIsDark } from "../../../../../hooks/useIsDark.js"
 import { useHRAuth } from "../../../../../hooks/useHRAuth.js"
 import { Loader2, Settings, AlertCircle, Edit, Save, X, ChevronRight, AlertTriangle, ChevronDown, Building2, PlusCircle } from "lucide-react"
 
+/**
+ * Normaliza valores para inputs controlados - previene React Error #310
+ * Garantiza que todos los inputs siempre tengan un valor definido (string para inputs, boolean para checkboxes)
+ */
+const normalizeValue = (value, type = "text") => {
+    if (type === "checkbox") {
+        return Boolean(value)
+    }
+    if (type === "select") {
+        return value !== undefined && value !== null ? String(value) : ""
+    }
+    // text, number, currency, percentage, factor, integer, factor
+    if (value === undefined || value === null) {
+        return ""
+    }
+    return String(value)
+}
+
 const SECTIONS = [
     {
         id: "legal_rates",
@@ -160,8 +178,8 @@ const getSelectOptions = (field) => {
 // Styled native select component matching design system
 const StyledSelect = ({ value, onChange, options, placeholder, disabled, error, id, ariaDescribedBy, ariaInvalid }) => {
     const isDark = useIsDark()
-    // Ensure value is always a string to prevent React Error #310 (uncontrolled -> controlled)
-    const stringValue = value !== undefined && value !== null ? String(value) : ""
+    // Use normalizeValue to ensure always controlled
+    const stringValue = normalizeValue(value, "select")
     const selectProps = {
         id,
         value: stringValue,
@@ -616,7 +634,7 @@ export const PayrollPolicyTab = () => {
                                                             {field.type === "select" && (
                                                                 <StyledSelect
                                                                     id={fieldId}
-                                                                    value={formData[field.key] ?? ""}
+                                                                    value={normalizeValue(formData[field.key], "select")}
                                                                     onChange={(val) => handleInputChange(field.key, val)}
                                                                     options={getSelectOptions(field)}
                                                                     placeholder="Seleccionar..."
@@ -631,7 +649,7 @@ export const PayrollPolicyTab = () => {
                                                                 <input
                                                                     id={fieldId}
                                                                     type="number"
-                                                                    value={formData[field.key] !== undefined && formData[field.key] !== null ? String(formData[field.key]) : ""}
+                                                                    value={normalizeValue(formData[field.key], "number")}
                                                                     onChange={(e) => {
                                                                         let val = e.target.value
                                                                         if (val === "") {
@@ -664,7 +682,7 @@ export const PayrollPolicyTab = () => {
                                                                 <input
                                                                     id={fieldId}
                                                                     type="text"
-                                                                    value={formData[field.key] !== undefined && formData[field.key] !== null ? String(formData[field.key]) : ""}
+                                                                    value={normalizeValue(formData[field.key], "text")}
                                                                     onChange={(e) => handleInputChange(field.key, e.target.value)}
                                                                     onBlur={() => handleBlur(field.key)}
                                                                     disabled={isSubmitting}
@@ -685,7 +703,7 @@ export const PayrollPolicyTab = () => {
                                                                     <input
                                                                         id={fieldId}
                                                                         type="checkbox"
-                                                                        checked={Boolean(formData[field.key])}
+                                                                        checked={normalizeValue(formData[field.key], "checkbox")}
                                                                         onChange={(e) => handleInputChange(field.key, e.target.checked)}
                                                                         disabled={isSubmitting}
                                                                         className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500 focus:ring-2 dark:border-[rgba(255,255,255,0.2)] dark:bg-[rgba(255,255,255,0.04)]"
