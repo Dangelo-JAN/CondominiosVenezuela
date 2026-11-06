@@ -210,6 +210,20 @@ const StyledSelect = ({ value, onChange, options, placeholder, disabled, error, 
     )
 }
 
+// Generate initial form data with ALL keys initialized to prevent React Error #310
+// This ensures every input is controlled from the very first render
+const INITIAL_FORM_DATA = SECTIONS.flatMap(section => section.fields).reduce((acc, field) => {
+    if (field.type === "boolean" || field.type === "checkbox") {
+        acc[field.key] = false
+    } else if (field.type === "select") {
+        acc[field.key] = ""
+    } else {
+        // text, number, currency, percentage, factor, integer
+        acc[field.key] = ""
+    }
+    return acc
+}, {})
+
 export const PayrollPolicyTab = () => {
     const isDark = useIsDark()
     const dispatch = useDispatch()
@@ -223,7 +237,7 @@ export const PayrollPolicyTab = () => {
     const companyError = useSelector((state) => state.payrollReducer.companyConfig.error)
 
     const [editSection, setEditSection] = useState(null)
-    const [formData, setFormData] = useState({})
+    const [formData, setFormData] = useState(INITIAL_FORM_DATA)
     const [errors, setErrors] = useState({})
     const [isSubmitting, setIsSubmitting] = useState(false)
     const [submitError, setSubmitError] = useState(null)
@@ -236,7 +250,8 @@ export const PayrollPolicyTab = () => {
 
     useEffect(() => {
         if (policy && companyConfig) {
-            const initial = { ...policy, ...companyConfig }
+            // Merge API data with initial defaults to ensure all keys exist
+            const initial = { ...INITIAL_FORM_DATA, ...policy, ...companyConfig }
             setFormData(initial)
         }
     }, [policy, companyConfig])
@@ -309,8 +324,11 @@ export const PayrollPolicyTab = () => {
     }, [dispatch, formData, validateAll])
 
     const handleCancel = useCallback(() => {
+        // Reset to initial defaults merged with current API data if available
         if (policy && companyConfig) {
-            setFormData({ ...policy, ...companyConfig })
+            setFormData({ ...INITIAL_FORM_DATA, ...policy, ...companyConfig })
+        } else {
+            setFormData(INITIAL_FORM_DATA)
         }
         setEditSection(null)
         setHasChanges(false)
