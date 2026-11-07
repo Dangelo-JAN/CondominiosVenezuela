@@ -175,9 +175,8 @@ const getSelectOptions = (field) => {
     return field.options.map(opt => ({ value: opt, label: opt }))
 }
 
-// Styled native select component matching design system
-const StyledSelect = ({ value, onChange, options, placeholder, disabled, error, id, ariaDescribedBy, ariaInvalid }) => {
-    const isDark = useIsDark()
+// Styled native select component matching design system - NO hooks inside (prevents conditional hook calls)
+const StyledSelect = ({ value, onChange, options, placeholder, disabled, error, id, ariaDescribedBy, ariaInvalid, isDark }) => {
     // Use normalizeValue to ensure always controlled
     const stringValue = normalizeValue(value, "select")
     const selectProps = {
@@ -199,9 +198,9 @@ const StyledSelect = ({ value, onChange, options, placeholder, disabled, error, 
         <div className="relative">
             <select {...selectProps}>
                 <option value="" disabled>{placeholder}</option>
-                {options?.map(opt => (
+                {Array.isArray(options) ? options.map(opt => (
                     <option key={opt.value} value={opt.value}>{opt.label}</option>
-                ))}
+                )) : null}
             </select>
             <div className="absolute inset-y-0 right-0 flex items-center px-3 pointer-events-none">
                 <ChevronDown className="w-4 h-4 opacity-50" style={{ color: isDark ? "rgba(255,255,255,0.4)" : "#9ca3af" }} />
@@ -371,17 +370,6 @@ export const PayrollPolicyTab = () => {
     // Helper to check if error is a real error (not COMPANY_NOT_CONFIGURED)
     const hasRealError = (policyError || companyError) && !isCompanyNotConfigured
 
-    if (hasRealError) {
-        return (
-            <div className="w-full h-full flex flex-col items-center justify-center gap-4 p-8">
-                <div className="text-center text-red-500">
-                    <p className="font-bold">Error cargando políticas</p>
-                    <p className="text-sm text-gray-500">{policyError || companyError}</p>
-                </div>
-            </div>
-        )
-    }
-
     const isLoading = policyLoading || companyLoading
 
     // Handle COMPANY_NOT_CONFIGURED - show friendly setup state
@@ -476,6 +464,15 @@ export const PayrollPolicyTab = () => {
         }
     }, [dispatch, isReady, can, policy])
 
+    // Determine render state (replaces early returns)
+    const renderState = useMemo(() => {
+        if (hasRealError) return 'error'
+        if (isLoading) return 'loading'
+        if (showSetupState) return 'setup'
+        if (!policy && !companyConfig) return 'empty'
+        return 'main'
+    }, [hasRealError, isLoading, showSetupState, policy, companyConfig])
+
     return (
         <div className="w-full h-full flex flex-col gap-6 px-4 py-6">
             {/* Header */}
@@ -510,254 +507,336 @@ export const PayrollPolicyTab = () => {
 
             {/* Content */}
             <div className="flex-1 min-h-0 overflow-auto">
-                {isLoading ? (
-                    <div className="flex-1 flex items-center justify-center">
-                        <div className="flex flex-col items-center gap-3">
-                            <Loader2 className="w-8 h-8 text-blue-600 animate-spin" />
-                            <p className="text-sm" style={{ color: isDark ? "rgba(255,255,255,0.5)" : "#6b7280" }}>
-                                Cargando políticas...
-                            </p>
-                        </div>
-                    </div>
-                ) : showSetupState ? (
-                    <div className="flex-1 flex flex-col items-center justify-center gap-6 p-8">
-                        <div className="w-20 h-20 rounded-2xl flex items-center justify-center transition-colors duration-300"
-                            style={{ background: isDark ? "rgba(255,190,11,0.1)" : "rgba(255,190,11,0.1)" }}>
-                            <Building2 className="w-10 h-10 transition-colors duration-300" style={{ color: "#F59E0B" }} />
-                        </div>
-                        <div className="text-center max-w-md">
-                            <h2 className="text-xl font-bold text-gray-900 dark:text-white">Configuración de Empresa Pendiente</h2>
-                            <p className="text-gray-500 dark:text-gray-400 mt-2 mb-6">
-                                Esta organización no tiene configuración de nómina creada. 
-                                Para gestionar las políticas, primero debe crear la configuración base de la empresa.
-                            </p>
-                            {isReady && can("payroll", "update") && (
-                                <button
-                                    onClick={handleCreateCompany}
-                                    disabled={isSubmitting}
-                                    className="px-6 py-3 rounded-xl text-base font-medium transition-all duration-200 text-white flex items-center justify-center gap-2 mx-auto"
-                                    style={{ background: "#F59E0B" }}
-                                >
-                                    {isSubmitting && <Loader2 className="w-5 h-5 animate-spin" />}
-                                    <PlusCircle className="w-5 h-5" />
-                                    Crear Configuración de Empresa
-                                </button>
-                            )}
-                            {!isReady || !can("payroll", "update") && (
-                                <p className="text-sm text-gray-500 dark:text-gray-400 mt-4">
-                                    {isReady 
-                                        ? "No tiene permisos para crear la configuración. Contacte al administrador." 
-                                        : "Verificando permisos..."}
-                                </p>
-                            )}
-                            {submitError && (
-                                <div className="mt-4 p-3 rounded-xl bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800">
-                                    <p className="text-sm text-red-600 dark:text-red-400 flex items-center justify-center gap-1">
-                                        <AlertCircle className="w-4 h-4" />
-                                        {submitError}
-                                    </p>
-                                </div>
-                            )}
-                        </div>
-                    </div>
-                ) : !policy && !companyConfig ? (
-                    <div className="flex-1 flex flex-col items-center justify-center gap-4 p-8">
-                        <div className="w-16 h-16 rounded-2xl flex items-center justify-center transition-colors duration-300"
-                            style={{ background: isDark ? "rgba(0,61,165,0.1)" : "rgba(0,61,165,0.1)" }}>
-                            <Settings className="w-8 h-8 transition-colors duration-300" style={{ color: "#003DA5" }} />
-                        </div>
-                        <div className="text-center">
-                            <h2 className="text-xl font-bold text-gray-900 dark:text-white">Sin configuración</h2>
-                            <p className="text-gray-500 dark:text-gray-400 mt-1">
-                                No se encontró configuración de políticas de nómina
-                            </p>
-                        </div>
-                    </div>
-                ) : (
-                    <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4">
-                        {SECTIONS.map((section) => {
-                            const isEditing = editSection === section.id || editSection === "all"
-                            const Icon = section.icon
-                            const sectionFields = section.fields
-
+                {(() => {
+                    switch (renderState) {
+                        case 'error':
                             return (
-                                <div
-                                    key={section.id}
-                                    className={`bg-white dark:bg-[#0f0f1a] rounded-2xl border transition-all duration-200 flex flex-col
-                                        ${isEditing ? "ring-2 ring-blue-500/50 shadow-lg" : "hover:shadow-md"}
-                                    `}
-                                    style={{ borderColor: isDark ? "rgba(0,61,165,0.15)" : "rgba(0,61,165,0.2)" }}
-                                >
-                                    {/* Section Header */}
-                                    <div className="flex items-center justify-between p-4 border-b transition-colors duration-300 flex-shrink-0"
-                                        style={{ borderColor: isDark ? "rgba(0,61,165,0.1)" : "rgba(0,61,165,0.15)" }}>
-                                        <div className="flex items-center gap-3">
-                                            <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0"
-                                                style={{ background: isDark ? "rgba(0,61,165,0.15)" : "rgba(0,61,165,0.1)" }}>
-                                                <Icon className="w-5 h-5" style={{ color: "#003DA5" }} />
-                                            </div>
-                                            <div className="min-w-0">
-                                                <h3 className="text-lg font-semibold text-gray-900 dark:text-white truncate">
-                                                    {section.label}
-                                                </h3>
-                                                <p className="text-xs" style={{ color: isDark ? "rgba(255,255,255,0.5)" : "#6b7280" }}>
-                                                    {section.fields.length} campos
-                                                </p>
-                                            </div>
-                                        </div>
-                                        {isReady && can("payroll", "update") && !isEditing && (
+                                <div className="w-full h-full flex flex-col items-center justify-center gap-4 p-8">
+                                    <div className="text-center text-red-500">
+                                        <p className="font-bold">Error cargando políticas</p>
+                                        <p className="text-sm text-gray-500">{policyError || companyError}</p>
+                                    </div>
+                                </div>
+                            )
+                        case 'loading':
+                            return (
+                                <div className="flex-1 flex items-center justify-center">
+                                    <div className="flex flex-col items-center gap-3">
+                                        <Loader2 className="w-8 h-8 text-blue-600 animate-spin" />
+                                        <p className="text-sm" style={{ color: isDark ? "rgba(255,255,255,0.5)" : "#6b7280" }}>
+                                            Cargando políticas...
+                                        </p>
+                                    </div>
+                                </div>
+                            )
+                        case 'setup':
+                            return (
+                                <div className="flex-1 flex flex-col items-center justify-center gap-6 p-8">
+                                    <div className="w-20 h-20 rounded-2xl flex items-center justify-center transition-colors duration-300"
+                                        style={{ background: isDark ? "rgba(255,190,11,0.1)" : "rgba(255,190,11,0.1)" }}>
+                                        <Building2 className="w-10 h-10 transition-colors duration-300" style={{ color: "#F59E0B" }} />
+                                    </div>
+                                    <div className="text-center max-w-md">
+                                        <h2 className="text-xl font-bold text-gray-900 dark:text-white">Configuración de Empresa Pendiente</h2>
+                                        <p className="text-gray-500 dark:text-gray-400 mt-2 mb-6">
+                                            Esta organización no tiene configuración de nómina creada. 
+                                            Para gestionar las políticas, primero debe crear la configuración base de la empresa.
+                                        </p>
+                                        {isReady && can("payroll", "update") && (
                                             <button
-                                                onClick={() => setEditSection(section.id)}
-                                                className="p-2 rounded-xl transition-all duration-200 hover:-translate-y-0.5 flex-shrink-0"
-                                                style={{
-                                                    background: isDark ? "rgba(0,61,165,0.1)" : "rgba(0,61,165,0.1)",
-                                                    color: "#003DA5"
-                                                }}
-                                                title="Editar sección"
-                                                aria-label={`Editar ${section.label}`}
+                                                onClick={handleCreateCompany}
+                                                disabled={isSubmitting}
+                                                className="px-6 py-3 rounded-xl text-base font-medium transition-all duration-200 text-white flex items-center justify-center gap-2 mx-auto"
+                                                style={{ background: "#F59E0B" }}
                                             >
-                                                <Edit className="w-4 h-4" />
+                                                {isSubmitting && <Loader2 className="w-5 h-5 animate-spin" />}
+                                                <PlusCircle className="w-5 h-5" />
+                                                Crear Configuración de Empresa
                                             </button>
                                         )}
+                                        {!isReady || !can("payroll", "update") && (
+                                            <p className="text-sm text-gray-500 dark:text-gray-400 mt-4">
+                                                {isReady 
+                                                    ? "No tiene permisos para crear la configuración. Contacte al administrador." 
+                                                    : "Verificando permisos..."}
+                                            </p>
+                                        )}
+                                        {submitError && (
+                                            <div className="mt-4 p-3 rounded-xl bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800">
+                                                <p className="text-sm text-red-600 dark:text-red-400 flex items-center justify-center gap-1">
+                                                    <AlertCircle className="w-4 h-4" />
+                                                    {submitError}
+                                                </p>
+                                            </div>
+                                        )}
                                     </div>
+                                </div>
+                            )
+                        case 'empty':
+                            return (
+                                <div className="flex-1 flex flex-col items-center justify-center gap-4 p-8">
+                                    <div className="w-16 h-16 rounded-2xl flex items-center justify-center transition-colors duration-300"
+                                        style={{ background: isDark ? "rgba(0,61,165,0.1)" : "rgba(0,61,165,0.1)" }}>
+                                        <Settings className="w-8 h-8 transition-colors duration-300" style={{ color: "#003DA5" }} />
+                                    </div>
+                                    <div className="text-center">
+                                        <h2 className="text-xl font-bold text-gray-900 dark:text-white">Sin configuración</h2>
+                                        <p className="text-gray-500 dark:text-gray-400 mt-1">
+                                            No se encontró configuración de políticas de nómina
+                                        </p>
+                                    </div>
+                                </div>
+                            )
+                        case 'main':
+                        default:
+                            return (
+                                <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4">
+                                    {SECTIONS.map((section) => {
+                                        const isEditing = editSection === section.id || editSection === "all"
+                                        const Icon = section.icon
+                                        const sectionFields = section.fields
 
-                                    {/* Section Content */}
-                                    <div className="p-4 flex-1 overflow-auto">
-                                        {isEditing ? (
-                                            <div className="space-y-4">
-                                                {sectionFields.map((field) => {
-                                                    const error = errors[field.key]
-                                                    const fieldId = `policy-${field.key}`
+                                        return (
+                                            <div
+                                                key={section.id}
+                                                className={`bg-white dark:bg-[#0f0f1a] rounded-2xl border transition-all duration-200 flex flex-col
+                                                    ${isEditing ? "ring-2 ring-blue-500/50 shadow-lg" : "hover:shadow-md"}
+                                                `}
+                                                style={{ borderColor: isDark ? "rgba(0,61,165,0.15)" : "rgba(0,61,165,0.2)" }}
+                                            >
+                                                {/* Section Header */}
+                                                <div className="flex items-center justify-between p-4 border-b transition-colors duration-300 flex-shrink-0"
+                                                    style={{ borderColor: isDark ? "rgba(0,61,165,0.1)" : "rgba(0,61,165,0.15)" }}>
+                                                    <div className="flex items-center gap-3">
+                                                        <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0"
+                                                            style={{ background: isDark ? "rgba(0,61,165,0.15)" : "rgba(0,61,165,0.1)" }}>
+                                                            <Icon className="w-5 h-5" style={{ color: "#003DA5" }} />
+                                                        </div>
+                                                        <div className="min-w-0">
+                                                            <h3 className="text-lg font-semibold text-gray-900 dark:text-white truncate">
+                                                                {section.label}
+                                                            </h3>
+                                                            <p className="text-xs" style={{ color: isDark ? "rgba(255,255,255,0.5)" : "#6b7280" }}>
+                                                                {section.fields.length} campos
+                                                            </p>
+                                                        </div>
+                                                    </div>
+                                                    {isReady && can("payroll", "update") && !isEditing && (
+                                                        <button
+                                                            onClick={() => setEditSection(section.id)}
+                                                            className="p-2 rounded-xl transition-all duration-200 hover:-translate-y-0.5 flex-shrink-0"
+                                                            style={{
+                                                                background: isDark ? "rgba(0,61,165,0.1)" : "rgba(0,61,165,0.1)",
+                                                                color: "#003DA5"
+                                                            }}
+                                                            title="Editar sección"
+                                                            aria-label={`Editar ${section.label}`}
+                                                        >
+                                                            <Edit className="w-4 h-4" />
+                                                        </button>
+                                                    )}
+                                                </div>
 
-                                                    return (
-                                                        <div key={field.key} className="flex flex-col gap-1.5">
-                                                            <label htmlFor={fieldId} className="flex items-center gap-2 text-sm font-medium"
-                                                                style={{ color: isDark ? "rgba(255,255,255,0.8)" : "#374151" }}>
-                                                                <span>{field.label}</span>
-                                                                {field.help && (
-                                                                    <span 
-                                                                        className="text-[10px] px-1.5 py-0.5 rounded cursor-help"
-                                                                        style={{
-                                                                            background: isDark ? "rgba(0,61,165,0.15)" : "rgba(0,61,165,0.1)",
-                                                                            color: "#003DA5",
-                                                                            border: isDark ? "1px solid rgba(0,61,165,0.3)" : "1px solid rgba(0,61,165,0.2)"
-                                                                        }}
-                                                                        aria-label={field.help}
-                                                                    >
-                                                                        ?
-                                                                    </span>
-                                                                )}
-                                                            </label>
+                                                {/* Section Content */}
+                                                <div className="p-4 flex-1 overflow-auto">
+                                                    {isEditing ? (
+                                                        <div className="space-y-4">
+                                                            {sectionFields.map((field) => {
+                                                                const error = errors[field.key]
+                                                                const fieldId = `policy-${field.key}`
 
-                                                            {field.type === "select" && (
-                                                                <StyledSelect
-                                                                    id={fieldId}
-                                                                    value={normalizeValue(formData[field.key], "select")}
-                                                                    onChange={(val) => handleInputChange(field.key, val)}
-                                                                    options={getSelectOptions(field)}
-                                                                    placeholder="Seleccionar..."
-                                                                    disabled={isSubmitting}
-                                                                    error={error}
-                                                                    ariaDescribedBy={field.help ? `${fieldId}-help` : undefined}
-                                                                    ariaInvalid={error ? "true" : "false"}
-                                                                />
-                                                            )}
+                                                                return (
+                                                                    <div key={field.key} className="flex flex-col gap-1.5">
+                                                                        <label htmlFor={fieldId} className="flex items-center gap-2 text-sm font-medium"
+                                                                            style={{ color: isDark ? "rgba(255,255,255,0.8)" : "#374151" }}>
+                                                                            <span>{field.label}</span>
+                                                                            {field.help && (
+                                                                                <span 
+                                                                                    className="text-[10px] px-1.5 py-0.5 rounded cursor-help"
+                                                                                    style={{
+                                                                                        background: isDark ? "rgba(0,61,165,0.15)" : "rgba(0,61,165,0.1)",
+                                                                                        color: "#003DA5",
+                                                                                        border: isDark ? "1px solid rgba(0,61,165,0.3)" : "1px solid rgba(0,61,165,0.2)"
+                                                                                    }}
+                                                                                    aria-label={field.help}
+                                                                                >
+                                                                                    ?
+                                                                                </span>
+                                                                            )}
+                                                                        </label>
 
-                                                            {(field.type === "number" || field.type === "integer" || field.type === "percentage" || field.type === "currency" || field.type === "factor") && (
-                                                                <input
-                                                                    id={fieldId}
-                                                                    type="number"
-                                                                    value={normalizeValue(formData[field.key], "number")}
-                                                                    onChange={(e) => {
-                                                                        let val = e.target.value
-                                                                        if (val === "") {
-                                                                            handleInputChange(field.key, "")
-                                                                        } else {
-                                                                            const parsed = parseFloat(val)
-                                                                            if (!isNaN(parsed)) {
-                                                                                handleInputChange(field.key, parsed)
-                                                                            }
-                                                                        }
-                                                                    }}
-                                                                    onBlur={() => handleBlur(field.key)}
-                                                                    step={field.step}
-                                                                    min={field.min}
-                                                                    max={field.max}
-                                                                    disabled={isSubmitting}
-                                                                    className={`w-full rounded-xl px-3 py-2.5 text-sm outline-none transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed
-                                                                        bg-gray-50 border border-gray-200 text-gray-900 placeholder-gray-400
-                                                                        focus:border-blue-400 focus:bg-white focus:ring-2 focus:ring-blue-100
-                                                                        dark:bg-[rgba(255,255,255,0.04)] dark:border-[rgba(255,255,255,0.08)] dark:text-white
-                                                                        dark:placeholder-[rgba(255,255,255,0.25)] dark:focus:border-[rgba(0,61,165,0.5)]
-                                                                        ${error ? "border-red-500 focus:border-red-500 focus:ring-red-100" : ""}`}
-                                                                    placeholder={field.type === "percentage" ? "0.00" : field.type === "currency" ? "0.00" : ""}
-                                                                    aria-invalid={error ? "true" : "false"}
-                                                                    aria-describedby={error ? `${fieldId}-error` : field.help ? `${fieldId}-help` : undefined}
-                                                                />
-                                                            )}
+                                                                        {field.type === "select" && (
+                                                                            <StyledSelect
+                                                                                id={fieldId}
+                                                                                value={normalizeValue(formData[field.key], "select")}
+                                                                                onChange={(val) => handleInputChange(field.key, val)}
+                                                                                options={getSelectOptions(field)}
+                                                                                placeholder="Seleccionar..."
+                                                                                disabled={isSubmitting}
+                                                                                error={error}
+                                                                                ariaDescribedBy={field.help ? `${fieldId}-help` : undefined}
+                                                                                ariaInvalid={error ? "true" : "false"}
+                                                                                isDark={isDark}
+                                                                            />
+                                                                        )}
 
-                                                            {field.type === "text" && (
-                                                                <input
-                                                                    id={fieldId}
-                                                                    type="text"
-                                                                    value={normalizeValue(formData[field.key], "text")}
-                                                                    onChange={(e) => handleInputChange(field.key, e.target.value)}
-                                                                    onBlur={() => handleBlur(field.key)}
-                                                                    disabled={isSubmitting}
-                                                                    className={`w-full rounded-xl px-3 py-2.5 text-sm outline-none transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed
-                                                                        bg-gray-50 border border-gray-200 text-gray-900 placeholder-gray-400
-                                                                        focus:border-blue-400 focus:bg-white focus:ring-2 focus:ring-blue-100
-                                                                        dark:bg-[rgba(255,255,255,0.04)] dark:border-[rgba(255,255,255,0.08)] dark:text-white
-                                                                        dark:placeholder-[rgba(255,255,255,0.25)] dark:focus:border-[rgba(0,61,165,0.5)]
-                                                                        ${error ? "border-red-500 focus:border-red-500 focus:ring-red-100" : ""}`}
-                                                                    placeholder="Ej: [5,6]"
-                                                                    aria-invalid={error ? "true" : "false"}
-                                                                    aria-describedby={error ? `${fieldId}-error` : field.help ? `${fieldId}-help` : undefined}
-                                                                />
-                                                            )}
+                                                                        {(field.type === "number" || field.type === "integer" || field.type === "percentage" || field.type === "currency" || field.type === "factor") && (
+                                                                            <input
+                                                                                id={fieldId}
+                                                                                type="number"
+                                                                                value={normalizeValue(formData[field.key], "number")}
+                                                                                onChange={(e) => {
+                                                                                    let val = e.target.value
+                                                                                    if (val === "") {
+                                                                                        handleInputChange(field.key, "")
+                                                                                    } else {
+                                                                                        const parsed = parseFloat(val)
+                                                                                        if (!isNaN(parsed)) {
+                                                                                            handleInputChange(field.key, parsed)
+                                                                                        }
+                                                                                    }
+                                                                                }}
+                                                                                onBlur={() => handleBlur(field.key)}
+                                                                                step={field.step}
+                                                                                min={field.min}
+                                                                                max={field.max}
+                                                                                disabled={isSubmitting}
+                                                                                className={`w-full rounded-xl px-3 py-2.5 text-sm outline-none transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed
+                                                                                    bg-gray-50 border border-gray-200 text-gray-900 placeholder-gray-400
+                                                                                    focus:border-blue-400 focus:bg-white focus:ring-2 focus:ring-blue-100
+                                                                                    dark:bg-[rgba(255,255,255,0.04)] dark:border-[rgba(255,255,255,0.08)] dark:text-white
+                                                                                    dark:placeholder-[rgba(255,255,255,0.25)] dark:focus:border-[rgba(0,61,165,0.5)]
+                                                                                    ${error ? "border-red-500 focus:border-red-500 focus:ring-red-100" : ""}`}
+                                                                                placeholder={field.type === "percentage" ? "0.00" : field.type === "currency" ? "0.00" : ""}
+                                                                                aria-invalid={error ? "true" : "false"}
+                                                                                aria-describedby={error ? `${fieldId}-error` : field.help ? `${fieldId}-help` : undefined}
+                                                                            />
+                                                                        )}
 
-                                                            {field.type === "boolean" && (
-                                                                <div className="flex items-center gap-3">
-                                                                    <input
-                                                                        id={fieldId}
-                                                                        type="checkbox"
-                                                                        checked={normalizeValue(formData[field.key], "checkbox")}
-                                                                        onChange={(e) => handleInputChange(field.key, e.target.checked)}
+                                                                        {field.type === "text" && (
+                                                                            <input
+                                                                                id={fieldId}
+                                                                                type="text"
+                                                                                value={normalizeValue(formData[field.key], "text")}
+                                                                                onChange={(e) => handleInputChange(field.key, e.target.value)}
+                                                                                onBlur={() => handleBlur(field.key)}
+                                                                                disabled={isSubmitting}
+                                                                                className={`w-full rounded-xl px-3 py-2.5 text-sm outline-none transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed
+                                                                                    bg-gray-50 border border-gray-200 text-gray-900 placeholder-gray-400
+                                                                                    focus:border-blue-400 focus:bg-white focus:ring-2 focus:ring-blue-100
+                                                                                    dark:bg-[rgba(255,255,255,0.04)] dark:border-[rgba(255,255,255,0.08)] dark:text-white
+                                                                                    dark:placeholder-[rgba(255,255,255,0.25)] dark:focus:border-[rgba(0,61,165,0.5)]
+                                                                                    ${error ? "border-red-500 focus:border-red-500 focus:ring-red-100" : ""}`}
+                                                                                placeholder="Ej: [5,6]"
+                                                                                aria-invalid={error ? "true" : "false"}
+                                                                                aria-describedby={error ? `${fieldId}-error` : field.help ? `${fieldId}-help` : undefined}
+                                                                            />
+                                                                        )}
+
+                                                                        {field.type === "boolean" && (
+                                                                            <div className="flex items-center gap-3">
+                                                                                <input
+                                                                                    id={fieldId}
+                                                                                    type="checkbox"
+                                                                                    checked={normalizeValue(formData[field.key], "checkbox")}
+                                                                                    onChange={(e) => handleInputChange(field.key, e.target.checked)}
+                                                                                    disabled={isSubmitting}
+                                                                                    className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500 focus:ring-2 dark:border-[rgba(255,255,255,0.2)] dark:bg-[rgba(255,255,255,0.04)]"
+                                                                                    aria-describedby={field.help ? `${fieldId}-help` : undefined}
+                                                                                />
+                                                                                <label htmlFor={fieldId} className="text-sm cursor-pointer" style={{ color: isDark ? "rgba(255,255,255,0.6)" : "#6b7280" }}>
+                                                                                    {field.help}
+                                                                                </label>
+                                                                            </div>
+                                                                        )}
+
+                                                                        {error && (
+                                                                            <p id={`${fieldId}-error`} className="text-sm text-red-500 flex items-center gap-1" role="alert">
+                                                                                <AlertCircle className="w-3.5 h-3.5 flex-shrink-0" />
+                                                                                {error}
+                                                                            </p>
+                                                                        )}
+                                                                        {field.help && !error && (
+                                                                            <p id={`${fieldId}-help`} className="text-[11px]" style={{ color: isDark ? "rgba(255,255,255,0.35)" : "#9ca3af" }}>
+                                                                                {field.help}
+                                                                            </p>
+                                                                        )}
+                                                                    </div>
+                                                                )
+                                                            })}
+
+                                                            {/* Submit buttons for single section edit */}
+                                                            {editSection !== "all" && (
+                                                                <div className="flex justify-end gap-2 pt-4 border-t"
+                                                                    style={{ borderColor: isDark ? "rgba(0,61,165,0.1)" : "rgba(0,61,165,0.15)" }}>
+                                                                    {submitError && (
+                                                                        <div className="flex items-center gap-1.5 text-sm text-red-500 mr-auto">
+                                                                            <AlertCircle className="w-4 h-4" />
+                                                                            {submitError}
+                                                                        </div>
+                                                                    )}
+                                                                    <button
+                                                                        onClick={handleCancel}
                                                                         disabled={isSubmitting}
-                                                                        className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500 focus:ring-2 dark:border-[rgba(255,255,255,0.2)] dark:bg-[rgba(255,255,255,0.04)]"
-                                                                        aria-describedby={field.help ? `${fieldId}-help` : undefined}
-                                                                    />
-                                                                    <label htmlFor={fieldId} className="text-sm cursor-pointer" style={{ color: isDark ? "rgba(255,255,255,0.6)" : "#6b7280" }}>
-                                                                        {field.help}
-                                                                    </label>
+                                                                        className="px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200"
+                                                                        style={{
+                                                                            background: isDark ? "rgba(255,255,255,0.05)" : "#f3f4f6",
+                                                                            color: isDark ? "rgba(255,255,255,0.6)" : "#6b7280"
+                                                                        }}
+                                                                    >
+                                                                        Cancelar
+                                                                    </button>
+                                                                    <button
+                                                                        onClick={() => handleSubmit(section.id)}
+                                                                        disabled={isSubmitting || Object.values(errors).some(e => e && sectionFields.find(f => f.key === Object.keys(errors).find(k => errors[k] === e)))}
+                                                                        className="px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 text-white flex items-center gap-2"
+                                                                        style={{ background: "#003DA5" }}
+                                                                    >
+                                                                        {isSubmitting && <Loader2 className="w-4 h-4 animate-spin" />}
+                                                                        Guardar
+                                                                    </button>
                                                                 </div>
                                                             )}
-
-                                                            {error && (
-                                                                <p id={`${fieldId}-error`} className="text-sm text-red-500 flex items-center gap-1" role="alert">
-                                                                    <AlertCircle className="w-3.5 h-3.5 flex-shrink-0" />
-                                                                    {error}
-                                                                </p>
-                                                            )}
-                                                            {field.help && !error && (
-                                                                <p id={`${fieldId}-help`} className="text-[11px]" style={{ color: isDark ? "rgba(255,255,255,0.35)" : "#9ca3af" }}>
-                                                                    {field.help}
-                                                                </p>
-                                                            )}
                                                         </div>
-                                                    )
-                                                })}
+                                                    ) : (
+                                                        <div className="space-y-3">
+                                                            {sectionFields.map((field) => (
+                                                                <div key={field.key} className="flex items-center justify-between py-2 border-b last:border-b-0"
+                                                                    style={{ borderColor: isDark ? "rgba(255,255,255,0.06)" : "rgba(0,0,0,0.06)" }}>
+                                                                    <div className="flex flex-col gap-0.5 min-w-0">
+                                                                        <span className="text-sm font-medium truncate"
+                                                                            style={{ color: isDark ? "rgba(255,255,255,0.8)" : "#374151" }}>
+                                                                            {field.label}
+                                                                        </span>
+                                                                        {field.help && (
+                                                                            <span className="text-xs truncate" style={{ color: isDark ? "rgba(255,255,255,0.4)" : "#9ca3af" }}>
+                                                                                {field.help}
+                                                                            </span>
+                                                                        )}
+                                                                    </div>
+                                                                    <span className="text-sm font-mono text-gray-500 dark:text-gray-400 whitespace-nowrap ml-4 shrink-0">
+                                                                        {formatValue(formData[field.key] ?? (policy?.[field.key] ?? companyConfig?.[field.key]), field)}
+                                                                    </span>
+                                                                </div>
+                                                            ))}
+                                                        </div>
+                                                    )}
+                                                </div>
+                                            </div>
+                                        )
+                                    })}
 
-                                                {/* Submit buttons for single section edit */}
-                                                {editSection !== "all" && (
-                                                    <div className="flex justify-end gap-2 pt-4 border-t"
-                                                        style={{ borderColor: isDark ? "rgba(0,61,165,0.1)" : "rgba(0,61,165,0.15)" }}>
-                                                        {submitError && (
-                                                            <div className="flex items-center gap-1.5 text-sm text-red-500 mr-auto">
-                                                                <AlertCircle className="w-4 h-4" />
-                                                                {submitError}
-                                                            </div>
-                                                        )}
+                                    {/* Submit bar for "Guardar Todo" mode */}
+                                    {editSection === "all" && (
+                                        <div className="lg:col-span-2 xl:col-span-3">
+                                            <div className="bg-white dark:bg-[#0f0f1a] rounded-2xl border p-4 sticky bottom-4"
+                                                style={{ borderColor: isDark ? "rgba(0,61,165,0.15)" : "rgba(0,61,165,0.2)" }}>
+                                                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                                                    <div className="flex items-center gap-3 text-sm" style={{ color: isDark ? "rgba(255,255,255,0.7)" : "#4b5563" }}>
+                                                        <AlertTriangle className="w-5 h-5 text-amber-500 flex-shrink-0" />
+                                                        <span>Editando todas las secciones ({SECTIONS.reduce((acc, s) => acc + s.fields.length, 0)} campos). Los cambios se guardarán en lote.</span>
+                                                    </div>
+                                                    <div className="flex gap-2">
                                                         <button
                                                             onClick={handleCancel}
                                                             disabled={isSubmitting}
@@ -767,88 +846,28 @@ export const PayrollPolicyTab = () => {
                                                                 color: isDark ? "rgba(255,255,255,0.6)" : "#6b7280"
                                                             }}
                                                         >
-                                                            Cancelar
+                                                            <X className="w-4 h-4 inline mr-1" />
+                                                            Cancelar Todo
                                                         </button>
                                                         <button
-                                                            onClick={() => handleSubmit(section.id)}
-                                                            disabled={isSubmitting || Object.values(errors).some(e => e && sectionFields.find(f => f.key === Object.keys(errors).find(k => errors[k] === e)))}
+                                                            onClick={handleSaveAll}
+                                                            disabled={isSubmitting || Object.values(errors).some(Boolean)}
                                                             className="px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 text-white flex items-center gap-2"
                                                             style={{ background: "#003DA5" }}
                                                         >
                                                             {isSubmitting && <Loader2 className="w-4 h-4 animate-spin" />}
-                                                            Guardar
+                                                            <Save className="w-4 h-4" />
+                                                            Guardar Todo
                                                         </button>
                                                     </div>
-                                                )}
+                                                </div>
                                             </div>
-                                        ) : (
-                                            <div className="space-y-3">
-                                                {sectionFields.map((field) => (
-                                                    <div key={field.key} className="flex items-center justify-between py-2 border-b last:border-b-0"
-                                                        style={{ borderColor: isDark ? "rgba(255,255,255,0.06)" : "rgba(0,0,0,0.06)" }}>
-                                                        <div className="flex flex-col gap-0.5 min-w-0">
-                                                            <span className="text-sm font-medium truncate"
-                                                                style={{ color: isDark ? "rgba(255,255,255,0.8)" : "#374151" }}>
-                                                                {field.label}
-                                                            </span>
-                                                            {field.help && (
-                                                                <span className="text-xs truncate" style={{ color: isDark ? "rgba(255,255,255,0.4)" : "#9ca3af" }}>
-                                                                    {field.help}
-                                                                </span>
-                                                            )}
-                                                        </div>
-                                                        <span className="text-sm font-mono text-gray-500 dark:text-gray-400 whitespace-nowrap ml-4 shrink-0">
-                                                            {formatValue(formData[field.key] ?? (policy?.[field.key] ?? companyConfig?.[field.key]), field)}
-                                                        </span>
-                                                    </div>
-                                                ))}
-                                            </div>
-                                        )}
-                                    </div>
+                                        </div>
+                                    )}
                                 </div>
                             )
-                        })}
-
-                        {/* Submit bar for "Guardar Todo" mode */}
-                        {editSection === "all" && (
-                            <div className="lg:col-span-2 xl:col-span-3">
-                                <div className="bg-white dark:bg-[#0f0f1a] rounded-2xl border p-4 sticky bottom-4"
-                                    style={{ borderColor: isDark ? "rgba(0,61,165,0.15)" : "rgba(0,61,165,0.2)" }}>
-                                    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-                                        <div className="flex items-center gap-3 text-sm" style={{ color: isDark ? "rgba(255,255,255,0.7)" : "#4b5563" }}>
-                                            <AlertTriangle className="w-5 h-5 text-amber-500 flex-shrink-0" />
-                                            <span>Editando todas las secciones ({SECTIONS.reduce((acc, s) => acc + s.fields.length, 0)} campos). Los cambios se guardarán en lote.</span>
-                                        </div>
-                                        <div className="flex gap-2">
-                                            <button
-                                                onClick={handleCancel}
-                                                disabled={isSubmitting}
-                                                className="px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200"
-                                                style={{
-                                                    background: isDark ? "rgba(255,255,255,0.05)" : "#f3f4f6",
-                                                    color: isDark ? "rgba(255,255,255,0.6)" : "#6b7280"
-                                                }}
-                                            >
-                                                <X className="w-4 h-4 inline mr-1" />
-                                                Cancelar Todo
-                                            </button>
-                                            <button
-                                                onClick={handleSaveAll}
-                                                disabled={isSubmitting || Object.values(errors).some(Boolean)}
-                                                className="px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 text-white flex items-center gap-2"
-                                                style={{ background: "#003DA5" }}
-                                            >
-                                                {isSubmitting && <Loader2 className="w-4 h-4 animate-spin" />}
-                                                <Save className="w-4 h-4" />
-                                                Guardar Todo
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        )}
-                    </div>
-                )}
+                    }
+                })()}
             </div>
         </div>
     )
