@@ -465,13 +465,19 @@ export const PayrollPolicyTab = () => {
     }, [dispatch, isReady, can, policy])
 
     // Determine render state (replaces early returns)
+    // CRITICAL: Wait for BOTH policy AND companyConfig to resolve (success or error) before rendering anything but loading
+    // This eliminates race conditions where policy arrives before companyConfig error (or vice versa)
     const renderState = useMemo(() => {
+        const policyResolved = !policyLoading && (policy !== null || policyError !== null)
+        const companyResolved = !companyLoading && (companyConfig !== null || companyError !== null)
+        const bothResolved = policyResolved && companyResolved
+
+        if (!bothResolved) return 'loading'
         if (hasRealError) return 'error'
-        if (isLoading) return 'loading'
         if (showSetupState) return 'setup'
         if (!policy && !companyConfig) return 'empty'
         return 'main'
-    }, [hasRealError, isLoading, showSetupState, policy, companyConfig])
+    }, [policy, companyConfig, policyLoading, companyLoading, policyError, companyError])
 
     return (
         <div className="w-full h-full flex flex-col gap-6 px-4 py-6">
