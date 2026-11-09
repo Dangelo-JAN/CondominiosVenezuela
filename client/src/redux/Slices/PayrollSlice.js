@@ -214,9 +214,10 @@ const PayrollSlice = createSlice({
         // ─── POLÍTICA ───
         builder
             .addCase(HandlePayrollPolicy.pending, (state, action) => {
-                if (action.meta.arg?.endpoint?.includes("policy")) {
+                const argType = action.meta.arg?.type || ""
+                if (argType.startsWith("POLICY")) {
                     state.policy.isLoading = true
-                } else {
+                } else if (argType.startsWith("COMPANY")) {
                     state.companyConfig.isLoading = true
                 }
             })

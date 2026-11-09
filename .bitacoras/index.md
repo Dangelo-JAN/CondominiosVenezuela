@@ -6,11 +6,11 @@
 ---
 
 ## 🚩 ESTADO ACTUAL
-- **Tarea activa:** #037-payroll-venezuelan-module 🟡 EN CURSO (reabierta 22/10/2026 — Fase 7: Producción/Gaps Críticos, PR hacia dev existente)
-- **Última completada:** #039-payroll-concepts-tab-ui ✅ (05/11/2026)
-- **Branch actual:** 037-payroll-venezuelan-module (PR hacia dev YA CREADO, se mantiene)
-- **Deploy pendiente:** Vercel + Render desde `main` (después de PR merge + Fase 7 completada)
-- **Archivo de referencia rápida:** `actual.md`
+- **Tarea activa:** *Ninguna* (esperando nueva asignación)
+- **Última completada:** #040-payroll-policy-tab-ui ✅ (09/11/2026)
+- **Branch actual:** 040-payroll-policy-tab-ui (PR #56 hacia 037-payroll-venezuelan-module — commits `743d116`, `4107406`, `e7de632`)
+- **Deploy:** Vercel Preview auto-deploy completado
+- **Archivo de referencia rápida:** `actual.md` (limpiado)
 
 ---
 
@@ -54,6 +54,7 @@
 - [ ] [[037-payroll-venezuelan-module]] - 🟡 EN CURSO (reabierta 22/10/2026 — Fase 7: Producción/Gaps Críticos, PR hacia dev existente)
 - [x] [[038-payroll-receipts-tab-ui]] - ✅ COMPLETADO el 03/11/2026 (commit `879fef9`, PR hacia 037-payroll-venezuelan-module)
 - [x] [[039-payroll-concepts-tab-ui]] - ✅ COMPLETADO el 05/11/2026 (UI completa + 3 bugs críticos resueltos: HandleHRCheck thunk, Select value fix, HR permissions stale data + auto-sync middleware; commits `089ba65` `e02a7eb` `c41b94e`, PR hacia 037-payroll-venezuelan-module)
+- [x] [[040-payroll-policy-tab-ui]] - ✅ COMPLETADO el 09/11/2026 (UI completa 5 secciones/49 campos + Fix React Error #300 + Race condition eliminada: StyledSelect sin hook interno + renderState bothResolved gate; commits `743d116` `4107406` `e7de632`, PR #56 hacia 037-payroll-venezuelan-module)
 ---
 
 ## 🛠️ REGLAS DE ORO (DE CUMPLIMIENTO OBLIGATORIO)
@@ -124,7 +125,7 @@
     *   Actualizar `.bitacoras/actual.md` y crear/actualizar la bitácora correspondiente según `00-plantilla.md`.
 ```
 
-*Actualizado: 2026-09-21* *Tarea #036-dynamic-seed ✅ COMPLETADO — first-seed.mjs dinámico (fechas relativas a hoy, modo --force), elimina JSONs, integra seed-reports (snapshots W34-W38), fixes back-ref attendance + _id subdocs schedules; validado en deploy local; 61 tests + build 0 errores; commit `4e15744`*
+*Actualizado: 2026-11-09* *Tarea #040-payroll-policy-tab-ui ✅ COMPLETADA — UI 5 secciones/49 campos + React Error #300 resuelto (StyledSelect hook interno + early returns) + Race condition eliminada (bothResolved gate); 3 commits en PR #56; build 0 errores; Vercel Preview validado*
 
 ---
 

@@ -1,14 +1,25 @@
 import { HumanResources, CARGO_TO_ROLE, DEFAULT_PERMISSIONS } from "../models/HR.model.js"
 import bcrypt from 'bcrypt'
 import crypto from 'crypto'
+import mongoose from 'mongoose'
 import { GenerateJwtTokenAndSetCookiesHR } from "../utils/generatejwttokenandsetcookies.js"
 import { SendVerificationEmail, SendWelcomeEmail, SendForgotPasswordEmail, SendResetPasswordConfimation } from "../sendgrid/emails.js"
 import { GenerateVerificationToken } from "../utils/generateVerificationToken.js"
 import { Organization } from "../models/Organization.model.js"
+import { PayrollCompany } from "../models/payroll/PayrollCompany.model.js"
+import { sanitizeRif } from "../models/Organization.model.js"
 
 export const HandleHRSignup = async (req, res) => {
+    // Usar transacción MongoDB para atomicidad: Organization + PayrollCompany o rollback total
+    const session = await mongoose.startSession()
+    session.startTransaction()
+
     try {
-        const { firstname, lastname, email, password, contactnumber, name, description, OrganizationURL, OrganizationMail } = req.body
+        const { 
+            firstname, lastname, email, password, contactnumber, 
+            name, description, OrganizationURL, OrganizationMail,
+            organizationRif  // NUEVO: RIF obligatorio para crear PayrollCompany válida
+        } = req.body
 
         if (!name || !description || !OrganizationURL || !OrganizationMail) {
             throw new Error("All Fields are required")
@@ -18,74 +29,201 @@ export const HandleHRSignup = async (req, res) => {
             throw new Error("All Fields are required")
         }
 
+        // NUEVO: Validar RIF obligatorio para nueva organización
+        if (!organizationRif) {
+            throw new Error("RIF de la organización es requerido (obligatorio para nómina venezolana)")
+        }
+
+        // Normalizar RIF: solo alphanumeric, uppercase
+        const sanitizedRif = sanitizeRif(organizationRif)
+        
+        // Validar formato RIF venezolano (J/V/E/G + 8-9 dígitos)
+        const rifRegex = /^[JVEG][0-9]{8,9}$/
+        if (!rifRegex.test(sanitizedRif)) {
+            throw new Error("RIF inválido. Formato: J314188305 (letra J/V/E/G + 8-9 dígitos, sin guiones)")
+        }
+
         const organization = await Organization.findOne({ name: name, OrganizationURL: OrganizationURL, OrganizationMail: OrganizationMail })
         const HR = await HumanResources.findOne({ email: email })
 
         if (HR) {
+            await session.abortTransaction()
+            await session.endSession()
             return res.status(400).json({ success: false, message: "HR already exists, please go to the login page or create new HR", type: "signup" })
         }
 
         if (!organization && !HR) {
-            const newOrganization = await Organization.create({ name, description, OrganizationURL, OrganizationMail })
+            // NUEVA ORGANIZACIÓN: Transacción atómica Organization + PayrollCompany
+            
+            // 1. Crear Organization con RIF sanitizado
+            const newOrganization = await Organization.create([{
+                name, description, OrganizationURL, OrganizationMail,
+                rif: sanitizedRif
+            }], { session })
 
+            const orgId = newOrganization[0]._id
+
+            // 2. Verificar duplicado PayrollCompany (por organizationID único)
+            const existingCompany = await PayrollCompany.findOne({ organizationID: orgId }).session(session)
+            if (existingCompany) {
+                await session.abortTransaction()
+                await session.endSession()
+                throw new Error("La organización ya tiene configuración de nómina (PayrollCompany)")
+            }
+
+            // 3. Crear PayrollCompany con datos heredados de Organization + defaults venezolanos
+            const payrollDefaults = {
+                organizationID: orgId,
+                rif: sanitizedRif,                    // ← Heredado de Organization (sanitizado)
+                email: OrganizationMail,              // ← Heredado de Organization
+                name: name,                           // ← Nombre del edificio/condominio
+                // Configuración nómina venezolana (defaults del modelo)
+                salary_split_mode: 'MIXTO',
+                split_percentage_base: 60.00,
+                cestaticket_amount_usd: 40.00,
+                cestaticket_payment_day: 15,
+                cestaticket_package_mode: 'INTEGRADO',
+                vacation_days_base: 15,
+                vacation_days_per_year: 1,
+                vacation_days_max: 30,
+                vacation_bonus_days_base: 15,
+                vacation_bonus_days_per_year: 1,
+                vacation_bonus_days_max: 30,
+                exchange_rate_source: 'BCV',
+                rest_weekdays: [5, 6],
+                minimum_wage_ves: 130.00,
+                ut_value_ves: 9.00,
+                imii_usd: 130.00,
+                ivss_employee_rate: 4.00,
+                ivss_employer_rate: 9.00,
+                ivss_salary_cap_multiplier: 5,
+                faov_employee_rate: 1.00,
+                faov_employer_rate: 2.00,
+                rpe_employee_rate: 0.50,
+                rpe_employer_rate: 2.00,
+                lppss_rate: 9.00,
+                inces_employer_rate: 2.00,
+                holiday_payout_factor: 1.50,
+                rest_day_payout_factor: 1.50,
+                overtime_day_factor: 1.50,
+                overtime_night_factor: 1.50,
+                night_bonus_rate: 0.30,
+                min_service_months: 12,
+                pay_rest_days: true,
+                pay_holidays: true,
+                accrual_mode: 'ANNUAL',
+                vacation_salary_basis: 'LAST_SALARY',
+                vacation_salary_source: 'TOTAL_SALARY',
+                cestaticket_pay_on_vacation: true,
+                cestaticket_separate_period: false,
+                seniority_cap_years: 30,
+                include_cestaticket_in_benefits: true,
+                include_commissions_in_benefits: true,
+                include_bonuses_in_benefits: true,
+                include_overtime_in_benefits: true,
+                include_utilidades_in_benefits: true,
+                faov_employer_base_formula: 'SALARIO_MENSUAL',
+                vacation_cestaticket_label: 'CESTATICKET VACACIONAL',
+                active_modules: ['payroll', 'vacations', 'social_benefits', 'utilidades'],
+                banavih_patron_number: '',
+                inces_number: '',
+                faov_number: '',
+                ivss_number: '',
+                address: '',
+                phone: '',
+                logo: '',
+                colors: {
+                    primary: '#003DA5',
+                    secondary: '#FCE300'
+                }
+            }
+
+            await PayrollCompany.create([payrollDefaults], { session })
+
+            // 4. Crear HR (Presidente)
             const hashedpassword = await bcrypt.hash(password, 10)
             const verificationcode = GenerateVerificationToken(6)
 
-            const newHR = await HumanResources.create({
+            const newHR = await HumanResources.create([{
                 firstname, lastname, email, password: hashedpassword, contactnumber,
-                role: "HR-Admin", cargo: "Presidente", organizationID: newOrganization._id,
+                role: "HR-Admin", cargo: "Presidente", organizationID: orgId,
                 verificationtoken: verificationcode,
                 verificationtokenexpires: Date.now() + 24 * 60 * 60 * 1000
-            })
+            }], { session })
 
-            newOrganization.HRs.push(newHR._id)
-            await newOrganization.save()
+            // 5. Vincular HR a Organization
+            await Organization.findByIdAndUpdate(orgId, { 
+                $push: { HRs: newHR[0]._id } 
+            }, { session })
 
-            const token = GenerateJwtTokenAndSetCookiesHR(res, newHR._id, newHR.role, newOrganization._id)
+            // 6. Commit transacción
+            await session.commitTransaction()
+            await session.endSession()
+
+            const token = GenerateJwtTokenAndSetCookiesHR(res, newHR[0]._id, newHR[0].role, orgId)
             const VerificationEmailStatus = await SendVerificationEmail(email, verificationcode)
             return res.status(201).json({
-                success: true, message: "Organization Created Successfully & HR Registered Successfully",
-                VerificationEmailStatus, type: "signup", HRid: newHR._id, token,
+                success: true, message: "Organization Created Successfully & HR Registered Successfully & PayrollCompany Created",
+                VerificationEmailStatus, type: "signup", HRid: newHR[0]._id, token,
                 verificationcode: verificationcode
             })
         }
 
         if (organization && !HR) {
+            // ORGANIZACIÓN EXISTENTE: Unirse a organización existente
+            // Verificar si ya existe PayrollCompany
+            const existingCompany = await PayrollCompany.findOne({ organizationID: organization._id }).session(session)
+            if (!existingCompany) {
+                await session.abortTransaction()
+                await session.endSession()
+                return res.status(400).json({ 
+                    success: false, 
+                    message: "La organización no tiene configuración de nómina completa. Contacte al administrador.", 
+                    type: "signup",
+                    code: "COMPANY_NOT_CONFIGURED"
+                })
+            }
+
             // Verificar si ya existe un Presidente en la organización
             const existingPresidente = await HumanResources.findOne({
                 organizationID: organization._id,
                 cargo: "Presidente"
-            })
+            }).session(session)
 
             // Si ya existe un Presidente, el nuevo usuario será Viewer (General)
-            // Esto es para mantener compatibilidad - en producción debería ser por invitación
             const newCargo = existingPresidente ? "General" : "Presidente"
             const newRole = CARGO_TO_ROLE[newCargo]
 
             const hashedpassword = await bcrypt.hash(password, 10)
             const verificationcode = GenerateVerificationToken(6)
 
-            const newHR = await HumanResources.create({
+            const newHR = await HumanResources.create([{
                 firstname, lastname, email, password: hashedpassword, contactnumber,
                 role: newRole, cargo: newCargo, organizationID: organization._id,
                 verificationtoken: verificationcode,
                 verificationtokenexpires: Date.now() + 24 * 60 * 60 * 1000,
                 permissions: DEFAULT_PERMISSIONS[newRole]
-            })
+            }], { session })
 
-            organization.HRs.push(newHR._id)
-            await organization.save()
+            await Organization.findByIdAndUpdate(organization._id, { 
+                $push: { HRs: newHR[0]._id } 
+            }, { session })
 
-            const token = GenerateJwtTokenAndSetCookiesHR(res, newHR._id, newHR.role, organization._id)
+            await session.commitTransaction()
+            await session.endSession()
+
+            const token = GenerateJwtTokenAndSetCookiesHR(res, newHR[0]._id, newHR[0].role, organization._id)
             const VerificationEmailStatus = await SendVerificationEmail(email, verificationcode)
             return res.status(201).json({
                 success: true, message: "HR Registered Successfully",
-                type: "signup", VerificationEmailStatus, HRid: newHR._id, token,
+                type: "signup", VerificationEmailStatus, HRid: newHR[0]._id, token,
                 verificationcode: verificationcode
             })
         }
 
     } catch (error) {
+        await session.abortTransaction()
+        await session.endSession()
         return res.status(500).json({ success: false, message: error.message, type: "signup" })
     }
 }
