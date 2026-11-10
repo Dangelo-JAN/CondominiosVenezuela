@@ -77,10 +77,23 @@ export const NoveltyFormModal = ({
         { value: "ADVANCE", label: "Anticipo" },
     ], [])
 
-    const periodOptions = useMemo(() => [
-        { value: "", label: "Seleccionar período..." },
-        ...(periods?.map(p => ({ value: p._id, label: `${p.name} (${new Date(p.start_date).toLocaleDateString('es-ES', { day: '2-digit', month: 'short' })} - ${new Date(p.end_date).toLocaleDateString('es-ES', { day: '2-digit', month: 'short', year: 'numeric' }))}`)) || [])
-    ], [periods])
+    const periodOptions = useMemo(() => {
+        const formatDateShort = (dateStr) => {
+            if (!dateStr) return ''
+            return new Date(dateStr).toLocaleDateString('es-ES', { day: '2-digit', month: 'short', year: 'numeric' })
+        }
+        const formatDateVeryShort = (dateStr) => {
+            if (!dateStr) return ''
+            return new Date(dateStr).toLocaleDateString('es-ES', { day: '2-digit', month: 'short' })
+        }
+        return [
+            { value: "", label: "Seleccionar período..." },
+            ...(periods?.map(p => ({ 
+                value: p._id, 
+                label: `${p.name} (${formatDateVeryShort(p.start_date)} - ${formatDateShort(p.end_date)})`
+            })) || [])
+        ]
+    }, [periods])
 
     const conceptOptions = useMemo(() => [
         { value: "", label: "Seleccionar concepto..." },

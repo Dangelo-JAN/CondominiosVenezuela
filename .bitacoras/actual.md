@@ -12,15 +12,15 @@ Implementar la pestaña de Novedades de nómina venezolana con CRUD completo (li
 ## 🚦 PUNTO DE CONTROL (Contexto de Reanudación)
 *Usa esto para "despertar" a la IA si el chat se cierra:*
 
-- **Lo último que funcionó:** Rama 041-payroll-novelties-tab-ui creada y sincronizada con origin. Bitácora inicializada.
-- **Dónde se rompió/detuvo:** Iniciando Fase 1 - creación de NoveltyFormModal.jsx
-- **Siguiente acción inmediata:** Implementar NoveltyFormModal.jsx siguiendo patrones de ConceptFormModal y PayrollPeriodFormModal
+- **Lo último que funcionó:** Fase 1 completada - NoveltyFormModal.jsx creado y build verificado (0 errores). Commit `9ea7be0` pushed to origin.
+- **Dónde se rompió/detuvo:** STOP 1 - Esperando aprobación de usuario para continuar a Fase 2
+- **Siguiente acción inmediata:** Implementar Fase 2: PayrollNoveltiesTab.jsx completo (listado, filtros, tabla, acciones, modales, paginación)
 
 ---
 
 ## 📝 CAMBIOS TÉCNICOS CLAVE
-- [ ] Fase 1: NoveltyFormModal.jsx (crear/editar novedades)
-- [ ] STOP 1: Commit + push + build verify + aprobación usuario
+- [x] Fase 1: NoveltyFormModal.jsx (crear/editar novedades) ✅ COMPLETADA
+- [x] STOP 1: Commit + push + build verify + aprobación usuario ✅ COMPLETADA (commit `9ea7be0`)
 - [ ] Fase 2: PayrollNoveltiesTab.jsx completo (listado, filtros, tabla, acciones, modales, paginación)
 - [ ] STOP 2: Commit + push + build verify + aprobación usuario
 - [ ] Fase 3: Integración, edge cases, bulk-create, validaciones cruzadas
