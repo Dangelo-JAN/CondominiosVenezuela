@@ -87,7 +87,7 @@ export const NoveltyFormModal = ({
             return new Date(dateStr).toLocaleDateString('es-ES', { day: '2-digit', month: 'short' })
         }
         return [
-            { value: "", label: "Seleccionar período..." },
+            { value: "select", label: "Seleccionar período..." },
             ...(periods?.map(p => ({ 
                 value: p._id, 
                 label: `${p.name} (${formatDateVeryShort(p.start_date)} - ${formatDateShort(p.end_date)})`
@@ -96,12 +96,12 @@ export const NoveltyFormModal = ({
     }, [periods])
 
     const conceptOptions = useMemo(() => [
-        { value: "", label: "Seleccionar concepto..." },
+        { value: "select", label: "Seleccionar concepto..." },
         ...(concepts?.filter(c => c.active && c.is_novelty_eligible).map(c => ({ value: c.code, label: `${c.code} - ${c.name} (${c.kind})` })) || [])
     ], [concepts])
 
     const employeeOptions = useMemo(() => [
-        { value: "", label: employeesLoading ? "Cargando empleados..." : "Seleccionar empleado..." },
+        { value: "select", label: employeesLoading ? "Cargando empleados..." : "Seleccionar empleado..." },
         ...(employees?.map(e => ({ value: e._id, label: `${e.firstname} ${e.lastname} (${e.department?.name || 'Sin depto'})` })) || [])
     ], [employees, employeesLoading])
 
@@ -125,9 +125,9 @@ export const NoveltyFormModal = ({
             setTouched({})
         } else {
             setFormData({
-                employee: "",
-                period: "",
-                concept_code: "",
+                employee: "select",
+                period: "select",
+                concept_code: "select",
                 amount: 0,
                 quantity: 1,
                 unit: "BS",
@@ -157,13 +157,13 @@ export const NoveltyFormModal = ({
         const newErrors = { ...errors }
         switch (field) {
             case "employee":
-                if (!value) newErrors.employee = "Empleado es requerido"
+                if (!value || value === "select") newErrors.employee = "Empleado es requerido"
                 break
             case "period":
-                if (!value) newErrors.period = "Período es requerido"
+                if (!value || value === "select") newErrors.period = "Período es requerido"
                 break
             case "concept_code":
-                if (!value) newErrors.concept_code = "Concepto es requerido"
+                if (!value || value === "select") newErrors.concept_code = "Concepto es requerido"
                 break
             case "amount":
                 if (value === "" || value === null) newErrors.amount = "Monto es requerido"
@@ -185,9 +185,9 @@ export const NoveltyFormModal = ({
         const newErrors = {}
         let isValid = true
 
-        if (!formData.employee) { newErrors.employee = "Empleado es requerido"; isValid = false }
-        if (!formData.period) { newErrors.period = "Período es requerido"; isValid = false }
-        if (!formData.concept_code) { newErrors.concept_code = "Concepto es requerido"; isValid = false }
+        if (!formData.employee || formData.employee === "select") { newErrors.employee = "Empleado es requerido"; isValid = false }
+        if (!formData.period || formData.period === "select") { newErrors.period = "Período es requerido"; isValid = false }
+        if (!formData.concept_code || formData.concept_code === "select") { newErrors.concept_code = "Concepto es requerido"; isValid = false }
         if (formData.amount === "" || formData.amount === null) { newErrors.amount = "Monto es requerido"; isValid = false }
         else if (isNaN(formData.amount)) { newErrors.amount = "Debe ser un número"; isValid = false }
         if (formData.quantity === "" || formData.quantity === null) { newErrors.quantity = "Cantidad es requerida"; isValid = false }
@@ -207,6 +207,10 @@ export const NoveltyFormModal = ({
             amount: Number(formData.amount) || 0,
             quantity: Number(formData.quantity) || 1,
         }
+        // Convert "select" placeholder values to empty strings for API
+        if (submitData.employee === "select") submitData.employee = ""
+        if (submitData.period === "select") submitData.period = ""
+        if (submitData.concept_code === "select") submitData.concept_code = ""
         // Don't send locked fields when editing
         if (isEditingExisting) {
             lockedFields.forEach(f => delete submitData[f])
