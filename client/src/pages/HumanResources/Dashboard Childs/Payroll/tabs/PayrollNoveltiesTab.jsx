@@ -9,7 +9,7 @@ import { CustomSelect } from "../../../../../components/ui/custom-select.jsx"
 import { ConfirmDialog } from "../../../../../components/common/ConfirmDialog.jsx"
 import { ThemedListWrapper, ThemedHeadingBar, ThemedListContainer } from "../../../../../components/common/Dashboard/ListDesigns"
 import { NoveltyFormModal } from "../../../../../components/payroll/NoveltyFormModal.jsx"
-import { Search, Filter, Calendar, FileText, ChevronDown, Eye, Edit, CheckCircle, XCircle, Trash2, RefreshCw, AlertTriangle, Download, Upload, Loader2, Settings } from "lucide-react"
+import { Search, Filter, Calendar, FileText, ChevronDown, Eye, Edit, CheckCircle, XCircle, Trash2, RefreshCw, AlertTriangle, Download, Upload, Loader2, Settings, Upload as UploadIcon, FileSpreadsheet, X, AlertCircle, Check } from "lucide-react"
 
 // --- NoveltyDetailModal Component ---
 const NoveltyDetailModal = ({ novelty, onClose, isDark }) => {
@@ -269,6 +269,506 @@ const RejectConfirmModal = ({ open, onClose, onConfirm, noveltyId, isDark }) => 
     )
 }
 
+// --- BulkImportModal Component ---
+const BulkImportModal = ({ open, onClose, isDark, periods, concepts, onImport }) => {
+    const [file, setFile] = useState(null)
+    const [fileError, setFileError] = useState(null)
+    const [previewData, setPreviewData] = useState([])
+    const [importing, setImporting] = useState(false)
+    const [importResult, setImportResult] = useState(null)
+    const [selectedPeriod, setSelectedPeriod] = useState("select")
+    const [selectedConcept, setSelectedConcept] = useState("select")
+    const [defaultValues, setDefaultValues] = useState({
+        quantity: 1,
+        unit: "BS",
+        source: "IMPORT",
+        description: ""
+    })
+
+    const formatDateShort = (dateStr) => {
+        if (!dateStr) return ''
+        return new Date(dateStr).toLocaleDateString('es-ES', { day: '2-digit', month: 'short', year: 'numeric' })
+    }
+    const formatDateVeryShort = (dateStr) => {
+        if (!dateStr) return ''
+        return new Date(dateStr).toLocaleDateString('es-ES', { day: '2-digit', month: 'short' })
+    }
+
+    const periodOptions = useMemo(() => [
+        { value: "select", label: "Seleccionar período por defecto..." },
+        ...(periods?.map(p => ({ 
+            value: p._id, 
+            label: `${p.name} (${formatDateVeryShort(p.start_date)} - ${formatDateShort(p.end_date)})`
+        })) || [])
+    ], [periods])
+
+    const conceptOptions = useMemo(() => [
+        { value: "select", label: "Seleccionar concepto por defecto..." },
+        ...(concepts?.filter(c => c.active && c.is_novelty_eligible).map(c => ({ value: c.code, label: `${c.code} - ${c.name}` })) || [])
+    ], [concepts])
+
+    const unitOptions = [
+        { value: "DÍAS", label: "Días" },
+        { value: "HORAS", label: "Horas" },
+        { value: "UNIDADES", label: "Unidades" },
+        { value: "%", label: "Porcentaje" },
+        { value: "BS", label: "Bs." },
+        { value: "USD", label: "USD" },
+    ]
+
+    const sourceOptions = [
+        { value: "MANUAL", label: "Manual" },
+        { value: "IMPORT", label: "Importación" },
+        { value: "BIOMETRIC", label: "Biométrico" },
+        { value: "POS", label: "POS" },
+        { value: "LEAVE", label: "Licencia" },
+        { value: "LOAN", label: "Préstamo" },
+        { value: "ADVANCE", label: "Anticipo" },
+    ]
+
+    const handleFileChange = (e) => {
+        const selectedFile = e.target.files[0]
+        if (!selectedFile) return
+
+        const validTypes = ['text/csv', 'application/json', 'text/plain']
+        const validExtensions = ['.csv', '.json']
+        const fileName = selectedFile.name.toLowerCase()
+        const hasValidExtension = validExtensions.some(ext => fileName.endsWith(ext))
+
+        if (!validTypes.includes(selectedFile.type) && !hasValidExtension) {
+            setFileError("Formato no válido. Use CSV o JSON.")
+            setFile(null)
+            return
+        }
+
+        if (selectedFile.size > 5 * 1024 * 1024) {
+            setFileError("Archivo demasiado grande. Máximo 5MB.")
+            setFile(null)
+            return
+        }
+
+        setFileError(null)
+        setFile(selectedFile)
+
+        const reader = new FileReader()
+        reader.onload = (event) => {
+            try {
+                let data = []
+                const content = event.target.result
+                
+                if (fileName.endsWith('.csv')) {
+                    const lines = content.split('\n').filter(l => l.trim())
+                    if (lines.length < 2) throw new Error("CSV vacío o solo headers")
+                    const headers = lines[0].split(',').map(h => h.trim().replace(/"/g, ''))
+                    for (let i = 1; i < Math.min(lines.length, 11); i++) {
+                        const values = lines[i].split(',').map(v => v.trim().replace(/"/g, ''))
+                        const row = {}
+                        headers.forEach((h, idx) => row[h] = values[idx])
+                        data.push(row)
+                    }
+                } else {
+                    const json = JSON.parse(content)
+                    data = Array.isArray(json) ? json.slice(0, 10) : [json]
+                }
+                
+                setPreviewData(data)
+            } catch (err) {
+                setFileError(`Error al parsear archivo: ${err.message}`)
+                setPreviewData([])
+            }
+        }
+        reader.readAsText(selectedFile)
+    }
+
+    const handleImport = async () => {
+        if (!file || !selectedPeriod || selectedPeriod === "select") {
+            setFileError("Seleccione un archivo y un período por defecto")
+            return
+        }
+
+        setImporting(true)
+        setFileError(null)
+        setImportResult(null)
+
+        try {
+            const content = await file.text()
+            let noveltiesToImport = []
+
+            if (file.name.toLowerCase().endsWith('.csv')) {
+                const lines = content.split('\n').filter(l => l.trim())
+                const headers = lines[0].split(',').map(h => h.trim().replace(/"/g, ''))
+                for (let i = 1; i < lines.length; i++) {
+                    const values = lines[i].split(',').map(v => v.trim().replace(/"/g, ''))
+                    const row = {}
+                    headers.forEach((h, idx) => row[h] = values[idx])
+                    noveltiesToImport.push(row)
+                }
+            } else {
+                const json = JSON.parse(content)
+                noveltiesToImport = Array.isArray(json) ? json : [json]
+            }
+
+            // Transform and validate each row
+            const transformedNovelties = noveltiesToImport.map((row, idx) => {
+                const employeeId = row.employee_id || row.employee || row.employeeId
+                const conceptCode = row.concept_code || row.concept || row.code
+                const amount = parseFloat(row.amount || row.monto || row.valor || 0)
+                const quantity = parseInt(row.quantity || row.cantidad || defaultValues.quantity)
+                const unit = row.unit || row.unidad || defaultValues.unit
+                const source = row.source || row.origen || defaultValues.source
+                const description = row.description || row.descripcion || defaultValues.description
+                const referenceId = row.reference_id || row.referenceId || row.ref_id
+                const referenceModel = row.reference_model || row.referenceModel
+
+                if (!employeeId) throw new Error(`Fila ${idx + 1}: Falta employee_id`)
+                if (!conceptCode) throw new Error(`Fila ${idx + 1}: Falta concept_code`)
+                if (isNaN(amount)) throw new Error(`Fila ${idx + 1}: Monto inválido`)
+
+                return {
+                    employee: employeeId,
+                    period: selectedPeriod,
+                    concept_code: conceptCode.toUpperCase(),
+                    amount,
+                    quantity: isNaN(quantity) ? defaultValues.quantity : quantity,
+                    unit: unit || defaultValues.unit,
+                    source: source || defaultValues.source,
+                    description: description || '',
+                    reference_id: referenceId || '',
+                    reference_model: referenceModel || ''
+                }
+            })
+
+            // Call the bulk create API
+            const result = await onImport(transformedNovelties)
+            
+            setImportResult({
+                success: true,
+                created: result.created?.length || 0,
+                errors: result.errors?.length || 0,
+                details: result
+            })
+            
+            // Clear form on success
+            setFile(null)
+            setPreviewData([])
+            setSelectedPeriod("select")
+            
+        } catch (err) {
+            setFileError(err.message || "Error al importar")
+            setImportResult({ success: false, error: err.message })
+        } finally {
+            setImporting(false)
+        }
+    }
+
+    if (!open) return null
+
+    return (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4 animate-fade-in" onClick={onClose}>
+            <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-xl max-w-4xl w-full max-h-[95vh] overflow-auto animate-slide-up" onClick={(e) => e.stopPropagation()}>
+                {/* Header */}
+                <div className="flex items-center justify-between p-4 border-b transition-colors duration-300"
+                    style={{ borderColor: isDark ? "rgba(0,61,165,0.15)" : "rgba(0,61,165,0.2)" }}>
+                    <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 rounded-xl flex items-center justify-center"
+                            style={{ background: isDark ? "rgba(0,61,165,0.15)" : "rgba(0,61,165,0.1)" }}>
+                            <FileSpreadsheet className="w-5 h-5" style={{ color: "#003DA5" }} />
+                        </div>
+                        <div>
+                            <h2 className="text-xl font-bold text-gray-900 dark:text-white">Importar Novedades Masivas</h2>
+                            <p className="text-sm" style={{ color: isDark ? "rgba(255,255,255,0.5)" : "#6b7280" }}>
+                                Suba un archivo CSV o JSON con múltiples novedades
+                            </p>
+                        </div>
+                    </div>
+                    <button onClick={onClose} className="p-2 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+                        <X className="w-5 h-5" />
+                    </button>
+                </div>
+
+                <div className="p-4 max-h-[85vh] overflow-auto">
+                    {importResult ? (
+                        // Result View
+                        <div className="space-y-4">
+                            <div className={`p-4 rounded-xl flex items-center gap-3 ${importResult.success ? 'bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800' : 'bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800'}`}>
+                                <div className={`p-2 rounded-full ${importResult.success ? 'bg-green-100 dark:bg-green-900/30' : 'bg-red-100 dark:bg-red-900/30'}`}>
+                                    {importResult.success ? (
+                                        <CheckCircle className="w-5 h-5 text-green-600 dark:text-green-400" />
+                                    ) : (
+                                        <AlertCircle className="w-5 h-5 text-red-600 dark:text-red-400" />
+                                    )}
+                                </div>
+                                <div>
+                                    <h3 className="font-semibold text-gray-900 dark:text-white">
+                                        {importResult.success ? "Importación completada" : "Error en la importación"}
+                                    </h3>
+                                    {importResult.success && (
+                                        <p className="text-sm text-gray-600 dark:text-gray-400">
+                                            {importResult.created} novedades creadas
+                                            {importResult.errors > 0 && <span className="text-red-600">, {importResult.errors} errores</span>}
+                                        </p>
+                                    )}
+                                    {!importResult.success && (
+                                        <p className="text-sm text-red-600 dark:text-red-400">{importResult.error}</p>
+                                    )}
+                                </div>
+                            </div>
+                            <div className="flex justify-end gap-3">
+                                <button onClick={() => { setImportResult(null); setFileError(null); }} className="px-4 py-2 rounded-xl text-sm font-medium text-white transition-all" style={{ background: "#003DA5" }}>
+                                    Importar otro archivo
+                                </button>
+                                <button onClick={onClose} className="px-4 py-2 rounded-xl text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800">
+                                    Cerrar
+                                </button>
+                            </div>
+                        </div>
+                    ) : (
+                        // Import Form
+                        <div className="space-y-6">
+                            {/* File Upload */}
+                            <div>
+                                <label className="block text-xs font-semibold uppercase tracking-wider mb-2" style={{ color: isDark ? "rgba(255,255,255,0.5)" : "#6b7280" }}>
+                                    Archivo <span className="text-red-500">*</span>
+                                </label>
+                                <div className="relative">
+                                    <input
+                                        type="file"
+                                        accept=".csv,.json"
+                                        onChange={handleFileChange}
+                                        className="sr-only"
+                                        id="bulk-import-file"
+                                        disabled={importing}
+                                    />
+                                    <label htmlFor="bulk-import-file" className={`flex flex-col items-center justify-center p-8 border-2 border-dashed rounded-xl cursor-pointer transition-colors ${fileError ? 'border-red-400' : 'hover:border-blue-400'}`}
+                                        style={{ 
+                                            background: fileError ? 'bg-red-50 dark:bg-red-900/20' : (isDark ? "rgba(255,255,255,0.02)" : "#f9fafb"),
+                                            borderColor: fileError ? "#dc2626" : (isDark ? "rgba(255,255,255,0.12)" : "#e5e7eb")
+                                        }}>
+                                        <UploadIcon className="w-10 h-10 mb-3" style={{ color: fileError ? "#dc2626" : "#003DA5" }} />
+                                        <p className="text-center text-gray-700 dark:text-gray-300">
+                                            {file ? `Archivo seleccionado: ${file.name} (${(file.size/1024).toFixed(1)} KB)` : 'Arrastre o haga clic para subir archivo CSV/JSON'}
+                                        </p>
+                                        <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">Máximo 5MB • CSV o JSON</p>
+                                    </label>
+                                </div>
+                                {fileError && (
+                                    <p className="mt-2 text-sm text-red-500 flex items-center gap-1">
+                                        <AlertCircle className="w-4 h-4" /> {fileError}
+                                    </p>
+                                )}
+                            </div>
+
+                            {/* Preview */}
+                            {previewData.length > 0 && (
+                                <div>
+                                    <h3 className="text-sm font-semibold text-gray-900 dark:text-white mb-2 flex items-center gap-2">
+                                        <FileSpreadsheet className="w-4 h-4" style={{ color: "#003DA5" }} />
+                                        Vista Previa (primeras 10 filas)
+                                    </h3>
+                                    <div className="overflow-x-auto rounded-lg border" style={{ borderColor: isDark ? "rgba(255,255,255,0.12)" : "#e5e7eb" }}>
+                                        <table className="w-full text-sm">
+                                            <thead>
+                                                <tr className="bg-gray-50 dark:bg-gray-800/50">
+                                                    {Object.keys(previewData[0]).map(key => (
+                                                        <th key={key} className="px-3 py-2 text-left font-semibold text-gray-600 dark:text-gray-400">{key}</th>
+                                                    ))}
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {previewData.map((row, idx) => (
+                                                    <tr key={idx} className="border-t" style={{ borderColor: isDark ? "rgba(255,255,255,0.08)" : "#e5e7eb" }}>
+                                                        {Object.values(row).map((val, i) => (
+                                                            <td key={i} className="px-3 py-2 text-gray-900 dark:text-white truncate max-w-xs">{val}</td>
+                                                        ))}
+                                                    </tr>
+                                                ))}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            )}
+
+                            {/* Default Values Configuration */}
+                            <div className="border-t pt-6" style={{ borderColor: isDark ? "rgba(255,255,255,0.12)" : "#e5e7eb" }}>
+                                <h3 className="text-sm font-semibold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
+                                    <Settings className="w-4 h-4" style={{ color: "#003DA5" }} />
+                                    Valores por Defecto (se usan si el archivo no los incluye)
+                                </h3>
+                                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                                    {/* Period */}
+                                    <div className="lg:col-span-2">
+                                        <label className="block text-xs font-semibold uppercase tracking-wider mb-1.5" style={{ color: isDark ? "rgba(255,255,255,0.5)" : "#6b7280" }}>
+                                            Período <span className="text-red-500">*</span>
+                                        </label>
+                                        <CustomSelect
+                                            value={selectedPeriod}
+                                            onValueChange={setSelectedPeriod}
+                                            options={periodOptions}
+                                            placeholder="Seleccionar período..."
+                                            accentColor="blue"
+                                            disabled={importing}
+                                        />
+                                    </div>
+
+                                    {/* Concept */}
+                                    <div className="lg:col-span-2">
+                                        <label className="block text-xs font-semibold uppercase tracking-wider mb-1.5" style={{ color: isDark ? "rgba(255,255,255,0.5)" : "#6b7280" }}>
+                                            Concepto por defecto
+                                        </label>
+                                        <CustomSelect
+                                            value={selectedConcept}
+                                            onValueChange={setSelectedConcept}
+                                            options={conceptOptions}
+                                            placeholder="Opcional: concepto por defecto"
+                                            accentColor="blue"
+                                            disabled={importing}
+                                        />
+                                    </div>
+
+                                    {/* Quantity */}
+                                    <div>
+                                        <label className="block text-xs font-semibold uppercase tracking-wider mb-1.5" style={{ color: isDark ? "rgba(255,255,255,0.5)" : "#6b7280" }}>
+                                            Cantidad
+                                        </label>
+                                        <input
+                                            type="number"
+                                            min="1"
+                                            step="1"
+                                            value={defaultValues.quantity}
+                                            onChange={(e) => setDefaultValues({...defaultValues, quantity: parseInt(e.target.value) || 1})}
+                                            className={`w-full rounded-xl px-3 py-2.5 text-sm outline-none transition-all duration-200 text-right
+                                                bg-gray-50 border border-gray-200 text-gray-900 placeholder-gray-400
+                                                focus:border-blue-400 focus:bg-white focus:ring-2 focus:ring-blue-100
+                                                dark:bg-[rgba(255,255,255,0.04)] dark:border-[rgba(255,255,255,0.08)] dark:text-white
+                                                dark:placeholder-[rgba(255,255,255,0.25)] dark:focus:border-[rgba(0,61,165,0.5)]`}
+                                            disabled={importing}
+                                        />
+                                    </div>
+
+                                    {/* Unit */}
+                                    <div>
+                                        <label className="block text-xs font-semibold uppercase tracking-wider mb-1.5" style={{ color: isDark ? "rgba(255,255,255,0.5)" : "#6b7280" }}>
+                                            Unidad
+                                        </label>
+                                        <CustomSelect
+                                            value={defaultValues.unit}
+                                            onValueChange={(val) => setDefaultValues({...defaultValues, unit: val})}
+                                            options={unitOptions}
+                                            placeholder="Seleccionar unidad"
+                                            accentColor="blue"
+                                            disabled={importing}
+                                        />
+                                    </div>
+
+                                    {/* Source */}
+                                    <div>
+                                        <label className="block text-xs font-semibold uppercase tracking-wider mb-1.5" style={{ color: isDark ? "rgba(255,255,255,0.5)" : "#6b7280" }}>
+                                            Origen
+                                        </label>
+                                        <CustomSelect
+                                            value={defaultValues.source}
+                                            onValueChange={(val) => setDefaultValues({...defaultValues, source: val})}
+                                            options={sourceOptions}
+                                            placeholder="Seleccionar origen"
+                                            accentColor="blue"
+                                            disabled={importing}
+                                        />
+                                    </div>
+
+                                    {/* Description */}
+                                    <div className="sm:col-span-2">
+                                        <label className="block text-xs font-semibold uppercase tracking-wider mb-1.5" style={{ color: isDark ? "rgba(255,255,255,0.5)" : "#6b7280" }}>
+                                            Descripción por defecto
+                                        </label>
+                                        <input
+                                            type="text"
+                                            value={defaultValues.description}
+                                            onChange={(e) => setDefaultValues({...defaultValues, description: e.target.value})}
+                                            placeholder="Descripción opcional..."
+                                            className={`w-full rounded-xl px-3 py-2.5 text-sm outline-none transition-all duration-200
+                                                bg-gray-50 border border-gray-200 text-gray-900 placeholder-gray-400
+                                                focus:border-blue-400 focus:bg-white focus:ring-2 focus:ring-blue-100
+                                                dark:bg-[rgba(255,255,255,0.04)] dark:border-[rgba(255,255,255,0.08)] dark:text-white
+                                                dark:placeholder-[rgba(255,255,255,0.25)] dark:focus:border-[rgba(0,61,165,0.5)]`}
+                                            disabled={importing}
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Format Help */}
+                            <div className="p-4 rounded-lg" style={{ background: isDark ? "rgba(0,61,165,0.08)" : "rgba(0,61,165,0.05)" }}>
+                                <h4 className="text-sm font-semibold text-gray-900 dark:text-white mb-2 flex items-center gap-2">
+                                    <AlertCircle className="w-4 h-4" style={{ color: "#003DA5" }} />
+                                    Formato de Archivo Esperado
+                                </h4>
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+                                    <div>
+                                        <p className="font-medium text-gray-700 dark:text-gray-300 mb-1">CSV (con headers):</p>
+                                        <pre className="p-2 rounded bg-gray-100 dark:bg-gray-800 overflow-x-auto text-gray-900 dark:text-white">
+{`employee_id,concept_code,amount,quantity,unit,source,description,reference_id,reference_model
+EMP001,HE_DIURNA,500.00,2,HORAS,IMPORT,Horas extra mayo,,`
+                                        }
+                                        </pre>
+                                    </div>
+                                    <div>
+                                        <p className="font-medium text-gray-700 dark:text-gray-300 mb-1">JSON (array de objetos):</p>
+                                        <pre className="p-2 rounded bg-gray-100 dark:bg-gray-800 overflow-x-auto text-gray-900 dark:text-white">
+{`[
+  {
+    "employee_id": "EMP001",
+    "concept_code": "HE_DIURNA",
+    "amount": 500.00,
+    "quantity": 2,
+    "unit": "HORAS",
+    "source": "IMPORT"
+  }
+]`
+                                        }
+                                        </pre>
+                                    </div>
+                                </div>
+                                <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">
+                                    Campos requeridos: <strong>employee_id</strong>, <strong>concept_code</strong>, <strong>amount</strong>. 
+                                    Los demás usan valores por defecto.
+                                </p>
+                            </div>
+
+                            {/* Actions */}
+                            <div className="flex justify-end gap-3 pt-4 border-t" style={{ borderColor: isDark ? "rgba(0,61,165,0.15)" : "rgba(0,61,165,0.2)" }}>
+                                <button onClick={onClose} className="px-4 py-2 rounded-xl text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800">
+                                    Cancelar
+                                </button>
+                                <button 
+                                    onClick={handleImport} 
+                                    disabled={importing || !file}
+                                    className="px-5 py-2.5 rounded-xl text-sm font-medium text-white transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+                                    style={{ background: "#003DA5" }}
+                                >
+                                    {importing ? (
+                                        <>
+                                            <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                                                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                            </svg>
+                                            Importando...
+                                        </>
+                                    ) : (
+                                        <>
+                                            <FileSpreadsheet className="w-4 h-4" />
+                                            Importar
+                                        </>
+                                    )}
+                                </button>
+                            </div>
+                        </div>
+                    )}
+                </div>
+            </div>
+        </div>
+    )
+}
+
 export const PayrollNoveltiesTab = () => {
     const isDark = useIsDark()
     const dispatch = useDispatch()
@@ -290,6 +790,7 @@ export const PayrollNoveltiesTab = () => {
     const [applyConfirm, setApplyConfirm] = useState(null)
     const [rejectConfirm, setRejectConfirm] = useState(null)
     const [deleteConfirm, setDeleteConfirm] = useState(null)
+    const [showBulkImportModal, setShowBulkImportModal] = useState(false)
     const [isSubmitting, setIsSubmitting] = useState(false)
 
     const periodOptions = useMemo(() => {
@@ -420,14 +921,25 @@ export const PayrollNoveltiesTab = () => {
                 </div>
 
                 {isReady && can("payroll", "create") && (
-                    <button
-                        onClick={() => { setEditNovelty(null); setShowFormModal(true); }}
-                        className="px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 text-white flex items-center gap-2"
-                        style={{ background: "#003DA5" }}
-                    >
-                        <FileText className="w-4 h-4" />
-                        Nueva Novedad
-                    </button>
+                    <div className="flex items-center gap-2">
+                        <button
+                            onClick={() => setShowBulkImportModal(true)}
+                            className="px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 text-white flex items-center gap-2"
+                            style={{ background: "#003DA5" }}
+                            title="Importar novedades masivamente (CSV/JSON)"
+                        >
+                            <UploadIcon className="w-4 h-4" />
+                            Importar
+                        </button>
+                        <button
+                            onClick={() => { setEditNovelty(null); setShowFormModal(true); }}
+                            className="px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 text-white flex items-center gap-2"
+                            style={{ background: "#003DA5" }}
+                        >
+                            <FileText className="w-4 h-4" />
+                            Nueva Novedad
+                        </button>
+                    </div>
                 )}
             </div>
 
@@ -777,6 +1289,22 @@ export const PayrollNoveltiesTab = () => {
                 message="Esta acción no se puede deshacer. La novedad será eliminada permanentemente."
                 confirmText="Eliminar"
                 variant="danger"
+            />
+
+            {/* Bulk Import Modal */}
+            <BulkImportModal
+                open={showBulkImportModal}
+                onClose={() => setShowBulkImportModal(false)}
+                isDark={isDark}
+                periods={periods}
+                concepts={concepts}
+                onImport={async (novelties) => {
+                    const result = await dispatch(HandlePayrollNovelties({ 
+                        type: "BULK_CREATE", 
+                        data: novelties 
+                    })).unwrap()
+                    return result
+                }}
             />
         </div>
     )
