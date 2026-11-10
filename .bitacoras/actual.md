@@ -1,30 +1,40 @@
 # 🛠️ TAREA ACTUAL
 
-**ID:** #XXX | **Estado:** 🟡 EN CURSO | **Fecha:** YYYY-MM-DD
+**ID:** #041 | **Estado:** 🟡 EN CURSO | **Fecha:** 2026-11-10
 
 ---
 
 ## 🎯 OBJETIVO FINAL
-> Una frase que defina el "éxito" de esta tarea (Ej: "Que el usuario pueda loguearse con Google sin errores").
+Implementar la pestaña de Novedades de nómina venezolana con CRUD completo (listar, crear, editar, aplicar, rechazar, eliminar, bulk-create, detalle) reemplazando el placeholder "En Desarrollo", siguiendo los patrones de PayrollPeriodsTab, PayrollConceptsTab y PayrollPolicyTab.
 
 ---
 
 ## 🚦 PUNTO DE CONTROL (Contexto de Reanudación)
 *Usa esto para "despertar" a la IA si el chat se cierra:*
 
-- **Lo último que funcionó:** [Ej: El botón de login ya envía los datos].
-- **Dónde se rompió/detuvo:** [Ej: Error 403 en el callback de la API].
-- **Siguiente acción inmediata:** [Ej: Revisar las credenciales en el archivo .env].
+- **Lo último que funcionó:** Rama 041-payroll-novelties-tab-ui creada y sincronizada con origin. Bitácora inicializada.
+- **Dónde se rompió/detuvo:** Iniciando Fase 1 - creación de NoveltyFormModal.jsx
+- **Siguiente acción inmediata:** Implementar NoveltyFormModal.jsx siguiendo patrones de ConceptFormModal y PayrollPeriodFormModal
 
 ---
 
 ## 📝 CAMBIOS TÉCNICOS CLAVE
-- [ ] [Tarea 1 - PENDIENTE]
-- [ ] [Tarea 2 - PENDIENTE]
+- [ ] Fase 1: NoveltyFormModal.jsx (crear/editar novedades)
+- [ ] STOP 1: Commit + push + build verify + aprobación usuario
+- [ ] Fase 2: PayrollNoveltiesTab.jsx completo (listado, filtros, tabla, acciones, modales, paginación)
+- [ ] STOP 2: Commit + push + build verify + aprobación usuario
+- [ ] Fase 3: Integración, edge cases, bulk-create, validaciones cruzadas
+- [ ] STOP 3: Commit + push + build verify + aprobación usuario
+- [ ] PR hacia 037-payroll-venezuelan-module
 
 ---
 
 ## ⚠️ NOTAS DE MEMORIA
-- *Regla:* [Regla importante a recordar para esta tarea]
-- *Branch:* [nombre de la rama]
-- *Commit:* [hash del commit si aplica]
+- *Regla:* NO seguir patrón de PayrollReceiptsTab (mal implementado). SÍ seguir PayrollPeriodsTab, PayrollConceptsTab, PayrollPolicyTab
+- *Regla:* STOP obligatorio tras cada fase (commit + build + aprobación explícita)
+- *Regla:* Build obligatorio: client `npm run build` (0 errores) antes de CADA commit
+- *Branch:* 041-payroll-novelties-tab-ui (desde 037-payroll-venezuelan-module)
+- *PR destino:* 037-payroll-venezuelan-module (NUNCA a main/dev)
+- *Permisos:* useHRAuth can("payroll", "create/read/update/delete")
+- *Redux:* HandlePayrollNovelties thunk + slice novelties/novelty ya existen
+- *API:* /api/v1/payroll/novelties endpoints implementados en backend
