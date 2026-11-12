@@ -1,30 +1,35 @@
 # 🛠️ TAREA ACTUAL
 
-**ID:** #XXX | **Estado:** 🟡 EN CURSO | **Fecha:** YYYY-MM-DD
+**ID:** #042 | **Estado:** 🟡 EN CURSO | **Fecha:** 2026-11-12
 
 ---
 
 ## 🎯 OBJETIVO FINAL
-> Una frase que defina el "éxito" de esta tarea (Ej: "Que el usuario pueda loguearse con Google sin errores").
+Implementar la UI completa de la pestaña Vacaciones en la página de Nómina (HRPayrollPage) con gestión de Saldos, Solicitudes y Festivos, reemplazando el placeholder "En Desarrollo".
 
 ---
 
 ## 🚦 PUNTO DE CONTROL (Contexto de Reanudación)
-*Usa esto para "despertar" a la IA si el chat se cierra:*
 
-- **Lo último que funcionó:** [Ej: El botón de login ya envía los datos].
-- **Dónde se rompió/detuvo:** [Ej: Error 403 en el callback de la API].
-- **Siguiente acción inmediata:** [Ej: Revisar las credenciales en el archivo .env].
+- **Lo último que funcionó:** Build exitoso (0 errores). UI completa implementada con 3 subtabs: Saldos, Solicitudes, Festivos.
+- **Dónde se rompió/detuvo:** Implementación completa. Pendiente commit y push.
+- **Siguiente acción inmediata:** Commit con @git-commit-formatter, push y crear PR hacia 037-payroll-venezuelan-module.
 
 ---
 
 ## 📝 CAMBIOS TÉCNICOS CLAVE
-- [ ] [Tarea 1 - PENDIENTE]
-- [ ] [Tarea 2 - PENDIENTE]
+- [x] **Fase 1-8:** Implementación completa en una sola fase — Estructura base, 3 subtabs (Saldos, Solicitudes, Festivos), tablas con ThemedListWrapper/Container, modales de detalle y acción, permisos HR, dark mode, responsive
+- [x] **Build:** `npm run build` — 0 errores ✅
+- [ ] **Commit & Push:** Con @git-commit-formatter
+- [ ] **PR:** Hacia `037-payroll-venezuelan-module`
 
 ---
 
 ## ⚠️ NOTAS DE MEMORIA
-- *Regla:* [Regla importante a recordar para esta tarea]
-- *Branch:* [nombre de la rama]
-- *Commit:* [hash del commit si aplica]
+- *Regla:* Seguir patrón idéntico a `PayrollNoveltiesTab.jsx` (tarea #041)
+- *Regla:* Usar `ThemedListContainer` con `flex-1 min-h-0 overflow-y-auto` para evitar bug scroll (#030)
+- *Regla:* Usar `CustomSelect` con value `"select"` no empty string (hotfix #041)
+- *Regla:* Permisos HR via `useHRAuth()` → `can("payroll", "create/update/delete")`
+- *Branch:* 042-payroll-vacations-tab-ui (desde 037-payroll-venezuelan-module)
+- *PR Target:* 037-payroll-venezuelan-module (NO dev/main)
+- *Commit:* Pendiente
