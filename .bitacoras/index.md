@@ -6,9 +6,9 @@
 ---
 
 ## 🚩 ESTADO ACTUAL
-- **Tarea activa:** *Ninguna* (esperando nueva asignación)
+- **Tarea activa:** #043-payroll-social-benefits-tab-ui 🟡 EN CURSO (iniciada 12/11/2026)
 - **Última completada:** #042-payroll-vacations-tab-ui ✅ (12/11/2026)
-- **Branch actual:** 042-payroll-vacations-tab-ui (PR hacia 037-payroll-venezuelan-module — commits `69fcb31`, `a2b9928`, `85bcee9`)
+- **Branch actual:** 043-payroll-social-benefits-tab-ui (desde 037-payroll-venezuelan-module)
 - **Deploy:** Vercel Preview auto-deploy pendiente
 - **Archivo de referencia rápida:** `actual.md` (limpiado)
 
@@ -57,6 +57,7 @@
 - [x] [[040-payroll-policy-tab-ui]] - ✅ COMPLETADO el 09/11/2026 (UI completa 5 secciones/49 campos + Fix React Error #300 + Race condition eliminada: StyledSelect sin hook interno + renderState bothResolved gate; commits `743d116` `4107406` `e7de632`, PR #56 hacia 037-payroll-venezuelan-module)
 - [x] [[041-payroll-novelties-tab-ui]] - ✅ COMPLETADO el 10/11/2026 (UI completa CRUD + Bulk Import CSV/JSON + Hotfix Radix Select; commits `9ea7be0` `489a2a9` `7249a68` `59c41fd`, PR hacia 037-payroll-venezuelan-module)
 - [x] [[042-payroll-vacations-tab-ui]] - ✅ COMPLETADO el 12/11/2026 (UI completa 3 subtabs: Saldos/Solicitudes/Festivos + CRUD solicitudes/festivos + Fix Chevron imports + Fix Radix Select empty string; commits `69fcb31` `a2b9928` `85bcee9`, PR hacia 037-payroll-venezuelan-module)
+- [ ] [[043-payroll-social-benefits-tab-ui]] - 🟡 EN CURSO (iniciada 12/11/2026 — UI Prestaciones 3 subtabs: Libro/Liquidaciones/Devengado)
 ---
 
 ## 🛠️ REGLAS DE ORO (DE CUMPLIMIENTO OBLIGATORIO)
