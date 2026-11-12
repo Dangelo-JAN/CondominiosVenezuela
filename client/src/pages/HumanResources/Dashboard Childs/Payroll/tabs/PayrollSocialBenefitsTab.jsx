@@ -1072,52 +1072,6 @@ export const PayrollSocialBenefitsTab = () => {
     const [calculating, setCalculating] = useState(false)
     const [recording, setRecording] = useState(false)
 
-    // Load employees for selects
-    useEffect(() => {
-        // TODO: Fetch employees with contracts for selects
-        // For now, we'll use the data from ledger/settlements
-    }, [])
-
-    // Load initial data
-    useEffect(() => {
-        dispatch(HandleSocialBenefits({ type: "LEDGER_GETALL", ...buildLedgerParams() }))
-        dispatch(HandleSocialBenefits({ type: "SETTLEMENTS_GETALL", ...buildSettlementsParams() }))
-    }, [dispatch, buildLedgerParams, buildSettlementsParams])
-
-    // Extract employees from ledger data for selects
-    const employeeOptions = useMemo(() => {
-        const seen = new Set()
-        const opts = [{ value: "select", label: "Todos los empleados" }]
-        socialBenefitsLedger.data?.forEach(entry => {
-            if (entry.employee?._id && !seen.has(entry.employee._id)) {
-                seen.add(entry.employee._id)
-                opts.push({ value: entry.employee._id, label: `${entry.employee.firstname} ${entry.employee.lastname}` })
-            }
-        })
-        return opts
-    }, [socialBenefitsLedger.data])
-
-    const formatCurrency = (val) => {
-        if (val === undefined || val === null) return '—'
-        return `$ ${val.toLocaleString('es-VE', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
-    }
-
-    const formatDate = (dateStr) => {
-        if (!dateStr) return '—'
-        return new Date(dateStr).toLocaleDateString('es-ES', { day: '2-digit', month: 'short', year: 'numeric' })
-    }
-
-    // ─── Handlers ───
-    const handleLedgerFilterChange = (key, value) => {
-        setLedgerFilters(prev => ({ ...prev, [key]: value }))
-        setLedgerPage(1)
-    }
-
-    const handleSettlementsFilterChange = (key, value) => {
-        setSettlementsFilters(prev => ({ ...prev, [key]: value }))
-        setSettlementsPage(1)
-    }
-
     // Build filter params excluding "select" values (which mean "all")
     const buildLedgerParams = useCallback(() => {
         const params = { page: ledgerPage, limit: 20 }
@@ -1132,6 +1086,18 @@ export const PayrollSocialBenefitsTab = () => {
         if (settlementsFilters.status && settlementsFilters.status !== "select") params.status = settlementsFilters.status
         return params
     }, [settlementsPage, settlementsFilters])
+
+    // Load employees for selects
+    useEffect(() => {
+        // TODO: Fetch employees with contracts for selects
+        // For now, we'll use the data from ledger/settlements
+    }, [])
+
+    // Load initial data
+    useEffect(() => {
+        dispatch(HandleSocialBenefits({ type: "LEDGER_GETALL", ...buildLedgerParams() }))
+        dispatch(HandleSocialBenefits({ type: "SETTLEMENTS_GETALL", ...buildSettlementsParams() }))
+    }, [dispatch, buildLedgerParams, buildSettlementsParams])
 
     const handleViewLedgerEntry = (entry) => setSelectedLedgerEntry(entry)
     const handleViewSettlement = (s) => setSelectedSettlement(s)
