@@ -475,7 +475,7 @@ const SettlementFormModal = ({ open, onClose, onSubmit, onCalculate, isDark, emp
             setCalculationPreview(null)
             setErrors({})
         }
-    }, [open, editingSettlement, employees])
+    }, [open, editingSettlement])
 
     const validate = () => {
         const newErrors = {}
@@ -773,13 +773,15 @@ const AccrualFormModal = ({ open, onClose, onCalculate, onRecord, isDark, employ
         ]
     }, [employees, formData.employee])
 
+    // Reset form when modal opens - only depend on `open`, not `employees`
+    // (employees comes from parent local state which is a new [] reference every render)
     useEffect(() => {
         if (open) {
             setFormData({ employee: "select", contract: "select", period_start: "", period_end: "" })
             setCalculationPreview(null)
             setErrors({})
         }
-    }, [open, employees])
+    }, [open])
 
     const validate = () => {
         const newErrors = {}
