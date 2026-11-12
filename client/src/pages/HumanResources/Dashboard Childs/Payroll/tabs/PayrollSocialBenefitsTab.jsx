@@ -1160,6 +1160,19 @@ export const PayrollSocialBenefitsTab = () => {
         }
     }
 
+    // Extract employees from ledger data for filter select
+    const employeeOptions = useMemo(() => {
+        const seen = new Set()
+        const opts = [{ value: "select", label: "Todos los empleados" }]
+        socialBenefitsLedger.data?.forEach(entry => {
+            if (entry.employee?._id && !seen.has(entry.employee._id)) {
+                seen.add(entry.employee._id)
+                opts.push({ value: entry.employee._id, label: `${entry.employee.firstname} ${entry.employee.lastname}` })
+            }
+        })
+        return opts
+    }, [socialBenefitsLedger.data])
+
     // ─── Render Subtab Content ───
     const renderLedgerTab = () => (
         <div className="w-full h-full flex flex-col">
