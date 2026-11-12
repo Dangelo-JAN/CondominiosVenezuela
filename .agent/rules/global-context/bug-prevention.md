@@ -188,3 +188,74 @@ Antes de commitear cualquier componente que use **Redux** o **CustomSelect/Radix
 > - slice name = store key → **Verifica `store.js`**
 > - estado inicial `""` funciona en Select → **Usa `"select"` o `"all"`**
 > **SIEMPRE verifica antes de escribir código.**
+
+---
+
+## 🚨 Error Típico #3 — Temporal Dead Zone (TDZ) / Lexical Declaration
+```
+ReferenceError: can't access lexical declaration 'F' before initialization
+```
+
+## 🔍 Causa Raíz #3
+**Una variable `const`/`let` (o `useCallback`/`useMemo`) es referenciada en un `useEffect` dependency array ANTES de ser declarada.**
+
+En JavaScript, las declaraciones `const`/`let` están en la **Temporal Dead Zone (TDZ)** desde el inicio del scope hasta su declaración. Acceder a ellas antes lanza `ReferenceError`.
+
+| Orden en Componente | Problema |
+|---------------------|----------|
+| 1. `useEffect(() => { ... }, [buildParams])` | ❌ `buildParams` referenciado |
+| 2. `const buildParams = useCallback(...)` | ❌ Declaración posterior (TDZ) |
+
+React registra el `useEffect` durante el render (evalúa el dependency array), pero `buildParams` aún no existe.
+
+## ✅ Solución Correcta
+
+### Declarar hooks `useCallback`/`useMemo` ANTES de los `useEffect` que dependen de ellos
+```javascript
+// ✅ CORRECTO - callbacks primero
+const buildLedgerParams = useCallback(() => { ... }, [deps])
+const buildSettlementsParams = useCallback(() => { ... }, [deps])
+
+useEffect(() => {
+    dispatch(action({ ...buildLedgerParams() }))
+}, [dispatch, buildLedgerParams, buildSettlementsParams])
+
+// ❌ INCORRECTO - useEffect antes de callbacks
+useEffect(() => {
+    dispatch(action({ ...buildLedgerParams() }))  // TDZ!
+}, [dispatch, buildLedgerParams])
+
+const buildLedgerParams = useCallback(...)  // Declarado después
+```
+
+## 🔧 Checklist Pre-Commit (Obligatorio) — Actualizado Final
+
+Antes de commitear cualquier componente con **hooks**:
+
+- [ ] Verificar `createSlice({ name: "X" })` en el slice
+- [ ] Verificar clave en `store.js` reducer object
+- [ ] Verificar que `useSelector(state => state.ClaveCorrecta...)` coincida **exactamente** con la clave del store
+- [ ] **Verificar que valores iniciales de Select coincidan con `value` de las opciones** (no empty string `""`)
+- [ ] **Verificar que opciones de filtro usen `"select"` o `"all"`, no `""`**
+- [ ] **Verificar que `useCallback`/`useMemo` estén declarados ANTES de `useEffect` que los referencian en dependency array**
+- [ ] Ejecutar `npm run build` — 0 errores
+
+---
+
+## 📝 Historial de Ocurrencias — Actualizado Final
+
+| Fecha | Tarea | Archivo Afectado | Fix Aplicado |
+|-------|-------|------------------|--------------|
+| 2026-11-12 | #043 Payroll Social Benefits | `PayrollSocialBenefitsTab.jsx` | Cambio `state.Payroll` → `state.payrollReducer` (6 selectores) |
+| 2026-11-12 | #043 Payroll Social Benefits | `PayrollSocialBenefitsTab.jsx` | Filtros: `""` → `"select"` + params builders para excluir "select" de API |
+| 2026-11-12 | #043 Payroll Social Benefits | `PayrollSocialBenefitsTab.jsx` | TDZ: `useCallback` movidos antes de `useEffect` dependency |
+
+---
+
+## 🎯 Regla de Oro (Final - 3 Pilares)
+
+> **NUNCA asumas que:**
+> 1. slice name = store key → **Verifica `store.js`**
+> 2. estado inicial `""` funciona en Select → **Usa `"select"` o `"all"`**
+> 3. orden de hooks no importa → **Callbacks ANTES de Effects que dependen de ellos**
+> **SIEMPRE verifica antes de escribir código.**
