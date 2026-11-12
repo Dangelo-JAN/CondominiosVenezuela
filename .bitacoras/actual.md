@@ -1,31 +1,34 @@
 # 🛠️ TAREA ACTUAL
 
-**ID:** #XXX | **Estado:** 🟡 EN CURSO | **Fecha:** YYYY-MM-DD
+**ID:** #043 | **Estado:** 🟡 EN CURSO (REABIERTA) | **Fecha:** 2026-11-12
 
 ---
 
 ## 🎯 OBJETIVO FINAL
-> Una frase que defina el "éxito" de esta tarea (Ej: "Que el usuario pueda loguearse con Google sin errores").
+Fixear bugs críticos en PayrollSocialBenefitsTab: infinite re-renders al click "Nuevo Devengado" + falta header principal estilo tabs períodos/conceptos/políticas.
 
 ---
 
 ## 🚦 PUNTO DE CONTROL (Contexto de Reanudación)
-*Usa esto para "despertar" a la IA si el chat se cierra:*
 
-- **Lo último que funcionó:** [Ej: El botón de login ya envía los datos].
-- **Dónde se rompió/detuvo:** [Ej: Error 403 en el callback de la API].
-- **Siguiente acción inmediata:** [Ej: Revisar las credenciales en el archivo .env].
+- **Lo último que funcionó:** Tarea marcada COMPLETADA incorrectamente. Bugs detectados en runtime.
+- **Dónde se rompió/detuvo:** Reabierta. Inicio Fix Fase 1 - Reemplazar `employees` local state por Redux selector.
+- **Siguiente acción inmediata:** Editar `PayrollSocialBenefitsTab.jsx` línea 1073: cambiar `const [employees, setEmployees] = useState([])` por Redux selector.
 
 ---
 
 ## 📝 CAMBIOS TÉCNICOS CLAVE
-- [ ] [Tarea 1 - PENDIENTE]
-- [ ] [Tarea 2 - PENDIENTE]
+- [ ] **Fix Fase 1:** Reemplazar `employees` local state por Redux selector `useSelector(state => state.employeeReducer.employees)`
+- [ ] **Fix Fase 2:** Agregar header principal (título, descripción, botón refresh) antes del sub-tabs bar
+- [ ] **Fix Fase 3:** Verificar/fixear todos `CustomSelect` usan `"select"` (no `""`)
+- [ ] **Fix Fase 4:** Build + test manual (click "Nuevo Devengado" sin infinite loop)
+- [ ] **Commit & Push:** Con @git-commit-formatter
+- [ ] **PR Update:** Actualizar PR #59 hacia `037-payroll-venezuelan-module`
 
 ---
 
 ## ⚠️ NOTAS DE MEMORIA
-- *Regla:* [Regla importante a recordar para esta tarea]
-- *Regla:* [Otra regla relevante]
-- *Branch:* [nombre de la rama]
-- *Commit:* [hash del commit si aplica]
+- *Regla:* Bug Root Cause: `employees = useState([])` local → nueva referencia cada render → `useEffect` en modales con `[open, employees]` → infinite loop (Regla #5 bug-prevention.md)
+- *Fix Pattern:* Usar Redux selector como en `VacationsTab`: `const { data: employees } = useSelector(state => state.employeeReducer.employees)`
+- *Branch:* 043-payroll-social-benefits-tab-ui (desde 037-payroll-venezuelan-module)
+- *PR:* #59 existente hacia 037-payroll-venezuelan-module

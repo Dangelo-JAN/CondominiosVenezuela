@@ -1070,7 +1070,7 @@ export const PayrollSocialBenefitsTab = () => {
     const [showSettlementForm, setShowSettlementForm] = useState(false)
     const [editingSettlement, setEditingSettlement] = useState(null)
     const [showAccrualForm, setShowAccrualForm] = useState(false)
-    const [employees, setEmployees] = useState([])
+    const { data: employees } = useSelector((state) => state.employeeReducer?.employees || state.employeeReducer?.data || [])
     const [calculating, setCalculating] = useState(false)
     const [recording, setRecording] = useState(false)
 
@@ -1089,11 +1089,7 @@ export const PayrollSocialBenefitsTab = () => {
         return params
     }, [settlementsPage, settlementsFilters])
 
-    // Load employees for selects
-    useEffect(() => {
-        // TODO: Fetch employees with contracts for selects
-        // For now, we'll use the data from ledger/settlements
-    }, [])
+    
 
     // Load initial data
     useEffect(() => {
@@ -1162,18 +1158,14 @@ export const PayrollSocialBenefitsTab = () => {
         }
     }
 
-    // Extract employees from ledger data for filter select
+    // Employee options for filter selects (from Redux - stable reference)
     const employeeOptions = useMemo(() => {
-        const seen = new Set()
         const opts = [{ value: "select", label: "Todos los empleados" }]
-        socialBenefitsLedger.data?.forEach(entry => {
-            if (entry.employee?._id && !seen.has(entry.employee._id)) {
-                seen.add(entry.employee._id)
-                opts.push({ value: entry.employee._id, label: `${entry.employee.firstname} ${entry.employee.lastname}` })
-            }
+        employees?.forEach(e => {
+            if (e._id) opts.push({ value: e._id, label: `${e.firstname} ${e.lastname}` })
         })
         return opts
-    }, [socialBenefitsLedger.data])
+    }, [employees])
 
     // ─── Render Subtab Content ───
     const renderLedgerTab = () => (
@@ -1632,6 +1624,36 @@ export const PayrollSocialBenefitsTab = () => {
 
     return (
         <div className="w-full h-full flex flex-col bg-white dark:bg-[#0f0f1a]">
+            {/* Header Principal */}
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 p-4 border-b transition-colors duration-300"
+                style={{ borderColor: isDark ? "rgba(0,61,165,0.15)" : "rgba(0,61,165,0.2)" }}>
+                <div className="flex items-center gap-3">
+                    <div className="w-12 h-12 rounded-2xl flex items-center justify-center"
+                        style={{ background: isDark ? "rgba(0,61,165,0.15)" : "rgba(0,61,165,0.1)" }}>
+                        <Briefcase className="w-6 h-6" style={{ color: "#003DA5" }} />
+                    </div>
+                    <div>
+                        <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Prestaciones Sociales</h1>
+                        <p className="text-sm" style={{ color: isDark ? "rgba(255,255,255,0.5)" : "#6b7280" }}>
+                            Libro de prestaciones, liquidaciones y devengado de prestaciones
+                        </p>
+                    </div>
+                </div>
+                <div className="flex items-center gap-2">
+                    <button
+                        onClick={() => {
+                            dispatch(HandleSocialBenefits({ type: "LEDGER_GETALL", ...buildLedgerParams() }))
+                            dispatch(HandleSocialBenefits({ type: "SETTLEMENTS_GETALL", ...buildSettlementsParams() }))
+                        }}
+                        disabled={socialBenefitsLedger.isLoading || settlements.isLoading}
+                        className="p-2 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors text-gray-500 dark:text-gray-400"
+                        title="Actualizar datos"
+                    >
+                        <RefreshCw className={`${socialBenefitsLedger.isLoading || settlements.isLoading ? 'animate-spin' : ''} w-5 h-5`} />
+                    </button>
+                </div>
+            </div>
+
             {/* Sub-tabs Bar */}
             <div className="flex flex-wrap gap-1 px-4 py-3 border-b transition-colors duration-300"
                 style={{ borderColor: isDark ? "rgba(0,61,165,0.15)" : "rgba(0,61,165,0.2)" }}>
