@@ -1060,9 +1060,9 @@ export const PayrollSocialBenefitsTab = () => {
 
     // Local State
     const [ledgerPage, setLedgerPage] = useState(1)
-    const [ledgerFilters, setLedgerFilters] = useState({ employee: "", entry_type: "" })
+    const [ledgerFilters, setLedgerFilters] = useState({ employee: "select", entry_type: "select" })
     const [settlementsPage, setSettlementsPage] = useState(1)
-    const [settlementsFilters, setSettlementsFilters] = useState({ contract: "", status: "" })
+    const [settlementsFilters, setSettlementsFilters] = useState({ contract: "select", status: "select" })
     const [selectedLedgerEntry, setSelectedLedgerEntry] = useState(null)
     const [selectedSettlement, setSelectedSettlement] = useState(null)
     const [showSettlementForm, setShowSettlementForm] = useState(false)
@@ -1080,9 +1080,9 @@ export const PayrollSocialBenefitsTab = () => {
 
     // Load initial data
     useEffect(() => {
-        dispatch(HandleSocialBenefits({ type: "LEDGER_GETALL", page: ledgerPage, limit: 20, ...ledgerFilters }))
-        dispatch(HandleSocialBenefits({ type: "SETTLEMENTS_GETALL", page: settlementsPage, limit: 20, ...settlementsFilters }))
-    }, [dispatch, ledgerPage, ledgerFilters, settlementsPage, settlementsFilters])
+        dispatch(HandleSocialBenefits({ type: "LEDGER_GETALL", ...buildLedgerParams() }))
+        dispatch(HandleSocialBenefits({ type: "SETTLEMENTS_GETALL", ...buildSettlementsParams() }))
+    }, [dispatch, buildLedgerParams, buildSettlementsParams])
 
     // Extract employees from ledger data for selects
     const employeeOptions = useMemo(() => {
@@ -1117,6 +1117,21 @@ export const PayrollSocialBenefitsTab = () => {
         setSettlementsFilters(prev => ({ ...prev, [key]: value }))
         setSettlementsPage(1)
     }
+
+    // Build filter params excluding "select" values (which mean "all")
+    const buildLedgerParams = useCallback(() => {
+        const params = { page: ledgerPage, limit: 20 }
+        if (ledgerFilters.employee && ledgerFilters.employee !== "select") params.employee = ledgerFilters.employee
+        if (ledgerFilters.entry_type && ledgerFilters.entry_type !== "select") params.entry_type = ledgerFilters.entry_type
+        return params
+    }, [ledgerPage, ledgerFilters])
+
+    const buildSettlementsParams = useCallback(() => {
+        const params = { page: settlementsPage, limit: 20 }
+        if (settlementsFilters.contract && settlementsFilters.contract !== "select") params.contract = settlementsFilters.contract
+        if (settlementsFilters.status && settlementsFilters.status !== "select") params.status = settlementsFilters.status
+        return params
+    }, [settlementsPage, settlementsFilters])
 
     const handleViewLedgerEntry = (entry) => setSelectedLedgerEntry(entry)
     const handleViewSettlement = (s) => setSelectedSettlement(s)
@@ -1199,7 +1214,7 @@ export const PayrollSocialBenefitsTab = () => {
                         value={ledgerFilters.entry_type}
                         onValueChange={(val) => handleLedgerFilterChange('entry_type', val)}
                         options={[
-                            { value: "", label: "Todos los tipos" },
+                            { value: "select", label: "Todos los tipos" },
                             { value: "ACCRUAL", label: "Devengado" },
                             { value: "SETTLEMENT", label: "Liquidación" },
                             { value: "ADJUSTMENT", label: "Ajuste" },
@@ -1210,7 +1225,7 @@ export const PayrollSocialBenefitsTab = () => {
                     />
                 </div>
                 <button
-                    onClick={() => dispatch(HandleSocialBenefits({ type: "LEDGER_GETALL", page: ledgerPage, limit: 20, ...ledgerFilters }))}
+                    onClick={() => dispatch(HandleSocialBenefits({ type: "LEDGER_GETALL", ...buildLedgerParams() }))}
                     disabled={socialBenefitsLedger.isLoading}
                     className="px-4 py-2 rounded-xl text-sm font-medium text-white transition-all duration-200 disabled:opacity-50 flex items-center gap-2"
                     style={{ background: "#003DA5" }}
@@ -1346,7 +1361,7 @@ export const PayrollSocialBenefitsTab = () => {
                         value={settlementsFilters.contract}
                         onValueChange={(val) => handleSettlementsFilterChange('contract', val)}
                         options={[
-                            { value: "", label: "Todos los contratos" },
+                            { value: "select", label: "Todos los contratos" },
                             ...(settlements.data?.flatMap(s => s.contract ? [{ value: s.contract._id, label: s.contract.contract_number }] : []) || [])
                         ]}
                         placeholder="Filtrar por contrato..."
@@ -1358,7 +1373,7 @@ export const PayrollSocialBenefitsTab = () => {
                         value={settlementsFilters.status}
                         onValueChange={(val) => handleSettlementsFilterChange('status', val)}
                         options={[
-                            { value: "", label: "Todos los estados" },
+                            { value: "select", label: "Todos los estados" },
                             { value: "PENDING", label: "Pendiente" },
                             { value: "APPROVED", label: "Aprobada" },
                             { value: "PAID", label: "Pagada" },
@@ -1377,7 +1392,7 @@ export const PayrollSocialBenefitsTab = () => {
                     Nueva Liquidación
                 </button>
                 <button
-                    onClick={() => dispatch(HandleSocialBenefits({ type: "SETTLEMENTS_GETALL", page: settlementsPage, limit: 20, ...settlementsFilters }))}
+                    onClick={() => dispatch(HandleSocialBenefits({ type: "SETTLEMENTS_GETALL", ...buildSettlementsParams() }))}
                     disabled={settlements.isLoading}
                     className="px-4 py-2 rounded-xl text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 flex items-center gap-2"
                 >
