@@ -10,16 +10,19 @@ Implementar la UI completa de la pestaña Vacaciones en la página de Nómina (H
 
 ## 🚦 PUNTO DE CONTROL (Contexto de Reanudación)
 
-- **Lo último que funcionó:** Build exitoso (0 errores). UI completa implementada con 3 subtabs: Saldos, Solicitudes, Festivos. Commit y push realizados.
-- **Dónde se rompió/detuvo:** Tarea completada. Esperando confirmación del usuario para crear PR.
-- **Siguiente acción inmediata:** Crear PR hacia 037-payroll-venezuelan-module tras confirmación.
+- **Lo último que funcionó:** Build exitoso (0 errores). Fixes aplicados: ChevronLeft/Right imports + Radix Select empty string bug. Commit y push realizados.
+- **Dónde se rompió/detuvo:** Tarea completada. Listo para post-flight y PR.
+- **Siguiente acción inmediata:** Post-flight, actualizar index.md, crear PR hacia 037-payroll-venezuelan-module.
 
 ---
 
 ## 📝 CAMBIOS TÉCNICOS CLAVE
-- [x] **Fase 1-8:** Implementación completa en una sola fase — Estructura base, 3 subtabs (Saldos, Solicitudes, Festivos), tablas con ThemedListWrapper/Container, modales de detalle y acción, permisos HR, dark mode, responsive
+- [x] **Fase 1-8:** Implementación completa — Estructura base, 3 subtabs (Saldos, Solicitudes, Festivos), tablas con ThemedListWrapper/Container, modales de detalle y acción, permisos HR, dark mode, responsive
+- [x] **Fix 1:** ChevronLeft/ChevronRight imports faltantes (runtime error)
+- [x] **Fix 2:** Radix Select empty string bug en VacationRequestFormModal (hotfix #041 reaparecido)
 - [x] **Build:** `npm run build` — 0 errores ✅
-- [x] **Commit & Push:** Con @git-commit-formatter (commit `69fcb31`)
+- [x] **Commits:** `69fcb31` (feat), `a2b9928` (fix Chevron), `85bcee9` (fix Radix Select)
+- [x] **Push:** origin/042-payroll-vacations-tab-ui
 - [ ] **PR:** Hacia `037-payroll-venezuelan-module`
 
 ---
@@ -31,4 +34,4 @@ Implementar la UI completa de la pestaña Vacaciones en la página de Nómina (H
 - *Regla:* Permisos HR via `useHRAuth()` → `can("payroll", "create/update/delete")`
 - *Branch:* 042-payroll-vacations-tab-ui (desde 037-payroll-venezuelan-module)
 - *PR Target:* 037-payroll-venezuelan-module (NO dev/main)
-- *Commit:* `69fcb31`
+- *Commits:* `69fcb31`, `a2b9928`, `85bcee9`
