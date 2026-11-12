@@ -8,7 +8,7 @@
 ## 🚩 ESTADO ACTUAL
 - **Tarea activa:** *Ninguna* (esperando nueva asignación)
 - **Última completada:** #043-payroll-social-benefits-tab-ui ✅ (12/11/2026)
-- **Branch actual:** 043-payroll-social-benefits-tab-ui (PR #59 hacia 037-payroll-venezuelan-module — commit `6b99e76`)
+- **Branch actual:** 043-payroll-social-benefits-tab-ui (PR #59 hacia 037-payroll-venezuelan-module — commits `6b99e76`, `93f3fac`, `35d35a6`)
 - **Deploy:** Vercel Preview auto-deploy pendiente
 - **Archivo de referencia rápida:** `actual.md` (limpiado)
 
@@ -57,7 +57,7 @@
 - [x] [[040-payroll-policy-tab-ui]] - ✅ COMPLETADO el 09/11/2026 (UI completa 5 secciones/49 campos + Fix React Error #300 + Race condition eliminada: StyledSelect sin hook interno + renderState bothResolved gate; commits `743d116` `4107406` `e7de632`, PR #56 hacia 037-payroll-venezuelan-module)
 - [x] [[041-payroll-novelties-tab-ui]] - ✅ COMPLETADO el 10/11/2026 (UI completa CRUD + Bulk Import CSV/JSON + Hotfix Radix Select; commits `9ea7be0` `489a2a9` `7249a68` `59c41fd`, PR hacia 037-payroll-venezuelan-module)
 - [x] [[042-payroll-vacations-tab-ui]] - ✅ COMPLETADO el 12/11/2026 (UI completa 3 subtabs: Saldos/Solicitudes/Festivos + CRUD solicitudes/festivos + Fix Chevron imports + Fix Radix Select empty string; commits `69fcb31` `a2b9928` `85bcee9`, PR hacia 037-payroll-venezuelan-module)
-- [ ] [[043-payroll-social-benefits-tab-ui]] - ✅ COMPLETADO el 12/11/2026 (UI Prestaciones 3 subtabs: Libro/Liquidaciones/Devengado + CRUD completo + modales detalle/formulario + integración HandleSocialBenefits thunk; commit `6b99e76`, PR #59 hacia 037-payroll-venezuelan-module)
+- [x] [[043-payroll-social-benefits-tab-ui]] - ✅ COMPLETADO el 12/11/2026 (UI Prestaciones 3 subtabs: Libro/Liquidaciones/Devengado + CRUD completo + modales detalle/formulario + integración HandleSocialBenefits thunk + **Fix Infinite Re-renders (Redux selector)** + **Header Principal estilo tabs** + **Radix Select validado**; commits `6b99e76` `93f3fac` `35d35a6`, PR #59 hacia 037-payroll-venezuelan-module)
 ---
 
 ## 🛠️ REGLAS DE ORO (DE CUMPLIMIENTO OBLIGATORIO)
@@ -128,7 +128,7 @@
     *   Actualizar `.bitacoras/actual.md` y crear/actualizar la bitácora correspondiente según `00-plantilla.md`.
 ```
 
-*Actualizado: 2026-11-12* *Tarea #042-payroll-vacations-tab-ui ✅ COMPLETADA — UI completa 3 subtabs (Saldos, Solicitudes, Festivos) + CRUD solicitudes/festivos + Fix ChevronLeft/Right imports + Fix Radix Select empty string bug (hotfix #041); 3 commits en PR hacia 037-payroll-venezuelan-module; build 0 errores*
+*Actualizado: 2026-11-12* *Tarea #043-payroll-social-benefits-tab-ui ✅ COMPLETADA (REABIERTA Y FIXEADA) — UI Prestaciones 3 subtabs: Libro/Liquidaciones/Devengado + CRUD completo + Fix Infinite Re-renders (Regla #5 bug-prevention.md: Redux selector vs local state) + Header Principal estilo tabs períodos/conceptos/políticas + Radix Select validado; 3 commits en PR #59 hacia 037-payroll-venezuelan-module; build 0 errores*
 
 ---
 
