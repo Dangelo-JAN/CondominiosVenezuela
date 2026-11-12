@@ -1070,7 +1070,9 @@ export const PayrollSocialBenefitsTab = () => {
     const [showSettlementForm, setShowSettlementForm] = useState(false)
     const [editingSettlement, setEditingSettlement] = useState(null)
     const [showAccrualForm, setShowAccrualForm] = useState(false)
-    const { data: employees } = useSelector((state) => state.employeeReducer?.employees || state.employeeReducer?.data || [])
+    const rawEmployees = useSelector((state) => state.employeeReducer?.employees || state.employeeReducer?.data)
+    // Stabilize reference to prevent infinite re-renders in modals (Rule #5 bug-prevention.md)
+    const employees = useMemo(() => rawEmployees || [], [rawEmployees])
     const [calculating, setCalculating] = useState(false)
     const [recording, setRecording] = useState(false)
 
