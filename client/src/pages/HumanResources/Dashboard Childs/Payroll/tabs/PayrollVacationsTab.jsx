@@ -514,8 +514,8 @@ const HolidayFormModal = ({ open, onClose, onSubmit, isDark, editingHoliday = nu
 // --- VacationRequestFormModal ---
 const VacationRequestFormModal = ({ open, onClose, onSubmit, isDark, employees, periods, editingRequest = null }) => {
     const [formData, setFormData] = useState({
-        employee: "",
-        period: "",
+        employee: "select",
+        period: "select",
         request_type: "VACATION",
         start_date: "",
         end_date: "",
@@ -532,12 +532,12 @@ const VacationRequestFormModal = ({ open, onClose, onSubmit, isDark, employees, 
     ]
 
     const employeeOptions = useMemo(() => [
-        { value: "", label: "Seleccionar empleado..." },
+        { value: "select", label: "Seleccionar empleado..." },
         ...(employees?.map(e => ({ value: e._id, label: `${e.firstname} ${e.lastname} (${e.employee_code || e.email})` })) || [])
     ], [employees])
 
     const periodOptions = useMemo(() => [
-        { value: "", label: "Seleccionar período..." },
+        { value: "select", label: "Seleccionar período..." },
         ...(periods?.map(p => ({ value: p._id, label: p.name })) || [])
     ], [periods])
 
@@ -545,15 +545,15 @@ const VacationRequestFormModal = ({ open, onClose, onSubmit, isDark, employees, 
         if (open) {
             if (editingRequest) {
                 setFormData({
-                    employee: editingRequest.employee?._id || editingRequest.employee || "",
-                    period: editingRequest.period?._id || editingRequest.period || "",
+                    employee: editingRequest.employee?._id || editingRequest.employee || "select",
+                    period: editingRequest.period?._id || editingRequest.period || "select",
                     request_type: editingRequest.request_type || "VACATION",
                     start_date: editingRequest.start_date ? editingRequest.start_date.split('T')[0] : "",
                     end_date: editingRequest.end_date ? editingRequest.end_date.split('T')[0] : "",
                     description: editingRequest.description || ""
                 })
             } else {
-                setFormData({ employee: "", period: "", request_type: "VACATION", start_date: "", end_date: "", description: "" })
+                setFormData({ employee: "select", period: "select", request_type: "VACATION", start_date: "", end_date: "", description: "" })
             }
             setErrors({})
         }
@@ -561,8 +561,8 @@ const VacationRequestFormModal = ({ open, onClose, onSubmit, isDark, employees, 
 
     const validate = () => {
         const newErrors = {}
-        if (!formData.employee) newErrors.employee = "Empleado es requerido"
-        if (!formData.period) newErrors.period = "Período es requerido"
+        if (!formData.employee || formData.employee === "select") newErrors.employee = "Empleado es requerido"
+        if (!formData.period || formData.period === "select") newErrors.period = "Período es requerido"
         if (!formData.start_date) newErrors.start_date = "Fecha inicio es requerida"
         if (!formData.end_date) newErrors.end_date = "Fecha fin es requerida"
         if (formData.start_date && formData.end_date && new Date(formData.start_date) > new Date(formData.end_date)) {
