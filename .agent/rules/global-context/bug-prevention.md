@@ -336,3 +336,87 @@ Antes de commitear cualquier componente con **funciones de render internas**:
 > 3. orden de hooks no importa → **Callbacks ANTES de Effects que dependen de ellos**
 > 4. variables de sub-componentes son accesibles en render functions → **Define en scope principal ANTES de render functions**
 > **SIEMPRE verifica antes de escribir código.**
+
+---
+
+## 🚨 Error Típico #5 — Infinite Re-renders (Too Many Re-renders)
+```
+Error: Too many re-renders. React limits the number of renders to prevent an infinite loop.
+```
+
+## 🔍 Causa Raíz #5
+**Un `useEffect` en un componente hijo (modal) tiene en su dependency array una prop que es un nuevo objeto/array en cada render del padre.**
+
+En `SocialBenefitsTab`, el estado `employees` es `useState([])` (local, no Redux). Cada render del padre crea una nueva referencia `[]`. Al pasarse como prop al modal `AccrualFormModal`, el `useEffect` con `[open, employees]` se ejecuta en cada render del padre, llamando a `setState` interno → re-render del modal → re-render del padre → loop infinito.
+
+| Patrón Problemático | Patrón Correcto (VacationsTab) |
+|---------------------|--------------------------------|
+| `employees` = `useState([])` local | `employees` = `useSelector(...)` desde Redux |
+| `useEffect(() => { setFormData(...) }, [open, employees])` | `useEffect(() => { setFormData(...) }, [open, editingRequest])` |
+| Nueva referencia `[]` cada render | Referencia estable desde Redux store |
+
+## ✅ Solución Correcta
+
+### Opción A: Eliminar prop inestable del dependency array (si solo se usa para reset inicial)
+```javascript
+// ❌ PROBLEMÁTICO
+useEffect(() => {
+    if (open) { setFormData(...) }
+}, [open, employees])  // employees = nueva [] cada render
+
+// ✅ CORRECTO - Solo depender de lo que realmente cambia
+useEffect(() => {
+    if (open) { setFormData(...) }
+}, [open])  // Solo open importa para reset
+```
+
+### Opción B: Usar Redux selector para datos estables (patrón VacationsTab)
+```javascript
+// En componente padre
+const { data: employees } = useSelector(state => state.employeeReducer.employees)
+// Referencia estable mientras no cambie el store
+```
+
+### Opción C: Memoizar con useMemo si debe ser local
+```javascript
+const employees = useMemo(() => fetchEmployees(), [])
+// Referencia estable entre renders
+```
+
+## 🔧 Checklist Pre-Commit (Obligatorio) — Actualizado Final v3
+
+Antes de commitear cualquier componente con **modales/hijos que reciben props**:
+
+- [ ] Verificar `createSlice({ name: "X" })` en el slice
+- [ ] Verificar clave en `store.js` reducer object
+- [ ] Verificar que `useSelector(state => state.ClaveCorrecta...)` coincida **exactamente** con la clave del store
+- [ ] **Verificar que valores iniciales de Select coincidan con `value` de las opciones** (no empty string `""`)
+- [ ] **Verificar que opciones de filtro usen `"select"` o `"all"`, no `""`**
+- [ ] **Verificar que `useCallback`/`useMemo` estén declarados ANTES de `useEffect` que los referencian en dependency array**
+- [ ] **Verificar que variables usadas en funciones de render (`renderXxx`) estén definidas en el scope del componente principal (ANTES de dichas funciones)**
+- [ ] **Verificar que `useEffect` en modales NO tengan en deps props que sean nuevos objetos/arrays cada render del padre (usar Redux selectors o quitar de deps)**
+- [ ] Ejecutar `npm run build` — 0 errores
+
+---
+
+## 📝 Historial de Ocurrencias — Actualizado Final v3
+
+| Fecha | Tarea | Archivo Afectado | Fix Aplicado |
+|-------|-------|------------------|--------------|
+| 2026-11-12 | #043 Payroll Social Benefits | `PayrollSocialBenefitsTab.jsx` | Cambio `state.Payroll` → `state.payrollReducer` (6 selectores) |
+| 2026-11-12 | #043 Payroll Social Benefits | `PayrollSocialBenefitsTab.jsx` | Filtros: `""` → `"select"` + params builders para excluir "select" de API |
+| 2026-11-12 | #043 Payroll Social Benefits | `PayrollSocialBenefitsTab.jsx` | TDZ: `useCallback` movidos antes de `useEffect` dependency |
+| 2026-11-12 | #043 Payroll Social Benefits | `PayrollSocialBenefitsTab.jsx` | `employeeOptions` movido a scope principal antes de `renderLedgerTab` |
+| 2026-11-12 | #043 Payroll Social Benefits | `PayrollSocialBenefitsTab.jsx` | Infinite re-renders: `employees` removido de useEffect deps en AccrualFormModal y SettlementFormModal |
+
+---
+
+## 🎯 Regla de Oro (Final - 5 Pilares)
+
+> **NUNCA asumas que:**
+> 1. slice name = store key → **Verifica `store.js`**
+> 2. estado inicial `""` funciona en Select → **Usa `"select"` o `"all"`**
+> 3. orden de hooks no importa → **Callbacks ANTES de Effects que dependen de ellos**
+> 4. variables de sub-componentes son accesibles en render functions → **Define en scope principal ANTES de render functions**
+> 5. props en useEffect deps son estables → **Verifica que no sean nuevos objetos/arrays cada render (usa Redux selectors o quita de deps)**
+> **SIEMPRE verifica antes de escribir código.**
