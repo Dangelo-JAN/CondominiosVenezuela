@@ -259,3 +259,80 @@ Antes de commitear cualquier componente con **hooks**:
 > 2. estado inicial `""` funciona en Select → **Usa `"select"` o `"all"`**
 > 3. orden de hooks no importa → **Callbacks ANTES de Effects que dependen de ellos**
 > **SIEMPRE verifica antes de escribir código.**
+
+---
+
+## 🚨 Error Típico #4 — Variable Not Defined in Render Function Scope
+```
+ReferenceError: employeeOptions is not defined
+    at renderLedgerTab (PayrollSocialBenefitsTab.jsx:1173:34)
+```
+
+## 🔍 Causa Raíz #4
+**Una variable definida dentro de un sub-componente (modal) se intenta usar en una función de render del componente principal.**
+
+En `PayrollSocialBenefitsTab`, las funciones `renderLedgerTab`, `renderSettlementsTab`, `renderAccrualTab` se definen en el scope del componente principal, pero `employeeOptions` solo se definía dentro de los modales (`SettlementFormModal`, `AccrualFormModal`).
+
+| Scope | Variable | Disponible en |
+|-------|----------|---------------|
+| Componente Principal | `renderLedgerTab` | ❌ No ve variables de modales |
+| SettlementFormModal | `employeeOptions` | ✅ Solo dentro del modal |
+| AccrualFormModal | `employeeOptions` | ✅ Solo dentro del modal |
+
+## ✅ Solución Correcta
+
+### Definir variables compartidas en el scope del componente principal (antes de las funciones de render)
+```javascript
+// ✅ CORRECTO - En scope principal, ANTES de renderLedgerTab
+const employeeOptions = useMemo(() => {
+    const seen = new Set()
+    const opts = [{ value: "select", label: "Todos los empleados" }]
+    socialBenefitsLedger.data?.forEach(entry => {
+        if (entry.employee?._id && !seen.has(entry.employee._id)) {
+            seen.add(entry.employee._id)
+            opts.push({ value: entry.employee._id, label: `${entry.employee.firstname} ${entry.employee.lastname}` })
+        }
+    })
+    return opts
+}, [socialBenefitsLedger.data])
+
+// ─── Render Subtab Content ───
+const renderLedgerTab = () => (
+    <CustomSelect options={employeeOptions} ... />
+)
+```
+
+## 🔧 Checklist Pre-Commit (Obligatorio) — Actualizado Final v2
+
+Antes de commitear cualquier componente con **funciones de render internas**:
+
+- [ ] Verificar `createSlice({ name: "X" })` en el slice
+- [ ] Verificar clave en `store.js` reducer object
+- [ ] Verificar que `useSelector(state => state.ClaveCorrecta...)` coincida **exactamente** con la clave del store
+- [ ] **Verificar que valores iniciales de Select coincidan con `value` de las opciones** (no empty string `""`)
+- [ ] **Verificar que opciones de filtro usen `"select"` o `"all"`, no `""`**
+- [ ] **Verificar que `useCallback`/`useMemo` estén declarados ANTES de `useEffect` que los referencian en dependency array**
+- [ ] **Verificar que variables usadas en funciones de render (`renderXxx`) estén definidas en el scope del componente principal (ANTES de dichas funciones)**
+- [ ] Ejecutar `npm run build` — 0 errores
+
+---
+
+## 📝 Historial de Ocurrencias — Actualizado Final v2
+
+| Fecha | Tarea | Archivo Afectado | Fix Aplicado |
+|-------|-------|------------------|--------------|
+| 2026-11-12 | #043 Payroll Social Benefits | `PayrollSocialBenefitsTab.jsx` | Cambio `state.Payroll` → `state.payrollReducer` (6 selectores) |
+| 2026-11-12 | #043 Payroll Social Benefits | `PayrollSocialBenefitsTab.jsx` | Filtros: `""` → `"select"` + params builders para excluir "select" de API |
+| 2026-11-12 | #043 Payroll Social Benefits | `PayrollSocialBenefitsTab.jsx` | TDZ: `useCallback` movidos antes de `useEffect` dependency |
+| 2026-11-12 | #043 Payroll Social Benefits | `PayrollSocialBenefitsTab.jsx` | `employeeOptions` movido a scope principal antes de `renderLedgerTab` |
+
+---
+
+## 🎯 Regla de Oro (Final - 4 Pilares)
+
+> **NUNCA asumas que:**
+> 1. slice name = store key → **Verifica `store.js`**
+> 2. estado inicial `""` funciona en Select → **Usa `"select"` o `"all"`**
+> 3. orden de hooks no importa → **Callbacks ANTES de Effects que dependen de ellos**
+> 4. variables de sub-componentes son accesibles en render functions → **Define en scope principal ANTES de render functions**
+> **SIEMPRE verifica antes de escribir código.**
