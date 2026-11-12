@@ -1051,12 +1051,12 @@ export const PayrollSocialBenefitsTab = () => {
     const [activeSubTab, setActiveSubTab] = useState("ledger")
 
     // Redux State
-    const socialBenefitsLedger = useSelector(state => state.Payroll.socialBenefitsLedger)
-    const socialBenefitsLedgerEmployee = useSelector(state => state.Payroll.socialBenefitsLedgerEmployee)
-    const settlements = useSelector(state => state.Payroll.settlements)
-    const settlement = useSelector(state => state.Payroll.settlement)
-    const settlementCalculation = useSelector(state => state.Payroll.settlementCalculation)
-    const accrualCalculation = useSelector(state => state.Payroll.accrualCalculation)
+    const socialBenefitsLedger = useSelector(state => state.payrollReducer.socialBenefitsLedger)
+    const socialBenefitsLedgerEmployee = useSelector(state => state.payrollReducer.socialBenefitsLedgerEmployee)
+    const settlements = useSelector(state => state.payrollReducer.settlements)
+    const settlement = useSelector(state => state.payrollReducer.settlement)
+    const settlementCalculation = useSelector(state => state.payrollReducer.settlementCalculation)
+    const accrualCalculation = useSelector(state => state.payrollReducer.accrualCalculation)
 
     // Local State
     const [ledgerPage, setLedgerPage] = useState(1)
