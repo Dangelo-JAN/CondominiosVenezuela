@@ -33,8 +33,9 @@ Implementar la UI completa de la pestaña "Prestaciones Sociales" en HRPayrollPa
 - *Regla:* Usar `CustomSelect` con `accentColor="blue"`, `useIsDark()` para tema ✅
 - *Regla:* Patrón exacto de `PayrollVacationsTab.jsx` (sub-componentes internos, modales animados) ✅
 - *Branch:* 043-payroll-social-benefits-tab-ui (desde 037-payroll-venezuelan-module) ✅
-- *Commit:* 6b99e76 ✅
+- *Commit:* 6b99e76, 93f3fac (fix Redux state key) ✅
 - *PR:* #59 hacia 037-payroll-venezuelan-module ✅
 - *Thunk:* `HandleSocialBenefits` - todos los endpoints integrados (LEDGER_GETALL, SETTLEMENTS_*, ACCRUAL_*)
 - *State:* Redux slice - socialBenefitsLedger, socialBenefitsLedgerEmployee, settlements, settlement, settlementCalculation, accrualCalculation
 - *Build:* ✅ 0 errores (44.38s)
+- *Bug Fix:* Redux state key mismatch - `state.Payroll` → `state.payrollReducer` (documentado en `.agent/rules/global-context/bug-prevention.md`)
