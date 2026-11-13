@@ -407,11 +407,73 @@ Antes de commitear cualquier componente con **modales/hijos que reciben props**:
 | 2026-11-12 | #043 Payroll Social Benefits | `PayrollSocialBenefitsTab.jsx` | Filtros: `""` → `"select"` + params builders para excluir "select" de API |
 | 2026-11-12 | #043 Payroll Social Benefits | `PayrollSocialBenefitsTab.jsx` | TDZ: `useCallback` movidos antes de `useEffect` dependency |
 | 2026-11-12 | #043 Payroll Social Benefits | `PayrollSocialBenefitsTab.jsx` | `employeeOptions` movido a scope principal antes de `renderLedgerTab` |
-| 2026-11-12 | #043 Payroll Social Benefits | `PayrollSocialBenefitsTab.jsx` | Infinite re-renders: `employees` removido de useEffect deps en AccrualFormModal y SettlementFormModal |
+| 2026-11-12 | #043 Payroll Social Benefits | `PayrollSocialBenefitsTab.jsx` | Infinite re-renders v1: `employees` removido de useEffect deps en AccrualFormModal y SettlementFormModal |
+| 2026-11-12 | #043 Payroll Social Benefits | `PayrollSocialBenefitsTab.jsx` | Infinite re-renders v2 (ROOT CAUSE): `validate()` con `setErrors()` en render via `disabled` prop → fix: `validateForm()` pura + `useMemo` `isFormValid` + handlers `useCallback` |
 
 ---
 
-## 🎯 Regla de Oro (Final - 5 Pilares)
+## 🚨 Error Típico #6 — Side Effects in Render (setState in Render Props)
+```
+Error: Too many re-renders. React limits the number of renders to prevent an infinite loop.
+```
+(Minified: React Error #301)
+
+## 🔍 Causa Raíz #6
+**Una función con side effects (`setState`, `dispatch`, `async`) es llamada DURANTE el render**, típicamente a través de props evaluadas en render como `disabled`, `className`, `style`, `onClick` (con paréntesis), etc.
+
+| Patrón Problemático | Por Qué Falla | Patrón Correcto |
+|---------------------|---------------|-----------------|
+| `disabled={!validate()}` donde `validate()` hace `setErrors()` | `validate()` se ejecuta en cada render → `setErrors` → re-render → loop | `disabled={!isFormValid}` donde `isFormValid = useMemo(() => validateForm(), [deps])` |
+| `onClick={handleClick()}` (con paréntesis) | Ejecuta función en render | `onClick={handleClick}` (sin paréntesis) |
+| `style={{ color: getColor() }}` si `getColor` hace `setState` | Side effect en render | `const color = useMemo(() => getColor(), [deps])` |
+
+## ✅ Solución Correcta
+
+### Separar validación pura de side effects:
+```javascript
+// ❌ PROBLEMÁTICO - side effect en render
+const validate = () => {
+    const errors = computeErrors()
+    setErrors(errors)  // Side effect!
+    return Object.keys(errors).length === 0
+}
+<button disabled={!validate()} />
+
+// ✅ CORRECTO - validación pura + memo + side effect solo en handler
+const validateForm = () => computeErrors()  // Pura, sin setErrors
+
+const isFormValid = useMemo(() => Object.keys(validateForm()).length === 0, [formData])
+
+const handleSubmit = (e) => {
+    e.preventDefault()
+    const errors = validateForm()
+    if (Object.keys(errors).length > 0) {
+        setErrors(errors)  // Side effect SOLO en handler
+        return
+    }
+    // ... submit
+}
+<button disabled={!isFormValid} onClick={handleSubmit} />
+```
+
+## 🔧 Checklist Pre-Commit — Actualizado Final v4
+
+Antes de commitear cualquier componente con **validaciones/props en render**:
+
+- [ ] Verificar `createSlice({ name: "X" })` en el slice
+- [ ] Verificar clave en `store.js` reducer object
+- [ ] Verificar que `useSelector(state => state.ClaveCorrecta...)` coincida **exactamente** con la clave del store
+- [ ] **Verificar que valores iniciales de Select coincidan con `value` de las opciones** (no empty string `""`)
+- [ ] **Verificar que opciones de filtro usen `"select"` o `"all"`, no `""`**
+- [ ] **Verificar que `useCallback`/`useMemo` estén declarados ANTES de `useEffect` que los referencian en dependency array**
+- [ ] **Verificar que variables usadas en funciones de render (`renderXxx`) estén definidas en el scope del componente principal (ANTES de dichas funciones)**
+- [ ] **Verificar que `useEffect` en modales NO tengan en deps props que sean nuevos objetos/arrays cada render del padre (usar Redux selectors o quitar de deps)**
+- [ ] **Verificar que NO hay llamadas a funciones con side effects (`setState`, `dispatch`, `async`) en render o props evaluadas en render (`disabled`, `className`, `style`, `onClick={fn()}`)**
+- [ ] Ejecutar `npm run build` — 0 errores
+
+---
+
+## 🎯 Regla de Oro (Final - 6 Pilares)
 
 > **NUNCA asumas que:**
 > 1. slice name = store key → **Verifica `store.js`**
@@ -419,4 +481,5 @@ Antes de commitear cualquier componente con **modales/hijos que reciben props**:
 > 3. orden de hooks no importa → **Callbacks ANTES de Effects que dependen de ellos**
 > 4. variables de sub-componentes son accesibles en render functions → **Define en scope principal ANTES de render functions**
 > 5. props en useEffect deps son estables → **Verifica que no sean nuevos objetos/arrays cada render (usa Redux selectors o quita de deps)**
+> 6. **funciones en render son puras** → **NUNCA llames funciones con side effects (`setState`, `dispatch`, `async`) en render o props evaluadas en render (`disabled`, `className`, `style`, `onClick={fn()}`)**
 > **SIEMPRE verifica antes de escribir código.**
