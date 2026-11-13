@@ -783,7 +783,7 @@ const AccrualFormModal = ({ open, onClose, onCalculate, onRecord, isDark, employ
         }
     }, [open])
 
-    const validate = () => {
+    const validateForm = () => {
         const newErrors = {}
         if (!formData.employee || formData.employee === "select") newErrors.employee = "Empleado es requerido"
         if (!formData.contract || formData.contract === "select") newErrors.contract = "Contrato es requerido"
@@ -792,13 +792,18 @@ const AccrualFormModal = ({ open, onClose, onCalculate, onRecord, isDark, employ
         if (formData.period_start && formData.period_end && new Date(formData.period_start) > new Date(formData.period_end)) {
             newErrors.period_end = "Fecha fin debe ser posterior a fecha inicio"
         }
-        setErrors(newErrors)
-        return Object.keys(newErrors).length === 0
+        return newErrors
     }
+
+    const isFormValid = useMemo(() => Object.keys(validateForm()).length === 0, [formData])
 
     const handleCalculate = async (e) => {
         e.preventDefault()
-        if (!validate()) return
+        const errors = validateForm()
+        if (Object.keys(errors).length > 0) {
+            setErrors(errors)
+            return
+        }
         try {
             setErrors({})
             const result = await onCalculate({
@@ -951,7 +956,7 @@ const AccrualFormModal = ({ open, onClose, onCalculate, onRecord, isDark, employ
                             <button
                                 type="button"
                                 onClick={handleCalculate}
-                                disabled={calculating || !validate()}
+                                disabled={calculating || !isFormValid}
                                 className="w-full px-4 py-2.5 rounded-xl text-sm font-medium text-white transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                                 style={{ background: "#003DA5" }}
                             >
@@ -1141,7 +1146,7 @@ export const PayrollSocialBenefitsTab = () => {
         console.log("Reject settlement", id, reason)
     }
 
-    const handleCalculateAccrual = async (data) => {
+    const handleCalculateAccrual = useCallback(async (data) => {
         setCalculating(true)
         try {
             const result = await dispatch(HandleSocialBenefits({ type: "ACCRUAL_CALCULATE", ...data })).unwrap()
@@ -1149,16 +1154,16 @@ export const PayrollSocialBenefitsTab = () => {
         } finally {
             setCalculating(false)
         }
-    }
+    }, [dispatch])
 
-    const handleRecordAccrual = async (data) => {
+    const handleRecordAccrual = useCallback(async (data) => {
         setRecording(true)
         try {
             await dispatch(HandleSocialBenefits({ type: "ACCRUAL_RECORD", ...data })).unwrap()
         } finally {
             setRecording(false)
         }
-    }
+    }, [dispatch])
 
     // Employee options for filter selects (from Redux - stable reference)
     const employeeOptions = useMemo(() => {

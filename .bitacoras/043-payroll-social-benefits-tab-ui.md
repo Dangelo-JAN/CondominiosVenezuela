@@ -1,5 +1,5 @@
 # 🛠️ TAREA: Payroll Social Benefits Tab UI
-**ID:** #043 | **Estado:** 🟡 EN CURSO (REABIERTA - FIX ADICIONAL) | **Fecha:** 2026-11-12
+**ID:** #043 | **Estado:** 🟡 EN CURSO (DEBUGGING INFINITE RE-RENDERS) | **Fecha:** 2026-11-12
 
 ---
 
@@ -11,49 +11,149 @@ Implementar la UI completa de la pestaña "Prestaciones Sociales" en HRPayrollPa
 ## 🚦 PUNTO DE CONTROL (Contexto de Reanudación)
 *Usa esto para "despertar" a la IA si el chat se cierra:*
 
-- **Lo último que funcionó:** Build 0 errores. Commit ac37c19 - fix: stabilize employees Redux selector reference.
-- **Dónde se rompió/detuvo:** Infinite re-renders persistía porque el Redux selector `state.employeeReducer?.data || []` creaba nueva referencia `[]` cada render cuando data es null.
-- **Siguiente acción inmediata:** Verificar fix en deploy, actualizar PR #59.
+- **Lo último que funcionó:** Build 0 errores. Fix `useMemo` aplicado para estabilizar `employees`. Pero **el error persiste en deploy** (React error #301 / Too many re-renders).
+- **Dónde se rompió/detuvo:** Error "Minified React error #301" en cloud deploy + "Too many re-renders" en local. El fix del Redux selector no fue suficiente.
+- **Siguiente acción inmediata:** **FASE 1 DEBUG** - Identificar TODAS las referencias inestables que se pasan a modales.
 
 ---
 
 ## 📝 CAMBIOS TÉCNICOS CLAVE
-- [x] **Fase 1 (Original):** Estructura base `PayrollSocialBenefitsTab.jsx` con 3 subtabs internos, tabs navigation, loading/empty states
-- [x] **Fase 2 (Original):** Subtab Libro (Ledger) - Lista paginada, filtros (empleado, entry_type), modal detalle entrada (LedgerDetailModal)
-- [x] **Fase 3 (Original):** Subtab Liquidaciones (Settlements) - CRUD completo, modal detalle con historial (SettlementDetailModal), modal formulario calcular/crear/editar (SettlementFormModal), acciones aprobar/pagar/rechazar
-- [x] **Fase 4 (Original):** Subtab Devengado (Accrual) - Formulario calcular/registrar (AccrualFormModal), preview cálculo, lista devengados recientes filtrada del ledger
-- [x] **Fase 5 (Original):** Integración completa, responsive, dark mode, build 0 errores, commit, PR #59 hacia 037-payroll-venezuelan-module
-- [x] **Fix Fase 1:** Reemplazar `employees` local state (`useState([])`) por Redux selector
-- [x] **Fix Fase 2:** Agregar header principal (título, descripción, botón refresh) antes del sub-tabs bar — patrón `PayrollVacationsTab`
-- [x] **Fix Fase 3:** Verificar todos `CustomSelect` usan `"select"` (no `""`) — consistencia Radix Select
-- [x] **Fix Fase 4 (CRÍTICO):** Estabilizar referencia `employees` con `useMemo` — **fixea infinite re-renders definitivo** (Regla #5 bug-prevention.md)
-- [x] **Build + Test:** 0 errores
-- [x] **Commit & Push:** `ac37c19` — fix: stabilize employees Redux selector reference
-- [ ] **PR Update:** Actualizar PR #59 hacia `037-payroll-venezuelan-module`
+- [x] **Fase 1-5 (Original):** UI completa implementada
+- [x] **Fix v1:** Local state → Redux selector
+- [x] **Fix v2:** Header principal + useMemo para employees
+- [ ] **DEBUG FASE 1:** Mapear cadena completa de referencias inestables
+- [ ] **DEBUG FASE 2:** Aislar y fixear cada referencia inestable
+- [ ] **DEBUG FASE 3:** Verificar en local + build
+- [ ] **DEBUG FASE 4:** Deploy y verificación cloud
+- [ ] **PR Update:** Actualizar PR #59
 
 ---
 
-## 🐛 BUGS CRÍTICOS FIXEADOS (Documentados en `.agent/rules/global-context/bug-prevention.md`)
+## 🐛 BUG ACTUAL: Infinite Re-renders (React Error #301)
 
-| Bug | Causa Raíz | Fix Aplicado | Regla |
-|-----|------------|--------------|-------|
-| **Infinite Re-renders v1** | `employees = useState([])` local → nueva referencia cada render | Redux selector | #5 |
-| **Infinite Re-renders v2 (ROOT CAUSE)** | Redux selector `state.employeeReducer?.data \|\| []` crea **nueva `[]` cada render** cuando data es null | `useMemo(() => rawEmployees \|\| [], [rawEmployees])` para estabilizar referencia | #5 |
-| **Falta Header Principal** | No seguía patrón tabs períodos/conceptos/políticas | Agregado header con título, descripción, refresh button | Consistencia UI |
-| **Radix Select Empty String** | Verificado: todos usan `"select"` | Ya correcto | #2 |
+### Síntomas
+- **Cloud (Vercel):** `Minified React error #301` - stack trace apunta a `vendor-react-DNXgf9I9.js`
+- **Local (Vite):** `Too many re-renders. React limits the number of renders to prevent an infinite loop`
+- **Trigger:** Click en botón **"Nuevo Devengado"** (abre `AccrualFormModal`)
+
+### Análisis Preliminar (Causa Raíz NO resuelta)
+El fix `useMemo` para `employees` era necesario pero **insuficiente**. Hay otras referencias inestables que se pasan a los modales:
+
+| Referencia | Ubicación | Problema Potencial |
+|------------|-----------|-------------------|
+| `contracts={[]}` | Línea 1710: `<SettlementFormModal contracts={[]} />` | **Nuevo array `[]` cada render** |
+| `calculating` | Líneas 1712, 1722 | State local, pero si cambia dispara re-render |
+| `recording` | Línea 1723 | State local |
+| `employeeOptions` en modales | `useMemo([employees])` | Si `employees` cambia referencia, recalcula |
+| `contractOptions` en modales | `useMemo([employees, formData.employee])` | Depende de `employees` |
 
 ---
 
-## ⚠️ NOTAS DE MEMORIA
-- *Regla:* PR OBLIGATORIO hacia `037-payroll-venezuelan-module` (rama padre), NUNCA a `dev` ni `main` ✅ CUMPLIDA (PR #59)
-- *Regla:* Design System v4 - Acento `blue` (#003DA5) para Nóminas/Prestaciones ✅
-- *Regla:* Usar `ThemedListWrapper`, `ThemedHeadingBar`, `ThemedListContainer` con `accent="blue"` ✅
-- *Regla:* Usar `CustomSelect` con `accentColor="blue"`, `useIsDark()` para tema ✅
-- *Regla:* Patrón exacto de `PayrollVacationsTab.jsx` (sub-componentes internos, modales animados) ✅
-- *Bug Root Cause Final:* **Redux selector con `|| []` crea nueva referencia cada render** — **Regla #5 bug-prevention.md**: "Verificar que `useEffect` en modales NO tengan en deps props que sean nuevos objetos/arrays cada render del padre (usa Redux selectors o quita de deps)" — **El Redux selector DEBE devolver referencia estable**
-- *Branch:* 043-payroll-social-benefits-tab-ui (desde 037-payroll-venezuelan-module) ✅
-- *Commits:* 6b99e76 (feat), 93f3fac (fix Redux key), 35d35a6 (fix infinite re-renders v1 + header), ac37c19 (fix infinite re-renders v2 - root cause)
-- *PR:* #59 hacia 037-payroll-venezuelan-module ✅ (actualizar con fixes)
-- *Thunk:* `HandleSocialBenefits` - todos los endpoints integrados (LEDGER_GETALL, SETTLEMENTS_*, ACCRUAL_*)
-- *State:* Redux slice - socialBenefitsLedger, socialBenefitsLedgerEmployee, settlements, settlement, settlementCalculation, accrualCalculation
-- *Build:* ✅ 0 errores (25.09s)
+## 🔬 PLAN DE DEBUGGING — FASES CON STOPS OBLIGATORIOS
+
+> **REGLA:** Cada fase DEBE terminar con STOP → mostrar evidencia → esperar aprobación explícita antes de continuar.
+
+---
+
+### **FASE 1: MAPEO DE CADENA COMPLETA DE REFERENCIAS INESTABLES**
+**Objetivo:** Identificar TODAS las props que pasan del padre a modales y que pueden crear nuevas referencias cada render.
+
+**Acciones:**
+1. ✅ Leer componente completo `PayrollSocialBenefitsTab.jsx`
+2. ✅ Listar TODAS las props que se pasan a `<SettlementFormModal>` y `<AccrualFormModal>`
+3. ✅ Para cada prop: determinar si es **estable** (misma referencia entre renders) o **inestable** (nueva referencia)
+4. ✅ Identificar `useEffect` en modales que tengan esas props en dependency array
+5. ✅ Documentar hallazgos en tabla
+
+**Entregable:** Tabla completa de props inestables + `useEffect` afectados
+
+**STOP 1:** Mostrar tabla → Esperar aprobación para FASE 2
+
+---
+
+### **FASE 2: FIX DE REFERENCIAS INESTABLES IDENTIFICADAS**
+**Objetivo:** Eliminar TODAS las referencias inestables de props hacia modales.
+
+**Acciones por cada prop inestable:**
+- **`contracts={[]}`** → Cambiar a `useMemo(() => [], [])` o eliminar si no se usa
+- **`calculating` / `recording`** → Si no son necesarios en modal, quitar; si son necesarios, estabilizar con `useCallback` o mover lógica
+- **`employeeOptions` / `contractOptions` en modales** → Verificar que `employees` sea verdaderamente estable (ya con `useMemo`)
+- **Props functions** (`onSubmit`, `onCalculate`, etc.) → Envolver en `useCallback` con deps correctas
+
+**Entregable:** Código con todas las referencias estabilizadas
+
+**STOP 2:** Mostrar diff de cambios → Build local → Esperar aprobación para FASE 3
+
+---
+
+### **FASE 3: VERIFICACIÓN LOCAL EXHAUSTIVA**
+**Objetivo:** Confirmar que NO hay infinite re-renders en entorno local.
+
+**Acciones:**
+1. `npm run build` → 0 errores
+2. `npm run dev` → Probar click "Nuevo Devengado", "Nueva Liquidación"
+3. Verificar consola: NO errores, NO warnings de re-renders
+4. Probar flujo completo: abrir modal → cerrar → volver a abrir (múltiples veces)
+5. Probar cambio de sub-tabs (Libro → Liquidaciones → Devengado → Libro)
+
+**Evidencia Requerida:**
+- ✅ Build success
+- ✅ Console limpia (sin warnings React)
+- ✅ Múltiples aperturas/cierres de modales sin error
+
+**STOP 3:** Confirmar verificación local completa → Esperar aprobación para FASE 4
+
+---
+
+### **FASE 4: DEPLOY Y VERIFICACIÓN CLOUD**
+**Objetivo:** Confirmar fix en Vercel (donde ocurre error #301 minificado).
+
+**Acciones:**
+1. Push a rama → Vercel Preview deploy automático
+2. Acceder a Preview URL
+3. Navegar a HR → Nómina → Prestaciones Sociales
+4. Click "Nuevo Devengado" → Verificar NO error #301
+5. Click "Nueva Liquidación" → Verificar
+6. Test completo de todos los sub-tabs y modales
+
+**Evidencia Requerida:**
+- ✅ Deploy success
+- ✅ Sin error #301 en consola browser
+- ✅ Funcionalidad completa operativa
+
+**STOP 4:** Confirmar deploy funcional → Proceder a cierre de tarea
+
+---
+
+### **FASE 5: CIERRE Y DOCUMENTACIÓN**
+**Objetivo:** Actualizar bitácoras, bug-prevention.md, cerrar tarea.
+
+**Acciones:**
+1. Actualizar `.bitacoras/043-payroll-social-benefits-tab-ui.md` con root cause final y fix definitivo
+2. Actualizar `.agent/rules/global-context/bug-prevention.md` si hay nuevo patrón
+3. Commit final + push
+4. Limpiar `actual.md`
+5. Marcar tarea COMPLETADA
+
+---
+
+## 📋 CHECKLIST PRE-DEBUG (Verificación Rápida)
+
+Antes de iniciar FASE 1, confirmar:
+
+- [ ] `employees` estabilizado con `useMemo` (línea 1075) ✅
+- [ ] `employeeOptions` en padre usa `employees` estable (línea 1168) ✅
+- [ ] `contracts={[]}` en SettlementFormModal (línea 1710) ❌ **INESTABLE**
+- [ ] `calculating`, `recording` pasados a ambos modales ⚠️ **REVISAR**
+- [ ] `onSubmit`, `onCalculate`, `onRecord` envueltos en `useCallback` ⚠️ **REVISAR**
+- [ ] `useEffect` en modales con deps correctas ⚠️ **REVISAR**
+
+---
+
+## ⚠️ NOTAS DE MEMORIA ACTUALIZADAS
+- *Root Cause Hipótesis:* **Múltiples props inestables** (`contracts={[]}`, functions sin `useCallback`, states locales) pasadas a modales → `useEffect` en modales se disparan en loop
+- *Patrón Correcto (VacationsTab):* Solo pasa `employees` (Redux selector estable) + `periods` (Redux selector estable) + handlers con `useCallback`
+- *Regla #5 bug-prevention.md:* "Verificar que `useEffect` en modales NO tengan en deps props que sean nuevos objetos/arrays cada render del padre"
+- *Error #301:* Minified React error para "Too many re-renders" - necesita dev environment no minificado para debug completo
+- *Branch:* 043-payroll-social-benefits-tab-ui
+- *PR:* #59 hacia 037-payroll-venezuelan-module
