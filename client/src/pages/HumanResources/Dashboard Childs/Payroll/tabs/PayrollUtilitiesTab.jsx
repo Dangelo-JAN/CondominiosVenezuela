@@ -1,6 +1,6 @@
 import { useEffect, useState, useCallback, useMemo } from "react"
 import { useDispatch, useSelector } from "react-redux"
-import { useNavigate, useSearchParams } from "react-router-dom"
+import { useNavigate } from "react-router-dom"
 import { HandleUtilidades } from "../../../../../redux/Thunks/PayrollThunk.js"
 import { HandlePayrollPeriods } from "../../../../../redux/Thunks/PayrollThunk.js"
 import { Loading } from "../../../../../components/common/loading.jsx"
@@ -17,8 +17,7 @@ import {
 } from "lucide-react"
 
 // ──────────────────────────────────────────────────────────────────────────────
-// CONSTANTES Y OPCIONES — Definidas en scope principal ANTES de render functions
-// (Bug Prevention #4: Variable Scope en Render Functions)
+// CONSTANTES Y OPCIONES — Definidas fuera del componente (estables)
 // ──────────────────────────────────────────────────────────────────────────────
 
 const SUB_TABS = [
@@ -73,7 +72,6 @@ export const PayrollUtilitiesTab = () => {
     const isDark = useIsDark()
     const dispatch = useDispatch()
     const navigate = useNavigate()
-    const [searchParams, setSearchParams] = useSearchParams()
     const { hasPermission } = useHRAuth()
 
     // ─── Redux Selectors — KEY CORRECTA: payrollReducer (Bug Prevention #1) ───
@@ -100,19 +98,19 @@ export const PayrollUtilitiesTab = () => {
     const [paymentDetailModal, setPaymentDetailModal] = useState({ open: false, payment: null })
     const [confirmDialog, setConfirmDialog] = useState({ open: false, title: "", message: "", onConfirm: null, variant: "danger" })
 
-    // ─── Helpers de formato — Definidos ANTES de callbacks (Bug Prevention #3) ───
-    const formatDate = useCallback((dateStr) => {
+    // ─── Helpers de formato ───
+    const formatDate = (dateStr) => {
         if (!dateStr) return "—"
         return new Date(dateStr).toLocaleDateString("es-ES", { day: "2-digit", month: "short", year: "numeric" })
-    }, [])
+    }
 
-    const formatCurrency = useCallback((val) => {
+    const formatCurrency = (val) => {
         if (val === undefined || val === null) return "—"
         return `$ ${val.toLocaleString("es-VE", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
-    }, [])
+    }
 
-    const getPeriodStatusConfig = useCallback((status) => PERIOD_STATUS_CONFIG[status] || PERIOD_STATUS_CONFIG.OPEN, [])
-    const getPaymentStatusConfig = useCallback((status) => PAYMENT_STATUS_CONFIG[status] || PAYMENT_STATUS_CONFIG.PENDING, [])
+    const getPeriodStatusConfig = (status) => PERIOD_STATUS_CONFIG[status] || PERIOD_STATUS_CONFIG.OPEN
+    const getPaymentStatusConfig = (status) => PAYMENT_STATUS_CONFIG[status] || PAYMENT_STATUS_CONFIG.PENDING
 
     // ─── Build Params — useCallback ANTES de useEffect (Bug Prevention #3) ───
     const buildPeriodParams = useCallback(() => {
@@ -148,37 +146,37 @@ export const PayrollUtilitiesTab = () => {
         dispatch(HandleUtilidades({ type: "PERIODS_GETALL", page: 1, limit: 100 }))
     }, [dispatch])
 
-    // ─── Handlers — useCallback para estabilidad ───
-    const handlePeriodFilterChange = useCallback((key, value) => {
+    // ─── Handlers ───
+    const handlePeriodFilterChange = (key, value) => {
         setPeriodFilters(prev => ({ ...prev, [key]: value }))
-    }, [])
+    }
 
-    const handlePaymentFilterChange = useCallback((key, value) => {
+    const handlePaymentFilterChange = (key, value) => {
         setPaymentFilters(prev => ({ ...prev, [key]: value }))
-    }, [])
+    }
 
-    const handleSearchChange = useCallback((value) => {
+    const handleSearchChange = (value) => {
         setSearchTerm(value)
-    }, [])
+    }
 
-    const openPeriodDetail = useCallback((period) => {
+    const openPeriodDetail = (period) => {
         setPeriodDetailModal({ open: true, period })
-    }, [])
+    }
 
-    const openPeriodForm = useCallback((editing = null) => {
+    const openPeriodForm = (editing = null) => {
         setPeriodFormModal({ open: true, editing })
-    }, [])
+    }
 
-    const openCalculatePreview = useCallback(async (period) => {
+    const openCalculatePreview = async (period) => {
         try {
             const result = await dispatch(HandleUtilidades({ type: "PERIODS_CALCULATE", id: period._id })).unwrap()
             setCalculatePreviewModal({ open: true, period, preview: result.data })
         } catch (error) {
             console.error("Error calculando preview:", error)
         }
-    }, [dispatch])
+    }
 
-    const handleCalculate = useCallback(async (period) => {
+    const handleCalculate = (period) => {
         setConfirmDialog({
             open: true,
             title: "Calcular Utilidades",
@@ -186,9 +184,9 @@ export const PayrollUtilitiesTab = () => {
             onConfirm: () => openCalculatePreview(period),
             variant: "primary"
         })
-    }, [openCalculatePreview])
+    }
 
-    const handleApprove = useCallback((period) => {
+    const handleApprove = (period) => {
         setConfirmDialog({
             open: true,
             title: "Aprobar Período",
@@ -196,9 +194,9 @@ export const PayrollUtilitiesTab = () => {
             onConfirm: () => dispatch(HandleUtilidades({ type: "PERIODS_APPROVE", id: period._id })),
             variant: "success"
         })
-    }, [dispatch])
+    }
 
-    const handlePayPeriod = useCallback((period) => {
+    const handlePayPeriod = (period) => {
         setConfirmDialog({
             open: true,
             title: "Pagar Utilidades",
@@ -206,9 +204,9 @@ export const PayrollUtilitiesTab = () => {
             onConfirm: () => dispatch(HandleUtilidades({ type: "PERIODS_PAY", id: period._id, data: { payment_date: new Date().toISOString().split("T")[0] } })),
             variant: "success"
         })
-    }, [dispatch])
+    }
 
-    const handleDeletePeriod = useCallback((period) => {
+    const handleDeletePeriod = (period) => {
         setConfirmDialog({
             open: true,
             title: "Eliminar Período",
@@ -216,13 +214,13 @@ export const PayrollUtilitiesTab = () => {
             onConfirm: () => dispatch(HandleUtilidades({ type: "PERIODS_DELETE", id: period._id })),
             variant: "danger"
         })
-    }, [dispatch])
+    }
 
-    const openPaymentDetail = useCallback((payment) => {
+    const openPaymentDetail = (payment) => {
         setPaymentDetailModal({ open: true, payment })
-    }, [])
+    }
 
-    const handlePayPayment = useCallback((payment) => {
+    const handlePayPayment = (payment) => {
         setConfirmDialog({
             open: true,
             title: "Marcar como Pagado",
@@ -230,13 +228,13 @@ export const PayrollUtilitiesTab = () => {
             onConfirm: () => dispatch(HandleUtilidades({ type: "PAYMENTS_PAY", id: payment._id, data: { payment_date: new Date().toISOString().split("T")[0] } })),
             variant: "success"
         })
-    }, [dispatch])
+    }
 
-    const handleCalculationParamChange = useCallback((key, value) => {
+    const handleCalculationParamChange = (key, value) => {
         setCalculationParams(prev => ({ ...prev, [key]: value }))
-    }, [])
+    }
 
-    const handleRunCalculation = useCallback(async () => {
+    const handleRunCalculation = () => {
         if (!calculationParams.netProfitVes) return
         setConfirmDialog({
             open: true,
@@ -244,7 +242,6 @@ export const PayrollUtilitiesTab = () => {
             message: `¿Calcular distribución de utilidades para ${calculationParams.year} con utilidad neta de ${formatCurrency(calculationParams.netProfitVes)}?`,
             onConfirm: async () => {
                 try {
-                    // Simular cálculo sin persistir - usar endpoint de cálculo
                     const result = await dispatch(HandleUtilidades({
                         type: "PERIODS_CALCULATE_SIMULATE",
                         data: calculationParams
@@ -256,10 +253,10 @@ export const PayrollUtilitiesTab = () => {
             },
             variant: "primary"
         })
-    }, [calculationParams, dispatch, formatCurrency])
+    }
 
-    // ─── Render Functions — Options ya definidas en scope principal (Bug Prevention #4) ───
-    const renderPeriodsTab = useCallback(() => {
+    // ─── Render Functions — Funciones regulares (patrón validado en PayrollSocialBenefitsTab) ───
+    const renderPeriodsTab = () => {
         const periodOptions = useMemo(() => [
             { value: "select", label: "Seleccionar período..." },
             ...(utilidadesPeriods.data?.map(p => ({ value: p._id, label: `${p.year} (${p.status})` })) || [])
@@ -511,28 +508,9 @@ export const PayrollUtilitiesTab = () => {
                 )}
             </div>
         )
-    }, [
-        isDark,
-        utilidadesPeriods,
-        periodFilters,
-        searchTerm,
-        hasPermission,
-        formatCurrency,
-        formatDate,
-        getPeriodStatusConfig,
-        handlePeriodFilterChange,
-        handleSearchChange,
-        openPeriodDetail,
-        handleCalculate,
-        handleApprove,
-        handlePayPeriod,
-        handleDeletePeriod,
-        openPeriodForm,
-        dispatch,
-        buildPeriodParams
-    ])
+    }
 
-    const renderPaymentsTab = useCallback(() => {
+    const renderPaymentsTab = () => {
         const periodOptions = useMemo(() => [
             { value: "select", label: "Seleccionar período..." },
             ...(utilidadesPeriods.data?.map(p => ({ value: p._id, label: `${p.year} (${p.status})` })) || [])
@@ -608,7 +586,7 @@ export const PayrollUtilitiesTab = () => {
                 {paymentFilters.period !== "select" && (
                     <ThemedListWrapper accent="blue">
                         <ThemedHeadingBar
-                            table_layout="sm:grid-cols-7"
+                            table_layout="sm:grid-cols-8"
                             table_headings={["Empleado", "Días Trab.", "Salario Prom.", "Bruto", "ISLR", "Neto", "Estado", "Acciones"]}
                             accent="blue"
                         />
@@ -723,22 +701,9 @@ export const PayrollUtilitiesTab = () => {
                 )}
             </div>
         )
-    }, [
-        isDark,
-        utilidadesPeriods.data,
-        utilidadesPayments,
-        paymentFilters,
-        searchTerm,
-        hasPermission,
-        formatCurrency,
-        getPaymentStatusConfig,
-        handlePaymentFilterChange,
-        handleSearchChange,
-        openPaymentDetail,
-        handlePayPayment
-    ])
+    }
 
-    const renderCalculationTab = useCallback(() => {
+    const renderCalculationTab = () => {
         return (
             <div className="w-full h-full flex flex-col p-4 gap-4 overflow-auto">
                 <div className="flex flex-wrap items-center justify-between gap-4">
@@ -854,7 +819,7 @@ export const PayrollUtilitiesTab = () => {
                 </div>
             </div>
         )
-    }, [isDark, calculationParams, handleCalculationParamChange, handleRunCalculation])
+    }
 
     // ─── Render Principal ───
     return (
@@ -889,7 +854,7 @@ export const PayrollUtilitiesTab = () => {
                 {activeSubTab === "calculation" && renderCalculationTab()}
             </div>
 
-            {/* Modales - Se implementarán en Fases 2-5 */}
+            {/* Modales - Placeholders para Fases 2-5 */}
             {periodDetailModal.open && (
                 <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4 animate-fade-in" onClick={() => setPeriodDetailModal({ open: false, period: null })}>
                     <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-xl max-w-2xl w-full max-h-[90vh] overflow-auto animate-slide-up" onClick={(e) => e.stopPropagation()}>
