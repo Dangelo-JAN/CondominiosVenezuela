@@ -1,6 +1,6 @@
 import { useEffect, useState, useCallback, useMemo } from "react"
 import { useDispatch, useSelector } from "react-redux"
-import { useNavigate } from "react-router-dom"
+import { useNavigate, useSearchParams } from "react-router-dom"
 import { HandleUtilidades } from "../../../../../redux/Thunks/PayrollThunk.js"
 import { HandlePayrollPeriods } from "../../../../../redux/Thunks/PayrollThunk.js"
 import { Loading } from "../../../../../components/common/loading.jsx"
@@ -72,6 +72,7 @@ export const PayrollUtilitiesTab = () => {
     const isDark = useIsDark()
     const dispatch = useDispatch()
     const navigate = useNavigate()
+    const [searchParams] = useSearchParams()
     const { hasPermission } = useHRAuth()
 
     // ─── Redux Selectors — KEY CORRECTA: payrollReducer (Bug Prevention #1) ───
@@ -182,7 +183,7 @@ export const PayrollUtilitiesTab = () => {
             title: "Calcular Utilidades",
             message: `¿Calcular distribución de utilidades para el período ${period.year}? Se generará el preview para revisión antes de confirmar.`,
             onConfirm: () => openCalculatePreview(period),
-            variant: "primary"
+            variant: "info"
         })
     }
 
@@ -192,7 +193,7 @@ export const PayrollUtilitiesTab = () => {
             title: "Aprobar Período",
             message: `¿Aprobar el período de utilidades ${period.year}? Esta acción no se puede deshacer.`,
             onConfirm: () => dispatch(HandleUtilidades({ type: "PERIODS_APPROVE", id: period._id })),
-            variant: "success"
+            variant: "info"
         })
     }
 
@@ -202,7 +203,7 @@ export const PayrollUtilitiesTab = () => {
             title: "Pagar Utilidades",
             message: `¿Marcar como pagado el período ${period.year}? Se generarán los recibos correspondientes.`,
             onConfirm: () => dispatch(HandleUtilidades({ type: "PERIODS_PAY", id: period._id, data: { payment_date: new Date().toISOString().split("T")[0] } })),
-            variant: "success"
+            variant: "info"
         })
     }
 
@@ -226,7 +227,7 @@ export const PayrollUtilitiesTab = () => {
             title: "Marcar como Pagado",
             message: `¿Marcar el pago de utilidades para ${payment.employee?.firstname} ${payment.employee?.lastname} como pagado?`,
             onConfirm: () => dispatch(HandleUtilidades({ type: "PAYMENTS_PAY", id: payment._id, data: { payment_date: new Date().toISOString().split("T")[0] } })),
-            variant: "success"
+            variant: "info"
         })
     }
 
@@ -251,7 +252,7 @@ export const PayrollUtilitiesTab = () => {
                     console.error("Error en simulación:", error)
                 }
             },
-            variant: "primary"
+            variant: "info"
         })
     }
 
