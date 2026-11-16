@@ -72,7 +72,7 @@ export const PayrollUtilitiesTab = () => {
     const isDark = useIsDark()
     const dispatch = useDispatch()
     const navigate = useNavigate()
-    const { hasPermission } = useHRAuth()
+    const { can } = useHRAuth()
 
     // ─── Redux Selectors — KEY CORRECTA: payrollReducer (Bug Prevention #1) ───
     const utilidadesPeriods = useSelector(state => state.payrollReducer.utilidadesPeriods)
@@ -278,7 +278,7 @@ export const PayrollUtilitiesTab = () => {
                         <p className="text-sm text-gray-500 dark:text-gray-400">Gestión de períodos anuales de reparto de utilidades (15% LOTTT Art. 146-154)</p>
                     </div>
                     <div className="flex items-center gap-2">
-                        {hasPermission("payroll", "create") && (
+                        {can("payroll", "create") && (
                             <button
                                 onClick={() => openPeriodForm()}
                                 className="px-4 py-2 rounded-xl text-sm font-medium text-white flex items-center gap-2 transition-colors"
@@ -361,7 +361,7 @@ export const PayrollUtilitiesTab = () => {
                             <div className="flex flex-col items-center justify-center h-32 gap-2 text-gray-500 dark:text-gray-400">
                                 <CalendarIcon className="w-10 h-10 opacity-50" />
                                 <p>No hay períodos de utilidades registrados</p>
-                                {hasPermission("payroll", "create") && (
+{can("payroll", "create") && (
                                     <button onClick={() => openPeriodForm()} className="text-sm text-blue-600 dark:text-blue-400 hover:underline">
                                         Crear el primero
                                     </button>
@@ -372,10 +372,10 @@ export const PayrollUtilitiesTab = () => {
                                 {utilidadesPeriods.data?.map((period, index) => {
                                     const statusConfig = getPeriodStatusConfig(period.status)
                                     const StatusIcon = statusConfig.icon
-                                    const canCalculate = period.status === "OPEN" && hasPermission("payroll", "calculate")
-                                    const canApprove = period.status === "CALCULATED" && hasPermission("payroll", "approve")
-                                    const canPay = (period.status === "APPROVED" || period.status === "CALCULATED") && hasPermission("payroll", "pay")
-                                    const canDelete = period.status === "OPEN" && hasPermission("payroll", "delete")
+                                    const canCalculate = period.status === "OPEN" && can("payroll", "update")
+                                    const canApprove = period.status === "CALCULATED" && can("payroll", "update")
+                                    const canPay = (period.status === "APPROVED" || period.status === "CALCULATED") && can("payroll", "update")
+                                    const canDelete = period.status === "OPEN" && can("payroll", "delete")
 
                                     return (
                                         <div
@@ -607,7 +607,7 @@ export const PayrollUtilitiesTab = () => {
                                     {utilidadesPayments.data?.map((payment, index) => {
                                         const statusConfig = getPaymentStatusConfig(payment.status)
                                         const StatusIcon = statusConfig.icon
-                                        const canPay = payment.status === "PENDING" && hasPermission("payroll", "pay")
+                                        const canPay = payment.status === "PENDING" && can("payroll", "update")
 
                                         return (
                                             <div

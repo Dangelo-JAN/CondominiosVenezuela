@@ -547,7 +547,61 @@ Antes de commitear cualquier componente con **funciones de render internas (`ren
 
 ---
 
-## 🎯 Regla de Oro (Final - 7 Pilares)
+## 🚨 Error Típico #8 — Calling `hasPermission()` Instead of `can()` from `useHRAuth()` (`t is not a function`)
+
+### 🔍 Causa Raíz #8
+**Destruir `{ hasPermission }` de `useHRAuth()` cuando el hook NO exporta esa propiedad.** En `src/hooks/useHRAuth.js`, el hook retorna `{ can, canCreate, canRead, canUpdate, canDelete, role, isAdmin, isManager, isViewer, isReady, permissions }`. `hasPermission` es `undefined`, y al invocarlo como función lanza `hasPermission is not a function` en dev y `t is not a function` en producción minificada (variable `hasPermission` renombrada a `t`).
+
+### ❌ PROHIBIDO
+```javascript
+const { hasPermission } = useHRAuth()
+hasPermission("payroll", "calculate")  // hasPermission = undefined → CRASH
+```
+
+### ✅ CORRECTO
+```javascript
+const { can } = useHRAuth()
+// Acciones válidas (CRUD): "create", "read", "update", "delete"
+can("payroll", "create")   // ✅
+can("payroll", "update")   // ✅ (para calcular, aprobar, pagar)
+can("payroll", "delete")   // ✅
+```
+
+### 🔧 Checklist Pre-Commit — Actualizado Final v6
+
+Antes de commitear cualquier componente que use **permisos HR**:
+
+- [ ] Verificar `createSlice({ name: "X" })` en el slice
+- [ ] Verificar clave en `store.js` reducer object
+- [ ] Verificar que `useSelector(state => state.ClaveCorrecta...)` coincida **exactamente** con la clave del store
+- [ ] **Verificar que valores iniciales de Select coincidan con `value` de las opciones** (no empty string `""`)
+- [ ] **Verificar que opciones de filtro usen `"select"` o `"all"`, no `""`**
+- [ ] **Verificar que `useCallback`/`useMemo` estén declarados ANTES de `useEffect` que los referencian en dependency array**
+- [ ] **Verificar que variables usadas en funciones de render (`renderXxx`) estén definidas en el scope del componente principal (ANTES de dichas funciones)**
+- [ ] **Verificar que `useEffect` en modales NO tengan en deps props que sean nuevos objetos/arrays cada render del padre (usar Redux selectors o quitar de deps)**
+- [ ] **Verificar que NO hay llamadas a funciones con side effects (`setState`, `dispatch`, `async`) en render o props evaluadas en render (`disabled`, `className`, `style`, `onClick={fn()}`)**
+- [ ] **VERIFICAR QUE NO HAY HOOKS (`useMemo`, `useCallback`, `useState`, `useEffect`) DENTRO DE FUNCIONES `renderXxx()` HELPER**
+- [ ] **VERIFICAR QUE SE USA `can` DE `useHRAuth()` CON ACCIONES CRUD VÁLIDAS (`create`, `read`, `update`, `delete`) — NUNCA `hasPermission` NI ACCIONES INVENTADAS**
+- [ ] Ejecutar `npm run build` — 0 errores
+
+---
+
+## 📝 Historial de Ocurrencias — Actualizado Final v5
+
+| Fecha | Tarea | Archivo Afectado | Fix Aplicado |
+|-------|-------|------------------|--------------|
+| 2026-11-12 | #043 Payroll Social Benefits | `PayrollSocialBenefitsTab.jsx` | Cambio `state.Payroll` → `state.payrollReducer` (6 selectores) |
+| 2026-11-12 | #043 Payroll Social Benefits | `PayrollSocialBenefitsTab.jsx` | Filtros: `""` → `"select"` + params builders para excluir "select" de API |
+| 2026-11-12 | #043 Payroll Social Benefits | `PayrollSocialBenefitsTab.jsx` | TDZ: `useCallback` movidos antes de `useEffect` dependency |
+| 2026-11-12 | #043 Payroll Social Benefits | `PayrollSocialBenefitsTab.jsx` | `employeeOptions` movido a scope principal antes de `renderLedgerTab` |
+| 2026-11-12 | #043 Payroll Social Benefits | `PayrollSocialBenefitsTab.jsx` | Infinite re-renders v1: `employees` removido de useEffect deps en AccrualFormModal y SettlementFormModal |
+| 2026-11-12 | #043 Payroll Social Benefits | `PayrollSocialBenefitsTab.jsx` | Infinite re-renders v2 (ROOT CAUSE): `validate()` con `setErrors()` en render via `disabled` prop → fix: `validateForm()` pura + `useMemo` `isFormValid` + handlers `useCallback` |
+| 2026-11-16 | #044 Payroll Utilities Tab | `PayrollUtilitiesTab.jsx` | **Hooks en render helpers**: `useMemo` dentro de `renderPeriodsTab()` y `renderPaymentsTab()` → movidos a nivel superior; `ChevronLeft/Right` agregados a import |
+| 2026-11-16 | #044 Payroll Utilities Tab | `PayrollUtilitiesTab.jsx` | **Hook `useHRAuth()` mal usado**: `hasPermission` destruido en lugar de `can`; acciones inventadas (`calculate`, `approve`, `pay`) → mapeadas a CRUD válido (`update`) |
+
+---
+
+## 🎯 Regla de Oro (Final - 8 Pilares)
 
 > **NUNCA asumas que:**
 > 1. slice name = store key → **Verifica `store.js`**
@@ -557,4 +611,5 @@ Antes de commitear cualquier componente con **funciones de render internas (`ren
 > 5. props en useEffect deps son estables → **Verifica que no sean nuevos objetos/arrays cada render (usa Redux selectors o quita de deps)**
 > 6. **funciones en render son puras** → **NUNCA llames funciones con side effects (`setState`, `dispatch`, `async`) en render o props evaluadas en render (`disabled`, `className`, `style`, `onClick={fn()}`)**
 > 7. **hooks en render helpers son válidos** → **NUNCA pongas `useMemo`, `useCallback`, `useState`, `useEffect` dentro de funciones `renderXxx()` condicionales — SIEMPRE en nivel superior del componente**
+> 8. **`useHRAuth()` exporta `hasPermission`** → **USA `can` CON ACCIONES CRUD (`create`, `read`, `update`, `delete`) — NUNCA inventes acciones ni uses `hasPermission`**
 > **SIEMPRE verifica antes de escribir código.**
