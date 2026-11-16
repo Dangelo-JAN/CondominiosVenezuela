@@ -11,7 +11,7 @@ import { ConfirmDialog } from "../../../../../components/common/ConfirmDialog.js
 import { ThemedListWrapper, ThemedHeadingBar, ThemedListContainer } from "../../../../../components/common/Dashboard/ListDesigns"
 import {
     Calendar, FileText, Filter, Search, Plus, Eye, CheckCircle, XCircle, DollarSign, Trash2, RefreshCw,
-    AlertTriangle, Settings, ChevronDown, ChevronUp, CreditCard, Building2, Coins, Receipt, List,
+    AlertTriangle, Settings, ChevronDown, ChevronUp, ChevronLeft, ChevronRight, CreditCard, Building2, Coins, Receipt, List,
     ArrowRight, ArrowLeft, Download, Upload, History, HelpCircle, Info, Calendar as CalendarIcon, Handshake,
     Calculator, ClipboardList, BarChart2, Users, Activity, SlidersHorizontal, Clock
 } from "lucide-react"
@@ -261,13 +261,14 @@ export const PayrollUtilitiesTab = () => {
         }))
     }
 
+    // ─── Shared memoized values — Nivel superior (Bug Prevention #7) ───
+    const periodOptions = useMemo(() => [
+        { value: "select", label: "Seleccionar período..." },
+        ...(utilidadesPeriods.data?.map(p => ({ value: p._id, label: `${p.year} (${p.status})` })) || [])
+    ], [utilidadesPeriods.data])
+
     // ─── Render Functions — Funciones regulares (patrón validado en PayrollSocialBenefitsTab) ───
     const renderPeriodsTab = () => {
-        const periodOptions = useMemo(() => [
-            { value: "select", label: "Seleccionar período..." },
-            ...(utilidadesPeriods.data?.map(p => ({ value: p._id, label: `${p.year} (${p.status})` })) || [])
-        ], [utilidadesPeriods.data])
-
         return (
             <div className="w-full h-full flex flex-col p-4 gap-4 overflow-auto">
                 {/* Header con stats rápidas */}
@@ -517,11 +518,6 @@ export const PayrollUtilitiesTab = () => {
     }
 
     const renderPaymentsTab = () => {
-        const periodOptions = useMemo(() => [
-            { value: "select", label: "Seleccionar período..." },
-            ...(utilidadesPeriods.data?.map(p => ({ value: p._id, label: `${p.year} (${p.status})` })) || [])
-        ], [utilidadesPeriods.data])
-
         return (
             <div className="w-full h-full flex flex-col p-4 gap-4 overflow-auto">
                 <div className="flex flex-wrap items-center justify-between gap-4">
