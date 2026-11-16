@@ -1,6 +1,6 @@
 import { useEffect, useState, useCallback, useMemo } from "react"
 import { useDispatch, useSelector } from "react-redux"
-import { useNavigate, useSearchParams } from "react-router-dom"
+import { useNavigate } from "react-router-dom"
 import { HandleUtilidades } from "../../../../../redux/Thunks/PayrollThunk.js"
 import { HandlePayrollPeriods } from "../../../../../redux/Thunks/PayrollThunk.js"
 import { Loading } from "../../../../../components/common/loading.jsx"
@@ -72,7 +72,6 @@ export const PayrollUtilitiesTab = () => {
     const isDark = useIsDark()
     const dispatch = useDispatch()
     const navigate = useNavigate()
-    const [searchParams] = useSearchParams()
     const { hasPermission } = useHRAuth()
 
     // ─── Redux Selectors — KEY CORRECTA: payrollReducer (Bug Prevention #1) ───
@@ -97,7 +96,7 @@ export const PayrollUtilitiesTab = () => {
     const [periodFormModal, setPeriodFormModal] = useState({ open: false, editing: null })
     const [calculatePreviewModal, setCalculatePreviewModal] = useState({ open: false, period: null, preview: null })
     const [paymentDetailModal, setPaymentDetailModal] = useState({ open: false, payment: null })
-    const [confirmDialog, setConfirmDialog] = useState({ open: false, title: "", message: "", onConfirm: null, variant: "danger" })
+    const [confirmDialog, setConfirmDialog] = useState({ open: false, title: "", message: "", onConfirm: () => {}, variant: "danger" })
 
     // ─── Helpers de formato ───
     const formatDate = (dateStr) => {
@@ -178,43 +177,47 @@ export const PayrollUtilitiesTab = () => {
     }
 
     const handleCalculate = (period) => {
-        setConfirmDialog({
+        setConfirmDialog(prev => ({
+            ...prev,
             open: true,
             title: "Calcular Utilidades",
             message: `¿Calcular distribución de utilidades para el período ${period.year}? Se generará el preview para revisión antes de confirmar.`,
             onConfirm: () => openCalculatePreview(period),
             variant: "info"
-        })
+        }))
     }
 
     const handleApprove = (period) => {
-        setConfirmDialog({
+        setConfirmDialog(prev => ({
+            ...prev,
             open: true,
             title: "Aprobar Período",
             message: `¿Aprobar el período de utilidades ${period.year}? Esta acción no se puede deshacer.`,
             onConfirm: () => dispatch(HandleUtilidades({ type: "PERIODS_APPROVE", id: period._id })),
             variant: "info"
-        })
+        }))
     }
 
     const handlePayPeriod = (period) => {
-        setConfirmDialog({
+        setConfirmDialog(prev => ({
+            ...prev,
             open: true,
             title: "Pagar Utilidades",
             message: `¿Marcar como pagado el período ${period.year}? Se generarán los recibos correspondientes.`,
             onConfirm: () => dispatch(HandleUtilidades({ type: "PERIODS_PAY", id: period._id, data: { payment_date: new Date().toISOString().split("T")[0] } })),
             variant: "info"
-        })
+        }))
     }
 
     const handleDeletePeriod = (period) => {
-        setConfirmDialog({
+        setConfirmDialog(prev => ({
+            ...prev,
             open: true,
             title: "Eliminar Período",
             message: `¿Eliminar el período ${period.year}? Esta acción es irreversible y solo es posible si el estado es "Abierto".`,
             onConfirm: () => dispatch(HandleUtilidades({ type: "PERIODS_DELETE", id: period._id })),
             variant: "danger"
-        })
+        }))
     }
 
     const openPaymentDetail = (payment) => {
@@ -222,13 +225,14 @@ export const PayrollUtilitiesTab = () => {
     }
 
     const handlePayPayment = (payment) => {
-        setConfirmDialog({
+        setConfirmDialog(prev => ({
+            ...prev,
             open: true,
             title: "Marcar como Pagado",
             message: `¿Marcar el pago de utilidades para ${payment.employee?.firstname} ${payment.employee?.lastname} como pagado?`,
             onConfirm: () => dispatch(HandleUtilidades({ type: "PAYMENTS_PAY", id: payment._id, data: { payment_date: new Date().toISOString().split("T")[0] } })),
             variant: "info"
-        })
+        }))
     }
 
     const handleCalculationParamChange = (key, value) => {
@@ -237,7 +241,8 @@ export const PayrollUtilitiesTab = () => {
 
     const handleRunCalculation = () => {
         if (!calculationParams.netProfitVes) return
-        setConfirmDialog({
+        setConfirmDialog(prev => ({
+            ...prev,
             open: true,
             title: "Ejecutar Cálculo",
             message: `¿Calcular distribución de utilidades para ${calculationParams.year} con utilidad neta de ${formatCurrency(calculationParams.netProfitVes)}?`,
@@ -253,7 +258,7 @@ export const PayrollUtilitiesTab = () => {
                 }
             },
             variant: "info"
-        })
+        }))
     }
 
     // ─── Render Functions — Funciones regulares (patrón validado en PayrollSocialBenefitsTab) ───
