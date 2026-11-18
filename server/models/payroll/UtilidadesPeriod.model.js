@@ -16,6 +16,11 @@ const UtilidadesPeriodSchema = new Schema({
         type: Number,
         default: 0
     },
+    distribution_method: {
+        type: String,
+        enum: ['MIXED_50_50', 'DAYS_ONLY', 'SALARY_ONLY'],
+        default: 'MIXED_50_50'
+    },
     distributable_amount_ves: {
         type: Number,
         default: 0

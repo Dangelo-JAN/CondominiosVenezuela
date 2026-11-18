@@ -59,10 +59,10 @@ export const UtilidadesController = {
     // POST /api/v1/utilidades/periods
     async createPeriod(req, res) {
         try {
-            const { year, net_profit_usd, distribution_percentage, calculation_date, description } = req.body
+            const { year, net_profit_ves, distribution_method, calculation_date, description } = req.body
 
-            if (!year || !net_profit_usd || !distribution_percentage) {
-                return res.status(400).json({ success: false, message: 'Campos requeridos: year, net_profit_usd, distribution_percentage' })
+            if (!year || !net_profit_ves || !distribution_method) {
+                return res.status(400).json({ success: false, message: 'Campos requeridos: year, net_profit_ves, distribution_method' })
             }
 
             const existing = await UtilidadesPeriod.findOne({ organizationID: req.ORGID, year })
@@ -72,8 +72,8 @@ export const UtilidadesController = {
 
             const period = await UtilidadesPeriod.create({
                 year,
-                net_profit_usd: parseFloat(net_profit_usd),
-                distribution_percentage: parseFloat(distribution_percentage),
+                net_profit_ves: parseFloat(net_profit_ves),
+                distribution_method,
                 calculation_date: calculation_date ? new Date(calculation_date) : new Date(),
                 description: description || '',
                 status: 'DRAFT',
@@ -90,10 +90,10 @@ export const UtilidadesController = {
     // POST /api/v1/utilidades/periods/simulate
     async simulatePeriod(req, res) {
         try {
-            const { year, net_profit_usd, distribution_method, distribution_percentage } = req.body
+            const { year, net_profit_ves, distribution_method, distribution_percentage } = req.body
 
-            if (!year || !net_profit_usd) {
-                return res.status(400).json({ success: false, message: 'Campos requeridos: year, net_profit_usd' })
+            if (!year || !net_profit_ves) {
+                return res.status(400).json({ success: false, message: 'Campos requeridos: year, net_profit_ves' })
             }
 
             const policy = await PayrollPolicy.findOne({ organizationID: req.ORGID })
@@ -111,14 +111,14 @@ export const UtilidadesController = {
                 _id: 'simulate',
                 year: parseInt(year),
                 organizationID: req.ORGID,
-                net_profit_usd: parseFloat(net_profit_usd),
+                net_profit_ves: parseFloat(net_profit_ves),
                 distribution_method: distribution_method || 'MIXED_50_50',
                 distribution_percentage: parseFloat(distribution_percentage) || 15
             }
 
             const result = await calculator.calculateUtilidades({
                 period: mockPeriod,
-                netProfitVes: parseFloat(net_profit_usd),
+                netProfitVes: parseFloat(net_profit_ves),
                 company: { _id: req.ORGID }
             })
 
