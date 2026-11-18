@@ -283,6 +283,7 @@ const PeriodFormModal = ({ open, onClose, onSubmit, onCalculate, isDark, editing
     const [submitting, setSubmitting] = useState(false)
     const [calculating, setCalculating] = useState(false)
     const [calculationPreview, setCalculationPreview] = useState(null)
+    const [error, setError] = useState(null)
 
     const distributionMethodOptions = [
         { value: "MIXED_50_50", label: "Mixto 50/50 (Días + Salario)" },
@@ -310,11 +311,13 @@ const PeriodFormModal = ({ open, onClose, onSubmit, onCalculate, isDark, editing
     // Handler for form changes
     const handleChange = useCallback((key, value) => {
         setFormData(prev => ({ ...prev, [key]: value, calculationPreview: null }))
+        setError(null)
     }, [])
 
     // Load data when editing
     useEffect(() => {
         if (open) {
+            setError(null)
             if (editingPeriod) {
                 setFormData({
                     year: editingPeriod.year.toString(),
@@ -343,6 +346,7 @@ const PeriodFormModal = ({ open, onClose, onSubmit, onCalculate, isDark, editing
     const handleCalculatePreview = useCallback(async () => {
         if (!isFormValid) return
         setCalculating(true)
+        setError(null)
         try {
             const result = await onCalculate({
                 year: parseInt(formData.year),
@@ -352,6 +356,8 @@ const PeriodFormModal = ({ open, onClose, onSubmit, onCalculate, isDark, editing
             setCalculationPreview(result.data)
         } catch (error) {
             console.error("Error calculando preview:", error)
+            const message = error?.response?.data?.message || error?.message || "Error calculando preview"
+            setError(message)
         } finally {
             setCalculating(false)
         }
@@ -362,6 +368,7 @@ const PeriodFormModal = ({ open, onClose, onSubmit, onCalculate, isDark, editing
         e.preventDefault()
         if (!isFormValid) return
         setSubmitting(true)
+        setError(null)
         try {
             const payload = {
                 year: parseInt(formData.year),
@@ -379,6 +386,8 @@ const PeriodFormModal = ({ open, onClose, onSubmit, onCalculate, isDark, editing
             onClose()
         } catch (error) {
             console.error("Error guardando período:", error)
+            const message = error?.response?.data?.message || error?.message || "Error guardando período"
+            setError(message)
         } finally {
             setSubmitting(false)
         }
@@ -410,6 +419,12 @@ const PeriodFormModal = ({ open, onClose, onSubmit, onCalculate, isDark, editing
                     </div>
 
                     <div className="p-4 space-y-4 max-h-[70vh] overflow-auto">
+                        {error && (
+                            <div className="p-3 rounded-lg bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-red-700 dark:text-red-400 text-sm flex items-center gap-2">
+                                <AlertTriangle className="w-4 h-4 flex-shrink-0" />
+                                {error}
+                            </div>
+                        )}
                         {validationErrors.form && (
                             <div className="p-3 rounded-lg bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-red-700 dark:text-red-400 text-sm">
                                 {validationErrors.form}
@@ -958,9 +973,10 @@ export const PayrollUtilitiesTab = () => {
     }, [dispatch])
 
     const handlePeriodFormCalculate = useCallback(async (payload) => {
+        const isEditing = !!payload.id
         const result = await dispatch(HandleUtilidades({
-            type: "PERIODS_CALCULATE",
-            id: payload.id || null,
+            type: isEditing ? "PERIODS_CALCULATE" : "PERIODS_CALCULATE_SIMULATE",
+            id: isEditing ? payload.id : undefined,
             data: {
                 year: payload.year,
                 net_profit_ves: payload.net_profit_ves,
