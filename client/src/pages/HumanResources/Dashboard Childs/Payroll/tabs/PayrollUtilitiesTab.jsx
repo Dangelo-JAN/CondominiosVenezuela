@@ -594,6 +594,185 @@ const PeriodFormModal = ({ open, onClose, onSubmit, onCalculate, isDark, editing
     )
 }
 
+// --- CalculatePreviewModal ---
+const CalculatePreviewModal = ({ preview, period, onClose, onApprove, onPay, isDark }) => {
+    const formatDate = (dateStr) => {
+        if (!dateStr) return "—"
+        return new Date(dateStr).toLocaleDateString("es-ES", { day: "2-digit", month: "short", year: "numeric" })
+    }
+
+    const formatCurrency = (val) => {
+        if (val === undefined || val === null) return "—"
+        return "$ " + val.toLocaleString("es-VE", { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+    }
+
+    if (!preview || !period) return null
+
+    const employees = preview.employeeBreakdown || []
+    const canApprove = period.status === "CALCULATED" && onApprove
+    const canPay = (period.status === "APPROVED" || period.status === "CALCULATED") && onPay
+
+    return (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4 animate-fade-in" onClick={onClose}>
+            <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-xl max-w-4xl w-full max-h-[90vh] overflow-auto animate-slide-up" onClick={(e) => e.stopPropagation()}>
+                {/* Header */}
+                <div className="flex items-center justify-between p-4 border-b transition-colors duration-300"
+                    style={{ borderColor: isDark ? "rgba(0,61,165,0.15)" : "rgba(0,61,165,0.2)" }}>
+                    <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 rounded-xl flex items-center justify-center"
+                            style={{ background: isDark ? "rgba(0,61,165,0.15)" : "rgba(0,61,165,0.1)" }}>
+                            <Calculator className="w-5 h-5" style={{ color: "#003DA5" }} />
+                        </div>
+                        <div>
+                            <h2 className="text-xl font-bold text-gray-900 dark:text-white">Preview Cálculo Utilidades</h2>
+                            <p className="text-sm" style={{ color: isDark ? "rgba(255,255,255,0.5)" : "#6b7280" }}>
+                                Período: {period.year} | Estado: {period.status}
+                            </p>
+                        </div>
+                    </div>
+                    <button onClick={onClose} className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+                </div>
+
+                <div className="p-4 max-h-[70vh] overflow-auto">
+                    {/* Resumen del Cálculo */}
+                    <div className="mb-6 p-4 rounded-xl transition-colors duration-300"
+                        style={{
+                            background: isDark ? "rgba(0,61,165,0.08)" : "rgba(0,61,165,0.05)",
+                            border: isDark ? "1px solid rgba(0,61,165,0.2)" : "1px solid rgba(0,61,165,0.15)"
+                        }}>
+                        <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
+                            <Calculator className="w-5 h-5" style={{ color: "#003DA5" }} />
+                            Resumen del Cálculo
+                        </h3>
+                        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                            <div>
+                                <p className="text-sm text-gray-500 dark:text-gray-400">Monto Distribuible</p>
+                                <p className="font-bold text-emerald-700 dark:text-emerald-400 text-xl">{formatCurrency(preview.distributableAmount)}</p>
+                            </div>
+                            <div>
+                                <p className="text-sm text-gray-500 dark:text-gray-400">Empleados Elegibles</p>
+                                <p className="font-bold text-gray-900 dark:text-white text-xl">{preview.totalEmployees || employees.length}</p>
+                            </div>
+                            <div>
+                                <p className="text-sm text-gray-500 dark:text-gray-400">Total Días Trabajados</p>
+                                <p className="font-bold text-gray-900 dark:text-white text-xl">{preview.totalDays || 0}</p>
+                            </div>
+                            <div>
+                                <p className="text-sm text-gray-500 dark:text-gray-400">Tasa Diaria</p>
+                                <p className="font-bold text-gray-900 dark:text-white text-xl">{formatCurrency(preview.dailyRate)}</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Tabla de Distribución por Empleado */}
+                    {employees.length > 0 && (
+                        <div className="mb-6">
+                            <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-3 flex items-center gap-2">
+                                <Users className="w-5 h-5" style={{ color: "#003DA5" }} />
+                                Distribución por Empleado
+                            </h3>
+                            <div className="overflow-x-auto">
+                                <table className="w-full text-sm">
+                                    <thead>
+                                        <tr className="border-b" style={{ borderColor: isDark ? "rgba(255,255,255,0.1)" : "rgba(0,0,0,0.1)" }}>
+                                            <th className="text-left p-3 font-semibold text-gray-500 dark:text-gray-400">Empleado</th>
+                                            <th className="text-center p-3 font-semibold text-gray-500 dark:text-gray-400">Días</th>
+                                            <th className="text-center p-3 font-semibold text-gray-500 dark:text-gray-400">Salario Promedio</th>
+                                            <th className="text-right p-3 font-semibold text-gray-500 dark:text-gray-400">Bruto</th>
+                                            <th className="text-right p-3 font-semibold text-red-500 dark:text-red-400">ISLR</th>
+                                            <th className="text-right p-3 font-semibold text-emerald-500 dark:text-emerald-400">Neto</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {employees.map((emp, index) => (
+                                            <tr key={emp.employee_id ?? index} className="border-b transition-colors duration-150 hover:bg-gray-50 dark:hover:bg-gray-800/50"
+                                                style={{ borderColor: isDark ? "rgba(255,255,255,0.05)" : "rgba(0,0,0,0.05)" }}>
+                                                <td className="p-3 font-medium text-gray-900 dark:text-white">
+                                                    {emp.employee_firstname} {emp.employee_lastname}
+                                                </td>
+                                                <td className="p-3 text-center text-gray-600 dark:text-gray-400">{emp.days_worked || 0}</td>
+                                                <td className="p-3 text-center text-gray-600 dark:text-gray-400">{formatCurrency(emp.average_salary)}</td>
+                                                <td className="p-3 text-right font-medium text-gray-900 dark:text-white">{formatCurrency(emp.gross_amount)}</td>
+                                                <td className="p-3 text-right text-red-600 dark:text-red-400">{formatCurrency(emp.islr_amount)}</td>
+                                                <td className="p-3 text-right font-bold text-emerald-700 dark:text-emerald-400">{formatCurrency(emp.net_amount)}</td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                    <tfoot>
+                                        <tr className="bg-gray-50 dark:bg-gray-800/50 font-bold">
+                                            <td className="p-3 text-gray-900 dark:text-white">TOTALES</td>
+                                            <td className="p-3 text-center text-gray-600 dark:text-gray-400">
+                                                {employees.reduce((sum, e) => sum + (e.days_worked || 0), 0)}
+                                            </td>
+                                            <td className="p-3 text-center">—</td>
+                                            <td className="p-3 text-right text-gray-900 dark:text-white">
+                                                {formatCurrency(employees.reduce((sum, e) => sum + (e.gross_amount || 0), 0))}
+                                            </td>
+                                            <td className="p-3 text-right text-red-600 dark:text-red-400">
+                                                {formatCurrency(employees.reduce((sum, e) => sum + (e.islr_amount || 0), 0))}
+                                            </td>
+                                            <td className="p-3 text-right text-emerald-700 dark:text-emerald-400">
+                                                {formatCurrency(employees.reduce((sum, e) => sum + (e.net_amount || 0), 0))}
+                                            </td>
+                                        </tr>
+                                    </tfoot>
+                                </table>
+                            </div>
+                        </div>
+                    )}
+
+                    {/* Notas del Preview */}
+                    {preview.notes && (
+                        <div className="mb-6 p-4 rounded-xl transition-colors duration-300"
+                            style={{
+                                background: isDark ? "rgba(245,158,11,0.1)" : "#fef3c7",
+                                border: isDark ? "1px solid rgba(245,158,11,0.2)" : "1px solid rgba(245,158,11,0.15)"
+                            }}>
+                            <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2 flex items-center gap-2">
+                                <AlertTriangle className="w-5 h-5" style={{ color: "#f59e0b" }} />
+                                Observaciones
+                            </h3>
+                            <p className="text-gray-700 dark:text-gray-300 whitespace-pre-wrap">{preview.notes}</p>
+                        </div>
+                    )}
+
+                    {/* Footer Actions */}
+                    <div className="flex justify-end gap-2 pt-4 border-t"
+                        style={{ borderColor: isDark ? "rgba(0,61,165,0.15)" : "rgba(0,61,165,0.2)" }}>
+                        <button onClick={onClose} className="px-4 py-2 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+                            Cerrar
+                        </button>
+                        {canApprove && (
+                            <button
+                                onClick={onApprove}
+                                className="px-5 py-2.5 rounded-xl text-sm font-medium text-white transition-all duration-200 flex items-center gap-2"
+                                style={{ background: "#10b981" }}
+                            >
+                                <CheckCircle className="w-4 h-4" />
+                                Aprobar Período
+                            </button>
+                        )}
+                        {canPay && (
+                            <button
+                                onClick={onPay}
+                                className="px-5 py-2.5 rounded-xl text-sm font-medium text-white transition-all duration-200 flex items-center gap-2"
+                                style={{ background: "#06b6d4" }}
+                            >
+                                <DollarSign className="w-4 h-4" />
+                                Pagar Utilidades
+                            </button>
+                        )}
+                    </div>
+                </div>
+            </div>
+        </div>
+    )
+}
+
 // ──────────────────────────────────────────────────────────────────────────────
 // COMPONENTE PRINCIPAL
 // ──────────────────────────────────────────────────────────────────────────────
@@ -1429,14 +1608,14 @@ export const PayrollUtilitiesTab = () => {
             )}
 
             {calculatePreviewModal.open && (
-                <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4 animate-fade-in" onClick={() => setCalculatePreviewModal({ open: false, period: null, preview: null })}>
-                    <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-xl max-w-3xl w-full max-h-[90vh] overflow-auto animate-slide-up" onClick={(e) => e.stopPropagation()}>
-                        <div className="p-6 text-center text-gray-500 dark:text-gray-400">
-                            <Calculator className="w-12 h-12 mx-auto mb-4 opacity-30" />
-                            <p>CalculatePreviewModal - Se implementa en Fase 3/5</p>
-                        </div>
-                    </div>
-                </div>
+                <CalculatePreviewModal
+                    preview={calculatePreviewModal.preview}
+                    period={calculatePreviewModal.period}
+                    onClose={() => setCalculatePreviewModal({ open: false, period: null, preview: null })}
+                    onApprove={() => dispatch(HandleUtilidades({ type: "PERIODS_APPROVE", id: calculatePreviewModal.period._id }))}
+                    onPay={() => dispatch(HandleUtilidades({ type: "PERIODS_PAY", id: calculatePreviewModal.period._id, data: { payment_date: new Date().toISOString().split("T")[0] } }))}
+                    isDark={isDark}
+                />
             )}
 
             {paymentDetailModal.open && (

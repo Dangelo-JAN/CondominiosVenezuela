@@ -6,9 +6,9 @@
 ---
 
 ## 🚩 ESTADO ACTUAL
-- **Tarea activa:** #044-payroll-utilities-tab-ui 🟡 EN CURSO (16/11/2026) — Fase 1 COMPLETADA, bugs resueltos
+- **Tarea activa:** #044-payroll-utilities-tab-ui 🟡 EN CURSO (16/11/2026) — Fase 1, 2 y 3 COMPLETADAS
 - **Última completada:** #043-payroll-social-benefits-tab-ui ✅ (12/11/2026)
-- **Branch actual:** 044-payroll-utilities-tab-ui (PR #60 hacia 037-payroll-venezuelan-module — commits `943f520`, `aba6525`, `4dc4ebf`, `64dc702`, `1757e7f`)
+- **Branch actual:** 044-payroll-utilities-tab-ui (PR #60 hacia 037-payroll-venezuelan-module — commits `943f520`, `aba6525`, `4dc4ebf`, `64dc702`, `1757e7f`, `00b58dd`)
 - **Deploy:** Vercel Preview auto-deploy — **ERRORES RESUELTOS** (t is not a function / hasPermission is not a function)
 - **Archivo de referencia rápida:** `actual.md` (actualizado)
 
@@ -58,7 +58,7 @@
 - [x] [[041-payroll-novelties-tab-ui]] - ✅ COMPLETADO el 10/11/2026 (UI completa CRUD + Bulk Import CSV/JSON + Hotfix Radix Select; commits `9ea7be0` `489a2a9` `7249a68` `59c41fd`, PR hacia 037-payroll-venezuelan-module)
 - [x] [[042-payroll-vacations-tab-ui]] - ✅ COMPLETADO el 12/11/2026 (UI completa 3 subtabs: Saldos/Solicitudes/Festivos + CRUD solicitudes/festivos + Fix Chevron imports + Fix Radix Select empty string; commits `69fcb31` `a2b9928` `85bcee9`, PR hacia 037-payroll-venezuelan-module)
 - [x] [[043-payroll-social-benefits-tab-ui]] - ✅ COMPLETADO el 12/11/2026 (UI Prestaciones 3 subtabs: Libro/Liquidaciones/Devengado + CRUD completo + **Fix Infinite Re-renders ROOT CAUSE: `validate()` con `setErrors()` en render via `disabled` prop → fix: `validateForm()` pura + `useMemo` `isFormValid` + handlers `useCallback` + Regla #6 bug-prevention.md** + Header Principal estilo tabs + Radix Select validado; commits `6b99e76` `93f3fac` `35d35a6` `ac37c19` `6aae89c`, PR #59 hacia 037-payroll-venezuelan-module)
-- [ ] [[044-payroll-utilities-tab-ui]] - 🟡 EN CURSO el 16/11/2026 (Fase 1 COMPLETADA — 3 sub-tabs base + 5 bugs críticos resueltos: 1) import Clock, 2) render functions regulares, 3) ConfirmDialog variants, 4) hooks movidos de render helpers, 5) useHRAuth() corregido (hasPermission→can, CRUD actions); build 0 errores, tests pass; PR #60 hacia 037-payroll-venezuelan-module)
+- [ ] [[044-payroll-utilities-tab-ui]] - 🟡 EN CURSO el 16/11/2026 (Fase 1, 2 y 3 COMPLETADAS — 3 sub-tabs base + CRUD Períodos (PeriodFormModal + PeriodDetailModal) + CalculatePreviewModal con tabla distribución empleado + botones Aprobar/Pagar + 5 bugs críticos resueltos: 1) import Clock, 2) render functions regulares, 3) ConfirmDialog variants, 4) hooks movidos de render helpers, 5) useHRAuth() corregido (hasPermission→can, CRUD actions); validación pura + memo + handlers useCallback; build 0 errores, tests pass; commits `1757e7f` + `00b58dd` + Fase 3 commit pending, PR #60 hacia 037-payroll-venezuelan-module)
 ---
 
 ## 🛠️ REGLAS DE ORO (DE CUMPLIMIENTO OBLIGATORIO)
