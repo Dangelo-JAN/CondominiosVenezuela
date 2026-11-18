@@ -17,8 +17,22 @@ import {
 } from "lucide-react"
 
 // ──────────────────────────────────────────────────────────────────────────────
-// CONSTANTES Y OPCIONES — Definidas fuera del componente (estables)
+// UTILIDADES COMPARTIDAS — Nivel de módulo (evita bugs de scope/minificación en producción)
 // ──────────────────────────────────────────────────────────────────────────────
+
+export const formatCurrency = (val) => {
+    if (val === undefined || val === null) return "—"
+    return "$ " + val.toLocaleString("es-VE", { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+}
+
+export const formatDate = (dateStr) => {
+    if (!dateStr) return "—"
+    return new Date(dateStr).toLocaleDateString("es-ES", { day: "2-digit", month: "short", year: "numeric" })
+}
+
+// ──────────────────────────────────────────────────────────────────────────────
+// CONSTANTES Y OPCIONES — Definidas fuera del componente (estables)
+ // ──────────────────────────────────────────────────────────────────────────────
 
 const SUB_TABS = [
     { id: "periods", label: "Períodos", icon: CalendarIcon },
@@ -70,14 +84,6 @@ const DISTRIBUTION_METHOD_OPTIONS = [
 
 // --- PeriodDetailModal ---
 const PeriodDetailModal = ({ period, onClose, isDark }) => {
-    const formatDate = (dateStr) => {
-        if (!dateStr) return "—"
-        return new Date(dateStr).toLocaleDateString("es-ES", { day: "2-digit", month: "short", year: "numeric" })
-    }
-    const formatCurrency = (val) => {
-        if (val === undefined || val === null) return "—"
-        return "$ " + val.toLocaleString("es-VE", { minimumFractionDigits: 2, maximumFractionDigits: 2 })
-    }
 
     if (!period) return null
 
@@ -611,15 +617,6 @@ const PeriodFormModal = ({ open, onClose, onSubmit, onCalculate, isDark, editing
 
 // --- CalculatePreviewModal ---
 const CalculatePreviewModal = ({ preview, period, onClose, onApprove, onPay, isDark }) => {
-    const formatDate = (dateStr) => {
-        if (!dateStr) return "—"
-        return new Date(dateStr).toLocaleDateString("es-ES", { day: "2-digit", month: "short", year: "numeric" })
-    }
-
-    const formatCurrency = (val) => {
-        if (val === undefined || val === null) return "—"
-        return "$ " + val.toLocaleString("es-VE", { minimumFractionDigits: 2, maximumFractionDigits: 2 })
-    }
 
     if (!preview || !period) return null
 
@@ -820,18 +817,7 @@ export const PayrollUtilitiesTab = () => {
     const [periodFormModal, setPeriodFormModal] = useState({ open: false, editing: null })
     const [calculatePreviewModal, setCalculatePreviewModal] = useState({ open: false, period: null, preview: null })
     const [paymentDetailModal, setPaymentDetailModal] = useState({ open: false, payment: null })
-    const [confirmDialog, setConfirmDialog] = useState({ open: false, title: "", message: "", onConfirm: () => {}, variant: "danger" })
-
-    // ─── Helpers de formato ───
-    const formatDate = (dateStr) => {
-        if (!dateStr) return "—"
-        return new Date(dateStr).toLocaleDateString("es-ES", { day: "2-digit", month: "short", year: "numeric" })
-    }
-
-    const formatCurrency = (val) => {
-        if (val === undefined || val === null) return "—"
-        return `$ ${val.toLocaleString("es-VE", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
-    }
+const [confirmDialog, setConfirmDialog] = useState({ open: false, title: "", message: "", onConfirm: () => {}, variant: "danger" })
 
     const getPeriodStatusConfig = (status) => PERIOD_STATUS_CONFIG[status] || PERIOD_STATUS_CONFIG.OPEN
     const getPaymentStatusConfig = (status) => PAYMENT_STATUS_CONFIG[status] || PAYMENT_STATUS_CONFIG.PENDING
