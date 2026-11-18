@@ -122,26 +122,28 @@ export const UtilidadesController = {
                 company: { _id: req.ORGID }
             })
 
-            // Formatear respuesta para el frontend
+            // Formatear respuesta para el frontend - Number() funciona tanto para Decimal.js como para number primitivo
+            const toNum = (val) => (val && typeof val.toNumber === 'function') ? val.toNumber() : Number(val)
+
             const employeeBreakdown = Object.entries(result.results).map(([empId, data]) => ({
                 employee_id: empId,
                 employee_firstname: data.employee.firstname,
                 employee_lastname: data.employee.lastname,
                 days_worked: data.daysWorked,
-                average_salary: data.averageSalary.toNumber(),
-                gross_amount: data.grossAmount.toNumber(),
-                islr_amount: data.islrRetention.toNumber(),
-                net_amount: data.netAmount.toNumber()
+                average_salary: toNum(data.averageSalary),
+                gross_amount: toNum(data.grossAmount),
+                islr_amount: toNum(data.islrRetention),
+                net_amount: toNum(data.netAmount)
             }))
 
             return res.status(200).json({
                 success: true,
                 message: 'Simulación de cálculo completada',
                 data: {
-                    distributableAmount: result.distributableAmount.toNumber(),
+                    distributableAmount: toNum(result.distributableAmount),
                     totalEmployees: result.totalEmployees,
                     totalDays: result.totalDaysWorked,
-                    dailyRate: result.dailyRate.toNumber(),
+                    dailyRate: toNum(result.dailyRate),
                     distributionMethod: result.distributionMethod,
                     employeeBreakdown,
                     notes: result.results && Object.keys(result.results).length > 0
@@ -172,9 +174,11 @@ export const UtilidadesController = {
             const policy = await PayrollPolicy.findOne({ organizationID: req.ORGID })
             const calculator = new UtilidadesCalculator(policy)
 
+            const toNum = (val) => (val && typeof val.toNumber === 'function') ? val.toNumber() : Number(val)
+
             const result = await calculator.calculateDistribution(id)
 
-            period.total_pool_ves = result.totalPool.toNumber()
+            period.total_pool_ves = toNum(result.totalPool)
             period.employees_count = result.employees.length
             period.distribution_method = result.method
             period.calculation_details = result.details
