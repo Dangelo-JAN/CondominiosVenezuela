@@ -87,6 +87,74 @@ export const UtilidadesController = {
         }
     },
 
+    // POST /api/v1/utilidades/periods/simulate
+    async simulatePeriod(req, res) {
+        try {
+            const { year, net_profit_usd, distribution_method, distribution_percentage } = req.body
+
+            if (!year || !net_profit_usd) {
+                return res.status(400).json({ success: false, message: 'Campos requeridos: year, net_profit_usd' })
+            }
+
+            const policy = await PayrollPolicy.findOne({ organizationID: req.ORGID })
+            if (!policy) {
+                return res.status(404).json({ success: false, message: 'Política de nómina no configurada' })
+            }
+
+            const calculator = new UtilidadesCalculator(policy, {
+                distribution_method: distribution_method || 'MIXED_50_50',
+                distribution_percentage: parseFloat(distribution_percentage) || 15
+            })
+
+            // Crear un período temporal en memoria para el cálculo (sin persistir)
+            const mockPeriod = {
+                _id: 'simulate',
+                year: parseInt(year),
+                organizationID: req.ORGID,
+                net_profit_usd: parseFloat(net_profit_usd),
+                distribution_method: distribution_method || 'MIXED_50_50',
+                distribution_percentage: parseFloat(distribution_percentage) || 15
+            }
+
+            const result = await calculator.calculateUtilidades({
+                period: mockPeriod,
+                netProfitVes: parseFloat(net_profit_usd),
+                company: { _id: req.ORGID }
+            })
+
+            // Formatear respuesta para el frontend
+            const employeeBreakdown = Object.entries(result.results).map(([empId, data]) => ({
+                employee_id: empId,
+                employee_firstname: data.employee.firstname,
+                employee_lastname: data.employee.lastname,
+                days_worked: data.daysWorked,
+                average_salary: data.averageSalary.toNumber(),
+                gross_amount: data.grossAmount.toNumber(),
+                islr_amount: data.islrRetention.toNumber(),
+                net_amount: data.netAmount.toNumber()
+            }))
+
+            return res.status(200).json({
+                success: true,
+                message: 'Simulación de cálculo completada',
+                data: {
+                    distributableAmount: result.distributableAmount.toNumber(),
+                    totalEmployees: result.totalEmployees,
+                    totalDays: result.totalDaysWorked,
+                    dailyRate: result.dailyRate.toNumber(),
+                    distributionMethod: result.distributionMethod,
+                    employeeBreakdown,
+                    notes: result.results && Object.keys(result.results).length > 0
+                        ? `Cálculo basado en ${result.totalEmployees} empleados elegibles, ${result.totalDaysWorked} días totales, método ${result.distributionMethod}`
+                        : 'No hay empleados elegibles para el año seleccionado'
+                }
+            })
+        } catch (error) {
+            console.error('[UtilidadesController.simulatePeriod] Error:', error)
+            return res.status(500).json({ success: false, message: error.message })
+        }
+    },
+
     // POST /api/v1/utilidades/periods/:id/calculate
     async calculatePeriod(req, res) {
         try {

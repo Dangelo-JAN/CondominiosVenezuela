@@ -119,6 +119,7 @@ router.post('/social-benefits/accrual/record', VerifyhHRToken, PermissionCheck('
 router.get('/utilidades/periods', VerifyhHRToken, PermissionCheck('payroll', 'read'), UtilidadesController.getPeriods)
 router.get('/utilidades/periods/:id', VerifyhHRToken, PermissionCheck('payroll', 'read'), UtilidadesController.getPeriodById)
 router.post('/utilidades/periods', VerifyhHRToken, PermissionCheck('payroll', 'create'), UtilidadesController.createPeriod)
+router.post('/utilidades/periods/simulate', VerifyhHRToken, PermissionCheck('payroll', 'calculate'), UtilidadesController.simulatePeriod)
 router.post('/utilidades/periods/:id/calculate', VerifyhHRToken, PermissionCheck('payroll', 'calculate'), UtilidadesController.calculatePeriod)
 router.post('/utilidades/periods/:id/approve', VerifyhHRToken, PermissionCheck('payroll', 'approve'), UtilidadesController.approvePeriod)
 router.post('/utilidades/periods/:id/pay', VerifyhHRToken, PermissionCheck('payroll', 'pay'), UtilidadesController.payPeriod)

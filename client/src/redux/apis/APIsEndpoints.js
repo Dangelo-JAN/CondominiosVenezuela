@@ -185,6 +185,7 @@ export const PayrollEndPoints = {
     UTILIDADES_PERIODS_GETALL: "/api/v1/payroll/utilidades/periods",
     UTILIDADES_PERIODS_GETONE: (id) => `/api/v1/payroll/utilidades/periods/${id}`,
     UTILIDADES_PERIODS_CREATE: "/api/v1/payroll/utilidades/periods",
+    UTILIDADES_PERIODS_SIMULATE: "/api/v1/payroll/utilidades/periods/simulate",
     UTILIDADES_PERIODS_CALCULATE: (id) => `/api/v1/payroll/utilidades/periods/${id}/calculate`,
     UTILIDADES_PERIODS_APPROVE: (id) => `/api/v1/payroll/utilidades/periods/${id}/approve`,
     UTILIDADES_PERIODS_PAY: (id) => `/api/v1/payroll/utilidades/periods/${id}/pay`,
