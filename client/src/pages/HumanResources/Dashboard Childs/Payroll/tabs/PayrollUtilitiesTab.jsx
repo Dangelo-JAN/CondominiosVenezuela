@@ -65,6 +65,536 @@ const DISTRIBUTION_METHOD_OPTIONS = [
 ]
 
 // ──────────────────────────────────────────────────────────────────────────────
+// SUB-COMPONENTES: Modales (PeriodDetailModal, PeriodFormModal)
+// ──────────────────────────────────────────────────────────────────────────────
+
+// --- PeriodDetailModal ---
+const PeriodDetailModal = ({ period, onClose, isDark }) => {
+    const formatDate = (dateStr) => {
+        if (!dateStr) return "—"
+        return new Date(dateStr).toLocaleDateString("es-ES", { day: "2-digit", month: "short", year: "numeric" })
+    }
+    const formatCurrency = (val) => {
+        if (val === undefined || val === null) return "—"
+        return "$ " + val.toLocaleString("es-VE", { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+    }
+
+    if (!period) return null
+
+    const statusConfig = PERIOD_STATUS_CONFIG[period.status] || PERIOD_STATUS_CONFIG.OPEN
+    const StatusIcon = statusConfig.icon
+    const statusBadgeClass = `inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold ${statusConfig.bg}`
+
+    return (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4 animate-fade-in" onClick={onClose}>
+            <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-xl max-w-3xl w-full max-h-[90vh] overflow-auto animate-slide-up" onClick={(e) => e.stopPropagation()}>
+                {/* Header */}
+                <div className="flex items-center justify-between p-4 border-b transition-colors duration-300"
+                    style={{ borderColor: isDark ? "rgba(0,61,165,0.15)" : "rgba(0,61,165,0.2)" }}>
+                    <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 rounded-xl flex items-center justify-center"
+                            style={{ background: isDark ? "rgba(0,61,165,0.15)" : "rgba(0,61,165,0.1)" }}>
+                            <CalendarIcon className="w-5 h-5" style={{ color: "#003DA5" }} />
+                        </div>
+                        <div>
+                            <h2 className="text-xl font-bold text-gray-900 dark:text-white">Detalle Período Utilidades</h2>
+                            <p className="text-sm" style={{ color: isDark ? "rgba(255,255,255,0.5)" : "#6b7280" }}>
+                                Año: {period.year}
+                            </p>
+                        </div>
+                    </div>
+                    <button onClick={onClose} className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+                </div>
+
+                <div className="p-4 max-h-[70vh] overflow-auto">
+                    {/* Info Grid */}
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+                        <div>
+                            <p className="text-sm text-gray-500 dark:text-gray-400">Año</p>
+                            <p className="font-medium text-gray-900 dark:text-white">{period.year}</p>
+                        </div>
+                        <div>
+                            <p className="text-sm text-gray-500 dark:text-gray-400">Estado</p>
+                            <span className={statusBadgeClass}>
+                                <StatusIcon className="w-3 h-3" />
+                                {statusConfig.label}
+                            </span>
+                        </div>
+                        <div>
+                            <p className="text-sm text-gray-500 dark:text-gray-400">Utilidad Neta</p>
+                            <p className="font-medium text-gray-900 dark:text-white">{formatCurrency(period.net_profit_ves)}</p>
+                        </div>
+                        <div>
+                            <p className="text-sm text-gray-500 dark:text-gray-400">Distribuible</p>
+                            <p className="font-semibold text-emerald-700 dark:text-emerald-400">{formatCurrency(period.distributable_amount_ves)}</p>
+                        </div>
+                    </div>
+
+                    {/* Cálculo Info */}
+                    {(period.calculation_date || period.total_employees_eligible || period.total_days_worked || period.daily_rate_ves) && (
+                        <div className="mb-6 p-4 rounded-xl transition-colors duration-300"
+                            style={{
+                                background: isDark ? "rgba(0,61,165,0.08)" : "rgba(0,61,165,0.05)",
+                                border: isDark ? "1px solid rgba(0,61,165,0.2)" : "1px solid rgba(0,61,165,0.15)"
+                            }}>
+                            <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
+                                <Calculator className="w-5 h-5" style={{ color: "#003DA5" }} />
+                                Información de Cálculo
+                            </h3>
+                            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                                <div>
+                                    <p className="text-sm text-gray-500 dark:text-gray-400">Fecha Cálculo</p>
+                                    <p className="font-medium text-gray-900 dark:text-white">{period.calculation_date ? formatDate(period.calculation_date) : "—"}</p>
+                                </div>
+                                <div>
+                                    <p className="text-sm text-gray-500 dark:text-gray-400">Empleados Elegibles</p>
+                                    <p className="font-medium text-gray-900 dark:text-white">{period.total_employees_eligible || 0}</p>
+                                </div>
+                                <div>
+                                    <p className="text-sm text-gray-500 dark:text-gray-400">Total Días Trabajados</p>
+                                    <p className="font-medium text-gray-900 dark:text-white">{period.total_days_worked || 0}</p>
+                                </div>
+                                <div>
+                                    <p className="text-sm text-gray-500 dark:text-gray-400">Tasa Diaria</p>
+                                    <p className="font-medium text-gray-900 dark:text-white">{formatCurrency(period.daily_rate_ves)}</p>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+
+                    {/* Approval Info */}
+                    {(period.approved_by || period.approved_at) && (
+                        <div className="mb-6 p-4 rounded-xl transition-colors duration-300"
+                            style={{
+                                background: isDark ? "rgba(16,185,129,0.08)" : "#f0fdf4",
+                                border: isDark ? "1px solid rgba(16,185,129,0.2)" : "1px solid rgba(16,185,129,0.15)"
+                            }}>
+                            <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
+                                <CheckCircle className="w-5 h-5" style={{ color: "#10b981" }} />
+                                Aprobación
+                            </h3>
+                            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                                <div>
+                                    <p className="text-sm text-gray-500 dark:text-gray-400">Aprobado Por</p>
+                                    <p className="font-medium text-gray-900 dark:text-white">{period.approved_by?.firstname} {period.approved_by?.lastname}</p>
+                                </div>
+                                <div>
+                                    <p className="text-sm text-gray-500 dark:text-gray-400">Fecha Aprobación</p>
+                                    <p className="font-medium text-gray-900 dark:text-white">{period.approved_at ? formatDate(period.approved_at) : "—"}</p>
+                                </div>
+                                <div>
+                                    <p className="text-sm text-gray-500 dark:text-gray-400">Payment Deadline</p>
+                                    <p className="font-medium text-gray-900 dark:text-white">{period.payment_deadline ? formatDate(period.payment_deadline) : "—"}</p>
+                                </div>
+                                <div>
+                                    <p className="text-sm text-gray-500 dark:text-gray-400">Método Distribución</p>
+                                    <p className="font-medium text-gray-900 dark:text-white">{period.distribution_method || "MIXED_50_50"}</p>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+
+                    {/* Payment Info */}
+                    {(period.paid_at || period.payment_method) && (
+                        <div className="mb-6 p-4 rounded-xl transition-colors duration-300"
+                            style={{
+                                background: isDark ? "rgba(6,182,212,0.08)" : "#ecfeff",
+                                border: isDark ? "1px solid rgba(6,182,212,0.2)" : "1px solid rgba(6,182,212,0.15)"
+                            }}>
+                            <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
+                                <DollarSign className="w-5 h-5" style={{ color: "#06b6d4" }} />
+                                Pago
+                            </h3>
+                            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                                <div>
+                                    <p className="text-sm text-gray-500 dark:text-gray-400">Fecha Pago</p>
+                                    <p className="font-medium text-gray-900 dark:text-white">{period.paid_at ? formatDate(period.paid_at) : "—"}</p>
+                                </div>
+                                <div>
+                                    <p className="text-sm text-gray-500 dark:text-gray-400">Método</p>
+                                    <p className="font-medium text-gray-900 dark:text-white">{period.payment_method || "—"}</p>
+                                </div>
+                                <div>
+                                    <p className="text-sm text-gray-500 dark:text-gray-400">Referencia Bancaria</p>
+                                    <p className="font-medium text-gray-900 dark:text-white">{period.bank_reference || "—"}</p>
+                                </div>
+                                <div>
+                                    <p className="text-sm text-gray-500 dark:text-gray-400">Tipo Cambio</p>
+                                    <p className="font-medium text-gray-900 dark:text-white">{period.exchange_rate || "—"}</p>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+
+                    {/* Notes */}
+                    {period.notes && (
+                        <div className="mb-6">
+                            <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">Observaciones</h3>
+                            <p className="text-gray-700 dark:text-gray-300 whitespace-pre-wrap">{period.notes}</p>
+                        </div>
+                    )}
+
+                    {/* Timestamps */}
+                    <div className="mb-6 p-4 rounded-xl transition-colors duration-300"
+                        style={{
+                            background: isDark ? "rgba(255,255,255,0.04)" : "#f9fafb",
+                            border: isDark ? "1px solid rgba(255,255,255,0.08)" : "1px solid rgba(0,0,0,0.05)"
+                        }}>
+                        <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-3">Auditoría</h3>
+                        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                            <div>
+                                <p className="text-sm text-gray-500 dark:text-gray-400">Creado</p>
+                                <p className="font-medium text-gray-900 dark:text-white">{period.createdAt ? formatDate(period.createdAt) : "—"}</p>
+                            </div>
+                            <div>
+                                <p className="text-sm text-gray-500 dark:text-gray-400">Actualizado</p>
+                                <p className="font-medium text-gray-900 dark:text-white">{period.updatedAt ? formatDate(period.updatedAt) : "—"}</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Footer Actions */}
+                    <div className="flex justify-end gap-2 pt-4 border-t"
+                        style={{ borderColor: isDark ? "rgba(0,61,165,0.15)" : "rgba(0,61,165,0.2)" }}>
+                        <button onClick={onClose} className="px-4 py-2 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+                            Cerrar
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    )
+}
+
+// --- PeriodFormModal ---
+const PeriodFormModal = ({ open, onClose, onSubmit, onCalculate, isDark, editingPeriod = null }) => {
+    const [formData, setFormData] = useState({
+        year: "",
+        net_profit_ves: "",
+        calculation_date: "",
+        payment_deadline: "",
+        distribution_method: "MIXED_50_50",
+        notes: ""
+    })
+    const [submitting, setSubmitting] = useState(false)
+    const [calculating, setCalculating] = useState(false)
+    const [calculationPreview, setCalculationPreview] = useState(null)
+
+    const distributionMethodOptions = [
+        { value: "MIXED_50_50", label: "Mixto 50/50 (Días + Salario)" },
+        { value: "DAYS_ONLY", label: "Solo Días Trabajados" },
+        { value: "SALARY_ONLY", label: "Solo Salario Promedio" },
+    ]
+
+    // Pure validation function (Bug Prevention #6)
+    const validateForm = () => {
+        const errors = {}
+        if (!formData.year) errors.year = "Año es requerido"
+        else if (parseInt(formData.year) < 2020 || parseInt(formData.year) > new Date().getFullYear() + 1) {
+            errors.year = "Año inválido"
+        }
+        if (!formData.net_profit_ves || parseFloat(formData.net_profit_ves) <= 0) {
+            errors.net_profit_ves = "Utilidad neta debe ser mayor a 0"
+        }
+        return errors
+    }
+
+    // Memoized validation result (Bug Prevention #6)
+    const validationErrors = useMemo(() => validateForm(), [formData])
+    const isFormValid = useMemo(() => Object.keys(validationErrors).length === 0, [validationErrors])
+
+    // Handler for form changes
+    const handleChange = useCallback((key, value) => {
+        setFormData(prev => ({ ...prev, [key]: value, calculationPreview: null }))
+    }, [])
+
+    // Load data when editing
+    useEffect(() => {
+        if (open) {
+            if (editingPeriod) {
+                setFormData({
+                    year: editingPeriod.year.toString(),
+                    net_profit_ves: editingPeriod.net_profit_ves.toString(),
+                    calculation_date: editingPeriod.calculation_date ? editingPeriod.calculation_date.split('T')[0] : "",
+                    payment_deadline: editingPeriod.payment_deadline ? editingPeriod.payment_deadline.split('T')[0] : "",
+                    distribution_method: editingPeriod.distribution_method || "MIXED_50_50",
+                    notes: editingPeriod.notes || ""
+                })
+            } else {
+                const currentYear = new Date().getFullYear()
+                setFormData({
+                    year: currentYear.toString(),
+                    net_profit_ves: "",
+                    calculation_date: "",
+                    payment_deadline: "",
+                    distribution_method: "MIXED_50_50",
+                    notes: ""
+                })
+            }
+            setCalculationPreview(null)
+        }
+    }, [open, editingPeriod])
+
+    // Handle calculate preview
+    const handleCalculatePreview = useCallback(async () => {
+        if (!isFormValid) return
+        setCalculating(true)
+        try {
+            const result = await onCalculate({
+                year: parseInt(formData.year),
+                net_profit_ves: parseFloat(formData.net_profit_ves),
+                distribution_method: formData.distribution_method
+            })
+            setCalculationPreview(result.data)
+        } catch (error) {
+            console.error("Error calculando preview:", error)
+        } finally {
+            setCalculating(false)
+        }
+    }, [formData, isFormValid, onCalculate])
+
+    // Handle submit
+    const handleSubmit = useCallback(async (e) => {
+        e.preventDefault()
+        if (!isFormValid) return
+        setSubmitting(true)
+        try {
+            const payload = {
+                year: parseInt(formData.year),
+                net_profit_ves: parseFloat(formData.net_profit_ves),
+                calculation_date: formData.calculation_date || null,
+                payment_deadline: formData.payment_deadline || null,
+                distribution_method: formData.distribution_method,
+                notes: formData.notes
+            }
+            if (editingPeriod) {
+                await onSubmit({ ...payload, id: editingPeriod._id })
+            } else {
+                await onSubmit(payload)
+            }
+            onClose()
+        } catch (error) {
+            console.error("Error guardando período:", error)
+        } finally {
+            setSubmitting(false)
+        }
+    }, [formData, isFormValid, editingPeriod, onSubmit, onClose])
+
+    if (!open) return null
+
+    return (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4 animate-fade-in" onClick={onClose}>
+            <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-xl w-full max-w-2xl animate-slide-up max-h-[90vh] overflow-auto" onClick={(e) => e.stopPropagation()}>
+                <form onSubmit={handleSubmit}>
+                    {/* Header */}
+                    <div className="flex items-center justify-between p-4 border-b transition-colors duration-300"
+                        style={{ borderColor: isDark ? "rgba(0,61,165,0.15)" : "rgba(0,61,165,0.2)" }}>
+                        <div className="flex items-center gap-3">
+                            <div className="w-10 h-10 rounded-xl flex items-center justify-center"
+                                style={{ background: isDark ? "rgba(0,61,165,0.15)" : "rgba(0,61,165,0.1)" }}>
+                                <CalendarIcon className="w-5 h-5" style={{ color: "#003DA5" }} />
+                            </div>
+                            <h2 className="text-xl font-bold text-gray-900 dark:text-white">
+                                {editingPeriod ? "Editar Período de Utilidades" : "Nuevo Período de Utilidades"}
+                            </h2>
+                        </div>
+                        <button type="button" onClick={onClose} className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                        </button>
+                    </div>
+
+                    <div className="p-4 space-y-4 max-h-[70vh] overflow-auto">
+                        {validationErrors.form && (
+                            <div className="p-3 rounded-lg bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-red-700 dark:text-red-400 text-sm">
+                                {validationErrors.form}
+                            </div>
+                        )}
+
+                        {/* Year */}
+                        <div>
+                            <label className="block text-xs font-semibold uppercase tracking-wider mb-1.5" style={{ color: isDark ? "rgba(255,255,255,0.5)" : "#6b7280" }}>
+                                Año <span className="text-red-500">*</span>
+                            </label>
+                            <input
+                                type="number"
+                                value={formData.year}
+                                onChange={(e) => setFormData(prev => ({ ...prev, year: e.target.value, calculationPreview: null }))}
+                                min="2020"
+                                max={new Date().getFullYear() + 1}
+                                disabled={!!editingPeriod}
+                                className={`w-full rounded-xl px-3 py-2.5 text-sm outline-none transition-all duration-200 bg-gray-50 border border-gray-200 text-gray-900 placeholder-gray-400 focus:border-blue-400 focus:bg-white focus:ring-2 focus:ring-blue-100 dark:bg-[rgba(255,255,255,0.04)] dark:border-[rgba(255,255,255,0.08)] dark:text-white dark:placeholder-[rgba(255,255,255,0.25)] dark:focus:border-[rgba(0,61,165,0.5)] ${validationErrors.year ? " border-red-400" : ""} ${!!editingPeriod ? " bg-gray-100 dark:bg-gray-800 cursor-not-allowed" : ""}`}
+                            />
+                            {validationErrors.year && <p className="mt-1 text-xs text-red-500">{validationErrors.year}</p>}
+                        </div>
+
+                        {/* Net Profit */}
+                        <div>
+                            <label className="block text-xs font-semibold uppercase tracking-wider mb-1.5" style={{ color: isDark ? "rgba(255,255,255,0.5)" : "#6b7280" }}>
+                                Utilidad Neta (VES) <span className="text-red-500">*</span>
+                            </label>
+                            <input
+                                type="number"
+                                step="0.01"
+                                min="0.01"
+                                value={formData.net_profit_ves}
+                                onChange={(e) => setFormData(prev => ({ ...prev, net_profit_ves: e.target.value, calculationPreview: null }))}
+                                placeholder="Ej: 1000000"
+                                className={`w-full rounded-xl px-3 py-2.5 text-sm outline-none transition-all duration-200 bg-gray-50 border border-gray-200 text-gray-900 placeholder-gray-400 focus:border-blue-400 focus:bg-white focus:ring-2 focus:ring-blue-100 dark:bg-[rgba(255,255,255,0.04)] dark:border-[rgba(255,255,255,0.08)] dark:text-white dark:placeholder-[rgba(255,255,255,0.25)] dark:focus:border-[rgba(0,61,165,0.5)] ${validationErrors.net_profit_ves ? " border-red-400" : ""}`}
+                            />
+                            {validationErrors.net_profit_ves && <p className="mt-1 text-xs text-red-500">{validationErrors.net_profit_ves}</p>}
+                        </div>
+
+                        {/* Calculation Date */}
+                        <div>
+                            <label className="block text-xs font-semibold uppercase tracking-wider mb-1.5" style={{ color: isDark ? "rgba(255,255,255,0.5)" : "#6b7280" }}>
+                                Fecha de Cálculo
+                            </label>
+                            <input
+                                type="date"
+                                value={formData.calculation_date}
+                                onChange={(e) => setFormData(prev => ({ ...prev, calculation_date: e.target.value }))}
+                                className="w-full rounded-xl px-3 py-2.5 text-sm outline-none transition-all duration-200 bg-gray-50 border border-gray-200 text-gray-900 focus:border-blue-400 focus:bg-white focus:ring-2 focus:ring-blue-100 dark:bg-[rgba(255,255,255,0.04)] dark:border-[rgba(255,255,255,0.08)] dark:text-white dark:focus:border-[rgba(0,61,165,0.5)]"
+                            />
+                        </div>
+
+                        {/* Payment Deadline */}
+                        <div>
+                            <label className="block text-xs font-semibold uppercase tracking-wider mb-1.5" style={{ color: isDark ? "rgba(255,255,255,0.5)" : "#6b7280" }}>
+                                Fecha Límite de Pago
+                            </label>
+                            <input
+                                type="date"
+                                value={formData.payment_deadline}
+                                onChange={(e) => setFormData(prev => ({ ...prev, payment_deadline: e.target.value }))}
+                                className="w-full rounded-xl px-3 py-2.5 text-sm outline-none transition-all duration-200 bg-gray-50 border border-gray-200 text-gray-900 focus:border-blue-400 focus:bg-white focus:ring-2 focus:ring-blue-100 dark:bg-[rgba(255,255,255,0.04)] dark:border-[rgba(255,255,255,0.08)] dark:text-white dark:focus:border-[rgba(0,61,165,0.5)]"
+                            />
+                        </div>
+
+                        {/* Distribution Method */}
+                        <div>
+                            <label className="block text-xs font-semibold uppercase tracking-wider mb-1.5" style={{ color: isDark ? "rgba(255,255,255,0.5)" : "#6b7280" }}>
+                                Método de Distribución
+                            </label>
+                            <CustomSelect
+                                value={formData.distribution_method}
+                                onValueChange={(val) => setFormData(prev => ({ ...prev, distribution_method: val, calculationPreview: null }))}
+                                options={distributionMethodOptions}
+                                placeholder="Seleccionar método"
+                                accentColor="blue"
+                                disabled={submitting || calculating}
+                            />
+                        </div>
+
+                        {/* Calculate Preview Button */}
+                        {!editingPeriod && (
+                            <div className="pt-2">
+                                <button
+                                    type="button"
+                                    onClick={handleCalculatePreview}
+                                    disabled={calculating || !isFormValid}
+                                    className="w-full px-4 py-2.5 rounded-xl text-sm font-medium text-white transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                                    style={{ background: "#003DA5" }}
+                                >
+                                    {calculating ? (
+                                        <>
+                                            <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                                                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                            </svg>
+                                            Calculando...
+                                        </>
+                                    ) : (
+                                        <>
+                                            <Calculator className="w-4 h-4" />
+                                            Calcular Preview
+                                        </>
+                                    )}
+                                </button>
+                            </div>
+                        )}
+
+                        {/* Calculation Preview */}
+                        {calculationPreview && (
+                            <div className="p-4 rounded-xl border transition-colors duration-300"
+                                style={{
+                                    background: isDark ? "rgba(16,185,129,0.1)" : "#f0fdf4",
+                                    borderColor: isDark ? "rgba(16,185,129,0.3)" : "#86efac"
+                                }}>
+                                <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-3 flex items-center gap-2 text-emerald-700 dark:text-emerald-400">
+                                    <CheckCircle className="w-5 h-5" />
+                                    Preview del Cálculo
+                                </h3>
+                                <div className="grid grid-cols-2 md:grid-cols-4 gap-3 text-sm">
+                                    <div className="p-2 rounded-lg bg-white dark:bg-gray-800">
+                                        <p className="text-xs text-gray-500 dark:text-gray-400">Monto Distribuible</p>
+                                        <p className="font-bold text-emerald-700 dark:text-emerald-400">{formatCurrency(calculationPreview.distributableAmount)}</p>
+                                    </div>
+                                    <div className="p-2 rounded-lg bg-white dark:bg-gray-800">
+                                        <p className="text-xs text-gray-500 dark:text-gray-400">Empleados Elegibles</p>
+                                        <p className="font-bold text-emerald-700 dark:text-emerald-400">{calculationPreview.totalEmployees}</p>
+                                    </div>
+                                    <div className="p-2 rounded-lg bg-white dark:bg-gray-800">
+                                        <p className="text-xs text-gray-500 dark:text-gray-400">Total Días</p>
+                                        <p className="font-bold text-emerald-700 dark:text-emerald-400">{calculationPreview.totalDays}</p>
+                                    </div>
+                                    <div className="p-2 rounded-lg bg-white dark:bg-gray-800">
+                                        <p className="text-xs text-gray-500 dark:text-gray-400">Tasa Diaria</p>
+                                        <p className="font-bold text-emerald-700 dark:text-emerald-400">{formatCurrency(calculationPreview.dailyRate)}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+
+                        {/* Notes */}
+                        <div>
+                            <label className="block text-xs font-semibold uppercase tracking-wider mb-1.5" style={{ color: isDark ? "rgba(255,255,255,0.5)" : "#6b7280" }}>
+                                Observaciones
+                            </label>
+                            <textarea
+                                value={formData.notes}
+                                onChange={(e) => setFormData(prev => ({ ...prev, notes: e.target.value }))}
+                                rows={3}
+                                placeholder="Observaciones opcionales..."
+                                className="w-full rounded-xl px-3 py-2.5 text-sm outline-none transition-all duration-200 bg-gray-50 border border-gray-200 text-gray-900 placeholder-gray-400 focus:border-blue-400 focus:bg-white focus:ring-2 focus:ring-blue-100 dark:bg-[rgba(255,255,255,0.04)] dark:border-[rgba(255,255,255,0.08)] dark:text-white dark:placeholder-[rgba(255,255,255,0.25)] dark:focus:border-[rgba(0,61,165,0.5)]"
+                            />
+                        </div>
+
+                        {/* Actions */}
+                        <div className="flex justify-end gap-3 pt-4 border-t" style={{ borderColor: isDark ? "rgba(0,61,165,0.15)" : "rgba(0,61,165,0.2)" }}>
+                            <button type="button" onClick={onClose} disabled={submitting || calculating} className="px-4 py-2 rounded-xl text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800">
+                                Cancelar
+                            </button>
+                            <button type="submit" disabled={submitting || calculating} className="px-5 py-2.5 rounded-xl text-sm font-medium text-white transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2" style={{ background: "#003DA5" }}>
+                                {submitting ? (
+                                    <>
+                                        <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                        </svg>
+                                        Guardando...
+                                    </>
+                                ) : (
+                                    <>
+                                        <CalendarIcon className="w-4 h-4" />
+                                        {editingPeriod ? "Actualizar" : "Crear"}
+                                    </>
+                                )}
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    )
+}
+
+// ──────────────────────────────────────────────────────────────────────────────
 // COMPONENTE PRINCIPAL
 // ──────────────────────────────────────────────────────────────────────────────
 
@@ -238,6 +768,28 @@ export const PayrollUtilitiesTab = () => {
     const handleCalculationParamChange = (key, value) => {
         setCalculationParams(prev => ({ ...prev, [key]: value }))
     }
+
+    // ─── Period Form Handlers ───
+    const handlePeriodFormSubmit = useCallback(async (payload) => {
+        if (payload.id) {
+            await dispatch(HandleUtilidades({ type: "PERIODS_UPDATE", id: payload.id, data: payload })).unwrap()
+        } else {
+            await dispatch(HandleUtilidades({ type: "PERIODS_CREATE", data: payload })).unwrap()
+        }
+    }, [dispatch])
+
+    const handlePeriodFormCalculate = useCallback(async (payload) => {
+        const result = await dispatch(HandleUtilidades({
+            type: "PERIODS_CALCULATE",
+            id: payload.id || null,
+            data: {
+                year: payload.year,
+                net_profit_ves: payload.net_profit_ves,
+                distribution_method: payload.distribution_method
+            }
+        })).unwrap()
+        return result
+    }, [dispatch])
 
     const handleRunCalculation = () => {
         if (!calculationParams.netProfitVes) return
@@ -858,25 +1410,22 @@ export const PayrollUtilitiesTab = () => {
 
             {/* Modales - Placeholders para Fases 2-5 */}
             {periodDetailModal.open && (
-                <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4 animate-fade-in" onClick={() => setPeriodDetailModal({ open: false, period: null })}>
-                    <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-xl max-w-2xl w-full max-h-[90vh] overflow-auto animate-slide-up" onClick={(e) => e.stopPropagation()}>
-                        <div className="p-6 text-center text-gray-500 dark:text-gray-400">
-                            <CalendarIcon className="w-12 h-12 mx-auto mb-4 opacity-30" />
-                            <p>PeriodDetailModal - Se implementa en Fase 2</p>
-                        </div>
-                    </div>
-                </div>
+                <PeriodDetailModal
+                    period={periodDetailModal.period}
+                    onClose={() => setPeriodDetailModal({ open: false, period: null })}
+                    isDark={isDark}
+                />
             )}
 
             {periodFormModal.open && (
-                <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4 animate-fade-in" onClick={() => setPeriodFormModal({ open: false, editing: null })}>
-                    <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-xl max-w-md w-full animate-slide-up" onClick={(e) => e.stopPropagation()}>
-                        <div className="p-6 text-center text-gray-500 dark:text-gray-400">
-                            <CalendarIcon className="w-12 h-12 mx-auto mb-4 opacity-30" />
-                            <p>PeriodFormModal - Se implementa en Fase 2</p>
-                        </div>
-                    </div>
-                </div>
+                <PeriodFormModal
+                    open={periodFormModal.open}
+                    onClose={() => setPeriodFormModal({ open: false, editing: null })}
+                    onSubmit={handlePeriodFormSubmit}
+                    onCalculate={handlePeriodFormCalculate}
+                    isDark={isDark}
+                    editingPeriod={periodFormModal.editing}
+                />
             )}
 
             {calculatePreviewModal.open && (
