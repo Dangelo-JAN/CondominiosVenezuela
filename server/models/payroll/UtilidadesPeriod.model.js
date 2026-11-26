@@ -9,8 +9,8 @@ const UtilidadesPeriodSchema = new Schema({
     status: {
         type: String,
         required: true,
-        enum: ['OPEN', 'CALCULATING', 'CALCULATED', 'APPROVED', 'PAID', 'CLOSED'],
-        default: 'OPEN'
+        enum: ['DRAFT', 'OPEN', 'CALCULATING', 'CALCULATED', 'APPROVED', 'PAID', 'CLOSED'],
+        default: 'DRAFT'
     },
     net_profit_ves: {
         type: Number,
