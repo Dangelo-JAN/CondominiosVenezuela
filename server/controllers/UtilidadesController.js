@@ -17,8 +17,8 @@ export const UtilidadesController = {
             if (status) filter.status = status
 
             const periods = await UtilidadesPeriod.find(filter)
-                .populate('calculated_by', 'firstname lastname')
-                .populate('approved_by', 'firstname lastname')
+                .populate({ path: 'calculated_by', select: 'firstname lastname', strictPopulate: false })
+                .populate({ path: 'approved_by', select: 'firstname lastname', strictPopulate: false })
                 .sort({ year: -1, createdAt: -1 })
                 .skip((page - 1) * limit)
                 .limit(parseInt(limit))
@@ -42,8 +42,8 @@ export const UtilidadesController = {
         try {
             const { id } = req.params
             const period = await UtilidadesPeriod.findOne({ _id: id, organizationID: req.ORGID })
-                .populate('calculated_by', 'firstname lastname')
-                .populate('approved_by', 'firstname lastname')
+                .populate({ path: 'calculated_by', select: 'firstname lastname', strictPopulate: false })
+                .populate({ path: 'approved_by', select: 'firstname lastname', strictPopulate: false })
                 .lean()
 
             if (!period) {
@@ -75,7 +75,7 @@ export const UtilidadesController = {
                 net_profit_ves: parseFloat(net_profit_ves),
                 distribution_method,
                 calculation_date: calculation_date ? new Date(calculation_date) : new Date(),
-                description: description || '',
+                notes: description || '',
                 status: 'DRAFT',
                 calculated_by: req.HRID,
                 organizationID: req.ORGID

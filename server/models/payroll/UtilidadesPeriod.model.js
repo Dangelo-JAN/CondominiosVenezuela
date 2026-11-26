@@ -41,6 +41,10 @@ const UtilidadesPeriodSchema = new Schema({
         type: Date,
         default: null
     },
+    calculated_by: {
+        type: Schema.Types.ObjectId,
+        ref: 'HumanResources'
+    },
     approved_by: {
         type: Schema.Types.ObjectId,
         ref: 'HumanResources'
