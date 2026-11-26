@@ -800,6 +800,7 @@ export const PayrollUtilitiesTab = () => {
     // ─── Redux Selectors — KEY CORRECTA: payrollReducer (Bug Prevention #1) ───
     const utilidadesPeriods = useSelector(state => state.payrollReducer.utilidadesPeriods)
     const utilidadesPeriod = useSelector(state => state.payrollReducer.utilidadesPeriod)
+    const utilidadesPeriodsAll = useSelector(state => state.payrollReducer.utilidadesPeriodsAll)
     const utilidadesPayments = useSelector(state => state.payrollReducer.utilidadesPayments)
     const utilidadesPayment = useSelector(state => state.payrollReducer.utilidadesPayment)
 
@@ -853,9 +854,9 @@ const [confirmDialog, setConfirmDialog] = useState({ open: false, title: "", mes
         }
     }, [dispatch, buildPaymentParams, paymentFilters.period])
 
-    // Cargar períodos para selects
+    // Cargar todos los períodos para dropdowns (sin paginación, sin filtros)
     useEffect(() => {
-        dispatch(HandleUtilidades({ type: "PERIODS_GETALL", page: 1, limit: 100 }))
+        dispatch(HandleUtilidades({ type: "PERIODS_GETALL_FOR_SELECT" }))
     }, [dispatch])
 
     // ─── Handlers ───
@@ -1001,8 +1002,8 @@ const [confirmDialog, setConfirmDialog] = useState({ open: false, title: "", mes
     // ─── Shared memoized values — Nivel superior (Bug Prevention #7) ───
     const periodOptions = useMemo(() => [
         { value: "select", label: "Seleccionar período..." },
-        ...(utilidadesPeriods.data?.map(p => ({ value: p._id, label: `${p.year} (${p.status})` })) || [])
-    ], [utilidadesPeriods.data])
+        ...(utilidadesPeriodsAll.data?.map(p => ({ value: p._id, label: `${p.year} (${p.status})` })) || [])
+    ], [utilidadesPeriodsAll.data])
 
     // ─── Render Functions — Funciones regulares (patrón validado en PayrollSocialBenefitsTab) ───
     const renderPeriodsTab = () => {
