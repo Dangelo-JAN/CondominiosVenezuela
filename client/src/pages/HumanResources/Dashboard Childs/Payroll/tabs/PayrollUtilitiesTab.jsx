@@ -958,7 +958,9 @@ const [confirmDialog, setConfirmDialog] = useState({ open: false, title: "", mes
         } else {
             await dispatch(HandleUtilidades({ type: "PERIODS_CREATE", data: payload })).unwrap()
         }
-    }, [dispatch])
+        // Re-fetch la lista después de crear/editar
+        dispatch(HandleUtilidades({ type: "PERIODS_GETALL", ...buildPeriodParams() }))
+    }, [dispatch, buildPeriodParams])
 
     const handlePeriodFormCalculate = useCallback(async (payload) => {
         const isEditing = !!payload.id
