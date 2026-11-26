@@ -42,6 +42,7 @@ const SUB_TABS = [
 
 const PERIOD_STATUS_OPTIONS = [
     { value: "select", label: "Todos los estados" },
+    { value: "DRAFT", label: "Borrador" },
     { value: "OPEN", label: "Abierto" },
     { value: "CALCULATING", label: "Calculando" },
     { value: "CALCULATED", label: "Calculado" },
@@ -51,6 +52,7 @@ const PERIOD_STATUS_OPTIONS = [
 ]
 
 const PERIOD_STATUS_CONFIG = {
+    DRAFT: { bg: "bg-gray-100 text-gray-800 dark:bg-gray-900/30 dark:text-gray-400", label: "Borrador", icon: FileText },
     OPEN: { bg: "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400", label: "Abierto", icon: Clock },
     CALCULATING: { bg: "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400", label: "Calculando", icon: RefreshCw },
     CALCULATED: { bg: "bg-cyan-100 text-cyan-800 dark:bg-cyan-900/30 dark:text-cyan-400", label: "Calculado", icon: CheckCircle },
