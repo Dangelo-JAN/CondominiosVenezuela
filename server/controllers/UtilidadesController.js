@@ -17,8 +17,8 @@ export const UtilidadesController = {
             if (status) filter.status = status
 
             const periods = await UtilidadesPeriod.find(filter)
-                .populate('calculated_by', 'firstname lastname')
-                .populate('approved_by', 'firstname lastname')
+                .populate({ path: 'calculated_by', select: 'firstname lastname', strictPopulate: false })
+                .populate({ path: 'approved_by', select: 'firstname lastname', strictPopulate: false })
                 .sort({ year: -1, createdAt: -1 })
                 .skip((page - 1) * limit)
                 .limit(parseInt(limit))
@@ -42,8 +42,8 @@ export const UtilidadesController = {
         try {
             const { id } = req.params
             const period = await UtilidadesPeriod.findOne({ _id: id, organizationID: req.ORGID })
-                .populate('calculated_by', 'firstname lastname')
-                .populate('approved_by', 'firstname lastname')
+                .populate({ path: 'calculated_by', select: 'firstname lastname', strictPopulate: false })
+                .populate({ path: 'approved_by', select: 'firstname lastname', strictPopulate: false })
                 .lean()
 
             if (!period) {
@@ -59,10 +59,10 @@ export const UtilidadesController = {
     // POST /api/v1/utilidades/periods
     async createPeriod(req, res) {
         try {
-            const { year, net_profit_usd, distribution_percentage, calculation_date, description } = req.body
+            const { year, net_profit_ves, distribution_method, calculation_date, description } = req.body
 
-            if (!year || !net_profit_usd || !distribution_percentage) {
-                return res.status(400).json({ success: false, message: 'Campos requeridos: year, net_profit_usd, distribution_percentage' })
+            if (!year || !net_profit_ves || !distribution_method) {
+                return res.status(400).json({ success: false, message: 'Campos requeridos: year, net_profit_ves, distribution_method' })
             }
 
             const existing = await UtilidadesPeriod.findOne({ organizationID: req.ORGID, year })
@@ -72,10 +72,10 @@ export const UtilidadesController = {
 
             const period = await UtilidadesPeriod.create({
                 year,
-                net_profit_usd: parseFloat(net_profit_usd),
-                distribution_percentage: parseFloat(distribution_percentage),
+                net_profit_ves: parseFloat(net_profit_ves),
+                distribution_method,
                 calculation_date: calculation_date ? new Date(calculation_date) : new Date(),
-                description: description || '',
+                notes: description || '',
                 status: 'DRAFT',
                 calculated_by: req.HRID,
                 organizationID: req.ORGID
@@ -83,6 +83,76 @@ export const UtilidadesController = {
 
             return res.status(201).json({ success: true, message: 'Período de utilidades creado', data: period })
         } catch (error) {
+            return res.status(500).json({ success: false, message: error.message })
+        }
+    },
+
+    // POST /api/v1/utilidades/periods/simulate
+    async simulatePeriod(req, res) {
+        try {
+            const { year, net_profit_ves, distribution_method, distribution_percentage } = req.body
+
+            if (!year || !net_profit_ves) {
+                return res.status(400).json({ success: false, message: 'Campos requeridos: year, net_profit_ves' })
+            }
+
+            const policy = await PayrollPolicy.findOne({ organizationID: req.ORGID })
+            if (!policy) {
+                return res.status(404).json({ success: false, message: 'Política de nómina no configurada' })
+            }
+
+            const calculator = new UtilidadesCalculator(policy, {
+                distribution_method: distribution_method || 'MIXED_50_50',
+                distribution_percentage: parseFloat(distribution_percentage) || 15
+            })
+
+            // Crear un período temporal en memoria para el cálculo (sin persistir)
+            const mockPeriod = {
+                _id: 'simulate',
+                year: parseInt(year),
+                organizationID: req.ORGID,
+                net_profit_ves: parseFloat(net_profit_ves),
+                distribution_method: distribution_method || 'MIXED_50_50',
+                distribution_percentage: parseFloat(distribution_percentage) || 15
+            }
+
+            const result = await calculator.calculateUtilidades({
+                period: mockPeriod,
+                netProfitVes: parseFloat(net_profit_ves),
+                company: { _id: req.ORGID }
+            })
+
+            // Formatear respuesta para el frontend - Number() funciona tanto para Decimal.js como para number primitivo
+            const toNum = (val) => (val && typeof val.toNumber === 'function') ? val.toNumber() : Number(val)
+
+            const employeeBreakdown = Object.entries(result.results).map(([empId, data]) => ({
+                employee_id: empId,
+                employee_firstname: data.employee.firstname,
+                employee_lastname: data.employee.lastname,
+                days_worked: data.daysWorked,
+                average_salary: toNum(data.averageSalary),
+                gross_amount: toNum(data.grossAmount),
+                islr_amount: toNum(data.islrRetention),
+                net_amount: toNum(data.netAmount)
+            }))
+
+            return res.status(200).json({
+                success: true,
+                message: 'Simulación de cálculo completada',
+                data: {
+                    distributableAmount: toNum(result.distributableAmount),
+                    totalEmployees: result.totalEmployees,
+                    totalDays: result.totalDaysWorked,
+                    dailyRate: toNum(result.dailyRate),
+                    distributionMethod: result.distributionMethod,
+                    employeeBreakdown,
+                    notes: result.results && Object.keys(result.results).length > 0
+                        ? `Cálculo basado en ${result.totalEmployees} empleados elegibles, ${result.totalDaysWorked} días totales, método ${result.distributionMethod}`
+                        : 'No hay empleados elegibles para el año seleccionado'
+                }
+            })
+        } catch (error) {
+            console.error('[UtilidadesController.simulatePeriod] Error:', error)
             return res.status(500).json({ success: false, message: error.message })
         }
     },
@@ -104,9 +174,11 @@ export const UtilidadesController = {
             const policy = await PayrollPolicy.findOne({ organizationID: req.ORGID })
             const calculator = new UtilidadesCalculator(policy)
 
+            const toNum = (val) => (val && typeof val.toNumber === 'function') ? val.toNumber() : Number(val)
+
             const result = await calculator.calculateDistribution(id)
 
-            period.total_pool_ves = result.totalPool.toNumber()
+            period.total_pool_ves = toNum(result.totalPool)
             period.employees_count = result.employees.length
             period.distribution_method = result.method
             period.calculation_details = result.details

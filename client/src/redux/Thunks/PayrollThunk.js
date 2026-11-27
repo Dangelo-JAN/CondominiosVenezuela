@@ -397,6 +397,10 @@ export const HandleUtilidades = createAsyncThunk("HandleUtilidades", async (args
                 const response = await hrApiService.get(`${PayrollEndPoints.UTILIDADES_PERIODS_GETALL}?${params}`)
                 return { ...response.data, type: "PERIODS_GETALL" }
             }
+            case "PERIODS_GETALL_FOR_SELECT": {
+                const response = await hrApiService.get(`${PayrollEndPoints.UTILIDADES_PERIODS_GETALL}?limit=1000`)
+                return { ...response.data, type: "PERIODS_GETALL_FOR_SELECT" }
+            }
             case "PERIODS_GETONE": {
                 const response = await hrApiService.get(PayrollEndPoints.UTILIDADES_PERIODS_GETONE(id))
                 return { ...response.data, type: "PERIODS_GETONE" }
@@ -404,6 +408,10 @@ export const HandleUtilidades = createAsyncThunk("HandleUtilidades", async (args
             case "PERIODS_CREATE": {
                 const response = await hrApiService.post(PayrollEndPoints.UTILIDADES_PERIODS_CREATE, data)
                 return { ...response.data, type: "PERIODS_CREATE" }
+            }
+            case "PERIODS_CALCULATE_SIMULATE": {
+                const response = await hrApiService.post(PayrollEndPoints.UTILIDADES_PERIODS_SIMULATE, data)
+                return { ...response.data, type: "PERIODS_CALCULATE_SIMULATE" }
             }
             case "PERIODS_CALCULATE": {
                 const response = await hrApiService.post(PayrollEndPoints.UTILIDADES_PERIODS_CALCULATE(id), {})

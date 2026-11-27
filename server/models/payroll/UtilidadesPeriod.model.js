@@ -9,12 +9,17 @@ const UtilidadesPeriodSchema = new Schema({
     status: {
         type: String,
         required: true,
-        enum: ['OPEN', 'CALCULATING', 'CALCULATED', 'APPROVED', 'PAID', 'CLOSED'],
-        default: 'OPEN'
+        enum: ['DRAFT', 'OPEN', 'CALCULATING', 'CALCULATED', 'APPROVED', 'PAID', 'CLOSED'],
+        default: 'DRAFT'
     },
     net_profit_ves: {
         type: Number,
         default: 0
+    },
+    distribution_method: {
+        type: String,
+        enum: ['MIXED_50_50', 'DAYS_ONLY', 'SALARY_ONLY'],
+        default: 'MIXED_50_50'
     },
     distributable_amount_ves: {
         type: Number,
@@ -35,6 +40,10 @@ const UtilidadesPeriodSchema = new Schema({
     calculation_date: {
         type: Date,
         default: null
+    },
+    calculated_by: {
+        type: Schema.Types.ObjectId,
+        ref: 'HumanResources'
     },
     approved_by: {
         type: Schema.Types.ObjectId,

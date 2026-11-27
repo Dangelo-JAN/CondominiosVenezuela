@@ -53,6 +53,7 @@ const PayrollSlice = createSlice({
         // Utilidades
         utilidadesPeriods: { data: [], isLoading: false, error: null, pagination: {} },
         utilidadesPeriod: { data: null, isLoading: false, error: null },
+        utilidadesPeriodsAll: { data: [], isLoading: false, error: null },
         utilidadesPayments: { data: [], isLoading: false, error: null, pagination: {} },
         utilidadesPayment: { data: null, isLoading: false, error: null }
     },
@@ -447,6 +448,8 @@ const PayrollSlice = createSlice({
                 if (action.meta.arg?.endpoint?.includes("periods")) {
                     if (action.meta.arg?.type === "GETONE") {
                         state.utilidadesPeriod.isLoading = true
+                    } else if (action.meta.arg?.type === "GETALL_FOR_SELECT") {
+                        state.utilidadesPeriodsAll.isLoading = true
                     } else {
                         state.utilidadesPeriods.isLoading = true
                     }
@@ -461,16 +464,20 @@ const PayrollSlice = createSlice({
             .addCase(HandleUtilidades.fulfilled, (state, action) => {
                 state.utilidadesPeriods.isLoading = false
                 state.utilidadesPeriod.isLoading = false
+                state.utilidadesPeriodsAll.isLoading = false
                 state.utilidadesPayments.isLoading = false
                 state.utilidadesPayment.isLoading = false
                 state.utilidadesPeriods.error = null
                 state.utilidadesPeriod.error = null
+                state.utilidadesPeriodsAll.error = null
                 state.utilidadesPayments.error = null
                 state.utilidadesPayment.error = null
 
                 if (action.payload.type === "PERIODS_GETALL") {
                     state.utilidadesPeriods.data = action.payload.data
                     state.utilidadesPeriods.pagination = action.payload.pagination
+                } else if (action.payload.type === "PERIODS_GETALL_FOR_SELECT") {
+                    state.utilidadesPeriodsAll.data = action.payload.data
                 } else if (action.payload.type === "PERIODS_GETONE") {
                     state.utilidadesPeriod.data = action.payload.data
                 } else if (action.payload.type === "PERIODS_CREATE") {
@@ -496,11 +503,13 @@ const PayrollSlice = createSlice({
             .addCase(HandleUtilidades.rejected, (state, action) => {
                 state.utilidadesPeriods.isLoading = false
                 state.utilidadesPeriod.isLoading = false
+                state.utilidadesPeriodsAll.isLoading = false
                 state.utilidadesPayments.isLoading = false
                 state.utilidadesPayment.isLoading = false
                 const msg = action.payload?.message || "Error en utilidades"
                 state.utilidadesPeriods.error = msg
                 state.utilidadesPeriod.error = msg
+                state.utilidadesPeriodsAll.error = msg
                 state.utilidadesPayments.error = msg
                 state.utilidadesPayment.error = msg
             })
