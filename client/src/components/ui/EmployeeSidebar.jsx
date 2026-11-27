@@ -10,7 +10,7 @@ const EMPLOYEE_NAV_ITEMS = [
     { label: "Mi Horario", path: "/auth/employee/employee-dashboard/schedule", icon: "/assets/HR-Dashboard/attendance.png" },
     { label: "Mis Fotos", path: "/auth/employee/employee-dashboard/photos", icon: "/assets/HR-Dashboard/notice.png" },
     { label: "Mi Perfil", path: "/auth/employee/employee-dashboard/profile", icon: "/assets/HR-Dashboard/employee-2.png" },
-    { label: "Mis Nóminas", path: null, icon: "/assets/HR-Dashboard/salary.png" },
+    { label: "Mis Nóminas", path: "/auth/employee/employee-dashboard/payroll", icon: "/assets/HR-Dashboard/salary.png" },
     { label: "Ausencias", path: "/auth/employee/employee-dashboard/absences", icon: "/assets/HR-Dashboard/leave.png" },
     { label: "Solicitudes", path: "/auth/employee/employee-dashboard/requests", icon: "/assets/HR-Dashboard/request.png" },
     { label: "Bitácoras", path: "/auth/employee/employee-dashboard/bitacoras", icon: "/assets/HR-Dashboard/notice.png" },

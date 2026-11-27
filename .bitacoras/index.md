@@ -6,11 +6,11 @@
 ---
 
 ## 🚩 ESTADO ACTUAL
-- **Tarea activa:** Ninguna — todas las fases completadas
-- **Última completada:** #036-dynamic-seed ✅ (21/09/2026 — seed dinámica reescrita, validada en deploy local, commit `4e15744`)
-- **Branch actual:** 035-dynamic-seed (PR hacia dev pendiente)
-- **Deploy pendiente:** Vercel + Render desde `main` (después de PR merge)
-- **Archivo de referencia rápida:** `actual.md`
+- **Tarea activa:** *Ninguna* (esperando nueva asignación)
+- **Última completada:** #043-payroll-social-benefits-tab-ui ✅ (12/11/2026)
+- **Branch actual:** 043-payroll-social-benefits-tab-ui (PR #59 hacia 037-payroll-venezuelan-module — commits `6b99e76`, `93f3fac`, `35d35a6`, `ac37c19`, `6aae89c`)
+- **Deploy:** Vercel Preview auto-deploy pendiente
+- **Archivo de referencia rápida:** `actual.md` (limpiado)
 
 ---
 
@@ -51,6 +51,13 @@
 - [x] [[034-public-navbar-component]] - ✅ COMPLETADO el 19/08/2026
 - [x] [[035-hr-employee-reports]] - ✅ COMPLETADO el 21/08/2026
 - [x] [[036-dynamic-seed]] - ✅ COMPLETADO el 21/09/2026 (commit `4e15744`, PR hacia dev)
+- [ ] [[037-payroll-venezuelan-module]] - 🟡 EN CURSO (reabierta 22/10/2026 — Fase 7: Producción/Gaps Críticos, PR hacia dev existente)
+- [x] [[038-payroll-receipts-tab-ui]] - ✅ COMPLETADO el 03/11/2026 (commit `879fef9`, PR hacia 037-payroll-venezuelan-module)
+- [x] [[039-payroll-concepts-tab-ui]] - ✅ COMPLETADO el 05/11/2026 (UI completa + 3 bugs críticos resueltos: HandleHRCheck thunk, Select value fix, HR permissions stale data + auto-sync middleware; commits `089ba65` `e02a7eb` `c41b94e`, PR hacia 037-payroll-venezuelan-module)
+- [x] [[040-payroll-policy-tab-ui]] - ✅ COMPLETADO el 09/11/2026 (UI completa 5 secciones/49 campos + Fix React Error #300 + Race condition eliminada: StyledSelect sin hook interno + renderState bothResolved gate; commits `743d116` `4107406` `e7de632`, PR #56 hacia 037-payroll-venezuelan-module)
+- [x] [[041-payroll-novelties-tab-ui]] - ✅ COMPLETADO el 10/11/2026 (UI completa CRUD + Bulk Import CSV/JSON + Hotfix Radix Select; commits `9ea7be0` `489a2a9` `7249a68` `59c41fd`, PR hacia 037-payroll-venezuelan-module)
+- [x] [[042-payroll-vacations-tab-ui]] - ✅ COMPLETADO el 12/11/2026 (UI completa 3 subtabs: Saldos/Solicitudes/Festivos + CRUD solicitudes/festivos + Fix Chevron imports + Fix Radix Select empty string; commits `69fcb31` `a2b9928` `85bcee9`, PR hacia 037-payroll-venezuelan-module)
+- [x] [[043-payroll-social-benefits-tab-ui]] - ✅ COMPLETADO el 12/11/2026 (UI Prestaciones 3 subtabs: Libro/Liquidaciones/Devengado + CRUD completo + **Fix Infinite Re-renders ROOT CAUSE: `validate()` con `setErrors()` en render via `disabled` prop → fix: `validateForm()` pura + `useMemo` `isFormValid` + handlers `useCallback` + Regla #6 bug-prevention.md** + Header Principal estilo tabs + Radix Select validado; commits `6b99e76` `93f3fac` `35d35a6` `ac37c19` `6aae89c`, PR #59 hacia 037-payroll-venezuelan-module)
 ---
 
 ## 🛠️ REGLAS DE ORO (DE CUMPLIMIENTO OBLIGATORIO)
@@ -121,7 +128,7 @@
     *   Actualizar `.bitacoras/actual.md` y crear/actualizar la bitácora correspondiente según `00-plantilla.md`.
 ```
 
-*Actualizado: 2026-09-21* *Tarea #036-dynamic-seed ✅ COMPLETADO — first-seed.mjs dinámico (fechas relativas a hoy, modo --force), elimina JSONs, integra seed-reports (snapshots W34-W38), fixes back-ref attendance + _id subdocs schedules; validado en deploy local; 61 tests + build 0 errores; commit `4e15744`*
+*Actualizado: 2026-11-12* *Tarea #043-payroll-social-benefits-tab-ui ✅ COMPLETADA — UI Prestaciones 3 subtabs: Libro/Liquidaciones/Devengado + CRUD completo + **Fix Infinite Re-renders ROOT CAUSE: `validate()` con `setErrors()` en render via `disabled` prop → fix: `validateForm()` pura + `useMemo` `isFormValid` + handlers `useCallback` (Regla #6 bug-prevention.md)** + Header Principal estilo tabs períodos/conceptos/políticas + Radix Select validado; 5 commits en PR #59 hacia 037-payroll-venezuelan-module; build 0 errores*
 
 ---
 

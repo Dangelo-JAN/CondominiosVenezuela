@@ -13,6 +13,16 @@ export const HandleGetHumanResources = createAsyncThunk("HandleGetHumanResources
     }
 })
 
+// ── HandleHRCheck: verifica sesión HR y pobla role + permissions ───────────────
+export const HandleHRCheck = createAsyncThunk("HandleHRCheck", async (_, { rejectWithValue }) => {
+    try {
+        const response = await hrApiService.get(HREndPoints.CHECKLOGIN)
+        return { ...response.data, type: "checkHR" }
+    } catch (error) {
+        return rejectWithValue(error.response?.data)
+    }
+})
+
 export const HandlePostHumanResources = createAsyncThunk("HandlePostHumanResources", async (HRData, { rejectWithValue }) => {
     try {
         const { apiroute, data, type } = HRData

@@ -346,21 +346,27 @@ export const HandleCloseExpiredSchedules = async (req, res) => {
 export const HandleRegisterDailyAbsences = async (req, res) => {
     const startTime = new Date().toISOString()
     try {
-        const yesterday = new Date()
-        yesterday.setDate(yesterday.getDate() - 1)
-        yesterday.setHours(0, 0, 0, 0)
+        // Usar zona horaria de Venezuela (America/Caracas) por defecto
+        // TODO: Futuro - usar organization.timezone cuando exista
+        const TIMEZONE = 'America/Caracas'
+        
+        // Obtener fecha de "ayer" en la zona horaria local
+        const now = new Date()
+        const yesterdayLocal = new Date(now.toLocaleString('en-US', { timeZone: TIMEZONE }))
+        yesterdayLocal.setDate(yesterdayLocal.getDate() - 1)
+        yesterdayLocal.setHours(0, 0, 0, 0)
+        
+        const todayLocal = new Date(now.toLocaleString('en-US', { timeZone: TIMEZONE }))
+        todayLocal.setHours(0, 0, 0, 0)
 
-        const today = new Date()
-        today.setHours(0, 0, 0, 0)
+        const yesterdayDayName = DAYS_ORDER[yesterdayLocal.getDay()]
 
-        const yesterdayDayName = DAYS_ORDER[yesterday.getDay()]
-
-        console.log(`[CRON] register-absences INICIADO — ${startTime} — ayer: ${yesterdayDayName}`)
+        console.log(`[CRON] register-absences INICIADO — ${startTime} — ayer (${TIMEZONE}): ${yesterdayDayName} ${yesterdayLocal.toISOString().split('T')[0]}`)
 
         const activeSchedules = await Schedule.find({
             status: "active",
-            startdate: { $lte: yesterday },
-            enddate: { $gte: yesterday }
+            startdate: { $lte: yesterdayLocal },
+            enddate: { $gte: yesterdayLocal }
         })
 
         let absencesRegistered = 0
@@ -379,11 +385,11 @@ export const HandleRegisterDailyAbsences = async (req, res) => {
                 const existingAbsence = await Absence.findOne({
                     employee: schedule.employee,
                     scheduleId: schedule._id,
-                    startdate: { $gte: yesterday, $lt: today },
+                    startdate: { $gte: yesterdayLocal, $lt: todayLocal },
                     leavetype: "Tarea No Realizada"
                 })
                 if (existingAbsence) {
-                    console.log(`[CRON] Ausencia ya existe para empleado ${schedule.employee} en fecha ${yesterday.toISOString().split('T')[0]} — saltando`)
+                    console.log(`[CRON] Ausencia ya existe para empleado ${schedule.employee} en fecha ${yesterdayLocal.toISOString().split('T')[0]} — saltando`)
                     continue
                 }
 
@@ -393,12 +399,12 @@ export const HandleRegisterDailyAbsences = async (req, res) => {
                     employee: schedule.employee,
                     leaveRequest: null,
                     scheduleId: schedule._id,
-                    startdate: yesterday,
-                    enddate: yesterday,
+                    startdate: yesterdayLocal,
+                    enddate: yesterdayLocal,
                     leavetype: "Tarea No Realizada",
                     title: "Ausencia por Tarea No Realizada",
                     reason: `Tareas no completadas del ${yesterdayDayName}: ${taskNames}`,
-                    createdBy: req.HRid || req.EMPID,
+                    createdBy: schedule.employee,
                     organizationID: schedule.organizationID
                 })
 

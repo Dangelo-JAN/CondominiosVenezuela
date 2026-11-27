@@ -217,10 +217,10 @@ export const HandleCheckOut = async (req, res) => {
 
         await attendance.save()
 
-        // ✅ Registrar ausencias por tareas no completadas del día
-        const yesterday = new Date(now)
-        yesterday.setDate(yesterday.getDate() - 1)
-        const yesterdayDayName = DAYS_ORDER[yesterday.getDay()]
+        // ✅ Registrar ausencias por tareas no completadas del día ACTUAL (no ayer)
+        const currentDate = new Date(now)
+        currentDate.setHours(0, 0, 0, 0)
+        const currentDayName = DAYS_ORDER[currentDate.getDay()]
 
         const activeSchedule = await Schedule.findOne({
             employee: employeeID,
@@ -230,7 +230,7 @@ export const HandleCheckOut = async (req, res) => {
         })
 
         if (activeSchedule) {
-            const daySchedule = activeSchedule.schedule.find(d => d.day === yesterdayDayName)
+            const daySchedule = activeSchedule.schedule.find(d => d.day === currentDayName)
             if (daySchedule && daySchedule.tasks && daySchedule.tasks.length > 0) {
                 const incompleteTasks = daySchedule.tasks.filter(t => !t.completed)
                 if (incompleteTasks.length > 0) {
@@ -239,12 +239,12 @@ export const HandleCheckOut = async (req, res) => {
                         employee: employeeID,
                         leaveRequest: null,
                         scheduleId: activeSchedule._id,
-                        startdate: yesterday,
-                        enddate: yesterday,
+                        startdate: currentDate,
+                        enddate: currentDate,
                         leavetype: "Tarea No Realizada",
                         title: "Ausencia por Tarea No Realizada",
-                        reason: `Tareas no completadas del ${yesterdayDayName}: ${taskNames}`,
-                        createdBy: req.HRid || employeeID,
+                        reason: `Tareas no completadas del ${currentDayName}: ${taskNames}`,
+                        createdBy: employeeID,
                         organizationID: req.ORGID
                     })
                 }

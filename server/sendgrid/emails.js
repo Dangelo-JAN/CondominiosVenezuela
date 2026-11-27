@@ -5,7 +5,8 @@ import {
     WELCOME_HR_TEMPLATE,
     WELCOME_EMPLOYEE_TEMPLATE,
     PASSWORD_RESET_REQUEST_TEMPLATE,
-    PASSWORD_RESET_SUCCESS_TEMPLATE
+    PASSWORD_RESET_SUCCESS_TEMPLATE,
+    PAYSLIP_EMAIL_TEMPLATE
 } from "./emailtemplates.js"
 import { sgMail, sender } from "./sendgrid.config.js"
 
@@ -96,5 +97,21 @@ export const SendResetPasswordConfimation = async (email) => {
         to: email,
         subject: "Contraseña restablecida exitosamente — CondoVE SGC",
         html: PASSWORD_RESET_SUCCESS_TEMPLATE,
+    })
+}
+
+// ── Boleta de Pago (Payslip) ────────────────────────────────────────────────
+export const SendPayslipEmail = async (email, employeeName, periodName, paymentDate, totalIncome, totalDeductions, netPay, payslipURL) => {
+    return sendMail({
+        to: email,
+        subject: `Boleta de Pago — ${periodName} — CondoVE SGC`,
+        html: PAYSLIP_EMAIL_TEMPLATE
+            .replace("{employeeName}", employeeName)
+            .replace("{periodName}", periodName)
+            .replace("{paymentDate}", paymentDate)
+            .replace("{totalIncome}", totalIncome.toLocaleString('es-VE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }))
+            .replace("{totalDeductions}", totalDeductions.toLocaleString('es-VE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }))
+            .replace("{netPay}", netPay.toLocaleString('es-VE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }))
+            .replace("{payslipURL}", payslipURL),
     })
 }

@@ -104,7 +104,192 @@ const EmployeeSchema = new Schema({
     organizationID: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "Organization"
-    }
+    },
+    // ═══════════════════════════════════════════════════════════════
+    // CAMPOS DE NÓMINA VENEZOLANA (Nóminix-compatible)
+    // ═══════════════════════════════════════════════════════════════
+    // Identificación legal
+    national_id: {
+        type: String,
+        trim: true,
+        uppercase: true
+    },
+    rif: {
+        type: String,
+        trim: true,
+        uppercase: true
+    },
+    ivss_code: {
+        type: String,
+        trim: true
+    },
+    faov_code: {
+        type: String,
+        trim: true
+    },
+    employee_code: {
+        type: String,
+        trim: true,
+        uppercase: true
+    },
+    // Fechas laborales
+    birth_date: {
+        type: Date
+    },
+    gender: {
+        type: String,
+        enum: ['M', 'F'],
+        default: 'M'
+    },
+    marital_status: {
+        type: String,
+        enum: ['SOLTERO', 'CASADO', 'DIVORCIADO', 'VIUDO', 'UNION_ESTABLE'],
+        default: 'SOLTERO'
+    },
+    hire_date: {
+        type: Date,
+        required: false
+    },
+    termination_date: {
+        type: Date,
+        default: null
+    },
+    // Bancarios
+    bank_name: {
+        type: String,
+        trim: true
+    },
+    bank_account_number: {
+        type: String,
+        trim: true
+    },
+    bank_account_type: {
+        type: String,
+        enum: ['CORRIENTE', 'AHORRO'],
+        default: 'CORRIENTE'
+    },
+    // Tallas y dotación
+    shirt_size: {
+        type: String,
+        trim: true
+    },
+    pants_size: {
+        type: String,
+        trim: true
+    },
+    shoe_size: {
+        type: String,
+        trim: true
+    },
+    last_endowment_date: {
+        type: Date,
+        default: null
+    },
+    // Contrato activo (snapshot rápido)
+    active_contract: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "LaborContract"
+    },
+    // Configuración nómina por empleado (override de policy)
+    salary_amount: {
+        type: Number,
+        default: 0
+    },
+    salary_currency: {
+        type: String,
+        enum: ['VES', 'USD'],
+        default: 'USD'
+    },
+    payment_frequency: {
+        type: String,
+        enum: ['QUINCENAL', 'MENSUAL', 'SEMANAL'],
+        default: 'QUINCENAL'
+    },
+    contract_type: {
+        type: String,
+        enum: ['INDEFINIDO', 'FIJO', 'TEMPORAL', 'APRENDIZ', 'PRACTICANTE'],
+        default: 'INDEFINIDO'
+    },
+    includes_cestaticket: {
+        type: Boolean,
+        default: true
+    },
+    total_salary_override: {
+        type: Number,
+        default: null
+    },
+    islr_retention_percentage: {
+        type: Number,
+        default: 0
+    },
+    payroll_mode_override: {
+        type: String,
+        enum: ['SALARY', 'VARIABLE', 'MIXTO'],
+        default: 'SALARY'
+    },
+    // Días de descanso personalizados (override de company/policy)
+    rest_weekdays: {
+        type: Schema.Types.Mixed,
+        default: null
+    },
+    // Excluir de facturación/préstamos
+    exclude_from_billing: {
+        type: Boolean,
+        default: false
+    },
+    // Relaciones de nómina
+    payroll_receipts: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "PayrollReceipt"
+        }
+    ],
+    payroll_novelties: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "PayrollNovelty"
+        }
+    ],
+    vacation_balance: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "VacationBalance"
+    },
+    vacation_requests: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "VacationRequest"
+        }
+    ],
+    social_benefits_ledger: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "SocialBenefitsLedger"
+        }
+    ],
+    social_benefits_settlements: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "SocialBenefitsSettlement"
+        }
+    ],
+    utilidades_payments: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "UtilidadesPayment"
+        }
+    ],
+    loans: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "Loan"
+        }
+    ],
+    advance_requests: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "AdvanceRequest"
+        }
+    ]
 },
     { timestamps: true }
 );
