@@ -13,7 +13,7 @@ import {
     Calendar, FileText, Filter, Search, Plus, Eye, CheckCircle, XCircle, DollarSign, Trash2, RefreshCw,
     AlertTriangle, Settings, ChevronDown, ChevronUp, ChevronLeft, ChevronRight, CreditCard, Building2, Coins, Receipt, List,
     ArrowRight, ArrowLeft, Download, Upload, History, HelpCircle, Info, Calendar as CalendarIcon, Handshake,
-    Calculator, ClipboardList, BarChart2, Users, Activity, SlidersHorizontal, Clock
+    Calculator, ClipboardList, BarChart2, Users, Activity, SlidersHorizontal, Clock, UserCheck
 } from "lucide-react"
 
 // ──────────────────────────────────────────────────────────────────────────────
@@ -788,6 +788,212 @@ const CalculatePreviewModal = ({ preview, period, onClose, onApprove, onPay, isD
 }
 
 // ──────────────────────────────────────────────────────────────────────────────
+// PaymentDetailModal — Detalle de pago individual por empleado
+// ──────────────────────────────────────────────────────────────────────────────
+
+const PaymentDetailModal = ({ payment, onClose, onPay, isDark }) => {
+
+    if (!payment) return null
+
+    const statusConfig = PAYMENT_STATUS_CONFIG[payment.status] || PAYMENT_STATUS_CONFIG.PENDING
+    const StatusIcon = statusConfig.icon
+    const statusBadgeClass = `inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold ${statusConfig.bg}`
+
+    const canPay = payment.status === "PENDING" && onPay
+
+    return (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4 animate-fade-in" onClick={onClose}>
+            <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-xl max-w-2xl w-full max-h-[90vh] overflow-auto animate-slide-up" onClick={(e) => e.stopPropagation()}>
+                {/* Header */}
+                <div className="flex items-center justify-between p-4 border-b transition-colors duration-300"
+                    style={{ borderColor: isDark ? "rgba(0,61,165,0.15)" : "rgba(0,61,165,0.2)" }}>
+                    <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 rounded-xl flex items-center justify-center"
+                            style={{ background: isDark ? "rgba(0,61,165,0.15)" : "rgba(0,61,165,0.1)" }}>
+                            <CreditCard className="w-5 h-5" style={{ color: "#003DA5" }} />
+                        </div>
+                        <div>
+                            <h2 className="text-xl font-bold text-gray-900 dark:text-white">Detalle Pago Utilidades</h2>
+                            <p className="text-sm" style={{ color: isDark ? "rgba(255,255,255,0.5)" : "#6b7280" }}>
+                                {payment.employee?.firstname} {payment.employee?.lastname} • Período {payment.period?.year}
+                            </p>
+                        </div>
+                    </div>
+                    <button onClick={onClose} className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+                </div>
+
+                <div className="p-4 max-h-[70vh] overflow-auto">
+                    {/* Grid Info Básica */}
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+                        <div>
+                            <p className="text-sm text-gray-500 dark:text-gray-400">Empleado</p>
+                            <p className="font-medium text-gray-900 dark:text-white">
+                                {payment.employee?.firstname} {payment.employee?.lastname}
+                            </p>
+                        </div>
+                        <div>
+                            <p className="text-sm text-gray-500 dark:text-gray-400">Período</p>
+                            <p className="font-medium text-gray-900 dark:text-white">{payment.period?.year}</p>
+                        </div>
+                        <div>
+                            <p className="text-sm text-gray-500 dark:text-gray-400">Días Trabajados</p>
+                            <p className="font-medium text-gray-900 dark:text-white">{payment.days_worked || 0}</p>
+                        </div>
+                        <div>
+                            <p className="text-sm text-gray-500 dark:text-gray-400">Tasa Diaria</p>
+                            <p className="font-medium text-gray-900 dark:text-white">{formatCurrency(payment.daily_rate_ves)}</p>
+                        </div>
+                    </div>
+
+                    {/* Departamento del empleado */}
+                    {payment.employee?.department && (
+                        <div className="mb-4 p-3 rounded-lg transition-colors duration-300"
+                            style={{ background: isDark ? "rgba(0,61,165,0.05)" : "rgba(0,61,165,0.03)", border: isDark ? "1px solid rgba(0,61,165,0.15)" : "1px solid rgba(0,61,165,0.2)" }}>
+                            <p className="text-sm text-gray-500 dark:text-gray-400">Departamento</p>
+                            <p className="font-medium text-gray-900 dark:text-white">{payment.employee.department.name || payment.employee.department}</p>
+                        </div>
+                    )}
+
+                    {/* Montos - Card Verde */}
+                    <div className="mb-6 p-4 rounded-xl transition-colors duration-300"
+                        style={{ background: isDark ? "rgba(16,185,129,0.08)" : "#f0fdf4", border: isDark ? "1px solid rgba(16,185,129,0.2)" : "1px solid rgba(16,185,129,0.15)" }}>
+                        <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
+                            <DollarSign className="w-5 h-5" style={{ color: "#10b981" }} />
+                            Montos Calculados
+                        </h3>
+                        <div className="grid grid-cols-3 gap-4">
+                            <div>
+                                <p className="text-sm text-gray-500 dark:text-gray-400">Bruto</p>
+                                <p className="font-bold text-gray-900 dark:text-white text-lg">{formatCurrency(payment.gross_amount_ves)}</p>
+                            </div>
+                            <div>
+                                <p className="text-sm text-gray-500 dark:text-gray-400">ISLR</p>
+                                <p className="font-bold text-red-600 dark:text-red-400 text-lg">{formatCurrency(payment.islr_retention_ves)}</p>
+                            </div>
+                            <div>
+                                <p className="text-sm text-gray-500 dark:text-gray-400">Neto a Pagar</p>
+                                <p className="font-bold text-emerald-700 dark:text-emerald-400 text-xl">{formatCurrency(payment.net_amount_ves)}</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Estado & Pago - Card Azul */}
+                    <div className="mb-6 p-4 rounded-xl transition-colors duration-300"
+                        style={{ background: isDark ? "rgba(0,61,165,0.08)" : "rgba(0,61,165,0.05)", border: isDark ? "1px solid rgba(0,61,165,0.2)" : "1px solid rgba(0,61,165,0.15)" }}>
+                        <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
+                            <CreditCard className="w-5 h-5" style={{ color: "#003DA5" }} />
+                            Estado y Pago
+                        </h3>
+                        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                            <div>
+                                <p className="text-sm text-gray-500 dark:text-gray-400">Estado</p>
+                                <span className={statusBadgeClass}>
+                                    <StatusIcon className="w-3 h-3" />
+                                    {statusConfig.label}
+                                </span>
+                            </div>
+                            <div>
+                                <p className="text-sm text-gray-500 dark:text-gray-400">Fecha Pago</p>
+                                <p className="font-medium text-gray-900 dark:text-white">{payment.payment_date ? formatDate(payment.payment_date) : "—"}</p>
+                            </div>
+                            <div>
+                                <p className="text-sm text-gray-500 dark:text-gray-400">Método</p>
+                                <p className="font-medium text-gray-900 dark:text-white">{payment.payment_method || "—"}</p>
+                            </div>
+                            <div>
+                                <p className="text-sm text-gray-500 dark:text-gray-400">Referencia</p>
+                                <p className="font-medium text-gray-900 dark:text-white">{payment.bank_reference || "—"}</p>
+                            </div>
+                        </div>
+                        {payment.exchange_rate && (
+                            <div className="mt-4 pt-4 border-t" style={{ borderColor: isDark ? "rgba(0,61,165,0.15)" : "rgba(0,61,165,0.2)" }}>
+                                <p className="text-sm text-gray-500 dark:text-gray-400">Tipo de Cambio</p>
+                                <p className="font-medium text-gray-900 dark:text-white">{formatCurrency(payment.exchange_rate)}</p>
+                            </div>
+                        )}
+                    </div>
+
+                    {/* Recibo de Nómina - SOLO SI EXISTE */}
+                    {payment.payroll_receipt && (
+                        <div className="mb-6 p-4 rounded-xl transition-colors duration-300"
+                            style={{ background: isDark ? "rgba(6,182,212,0.08)" : "#ecfeff", border: isDark ? "1px solid rgba(6,182,212,0.2)" : "1px solid rgba(6,182,212,0.15)" }}>
+                            <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
+                                <Receipt className="w-5 h-5" style={{ color: "#06b6d4" }} />
+                                Recibo de Nómina Generado
+                            </h3>
+                            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                                <div>
+                                    <p className="text-sm text-gray-500 dark:text-gray-400">N° Recibo</p>
+                                    <p className="font-mono font-medium text-gray-900 dark:text-white">{payment.payroll_receipt._id?.slice(-8).toUpperCase()}</p>
+                                </div>
+                                <div>
+                                    <p className="text-sm text-gray-500 dark:text-gray-400">Fecha Recibo</p>
+                                    <p className="font-medium text-gray-900 dark:text-white">{payment.payroll_receipt.payment_date ? formatDate(payment.payroll_receipt.payment_date) : "—"}</p>
+                                </div>
+                                <div>
+                                    <p className="text-sm text-gray-500 dark:text-gray-400">Total Ingresos</p>
+                                    <p className="font-bold text-gray-900 dark:text-white">{formatCurrency(payment.payroll_receipt.total_income_ves)}</p>
+                                </div>
+                                <div>
+                                    <p className="text-sm text-gray-500 dark:text-gray-400">Neto Pagado</p>
+                                    <p className="font-bold text-emerald-700 dark:text-emerald-400">{formatCurrency(payment.payroll_receipt.net_pay_ves)}</p>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+
+                    {/* Notas */}
+                    {payment.notes && (
+                        <div className="mb-6">
+                            <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">Observaciones</h3>
+                            <p className="text-gray-700 dark:text-gray-300 whitespace-pre-wrap">{payment.notes}</p>
+                        </div>
+                    )}
+
+                    {/* Auditoría */}
+                    <div className="mb-6 p-4 rounded-xl transition-colors duration-300"
+                        style={{ background: isDark ? "rgba(255,255,255,0.04)" : "#f9fafb", border: isDark ? "1px solid rgba(255,255,255,0.08)" : "1px solid rgba(0,0,0,0.05)" }}>
+                        <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-3">Auditoría</h3>
+                        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                            <div>
+                                <p className="text-sm text-gray-500 dark:text-gray-400">Creado</p>
+                                <p className="font-medium text-gray-900 dark:text-white">{payment.createdAt ? formatDate(payment.createdAt) : "—"}</p>
+                            </div>
+                            <div>
+                                <p className="text-sm text-gray-500 dark:text-gray-400">Actualizado</p>
+                                <p className="font-medium text-gray-900 dark:text-white">{payment.updatedAt ? formatDate(payment.updatedAt) : "—"}</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Footer Actions */}
+                    <div className="flex justify-end gap-2 pt-4 border-t"
+                        style={{ borderColor: isDark ? "rgba(0,61,165,0.15)" : "rgba(0,61,165,0.2)" }}>
+                        <button onClick={onClose} className="px-4 py-2 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+                            Cerrar
+                        </button>
+                        {canPay && (
+                            <button
+                                onClick={onPay}
+                                className="px-5 py-2.5 rounded-xl text-sm font-medium text-white transition-all duration-200 flex items-center gap-2"
+                                style={{ background: "#10b981" }}
+                            >
+                                <UserCheck className="w-4 h-4" />
+                                Marcar como Pagado
+                            </button>
+                        )}
+                    </div>
+                </div>
+            </div>
+        </div>
+    )
+}
+
+// ──────────────────────────────────────────────────────────────────────────────
 // COMPONENTE PRINCIPAL
 // ──────────────────────────────────────────────────────────────────────────────
 
@@ -943,7 +1149,17 @@ const [confirmDialog, setConfirmDialog] = useState({ open: false, title: "", mes
             open: true,
             title: "Marcar como Pagado",
             message: `¿Marcar el pago de utilidades para ${payment.employee?.firstname} ${payment.employee?.lastname} como pagado?`,
-            onConfirm: () => dispatch(HandleUtilidades({ type: "PAYMENTS_PAY", id: payment._id, data: { payment_date: new Date().toISOString().split("T")[0] } })),
+            onConfirm: async () => {
+                try {
+                    await dispatch(HandleUtilidades({ type: "PAYMENTS_PAY", id: payment._id, data: { payment_date: new Date().toISOString().split("T")[0] } })).unwrap()
+                    // Re-fetch la lista de pagos del período actual
+                    if (paymentFilters.period !== "select") {
+                        dispatch(HandleUtilidades({ type: "PAYMENTS_GETALL", ...buildPaymentParams() }))
+                    }
+                } catch (error) {
+                    console.error("Error marcando pago:", error)
+                }
+            },
             variant: "info"
         }))
     }
@@ -1626,14 +1842,12 @@ const [confirmDialog, setConfirmDialog] = useState({ open: false, title: "", mes
             )}
 
             {paymentDetailModal.open && (
-                <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4 animate-fade-in" onClick={() => setPaymentDetailModal({ open: false, payment: null })}>
-                    <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-xl max-w-2xl w-full max-h-[90vh] overflow-auto animate-slide-up" onClick={(e) => e.stopPropagation()}>
-                        <div className="p-6 text-center text-gray-500 dark:text-gray-400">
-                            <CreditCard className="w-12 h-12 mx-auto mb-4 opacity-30" />
-                            <p>PaymentDetailModal - Se implementa en Fase 4</p>
-                        </div>
-                    </div>
-                </div>
+                <PaymentDetailModal
+                    payment={paymentDetailModal.payment}
+                    onClose={() => setPaymentDetailModal({ open: false, payment: null })}
+                    onPay={can("payroll", "update") && paymentDetailModal.payment?.status === "PENDING" ? () => handlePayPayment(paymentDetailModal.payment) : undefined}
+                    isDark={isDark}
+                />
             )}
 
             {confirmDialog.open && (

@@ -10,7 +10,7 @@ Implementar la UI completa de la pestaña **Utilidades** en la página de nómin
 
 ## 🚦 PUNTO DE CONTROL (Contexto de Reanudación)
 
-- **Lo último que funcionó:** Fases 1-3 completadas, Fase 4 iniciada. Estructura base con 3 sub-tabs, ThemedList con datos reales via Redux (payrollReducer), filtros funcionales, paginación, dark/light mode, build 0 errores, tests 127 passed. **FASE 2 Y 3 COMPLETADAS:** PeriodFormModal + PeriodDetailModal (CRUD completo + preview), CalculatePreviewModal (tabla distribución + aprobar/pagar). **BUGS CRÍTICOS RESUELTOS:** 
+- **Lo último que funcionó:** Fases 1-4 COMPLETADAS. Estructura base con 3 sub-tabs, ThemedList con datos reales via Redux (payrollReducer), filtros funcionales, paginación, dark/light mode, build 0 errores, tests 127 passed. **FASE 2 Y 3 COMPLETADAS:** PeriodFormModal + PeriodDetailModal (CRUD completo + preview), CalculatePreviewModal (tabla distribución + aprobar/pagar). **FASE 4 COMPLETADA:** PaymentDetailModal (detalle pago individual + acción "Marcar como Pagado" con re-fetch). **BUGS CRÍTICOS RESUELTOS:** 
   1. Hooks (`useMemo`) dentro de render helpers → movidos a nivel superior (Bug Prevention #7)
   2. `useHRAuth()` mal usado: `hasPermission` destruido en lugar de `can`; acciones inventadas (`calculate`, `approve`, `pay`) → mapeadas a CRUD válido (`update`) (Bug Prevention #8)
   3. `ChevronLeft/Right` faltantes en import de lucide-react
@@ -25,7 +25,7 @@ Implementar la UI completa de la pestaña **Utilidades** en la página de nómin
 
 - **Dónde se rompió/detuvo:** Error en deploy Vercel (desarrollo): `Unexpected Application Error! t is not a function` al ingresar a la pestaña Utilidades. **RESUELTO AL 100%** - Causa raíz: `hasPermission` destruido de `useHRAuth()` (no existe, es `undefined`), minificado a `t` en producción. Acciones inventadas (`calculate`, `approve`, `pay`) no existen en `DEFAULT_PERMISSIONS` de `useHRAuth.js`. **Backend Error 500 resuelto:** `calculated_by` faltante en schema + `description` vs `notes` + `strictPopulate: false` en populate.
 
-- **Siguiente acción inmediata:** Continuar con Fase 4: PaymentDetailModal + Pago Individual.
+- **Siguiente acción inmediata:** Continuar con Fase 5: Cálculo Preview Interactivo (Simulador 15%).
 
 ---
 
@@ -68,10 +68,11 @@ Implementar la UI completa de la pestaña **Utilidades** en la página de nómin
 - [x] Totales al pie de tabla
 - [x] STOP 3: Aprobación usuario para Fase 4
 
-### FASE 4: Pagos Detalle + Pago Individual (PaymentDetailModal) 🔄 EN PROGRESO
-- [ ] PaymentDetailModal: Detalle de pago individual por empleado
-- [ ] Acción: Marcar como pagado individual (`PAYMENTS_PAY`)
-- [ ] STOP 4: Aprobación usuario para Fase 5
+### FASE 4: Pagos Detalle + Pago Individual (PaymentDetailModal) ✅ COMPLETADA
+- [x] PaymentDetailModal: Detalle de pago individual por empleado (empleado, período, días, tasa, montos bruto/ISLR/neto, estado, fecha/método/referencia pago, tipo cambio, recibo nómina, notas, auditoría)
+- [x] Acción: Marcar como pagado individual (`PAYMENTS_PAY`) con ConfirmDialog + re-fetch automático lista pagos
+- [x] Permisos: `can("payroll", "update")` para botón "Marcar como Pagado" (Bug Prevention #8)
+- [x] STOP 4: Aprobación usuario para Fase 5
 
 ### FASE 5: Cálculo Preview Interactivo ⏳ PENDIENTE
 - [ ] Simulador de distribución 15% con parámetros ajustables
@@ -112,7 +113,7 @@ Implementar la UI completa de la pestaña **Utilidades** en la página de nómin
 - [x] Tests: Client + Server → 127 passed, 3 skipped
 - [x] Fase 2: PeriodFormModal + PeriodDetailModal (CRUD Períodos)
 - [x] Fase 3: CalculatePreviewModal (Calcular → Preview → Aprobar → Pagar)
-- [ ] Fase 4: PaymentDetailModal + Pago individual
+- [x] Fase 4: PaymentDetailModal + Pago individual (detalle completo + Marcar como Pagado + re-fetch)
 - [ ] Fase 5: Cálculo Preview interactivo
 - [ ] Fase 6: Pulido + Tests finales + Merge a 037-payroll-venezuelan-module
 
@@ -123,7 +124,7 @@ Implementar la UI completa de la pestaña **Utilidades** en la página de nómin
 - **Regla:** PR hacia `037-payroll-venezuelan-module` (NUNCA a main/dev directamente)
 - **Regla:** No marcar COMPLETADO hasta que deploy Vercel funcione sin errores
 - **Branch:** `044-payroll-utilities-tab-ui` (desde `037-payroll-venezuelan-module`)
-- **Commit:** `1757e7f` (último: fix useHRAuth usage + bug-prevention.md v6)
+- **Commit:** `1757e7f` (último: fix useHRAuth usage + bug-prevention.md v6) — **Nuevo commit pendiente para Fase 4**
 - **PR:** #60 → `037-payroll-venezuelan-module`
 - **Bugs resueltos:** 
   1. Pantalla en blanco (import Clock) - `943f520`
